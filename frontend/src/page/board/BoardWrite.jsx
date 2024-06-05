@@ -13,12 +13,14 @@ import { useNavigate } from "react-router-dom";
 export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [writer, setWriter] = useState("");
   const navigate = useNavigate();
   function handleSaveClick() {
     axios
       .post("/api/board/add", {
         title,
         content,
+        writer,
       })
       .then(() => {
         navigate("/boardList");
@@ -42,7 +44,7 @@ export function BoardWrite() {
       <Box>
         <FormControl>
           <FormLabel>작성자</FormLabel>
-          <Input readOnly value="작성자"></Input>
+          <Input onChange={(e) => setWriter(e.target.value)}></Input>
         </FormControl>
       </Box>
       <Box>

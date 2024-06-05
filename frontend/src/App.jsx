@@ -12,8 +12,8 @@ const router = createBrowserRouter([
     element: <Home />,
     children: [
       { path: "signup", element: <MemberSignup /> },
-      { path: "write", element: <BoardWrite /> },
-      { path: "board", element: <BoardList /> },
+      { path: "write", element: <BoardWrite /> }, //게시판 글쓰기
+      { path: "board", element: <BoardList /> }, //게시판 목록
     ],
   },
 ]);
