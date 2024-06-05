@@ -13,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const useToast = useToast();
   const navigate = useNavigate();
   function handleSaveClick() {
     axios

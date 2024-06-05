@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { Home } from "./page/Home.jsx";
 import { BoardWrite } from "./page/board/BoardWrite.jsx";
+import { BoardList } from "./page/board/BoardList.jsx";
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,7 @@ const router = createBrowserRouter([
     children: [
       { path: "signup", element: <MemberSignup /> },
       { path: "write", element: <BoardWrite /> },
+      { path: "board", element: <BoardList /> },
     ],
   },
 ]);

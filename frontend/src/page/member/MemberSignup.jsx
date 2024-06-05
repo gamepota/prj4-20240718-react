@@ -4,4 +4,4 @@ function MemberSignup(props) {
   return <div></div>;
 }
 
-export default MemberSignup;
+export { MemberSignup };
