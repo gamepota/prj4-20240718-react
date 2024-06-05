@@ -1,5 +1,6 @@
 package service.board;
 
+import domain.Board;
 import lombok.RequiredArgsConstructor;
 import mapper.BoardMapper;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardService {
     BoardMapper mapper;
 
-    public void add(String title, String content, String writer) {
-        mapper.insert(title, content, writer);
+    public void add(Board board) {
+        mapper.insert(board);
 
     }
 }

@@ -1,5 +1,6 @@
 package controller.Board;
 
+import domain.Board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +15,7 @@ public class BoardController {
     BoardService service;
 
     @PostMapping("/add")
-    public void add(@RequestParam String title, @RequestParam String content, @RequestParam String writer) {
-        service.add(title, content, writer);
+    public void add(@RequestParam Board board) {
+        service.add(board);
     }
 }
