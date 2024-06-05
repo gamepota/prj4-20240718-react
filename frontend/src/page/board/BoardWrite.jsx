@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -7,7 +8,6 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function BoardWrite() {
@@ -15,6 +15,7 @@ export function BoardWrite() {
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
   const navigate = useNavigate();
+
   function handleSaveClick() {
     axios
       .post("/api/board/add", {
@@ -23,7 +24,10 @@ export function BoardWrite() {
         writer,
       })
       .then(() => {
-        navigate("/boardList");
+        navigate("/board");
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -32,19 +36,28 @@ export function BoardWrite() {
       <Box>
         <FormControl>
           <FormLabel>제목</FormLabel>
-          <Input onChange={(e) => setTitle(e.target.value)}></Input>
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          ></Input>
         </FormControl>
       </Box>
       <Box>
         <FormControl>
           <FormLabel>내용</FormLabel>
-          <Textarea onChange={(e) => setContent(e.target.value)}></Textarea>
+          <Textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          ></Textarea>
         </FormControl>
       </Box>
       <Box>
         <FormControl>
           <FormLabel>작성자</FormLabel>
-          <Input onChange={(e) => setWriter(e.target.value)}></Input>
+          <Input
+            value={writer}
+            onChange={(e) => setWriter(e.target.value)}
+          ></Input>
         </FormControl>
       </Box>
       <Box>
