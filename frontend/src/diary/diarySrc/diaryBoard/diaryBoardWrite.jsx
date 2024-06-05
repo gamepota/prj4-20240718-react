@@ -15,7 +15,7 @@ function DiaryBoardWrite(props) {
   const [writer, setWriter] = useState("");
 
   function handleSaveClick() {
-    axios.post("/api/board/add", {
+    axios.post("/api/diaryBoard/add", {
       title,
       content,
       writer,
