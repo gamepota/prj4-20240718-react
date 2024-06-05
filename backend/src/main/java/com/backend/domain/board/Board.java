@@ -1,4 +1,4 @@
-package domain;
+package com.backend.domain.board;
 
 import lombok.Data;
 

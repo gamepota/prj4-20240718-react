@@ -1,8 +1,8 @@
-package service.board;
+package com.backend.service.board;
 
-import domain.Board;
+import com.backend.domain.board.Board;
+import com.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
-import mapper.BoardMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
