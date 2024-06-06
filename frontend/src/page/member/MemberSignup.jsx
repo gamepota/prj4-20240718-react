@@ -27,10 +27,12 @@ export function MemberSignup(props) {
 
   const handleFamilyChange = (value) => {
     if (value.includes("none")) {
+      value.splice(0, value.length);
       setFamily(["none"]);
     } else {
       setFamily(value.filter((val) => val !== "none"));
     }
+    console.log(value);
   };
 
   function handleSignup() {
