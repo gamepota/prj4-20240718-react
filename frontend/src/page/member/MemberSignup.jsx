@@ -24,6 +24,17 @@ export function MemberSignup(props) {
   const [birth_date, setBirth_date] = useState("");
   const [phone_number, setPhone_number] = useState("");
   const [family, setFamily] = useState(["none"]);
+  const [isEmailValidated, setEmailValidated] = useState(false);
+
+  function validateEmail(email) {
+    const hasAvailableRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(
+      email,
+    );
+    if (hasAvailableRegex) {
+      setEmailValidated(true);
+    }
+    console.log(hasAvailableRegex);
+  }
 
   const handleFamilyChange = (value) => {
     if (value.includes("none")) {
@@ -57,6 +68,7 @@ export function MemberSignup(props) {
             type="email"
             onChange={(e) => {
               setEmail(e.target.value);
+              validateEmail(e.target.value);
             }}
           />
         </FormControl>
