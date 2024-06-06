@@ -1,7 +1,7 @@
 package com.backend.diary.controller;
 
-import com.backend.diary.domain.diaryBoard;
-import com.backend.diary.service.diaryBoardService;
+import com.backend.diary.domain.DiaryBoard;
+import com.backend.diary.service.DiaryBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/diaryBoard")
+@RequestMapping("/api/DiaryBoard")
 @RequiredArgsConstructor
-public class diaryBoardController {
+public class DiaryBoardController {
 
-    private final diaryBoardService service;
+    private final DiaryBoardService service;
 
     @PostMapping("add")
-    public ResponseEntity add(@RequestBody diaryBoard diaryBoard) {
+    public ResponseEntity add(@RequestBody DiaryBoard diaryBoard) {
         if (service.validate(diaryBoard)) {
             service.add(diaryBoard);
             return ResponseEntity.ok().build();
@@ -28,8 +28,8 @@ public class diaryBoardController {
     }
 
     @GetMapping("list")
-    public List<diaryBoard> diaryList() {
-        return service.diaryList();
+    public List<DiaryBoard> list() {
+        return service.list();
     }
 
 }

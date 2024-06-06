@@ -33,40 +33,56 @@ function DiaryBoardWrite(props) {
         });
         navigate("/");
       })
-      .catch()
+      .catch((e) => {
+        const code = e.response.status;
+
+        if (code === 404) {
+          toast({
+            status: "error",
+            description: "등록이 실패되었습니다. 입력한 내용을 확인하세요.",
+            position: "top",
+          });
+        }
+      })
       .finally();
   }
 
-  return (
-    <Box>
-      <Box>방명록</Box>
+  let disableSaveButton = false;
+  if (diary_Title)
+    return (
       <Box>
+        <Box>방명록</Box>
         <Box>
-          <FormControl>
-            <FormLabel>방명록 작성</FormLabel>
-            <Input onChange={(e) => setTitle(e.target.value)} />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>글 작성</FormLabel>
-            <Textarea onChange={(e) => setContent(e.target.value)} />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>작성자</FormLabel>
-            <Input onChange={(e) => setWriter(e.target.value)} />
-          </FormControl>
-        </Box>
-        <Box>
-          <Button colorScheme={"blue"} onClick={handleSaveClick}>
-            저장
-          </Button>
+          <Box>
+            <FormControl>
+              <FormLabel>방명록 작성</FormLabel>
+              <Input onChange={(e) => setTitle(e.target.value)} />
+            </FormControl>
+          </Box>
+          <Box>
+            <FormControl>
+              <FormLabel>글 작성</FormLabel>
+              <Textarea onChange={(e) => setContent(e.target.value)} />
+            </FormControl>
+          </Box>
+          <Box>
+            <FormControl>
+              <FormLabel>작성자</FormLabel>
+              <Input onChange={(e) => setWriter(e.target.value)} />
+            </FormControl>
+          </Box>
+          <Box>
+            <Button
+              isDisabled={disableSaveButton}
+              colorScheme={"blue"}
+              onClick={handleSaveClick}
+            >
+              저장
+            </Button>
+          </Box>
         </Box>
       </Box>
-    </Box>
-  );
+    );
 }
 
 export default DiaryBoardWrite;

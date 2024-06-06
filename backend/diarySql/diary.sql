@@ -1,11 +1,11 @@
-CREATE TABLE diaryBoard
+CREATE TABLE diary
 (
-    diary_id       INT PRIMARY KEY AUTO_INCREMENT,
-    diary_title    VARCHAR(100)  NOT NULL,
-    diary_content  VARCHAR(1000) NOT NULL,
-    diary_writer   VARCHAR(100)  NOT NULL,
-    diary_inserted DATETIME      NOT NULL DEFAULT NOW()
+    id       INT PRIMARY KEY AUTO_INCREMENT,
+    title    VARCHAR(100)  NOT NULL,
+    content  VARCHAR(1000) NOT NULL,
+    writer   VARCHAR(100)  NOT NULL,
+    inserted DATETIME      NOT NULL DEFAULT NOW()
 );
 
 SELECT *
-FROM diaryBoard;
+FROM diary;
