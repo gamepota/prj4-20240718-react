@@ -16,4 +16,10 @@ public class diaryBoardService {
     public void add(diaryBoard diaryBoard) {
         mapper.insert(diaryBoard);
     }
+
+    public boolean validate(diaryBoard diaryBoard) {
+        return true;
+    }
+
+
 }

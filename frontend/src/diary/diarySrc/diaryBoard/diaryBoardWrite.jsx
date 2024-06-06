@@ -6,20 +6,35 @@ import {
   FormLabel,
   Input,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function DiaryBoardWrite(props) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
+  const toast = useToast();
+  const navigate = useNavigate();
 
   function handleSaveClick() {
-    axios.post("/api/diaryBoard/add", {
-      title,
-      content,
-      writer,
-    });
+    axios
+      .post("/api/diaryBoard/add", {
+        title,
+        content,
+        writer,
+      })
+      .then(() => {
+        toast({
+          status: "success",
+          description: "방명록이 등록되었습니다.",
+          position: "top",
+        });
+        navigate("/");
+      })
+      .catch()
+      .finally();
   }
 
   return (
