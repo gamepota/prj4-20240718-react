@@ -11,15 +11,18 @@ import {
   Radio,
   RadioGroup,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 export function SignupStepB(props) {
   /* 회원 폼 상태 */
+  const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [birth_date, setBirth_date] = useState("");
   const [phone_number, setPhone_number] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
   const [postcode, setPostcode] = useState("");
+  const navigate = useNavigate();
 
   const openPostcodePopup = () => {
     new window.daum.Postcode({
@@ -39,6 +42,14 @@ export function SignupStepB(props) {
       <Center>
         <Box w={500}>
           <FormControl isRequired>
+            <FormLabel>이름</FormLabel>
+            <Input
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+            />
+          </FormControl>
+          <FormControl isRequired>
             <FormLabel>성별</FormLabel>
             <RadioGroup defaultValue="m" onChange={setGender}>
               <HStack spacing="24px">
@@ -56,7 +67,7 @@ export function SignupStepB(props) {
               }}
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>휴대폰 번호</FormLabel>
             <Input
               type="tel"
@@ -73,16 +84,13 @@ export function SignupStepB(props) {
               }}
             />
           </FormControl>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>주소</FormLabel>
             <Flex>
-              <Input
-                readOnly
-                value={address}
-                placeholder="주소를 선택하세요."
-              />
+              <Input readOnly value={postcode} placeholder="우편번호" />
               <Button onClick={openPostcodePopup}>주소 검색</Button>
             </Flex>
+            <Input readOnly value={address} placeholder="주소를 선택하세요." />
             <Input
               value={addressDetail}
               onChange={(e) => {
@@ -90,11 +98,17 @@ export function SignupStepB(props) {
               }}
               placeholder="상세주소 입력"
             />
-            <Input mt={2} readOnly value={postcode} placeholder="우편번호" />
+
             <Button onClick={testFunction}>test</Button>
           </FormControl>
-          <Button>이전</Button>
-          <Button>다음</Button>
+          <Button
+            onClick={() => {
+              navigate("/signup/stepa");
+            }}
+          >
+            이전
+          </Button>
+          <Button onClick={() => navigate("/signup/stepc")}>다음</Button>
         </Box>
       </Center>
     </>
