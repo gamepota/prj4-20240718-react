@@ -8,6 +8,8 @@ import {
   FormLabel,
   HStack,
   Input,
+  InputGroup,
+  InputRightElement,
   Radio,
   RadioGroup,
   Stack,
@@ -25,6 +27,7 @@ export function MemberSignup(props) {
   const [phone_number, setPhone_number] = useState("");
   const [family, setFamily] = useState(["none"]);
   const [isEmailValidated, setEmailValidated] = useState(false);
+  const [show, setShow] = useState(false);
 
   function validateEmail(email) {
     const hasAvailableRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(
@@ -58,6 +61,8 @@ export function MemberSignup(props) {
     });
   }
 
+  const handleClick = () => setShow(!show);
+
   return (
     <>
       <Box>회원가입</Box>
@@ -82,12 +87,19 @@ export function MemberSignup(props) {
         </FormControl>
         <FormControl isRequired>
           <FormLabel>패스워드</FormLabel>
-          <Input
-            type="password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
+          <InputGroup>
+            <Input
+              type={show ? "text" : "password"}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+            <InputRightElement width="4.5rem">
+              <Button h="1.75rem" size="sm" onClick={handleClick}>
+                {show ? "Hide" : "Show"}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
         </FormControl>
         <FormControl isRequired>
           <FormLabel>패스워드 확인</FormLabel>
