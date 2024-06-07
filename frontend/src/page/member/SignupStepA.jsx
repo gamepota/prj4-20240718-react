@@ -9,15 +9,17 @@ import {
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 export function SignupStepA(props) {
   /* 회원 폼 상태 */
   const [email, setEmail] = useState("");
+  const [isEmailValidated, setEmailValidated] = useState(false);
+  const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [password_confirm, setPassword_confirm] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [isEmailValidated, setEmailValidated] = useState(false);
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   function validateEmail(email) {
     const hasAvailableRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(
@@ -29,17 +31,17 @@ export function SignupStepA(props) {
     console.log(hasAvailableRegex);
   }
 
-  const handleFamilyChange = (value) => {
-    if (value.includes("none")) {
-      value.splice(0, value.length);
-      setFamily(["none"]);
-    } else {
-      setFamily(value.filter((val) => val !== "none"));
-    }
-    console.log(value);
-  };
-
   const handleClick = () => setShow(!show);
+
+  const handleSubmit = () => {
+    // 폼 검증 로직 등을 추가하고 유효성 검사 후 경로 이동
+    if (isEmailValidated && password === password_confirm) {
+      navigate("/signup/stepb");
+    } else {
+      // 오류 처리
+      alert("입력정보를 확인해주세요.");
+    }
+  };
 
   return (
     <>
@@ -95,7 +97,7 @@ export function SignupStepA(props) {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <Button>다음</Button>
+          <Button onClick={handleSubmit}>다음</Button>
         </Box>
       </Center>
     </>
