@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   FormControl,
   FormLabel,
   HStack,
@@ -16,9 +17,22 @@ export function SignupStepB(props) {
   const [gender, setGender] = useState("");
   const [birth_date, setBirth_date] = useState("");
   const [phone_number, setPhone_number] = useState("");
-  const [family, setFamily] = useState(["none"]);
-  const [isEmailValidated, setEmailValidated] = useState(false);
-  const [show, setShow] = useState(false);
+  const [address, setAddress] = useState("");
+  const [addressDetail, setAddressDetail] = useState("");
+  const [postcode, setPostcode] = useState("");
+
+  const openPostcodePopup = () => {
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        setAddress(data.address);
+        setPostcode(data.zonecode);
+      },
+    }).open();
+  };
+
+  function testFunction() {
+    console.log(address + addressDetail);
+  }
 
   return (
     <>
@@ -58,6 +72,26 @@ export function SignupStepB(props) {
                 );
               }}
             />
+          </FormControl>
+          <FormControl isRequired>
+            <FormLabel>주소</FormLabel>
+            <Flex>
+              <Input
+                readOnly
+                value={address}
+                placeholder="주소를 선택하세요."
+              />
+              <Button onClick={openPostcodePopup}>주소 검색</Button>
+            </Flex>
+            <Input
+              value={addressDetail}
+              onChange={(e) => {
+                setAddressDetail(e.target.value);
+              }}
+              placeholder="상세주소 입력"
+            />
+            <Input mt={2} readOnly value={postcode} placeholder="우편번호" />
+            <Button onClick={testFunction}>test</Button>
           </FormControl>
           <Button>이전</Button>
           <Button>다음</Button>
