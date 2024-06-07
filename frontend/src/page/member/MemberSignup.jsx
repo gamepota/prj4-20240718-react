@@ -1,7 +1,5 @@
 import React from "react";
 
-function MemberSignup(props) {
+export function MemberSignup(props) {
   return <div></div>;
 }
-
-export default MemberSignup;
