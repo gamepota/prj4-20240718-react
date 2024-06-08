@@ -30,6 +30,7 @@ export function MemberSignup(props) {
   const [addressDetail, setAddressDetail] = useState("");
 
   const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isNicknameValid, setIsNicknameValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isBirthDateValid, setIsBirthDateValid] = useState(false);
 
@@ -48,7 +49,7 @@ export function MemberSignup(props) {
 
   const isFormValid =
     isEmailValid &&
-    nickname &&
+    isNicknameValid &&
     isPasswordValid &&
     isPasswordRight &&
     gender &&
@@ -61,9 +62,15 @@ export function MemberSignup(props) {
   /* 유효성 */
 
   // 이메일 유효성 검사
-  function validateEmail(e) {
-    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(e);
+  function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(email);
     setIsEmailValid(emailRegex);
+  }
+
+  // 닉네임 유효성 검사
+  function validateNickname(nickname) {
+    const nicknameRegex = /^[가-힣a-zA-Z]{2,12}$/.test(nickname);
+    setIsNicknameValid(nicknameRegex);
   }
 
   // 비밀번호 유효성 검사
@@ -118,6 +125,7 @@ export function MemberSignup(props) {
 
   // 이메일 중복확인
   function handleCheckEmail() {
+    if (!isEmailValid) return; // 이메일 유효성 검사를 통과한 경우에만 요청
     axios
       .get(`/api/member/check?email=${email}`)
       .then((res) => {
@@ -143,6 +151,7 @@ export function MemberSignup(props) {
 
   // 닉네임 중복확인
   function handleCheckNickname() {
+    if (!isNicknameValid) return; // 닉네임 유효성 검사를 통과한 경우에만 요청
     axios
       .get(`/api/member/check?nickname=${nickname}`)
       .then((res) => {
@@ -246,8 +255,8 @@ export function MemberSignup(props) {
                 />
                 <InputRightElement w={"75px"} mr={1}>
                   <Button
-                    onClick={handleCheckEmail}
                     size={"sm"}
+                    onClick={handleCheckEmail}
                     isDisabled={!isEmailValid}
                     cursor={!isEmailValid ? "not-allowed" : "pointer"}
                     _hover={!isEmailValid ? { bgColor: "gray.100" } : {}}
@@ -269,14 +278,26 @@ export function MemberSignup(props) {
                   value={nickname}
                   onChange={(e) => {
                     setNickname(e.target.value.trim());
+                    validateNickname(e.target.value.trim());
                   }}
                 />
                 <InputRightElement w={"75px"} mr={1}>
-                  <Button size={"sm"} onClick={handleCheckNickname}>
+                  <Button
+                    size={"sm"}
+                    onClick={handleCheckNickname}
+                    isDisabled={!isNicknameValid}
+                    cursor={!isNicknameValid ? "not-allowed" : "pointer"}
+                    _hover={!isNicknameValid ? { bgColor: "gray.100" } : {}}
+                  >
                     중복확인
                   </Button>
                 </InputRightElement>
               </InputGroup>
+              {!isNicknameValid && nickname && (
+                <FormHelperText color="red">
+                  닉네임은 2~12자 사이의 한글 또는 영문으로 구성되어야 합니다.
+                </FormHelperText>
+              )}
             </FormControl>
             <FormControl isRequired>
               <InputGroup>
