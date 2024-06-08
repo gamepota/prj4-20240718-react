@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export function MemberSignup(props) {
   const [email, setEmail] = useState("");
@@ -183,15 +184,18 @@ export function MemberSignup(props) {
   }
 
   // 가입 버튼
-  const handleSubmit = () => {
-    // 폼 검증 로직 등을 추가하고 유효성 검사 후 경로 이동
-    if (isEmailValid && password === confirmPassword) {
+  function handleSubmit() {
+    if (isEmailValid && isPasswordValid && isPasswordRight) {
       navigate("/s");
     } else {
-      // 오류 처리
-      alert("입력정보를 확인해주세요.");
+      Swal.fire({
+        title: "회원가입이 완료되지 않았습니다",
+        text: "입력 정보를 다시 한번 확인해주세요",
+        icon: "error",
+        confirmButtonText: "확인",
+      });
     }
-  };
+  }
 
   return (
     <>
