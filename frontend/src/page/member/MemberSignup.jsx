@@ -242,6 +242,11 @@ export function MemberSignup(props) {
                   </Button>
                 </InputRightElement>
               </InputGroup>
+              {!isEmailValid && email && (
+                <FormHelperText color="red">
+                  올바르지 않은 이메일 형식입니다.
+                </FormHelperText>
+              )}
             </FormControl>
             <FormControl isRequired>
               <InputGroup>
@@ -391,14 +396,9 @@ export function MemberSignup(props) {
                 value={birth_date}
                 onChange={handleBirthDateChange}
               />
-              {birth_date && (
-                <FormHelperText
-                  color={isBirthDateValid ? "green" : "red"}
-                  mt={1}
-                >
-                  {isBirthDateValid
-                    ? "유효한 생년월일입니다."
-                    : "유효하지 않은 생년월일입니다."}
+              {!isBirthDateValid && birth_date && (
+                <FormHelperText color="red">
+                  유효하지 않은 생년월일입니다.
                 </FormHelperText>
               )}
             </FormControl>
