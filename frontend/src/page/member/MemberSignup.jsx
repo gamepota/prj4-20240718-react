@@ -245,7 +245,13 @@ export function MemberSignup(props) {
                   }}
                 />
                 <InputRightElement w={"75px"} mr={1}>
-                  <Button onClick={handleCheckEmail} size={"sm"}>
+                  <Button
+                    onClick={handleCheckEmail}
+                    size={"sm"}
+                    isDisabled={!isEmailValid}
+                    cursor={!isEmailValid ? "not-allowed" : "pointer"}
+                    _hover={!isEmailValid ? { bgColor: "gray.100" } : {}}
+                  >
                     중복확인
                   </Button>
                 </InputRightElement>
