@@ -4,10 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import DiaryHome from "./diaryPage/DiaryHome.jsx";
 import { DiaryBoardWrite } from "./diaryPage/diaryBoard/DiaryBoardWrite.jsx";
 import { DiaryBoardList } from "./diaryPage/diaryBoard/DiaryBoardList.jsx";
-
-function DiaryBoardView() {
-  return null;
-}
+import { DiaryBoardView } from "./diaryPage/diaryBoard/DiaryBoardView.jsx";
 
 const router = createBrowserRouter([
   {

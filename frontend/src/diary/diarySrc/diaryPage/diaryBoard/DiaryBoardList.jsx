@@ -10,7 +10,7 @@ export function DiaryBoardList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("/api/DiaryBoard/list").then((res) => setBoardList(res.data));
+    axios.get(`/api/DiaryBoard/list`).then((res) => setBoardList(res.data));
   }, []);
   return (
     <Box>
