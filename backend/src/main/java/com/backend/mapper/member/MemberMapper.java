@@ -20,12 +20,12 @@ public interface MemberMapper {
             FROM member
             WHERE email = #{email}
             """)
-    Member getEmail(String email);
+    Member selectByEmail(String email);
 
     @Select("""
             SELECT *
             FROM member
             WHERE nickname = #{nickname}
             """)
-    Member getNickname(String nickname);
+    Member selectByNickname(String nickname);
 }

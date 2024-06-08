@@ -12,6 +12,12 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService service;
 
+    @PostMapping("/signup")
+    public ResponseEntity signup(@RequestBody Member member) {
+        service.signup(member);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(value = "check", params = "email")
     public ResponseEntity checkEmail(@RequestParam("email") String email) {
         Member member = service.getByEmail(email);
@@ -28,10 +34,5 @@ public class MemberController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(nickname);
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody Member member) {
-        return ResponseEntity.ok("회원가입 성공");
     }
 }

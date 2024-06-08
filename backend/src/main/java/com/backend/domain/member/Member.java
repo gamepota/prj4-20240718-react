@@ -10,8 +10,8 @@ public class Member {
     Integer id;
     String name;
     String email;
-    String password;
     String nickname;
+    String password;
     String gender;
     String nationality;
     LocalDate birthDate;
