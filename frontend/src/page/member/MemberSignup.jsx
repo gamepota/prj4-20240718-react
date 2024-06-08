@@ -185,12 +185,14 @@ export function MemberSignup(props) {
   function handleReenterEmail() {
     setEmail(""); // 이메일 입력란 초기화
     setIsEmailConfirmed(false); // 이메일 확인 상태 초기화
+    setIsEmailValid(false); // 이메일 유효성 초기화
   }
 
   // 닉네임 재입력
   function handleReenterNickname() {
     setNickname(""); // 닉네임 입력란 초기화
     setIsNicknameConfirmed(false); // 닉네임 확인 상태 초기화
+    setIsNicknameValid(false); // 닉네임 유효성 초기화
   }
 
   // 비밀번호 보기/숨기기
