@@ -5,12 +5,9 @@ import {
   Center,
   Flex,
   FormControl,
-  HStack,
   Input,
   InputGroup,
   InputRightElement,
-  Radio,
-  RadioGroup,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -24,7 +21,7 @@ export function MemberSignup(props) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
-  const [gender, setGender] = useState("m");
+  const [gender, setGender] = useState("male");
   const [nationality, setNationality] = useState("korean");
   const [birth_date, setBirth_date] = useState("");
   const [phone_number, setPhone_number] = useState("");
@@ -117,7 +114,7 @@ export function MemberSignup(props) {
 
   const handleSubmit = () => {
     // 폼 검증 로직 등을 추가하고 유효성 검사 후 경로 이동
-    if (isEmailValidated && password === confirmPassword) {
+    if (isEmailValid && password === confirmPassword) {
       navigate("/signup/stepb");
     } else {
       // 오류 처리
@@ -133,6 +130,16 @@ export function MemberSignup(props) {
     console.log(phone_number);
     console.log(postcode);
     console.log(address + " " + addressDetail);
+  }
+
+  // 성별 선택 핸들러
+  function handleGenderSelect(selectedGender) {
+    setGender(selectedGender);
+  }
+
+  // 국적 선택 핸들러
+  function handleNationalitySelect(selectedNationality) {
+    setNationality(selectedNationality);
   }
 
   return (
@@ -212,20 +219,75 @@ export function MemberSignup(props) {
             </FormControl>
             <Flex>
               <FormControl isRequired>
-                <RadioGroup defaultValue="m" onChange={setGender}>
-                  <HStack spacing="30px">
-                    <Radio value="m">남성</Radio>
-                    <Radio value="f">여성</Radio>
-                  </HStack>
-                </RadioGroup>
+                <Flex justifyContent={"space-around"} mt={4} mb={4}>
+                  <Box
+                    w="100px"
+                    h="40px"
+                    border="1px solid"
+                    borderColor={gender === "male" ? "blue" : "gray"}
+                    bg={gender === "male" ? "blue.100" : "white"}
+                    onClick={() => handleGenderSelect("male")}
+                    cursor="pointer"
+                    textAlign="center"
+                    lineHeight="40px"
+                    borderRadius="5px"
+                    mx={2}
+                  >
+                    남성
+                  </Box>
+                  <Box
+                    w="100px"
+                    h="40px"
+                    border="1px solid"
+                    borderColor={gender === "female" ? "pink" : "gray"}
+                    bg={gender === "female" ? "pink.100" : "white"}
+                    onClick={() => handleGenderSelect("female")}
+                    cursor="pointer"
+                    textAlign="center"
+                    lineHeight="40px"
+                    borderRadius="5px"
+                    mx={2}
+                  >
+                    여성
+                  </Box>
+                </Flex>
               </FormControl>
+              <Box border={"1px solid #f1f1f1"}></Box>
               <FormControl isRequired>
-                <RadioGroup defaultValue="m" onChange={setNationality}>
-                  <HStack spacing="30px">
-                    <Radio value="korean">내국인</Radio>
-                    <Radio value="foreigner">외국인</Radio>
-                  </HStack>
-                </RadioGroup>
+                <Flex justifyContent={"space-around"} mt={4} mb={4}>
+                  <Box
+                    w="100px"
+                    h="40px"
+                    border="1px solid"
+                    borderColor={nationality === "korean" ? "green" : "gray"}
+                    bg={nationality === "korean" ? "green.100" : "white"}
+                    onClick={() => handleNationalitySelect("korean")}
+                    cursor="pointer"
+                    textAlign="center"
+                    lineHeight="40px"
+                    borderRadius="5px"
+                    mx={2}
+                  >
+                    내국인
+                  </Box>
+                  <Box
+                    w="100px"
+                    h="40px"
+                    border="1px solid"
+                    borderColor={
+                      nationality === "foreigner" ? "orange" : "gray"
+                    }
+                    bg={nationality === "foreigner" ? "orange.100" : "white"}
+                    onClick={() => handleNationalitySelect("foreigner")}
+                    cursor="pointer"
+                    textAlign="center"
+                    lineHeight="40px"
+                    borderRadius="5px"
+                    mx={2}
+                  >
+                    외국인
+                  </Box>
+                </Flex>
               </FormControl>
             </Flex>
             <FormControl>
