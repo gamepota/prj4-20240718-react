@@ -42,24 +42,16 @@ export function MemberSignup(props) {
   // 이메일 유효성 검사
   function validateEmail(e) {
     const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(e);
-    if (emailRegex) {
-      setIsEmailValid(true);
-    } else {
-      setIsEmailValid(false);
-    }
-    console.log(emailRegex);
+    setIsEmailValid(emailRegex);
   }
 
   // 비밀번호 유효성 검사
   function validatePassword(password) {
     const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/.test(
         password,
       );
-    if (passwordRegex) {
-      setIsPasswordValid(true);
-    }
-    console.log(passwordRegex);
+    setIsPasswordValid(passwordRegex);
   }
 
   // 생년월일 유효성 검사
@@ -93,7 +85,6 @@ export function MemberSignup(props) {
 
     const isValid = validateBirthDate(birthDateRegex); // 생년월일 유효성 검사 호출
     setIsBirthDateValid(isValid); // 유효성 검사 결과 업데이트
-    console.log(`Birth date is ${isValid ? "valid" : "invalid"}`);
   }
 
   // 휴대폰 번호 정규식
@@ -254,6 +245,13 @@ export function MemberSignup(props) {
                   </Button>
                 </InputRightElement>
               </InputGroup>
+              {!isPasswordValid && password && (
+                <FormHelperText color="red">
+                  비밀번호는 최소 8자에서 최대 16자 사이
+                  <br />
+                  영문 대소문자, 숫자, 특수문자를 모두 포함해야 합니다.
+                </FormHelperText>
+              )}
             </FormControl>
             <FormControl isRequired>
               <InputGroup>
@@ -266,8 +264,12 @@ export function MemberSignup(props) {
                   }}
                 />
               </InputGroup>
-              {isPasswordRight || (
-                <FormHelperText>비밀번호가 일치하지 않습니다.</FormHelperText>
+              {confirmPassword && (
+                <FormHelperText color={isPasswordRight ? "green" : "red"}>
+                  {isPasswordRight
+                    ? "비밀번호가 일치합니다."
+                    : "비밀번호가 일치하지 않습니다."}
+                </FormHelperText>
               )}
             </FormControl>
           </Box>
@@ -361,11 +363,14 @@ export function MemberSignup(props) {
                 onChange={handleBirthDateChange}
               />
               {birth_date && (
-                <Box color={isBirthDateValid ? "green" : "red"} mt={1}>
+                <FormHelperText
+                  color={isBirthDateValid ? "green" : "red"}
+                  mt={1}
+                >
                   {isBirthDateValid
                     ? "유효한 생년월일입니다."
                     : "유효하지 않은 생년월일입니다."}
-                </Box>
+                </FormHelperText>
               )}
             </FormControl>
             <FormControl>
