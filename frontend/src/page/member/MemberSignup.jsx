@@ -20,23 +20,36 @@ export function MemberSignup(props) {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isBirthDateValid, setIsBirthDateValid] = useState(false);
-
-  const [name, setName] = useState("");
   const [gender, setGender] = useState("male");
   const [nationality, setNationality] = useState("korean");
+  const [name, setName] = useState("");
   const [birth_date, setBirth_date] = useState("");
   const [phone_number, setPhone_number] = useState("");
   const [postcode, setPostcode] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
 
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isBirthDateValid, setIsBirthDateValid] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const isPasswordRight = password === confirmPassword;
   const navigate = useNavigate();
   const toast = useToast();
+
+  let isFormValid =
+    isEmailValid &&
+    nickname &&
+    isPasswordValid &&
+    isPasswordRight &&
+    gender &&
+    nationality &&
+    name &&
+    isBirthDateValid &&
+    phone_number &&
+    postcode;
+
   /* 유효성 */
 
   // 이메일 유효성 검사
@@ -95,7 +108,7 @@ export function MemberSignup(props) {
     setPhone_number(phoneNumberRegex);
   }
 
-  // 계정 중복확인
+  // 이메일 중복확인
   function handleCheckEmail() {
     axios
       .get(`/api/member/check?email=${email}`)
@@ -106,10 +119,9 @@ export function MemberSignup(props) {
           position: "top",
           duration: 3000,
         });
-      }) // 이미 있는 이메일 (사용 못함)
+      })
       .catch((err) => {
         if (err.response.status === 404) {
-          // 사용할 수 있는 이메일
           toast({
             status: "info",
             description: "사용할 수 있는 이메일입니다.",
@@ -121,6 +133,7 @@ export function MemberSignup(props) {
       .finally();
   }
 
+  // 닉네임 중복확인
   function handleCheckNickname() {
     axios
       .get(`/api/member/check?nickname=${nickname}`)
@@ -150,7 +163,15 @@ export function MemberSignup(props) {
     setShowPassword(!showPassword);
   }
 
-  const isPasswordRight = password === confirmPassword;
+  // 성별 선택
+  function handleGenderSelect(selectedGender) {
+    setGender(selectedGender);
+  }
+
+  // 국적 선택
+  function handleNationalitySelect(selectedNationality) {
+    setNationality(selectedNationality);
+  }
 
   // 주소 검색
   function openPostcodePopup() {
@@ -163,30 +184,10 @@ export function MemberSignup(props) {
     postcodePopup.open();
   }
 
-  function testFunction() {
-    console.log(name);
-    console.log(gender);
-    console.log(nationality);
-    console.log(birth_date);
-    console.log(phone_number);
-    console.log(postcode);
-    console.log(address + " " + addressDetail);
-  }
-
-  // 성별 선택
-  function handleGenderSelect(selectedGender) {
-    setGender(selectedGender);
-  }
-
-  // 국적 선택
-  function handleNationalitySelect(selectedNationality) {
-    setNationality(selectedNationality);
-  }
-
   // 가입 버튼
   function handleSubmit() {
-    if (isEmailValid && isPasswordValid && isPasswordRight) {
-      navigate("/s");
+    if (isFormValid) {
+      navigate("/");
     } else {
       Swal.fire({
         title: "회원가입이 완료되지 않았습니다",
@@ -201,7 +202,8 @@ export function MemberSignup(props) {
     <>
       <Center>
         <Box w={500}>
-          <Box mb={3} border={"1px solid red"}>
+          <Box mb={10}>회원 가입</Box>
+          <Box>
             <FormControl isRequired>
               <InputGroup>
                 <Input
@@ -280,17 +282,6 @@ export function MemberSignup(props) {
                 </FormHelperText>
               )}
             </FormControl>
-          </Box>
-          <Box border={"1px solid red"}>
-            <FormControl isRequired>
-              <Input
-                placeholder="이름"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value.trim());
-                }}
-              />
-            </FormControl>
             <Flex>
               <FormControl isRequired>
                 <Flex justifyContent={"space-around"} mt={4} mb={4}>
@@ -364,7 +355,16 @@ export function MemberSignup(props) {
                 </Flex>
               </FormControl>
             </Flex>
-            <FormControl>
+            <FormControl isRequired>
+              <Input
+                placeholder="이름"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value.trim());
+                }}
+              />
+            </FormControl>
+            <FormControl isRequired>
               <Input
                 placeholder="생년월일 8자리 ( YYYYMMDD )"
                 value={birth_date}
@@ -381,7 +381,7 @@ export function MemberSignup(props) {
                 </FormHelperText>
               )}
             </FormControl>
-            <FormControl>
+            <FormControl isRequired>
               <Input
                 placeholder="휴대폰 번호 ( '-' 제외하고 입력 )"
                 type="tel"
@@ -390,7 +390,7 @@ export function MemberSignup(props) {
                 onChange={handlePhoneNumberChange}
               />
             </FormControl>
-            <FormControl>
+            <FormControl isRequired>
               <Flex>
                 <Input readOnly value={postcode} placeholder="우편번호" />
                 <Button onClick={openPostcodePopup}>주소 검색</Button>
@@ -410,14 +410,16 @@ export function MemberSignup(props) {
             </FormControl>
           </Box>
           <Button
+            isDisabled={!isFormValid}
             width={"100%"}
-            cursor={"pointer"}
-            _hover={{ bgColor: "purple.200" }}
+            cursor={!isFormValid ? "not-allowed" : "pointer"}
+            _hover={
+              !isFormValid ? { bgColor: "gray.100" } : { bgColor: "purple.200" }
+            }
             onClick={handleSubmit}
           >
             가입 완료
           </Button>
-          <Button onClick={testFunction}>test</Button>
         </Box>
       </Center>
     </>
