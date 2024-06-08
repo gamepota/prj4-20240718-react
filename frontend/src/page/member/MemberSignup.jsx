@@ -265,7 +265,6 @@ export function MemberSignup(props) {
             <FormControl isRequired>
               <InputGroup>
                 <Input
-                  type="text"
                   placeholder={"이메일"}
                   value={email}
                   readOnly={isEmailConfirmed} // 이메일 확인 후 readOnly 설정
