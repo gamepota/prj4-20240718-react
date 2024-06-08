@@ -13,14 +13,16 @@ import {
   RadioGroup,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export function MemberSignup(props) {
   const [email, setEmail] = useState("");
-  const [isEmailValidated, setEmailValidated] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
-  const [password_confirm, setPassword_confirm] = useState("");
-  const [show, setShow] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [gender, setGender] = useState("m");
   const [nationality, setNationality] = useState("korean");
@@ -31,30 +33,91 @@ export function MemberSignup(props) {
   const [postcode, setPostcode] = useState("");
   const navigate = useNavigate();
 
+  // 계정 유효성 검사
   function validateEmail(email) {
-    const hasAvailableRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(
-      email,
-    );
-    if (hasAvailableRegex) {
-      setEmailValidated(true);
+    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(email);
+    if (emailRegex) {
+      setIsEmailValid(true);
     }
-    console.log(hasAvailableRegex);
+    console.log(emailRegex);
   }
 
-  const handleClick = () => setShow(!show);
+  function validatePassword(password) {
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
+        password,
+      );
+    if (passwordRegex) {
+      setIsPasswordValid(true);
+    }
+    console.log(passwordRegex);
+  }
 
-  const openPostcodePopup = () => {
-    new window.daum.Postcode({
-      oncomplete: function (data) {
+  // 계정 중복확인
+  function handleCheckEmail() {
+    axios
+      .get(`/api/member/check?email=${email}`)
+      .then((res) => {
+        toast({
+          status: "warning",
+          description: "사용할 수 없는 아이디입니다.",
+          position: "top",
+        });
+      }) // 이미 있는 이메일 (사용 못함)
+      .catch((err) => {
+        if (err.response.status === 404) {
+          // 사용할 수 있는 이메일
+          toast({
+            status: "info",
+            description: "사용할 수 있는 이메일입니다.",
+            position: "top",
+          });
+        }
+      })
+      .finally();
+  }
+
+  function handleCheckNickname() {
+    axios
+      .get(`/api/member/check?nickname=${nickname}`)
+      .then((res) => {
+        toast({
+          status: "warning",
+          description: "사용할 수 없는 닉네임입니다.",
+          position: "top",
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          toast({
+            status: "info",
+            description: "사용할 수 있는 별명입니다.",
+            position: "top",
+          });
+        }
+      })
+      .finally();
+  }
+
+  // 비밀번호 보기/숨기기
+  function handleClickPassword() {
+    setShowPassword(!showPassword);
+  }
+
+  // 주소 검색
+  function openPostcodePopup() {
+    const postcodePopup = new window.daum.Postcode({
+      onComplete: function (data) {
         setAddress(data.address);
         setPostcode(data.zonecode);
       },
-    }).open();
-  };
+    });
+    postcodePopup.open();
+  }
 
   const handleSubmit = () => {
     // 폼 검증 로직 등을 추가하고 유효성 검사 후 경로 이동
-    if (isEmailValidated && password === password_confirm) {
+    if (isEmailValidated && password === confirmPassword) {
       navigate("/signup/stepb");
     } else {
       // 오류 처리
@@ -78,35 +141,50 @@ export function MemberSignup(props) {
         <Box w={500}>
           <Box mb={3} border={"1px solid red"}>
             <FormControl isRequired>
-              <Input
-                type="email"
-                placeholder={"아이디"}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  validateEmail(e.target.value);
-                }}
-              />
+              <InputGroup>
+                <Input
+                  type="email"
+                  placeholder={"이메일"}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    validateEmail(e.target.value);
+                  }}
+                />{" "}
+                <InputRightElement w={"75px"} mr={1}>
+                  <Button onClick={handleCheckEmail} size={"sm"}>
+                    중복확인
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
             </FormControl>
             <FormControl isRequired>
-              <Input
-                placeholder={"닉네임"}
-                onChange={(e) => {
-                  setNickname(e.target.value);
-                }}
-              />
+              <InputGroup>
+                <Input
+                  placeholder={"닉네임"}
+                  onChange={(e) => {
+                    setNickname(e.target.value);
+                  }}
+                />
+                <InputRightElement w={"75px"} mr={1}>
+                  <Button size={"sm"} onClick={handleCheckNickname}>
+                    중복확인
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
             </FormControl>
             <FormControl isRequired>
               <InputGroup>
                 <Input
                   placeholder="비밀번호"
-                  type={show ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   onChange={(e) => {
                     setPassword(e.target.value);
+                    validatePassword(e.target.value);
                   }}
                 />
                 <InputRightElement width="4.5rem">
-                  <Button h="1.75rem" size="sm" onClick={handleClick}>
-                    {show ? "숨기기" : "보기"}
+                  <Button h="1.75rem" size="sm" onClick={handleClickPassword}>
+                    {showPassword ? "숨기기" : "보기"}
                   </Button>
                 </InputRightElement>
               </InputGroup>
@@ -115,9 +193,9 @@ export function MemberSignup(props) {
               <InputGroup>
                 <Input
                   placeholder="비밀번호 확인"
-                  type={show ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   onChange={(e) => {
-                    setPassword_confirm(e.target.value);
+                    setConfirmPassword(e.target.value);
                   }}
                 />
               </InputGroup>
