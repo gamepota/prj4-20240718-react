@@ -206,8 +206,9 @@ export function MemberSignup(props) {
                 <Input
                   type="email"
                   placeholder={"이메일"}
+                  value={email}
                   onChange={(e) => {
-                    setEmail(e.target.value);
+                    setEmail(e.target.value.trim());
                     validateEmail(e.target.value);
                   }}
                 />{" "}
@@ -222,8 +223,9 @@ export function MemberSignup(props) {
               <InputGroup>
                 <Input
                   placeholder={"닉네임"}
+                  value={nickname}
                   onChange={(e) => {
-                    setNickname(e.target.value);
+                    setNickname(e.target.value.trim());
                   }}
                 />
                 <InputRightElement w={"75px"} mr={1}>
@@ -269,8 +271,9 @@ export function MemberSignup(props) {
             <FormControl isRequired>
               <Input
                 placeholder="이름"
+                value={name}
                 onChange={(e) => {
-                  setName(e.target.value);
+                  setName(e.target.value.trim());
                 }}
               />
             </FormControl>
