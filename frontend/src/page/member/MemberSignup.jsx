@@ -30,7 +30,9 @@ export function MemberSignup(props) {
   const [addressDetail, setAddressDetail] = useState("");
 
   const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
   const [isNicknameValid, setIsNicknameValid] = useState(false);
+  const [isNicknameConfirmed, setIsNicknameConfirmed] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isBirthDateValid, setIsBirthDateValid] = useState(false);
 
@@ -49,7 +51,9 @@ export function MemberSignup(props) {
 
   const isFormValid =
     isEmailValid &&
+    isEmailConfirmed &&
     isNicknameValid &&
+    isNicknameConfirmed &&
     isPasswordValid &&
     isPasswordRight &&
     gender &&
@@ -69,7 +73,7 @@ export function MemberSignup(props) {
 
   // 닉네임 유효성 검사
   function validateNickname(nickname) {
-    const nicknameRegex = /^[가-힣a-zA-Z]{2,12}$/.test(nickname);
+    const nicknameRegex = /^[가-힣a-zA-Z0-9]{3,12}$/.test(nickname);
     setIsNicknameValid(nicknameRegex);
   }
 
@@ -144,6 +148,7 @@ export function MemberSignup(props) {
             position: "top",
             duration: 3000,
           });
+          setIsEmailConfirmed(true); // 이메일 확인 상태 업데이트
         }
       })
       .finally();
@@ -170,9 +175,22 @@ export function MemberSignup(props) {
             position: "top",
             duration: 3000,
           });
+          setIsNicknameConfirmed(true); // 닉네임 확인 상태 업데이트
         }
       })
       .finally();
+  }
+
+  // 이메일 재입력
+  function handleReenterEmail() {
+    setEmail(""); // 이메일 입력란 초기화
+    setIsEmailConfirmed(false); // 이메일 확인 상태 초기화
+  }
+
+  // 닉네임 재입력
+  function handleReenterNickname() {
+    setNickname(""); // 닉네임 입력란 초기화
+    setIsNicknameConfirmed(false); // 닉네임 확인 상태 초기화
   }
 
   // 비밀번호 보기/숨기기
@@ -248,21 +266,29 @@ export function MemberSignup(props) {
                   type="text"
                   placeholder={"이메일"}
                   value={email}
+                  readOnly={isEmailConfirmed} // 이메일 확인 후 readOnly 설정
                   onChange={(e) => {
                     setEmail(e.target.value.trim());
                     validateEmail(e.target.value.trim());
                   }}
+                  backgroundColor={isEmailConfirmed ? "gray.200" : "white"}
                 />
-                <InputRightElement w={"75px"} mr={1}>
-                  <Button
-                    size={"sm"}
-                    onClick={handleCheckEmail}
-                    isDisabled={!isEmailValid}
-                    cursor={!isEmailValid ? "not-allowed" : "pointer"}
-                    _hover={!isEmailValid ? { bgColor: "gray.100" } : {}}
-                  >
-                    중복확인
-                  </Button>
+                <InputRightElement w={"100px"} mr={1}>
+                  {isEmailConfirmed ? (
+                    <Button size={"sm"} onClick={handleReenterEmail}>
+                      재입력
+                    </Button>
+                  ) : (
+                    <Button
+                      size={"sm"}
+                      onClick={handleCheckEmail}
+                      isDisabled={!isEmailValid}
+                      cursor={!isEmailValid ? "not-allowed" : "pointer"}
+                      _hover={!isEmailValid ? { bgColor: "gray.100" } : {}}
+                    >
+                      중복확인
+                    </Button>
+                  )}
                 </InputRightElement>
               </InputGroup>
               {!isEmailValid && email && (
@@ -276,26 +302,34 @@ export function MemberSignup(props) {
                 <Input
                   placeholder={"닉네임"}
                   value={nickname}
+                  readOnly={isNicknameConfirmed} // 닉네임 확인 후 readOnly 설정
                   onChange={(e) => {
                     setNickname(e.target.value.trim());
                     validateNickname(e.target.value.trim());
                   }}
+                  backgroundColor={isNicknameConfirmed ? "gray.200" : "white"}
                 />
-                <InputRightElement w={"75px"} mr={1}>
-                  <Button
-                    size={"sm"}
-                    onClick={handleCheckNickname}
-                    isDisabled={!isNicknameValid}
-                    cursor={!isNicknameValid ? "not-allowed" : "pointer"}
-                    _hover={!isNicknameValid ? { bgColor: "gray.100" } : {}}
-                  >
-                    중복확인
-                  </Button>
+                <InputRightElement w={"100px"} mr={1}>
+                  {isNicknameConfirmed ? (
+                    <Button size={"sm"} onClick={handleReenterNickname}>
+                      재입력
+                    </Button>
+                  ) : (
+                    <Button
+                      size={"sm"}
+                      onClick={handleCheckNickname}
+                      isDisabled={!isNicknameValid}
+                      cursor={!isNicknameValid ? "not-allowed" : "pointer"}
+                      _hover={!isNicknameValid ? { bgColor: "gray.100" } : {}}
+                    >
+                      중복확인
+                    </Button>
+                  )}
                 </InputRightElement>
               </InputGroup>
               {!isNicknameValid && nickname && (
                 <FormHelperText color="red">
-                  닉네임은 2~12자 사이의 한글 또는 영문으로 구성되어야 합니다.
+                  닉네임은 3~12자 사이의 한글, 영문, 숫자로 구성되어야 합니다.
                 </FormHelperText>
               )}
             </FormControl>
