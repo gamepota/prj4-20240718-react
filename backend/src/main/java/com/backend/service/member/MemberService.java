@@ -13,4 +13,14 @@ public class MemberService {
     public void signup(Member member) {
         mapper.signup(member);
     }
+
+    public Member getByEmail(String email) {
+        return mapper.getEmail(email);
+    }
+
+    public Member getByNickname(String nickname) {
+        return mapper.getNickname(nickname);
+    }
+
+
 }
