@@ -5,9 +5,11 @@ import {
   Center,
   Flex,
   FormControl,
+  FormHelperText,
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -21,6 +23,7 @@ export function MemberSignup(props) {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isBirthDateValid, setIsBirthDateValid] = useState(false);
 
   const [name, setName] = useState("");
   const [gender, setGender] = useState("male");
@@ -33,6 +36,8 @@ export function MemberSignup(props) {
   const [addressDetail, setAddressDetail] = useState("");
 
   const navigate = useNavigate();
+  const toast = useToast();
+  /* 유효성 */
 
   // 이메일 유효성 검사
   function validateEmail(email) {
@@ -53,6 +58,48 @@ export function MemberSignup(props) {
       setIsPasswordValid(true);
     }
     console.log(passwordRegex);
+  }
+
+  // 생년월일 유효성 검사
+  function validateBirthDate(date) {
+    if (date.length !== 8) return false; // 길이가 8이 아니면 false 반환
+
+    const year = parseInt(date.substring(0, 4), 10);
+    const month = parseInt(date.substring(4, 6), 10);
+    const day = parseInt(date.substring(6, 8), 10);
+    const currentYear = new Date().getFullYear();
+
+    if (year < 1900 || year > currentYear) return false; // 연도가 1900-현재 연도 범위가 아니면 false 반환
+    if (month < 1 || month > 12) return false; // 월이 1-12 범위가 아니면 false 반환
+
+    // 월별 일자
+    const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    if (month === 2 && day === 29) {
+      if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
+        return true; // 윤년이면 true 반환
+      }
+      return false; // 윤년이 아니면 false 반환
+    }
+    if (day < 1 || day > daysInMonth[month - 1]) return false;
+    return true; // 위 조건에 모두 부합하면 true 반환
+  }
+
+  // 생년월일 정규식
+  function handleBirthDateChange(e) {
+    const birthDateRegex = e.target.value.replace(/[^0-9]/g, "").slice(0, 8); // 숫자만 입력받고 8자리로 제한
+    setBirth_date(birthDateRegex);
+
+    const isValid = validateBirthDate(birthDateRegex); // 생년월일 유효성 검사 호출
+    setIsBirthDateValid(isValid); // 유효성 검사 결과 업데이트
+    console.log(`Birth date is ${isValid ? "valid" : "invalid"}`);
+  }
+
+  // 휴대폰 번호 정규식
+  function handlePhoneNumberChange(e) {
+    const phoneNumberRegex = e.target.value
+      .replace(/[^0-9]/g, "") // 숫자만 입력받기
+      .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3");
+    setPhone_number(phoneNumberRegex);
   }
 
   // 계정 중복확인
@@ -93,7 +140,7 @@ export function MemberSignup(props) {
         if (err.response.status === 404) {
           toast({
             status: "info",
-            description: "사용할 수 있는 별명입니다.",
+            description: "사용할 수 있는 닉네임입니다.",
             position: "top",
           });
         }
@@ -105,6 +152,8 @@ export function MemberSignup(props) {
   function handleClickPassword() {
     setShowPassword(!showPassword);
   }
+
+  const isPasswordRight = password === confirmPassword;
 
   // 주소 검색
   function openPostcodePopup() {
@@ -145,12 +194,6 @@ export function MemberSignup(props) {
   // 국적 선택 핸들러
   function handleNationalitySelect(selectedNationality) {
     setNationality(selectedNationality);
-  }
-
-  // 생년월일 입력 핸들러
-  function handleBirthDateChange(e) {
-    const value = e.target.value.replace(/[^0-9]/g, "").slice(0, 8); // 숫자만 입력받고 8자리로 제한
-    setBirth_date(value);
   }
 
   return (
@@ -217,6 +260,9 @@ export function MemberSignup(props) {
                   }}
                 />
               </InputGroup>
+              {isPasswordRight || (
+                <FormHelperText>비밀번호가 일치하지 않습니다.</FormHelperText>
+              )}
             </FormControl>
           </Box>
           <Box border={"1px solid red"}>
@@ -304,26 +350,24 @@ export function MemberSignup(props) {
             <FormControl>
               <Input
                 placeholder="생년월일 8자리 ( YYYYMMDD )"
-                maxLength={8}
                 value={birth_date}
                 onChange={handleBirthDateChange}
               />
+              {birth_date && (
+                <Box color={isBirthDateValid ? "green" : "red"} mt={1}>
+                  {isBirthDateValid
+                    ? "유효한 생년월일입니다."
+                    : "유효하지 않은 생년월일입니다."}
+                </Box>
+              )}
             </FormControl>
             <FormControl>
               <Input
                 placeholder="휴대폰 번호 ( -는 제외하고 입력 )"
                 type="tel"
-                maxLength={"15"}
-                onChange={(e) => {
-                  setPhone_number(
-                    (e.target.value = e.target.value
-                      .replace(/[^0-9]/g, "")
-                      .replace(
-                        /(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g,
-                        "$1-$2-$3",
-                      )),
-                  );
-                }}
+                value={phone_number}
+                maxlength={13}
+                onChange={handlePhoneNumberChange} // 핸들러 연결
               />
             </FormControl>
             <FormControl>
