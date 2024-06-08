@@ -1,20 +1,14 @@
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { SignupStepA } from "./page/member/SignupStepA.jsx";
-import { SignupStepB } from "./page/member/SignupStepB.jsx";
-import { SignupStepC } from "./page/member/SignupStepC.jsx";
+import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { Home } from "./page/Home.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
-    children: [
-      { path: "signup/stepa", element: <SignupStepA /> },
-      { path: "signup/stepb", element: <SignupStepB /> },
-      { path: "signup/stepc", element: <SignupStepC /> },
-    ],
+    children: [{ path: "member/signup", element: <MemberSignup /> }],
   },
 ]);
 
