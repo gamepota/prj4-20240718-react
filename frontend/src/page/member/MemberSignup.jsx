@@ -33,6 +33,9 @@ export function MemberSignup(props) {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isBirthDateValid, setIsBirthDateValid] = useState(false);
 
+  const navigate = useNavigate();
+  const toast = useToast();
+
   const [showPassword, setShowPassword] = useState(false);
   const isPasswordRight = password === confirmPassword;
   const formattedBirthDate =
@@ -42,11 +45,8 @@ export function MemberSignup(props) {
     "-" +
     birthDate.slice(6, 8);
   const fullAddress = postcode + " " + address + " " + addressDetail;
-  const navigate = useNavigate();
-  const toast = useToast();
 
-  let timerInterval;
-  let isFormValid =
+  const isFormValid =
     isEmailValid &&
     nickname &&
     isPasswordValid &&
@@ -194,38 +194,37 @@ export function MemberSignup(props) {
 
   // 가입 버튼
   function handleSubmit() {
-    console.log(formattedBirthDate);
-    console.log(fullAddress);
-    if (isFormValid) {
-      Swal.fire({
-        title: "회원가입이 진행 중입니다.",
-        html: "잠시만 기다려주세요 :D",
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-          const timer = Swal.getPopup().querySelector("b");
-          timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-          }, 100);
-        },
-        willClose: () => {
-          clearInterval(timerInterval);
-        },
-      }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-          console.log("I was closed by the timer");
-        }
+    const signupData = {
+      name: name,
+      email: email,
+      nickname: nickname,
+      password: password,
+      gender: gender,
+      nationality: nationality,
+      birthDate: formattedBirthDate,
+      phoneNumber: phoneNumber,
+      address: fullAddress,
+    };
+    axios
+      .post("/api/member/signup", signupData)
+      .then((res) => {
+        Swal.fire({
+          title: "회원가입이 완료되었습니다.",
+          text: "로그인 페이지로 이동합니다.",
+          icon: "success",
+          confirmButtonText: "확인",
+        }).then(() => {
+          navigate("/member/login");
+        });
+      })
+      .catch((err) => {
+        Swal.fire({
+          title: "회원가입 실패",
+          text: "오류가 발생했습니다. 나중에 다시 시도해주세요.",
+          icon: "error",
+          confirmButtonText: "확인",
+        });
       });
-    } else {
-      Swal.fire({
-        title: "회원가입이 완료되지 않았습니다",
-        text: "입력 정보를 다시 한번 확인해주세요",
-        icon: "error",
-        confirmButtonText: "확인",
-      });
-    }
   }
 
   return (
