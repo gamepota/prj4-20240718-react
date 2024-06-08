@@ -186,12 +186,12 @@ export function MemberSignup(props) {
     console.log(address + " " + addressDetail);
   }
 
-  // 성별 선택 핸들러
+  // 성별 선택
   function handleGenderSelect(selectedGender) {
     setGender(selectedGender);
   }
 
-  // 국적 선택 핸들러
+  // 국적 선택
   function handleNationalitySelect(selectedNationality) {
     setNationality(selectedNationality);
   }
@@ -363,11 +363,11 @@ export function MemberSignup(props) {
             </FormControl>
             <FormControl>
               <Input
-                placeholder="휴대폰 번호 ( -는 제외하고 입력 )"
+                placeholder="휴대폰 번호 ( '-' 제외하고 입력 )"
                 type="tel"
                 value={phone_number}
                 maxlength={13}
-                onChange={handlePhoneNumberChange} // 핸들러 연결
+                onChange={handlePhoneNumberChange}
               />
             </FormControl>
             <FormControl>
