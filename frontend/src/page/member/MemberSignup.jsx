@@ -38,6 +38,7 @@ export function MemberSignup(props) {
   const navigate = useNavigate();
   const toast = useToast();
 
+  let timerInterval;
   let isFormValid =
     isEmailValid &&
     nickname &&
@@ -187,7 +188,27 @@ export function MemberSignup(props) {
   // 가입 버튼
   function handleSubmit() {
     if (isFormValid) {
-      navigate("/");
+      Swal.fire({
+        title: "회원가입이 진행 중입니다.",
+        html: "잠시만 기다려주세요 :D",
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const timer = Swal.getPopup().querySelector("b");
+          timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log("I was closed by the timer");
+        }
+      });
     } else {
       Swal.fire({
         title: "회원가입이 완료되지 않았습니다",
@@ -383,7 +404,7 @@ export function MemberSignup(props) {
             </FormControl>
             <FormControl isRequired>
               <Input
-                placeholder="휴대폰 번호 ( '-' 제외하고 입력 )"
+                placeholder="연락처 ( '-' 제외하고 입력 )"
                 type="tel"
                 value={phone_number}
                 maxlength={13}
