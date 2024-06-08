@@ -35,6 +35,7 @@ export function MemberSignup(props) {
 
   const [showPassword, setShowPassword] = useState(false);
   const isPasswordRight = password === confirmPassword;
+  const fullAddress = postcode + " " + address + " " + addressDetail;
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -187,6 +188,7 @@ export function MemberSignup(props) {
 
   // 가입 버튼
   function handleSubmit() {
+    console.log(fullAddress);
     if (isFormValid) {
       Swal.fire({
         title: "회원가입이 진행 중입니다.",
