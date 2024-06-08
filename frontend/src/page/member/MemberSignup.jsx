@@ -290,10 +290,26 @@ export function MemberSignup(props) {
                   }}
                 />
                 <InputRightElement width="4.5rem">
-                  <Button h="1.75rem" size="sm" onClick={handleClickPassword}>
-                    {showPassword ? "숨기기" : "보기"}
-                  </Button>
+                  {password && (
+                    <Button h="1.75rem" size="sm" onClick={handleClickPassword}>
+                      {showPassword ? "숨기기" : "보기"}
+                    </Button>
+                  )}
                 </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl isRequired>
+              <InputGroup>
+                {password && (
+                  <Input
+                    placeholder="비밀번호 확인"
+                    value={confirmPassword}
+                    type={showPassword ? "text" : "password"}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value.trim());
+                    }}
+                  />
+                )}
               </InputGroup>
               {!isPasswordValid && password && (
                 <FormHelperText color="red">
@@ -302,18 +318,6 @@ export function MemberSignup(props) {
                   영문 대소문자, 숫자, 특수문자를 모두 포함해야 합니다.
                 </FormHelperText>
               )}
-            </FormControl>
-            <FormControl isRequired>
-              <InputGroup>
-                <Input
-                  placeholder="비밀번호 확인"
-                  value={confirmPassword}
-                  type={showPassword ? "text" : "password"}
-                  onChange={(e) => {
-                    setConfirmPassword(e.target.value.trim());
-                  }}
-                />
-              </InputGroup>
               {confirmPassword && (
                 <FormHelperText color={isPasswordRight ? "green" : "red"}>
                   {isPasswordRight
