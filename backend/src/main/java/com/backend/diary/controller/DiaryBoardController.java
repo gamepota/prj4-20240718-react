@@ -34,13 +34,17 @@ public class DiaryBoardController {
 
     @GetMapping("{id}")
     public ResponseEntity get(@PathVariable Integer id) {
-        DiaryBoard diaryBoard = service.get(id);
+        DiaryBoard board = service.get(id);
 
-        if (diaryBoard == null) {
+        if (board == null) {
             return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().body(diaryBoard);
         }
+
+        return ResponseEntity.ok().body(board);
     }
 
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable Integer id) {
+        service.remove(id);
+    }
 }

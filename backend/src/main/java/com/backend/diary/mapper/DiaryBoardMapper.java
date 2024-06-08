@@ -2,6 +2,7 @@ package com.backend.diary.mapper;
 
 
 import com.backend.diary.domain.DiaryBoard;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -32,4 +33,12 @@ public interface DiaryBoardMapper {
                 WHERE id = #{id}
             """)
     DiaryBoard selectById(Integer id);
+
+
+    @Delete("""
+            DELETE FROM diary
+            WHERE id = #{id}
+            """)
+    int deleteById(Integer id);
+
 }

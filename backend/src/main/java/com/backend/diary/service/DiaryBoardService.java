@@ -34,4 +34,8 @@ public class DiaryBoardService {
         return mapper.selectById(id);
 
     }
+
+    public void remove(Integer id) {
+        mapper.deleteById(id);
+    }
 }
