@@ -304,8 +304,8 @@ export function MemberSignup(props) {
                     w="100px"
                     h="40px"
                     border="1px solid"
-                    borderColor={gender === "female" ? "pink" : "gray"}
-                    bg={gender === "female" ? "pink.100" : "white"}
+                    borderColor={gender === "female" ? "red" : "gray"}
+                    bg={gender === "female" ? "red.100" : "white"}
                     onClick={() => handleGenderSelect("female")}
                     cursor="pointer"
                     textAlign="center"
