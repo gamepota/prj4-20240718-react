@@ -104,6 +104,7 @@ export function MemberSignup(props) {
           status: "warning",
           description: "사용할 수 없는 이메일입니다.",
           position: "top",
+          duration: 3000,
         });
       }) // 이미 있는 이메일 (사용 못함)
       .catch((err) => {
@@ -113,6 +114,7 @@ export function MemberSignup(props) {
             status: "info",
             description: "사용할 수 있는 이메일입니다.",
             position: "top",
+            duration: 3000,
           });
         }
       })
@@ -127,6 +129,7 @@ export function MemberSignup(props) {
           status: "warning",
           description: "사용할 수 없는 닉네임입니다.",
           position: "top",
+          duration: 3000,
         });
       })
       .catch((err) => {
@@ -135,6 +138,7 @@ export function MemberSignup(props) {
             status: "info",
             description: "사용할 수 있는 닉네임입니다.",
             position: "top",
+            duration: 3000,
           });
         }
       })
