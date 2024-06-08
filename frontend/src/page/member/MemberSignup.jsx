@@ -40,10 +40,12 @@ export function MemberSignup(props) {
   /* 유효성 */
 
   // 이메일 유효성 검사
-  function validateEmail(email) {
-    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(email);
+  function validateEmail(e) {
+    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(e);
     if (emailRegex) {
       setIsEmailValid(true);
+    } else {
+      setIsEmailValid(false);
     }
     console.log(emailRegex);
   }
@@ -204,14 +206,14 @@ export function MemberSignup(props) {
             <FormControl isRequired>
               <InputGroup>
                 <Input
-                  type="email"
+                  type="text"
                   placeholder={"이메일"}
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value.trim());
-                    validateEmail(e.target.value);
+                    validateEmail(e.target.value.trim());
                   }}
-                />{" "}
+                />
                 <InputRightElement w={"75px"} mr={1}>
                   <Button onClick={handleCheckEmail} size={"sm"}>
                     중복확인
@@ -239,9 +241,10 @@ export function MemberSignup(props) {
               <InputGroup>
                 <Input
                   placeholder="비밀번호"
+                  value={password}
                   type={showPassword ? "text" : "password"}
                   onChange={(e) => {
-                    setPassword(e.target.value);
+                    setPassword(e.target.value.trim());
                     validatePassword(e.target.value);
                   }}
                 />
@@ -256,9 +259,10 @@ export function MemberSignup(props) {
               <InputGroup>
                 <Input
                   placeholder="비밀번호 확인"
+                  value={confirmPassword}
                   type={showPassword ? "text" : "password"}
                   onChange={(e) => {
-                    setConfirmPassword(e.target.value);
+                    setConfirmPassword(e.target.value.trim());
                   }}
                 />
               </InputGroup>
