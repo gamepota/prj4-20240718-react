@@ -32,4 +32,15 @@ public class DiaryBoardController {
         return service.list();
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity get(@PathVariable Integer id) {
+        DiaryBoard diaryBoard = service.get(id);
+
+        if (diaryBoard == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().body(diaryBoard);
+        }
+    }
+
 }

@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import diaryApp from "./diaryApp.jsx";
+import DiaryApp from "./DiaryApp.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <diaryApp />
+    <DiaryApp />
   </React.StrictMode>,
 );

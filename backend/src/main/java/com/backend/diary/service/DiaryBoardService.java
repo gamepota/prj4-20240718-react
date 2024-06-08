@@ -28,4 +28,10 @@ public class DiaryBoardService {
         return mapper.selectAll();
 
     }
+
+    public DiaryBoard get(Integer id) {
+
+        return mapper.selectById(id);
+
+    }
 }

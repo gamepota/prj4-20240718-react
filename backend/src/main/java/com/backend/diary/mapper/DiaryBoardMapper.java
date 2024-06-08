@@ -12,7 +12,7 @@ import java.util.List;
 public interface DiaryBoardMapper {
 
     @Insert("""
-                INSERT INTO DiaryBoard(title, content, writer)
+                INSERT INTO diary(title, content, writer)
                 VALUES (#{title}, #{content}, #{writer}
             """)
     public int insert(DiaryBoard diaryBoard);
@@ -20,8 +20,16 @@ public interface DiaryBoardMapper {
 
     @Select("""
                 SELECT id,title,writer
-                FROM DiaryBoard
+                FROM diary
                 ORDER BY id DESC
             """)
     List<DiaryBoard> selectAll();
+
+
+    @Select("""
+                SELECT *
+                FROM diary
+                WHERE id = #{id}
+            """)
+    DiaryBoard selectById(Integer id);
 }
