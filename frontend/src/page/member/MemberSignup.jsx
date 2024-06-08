@@ -23,8 +23,8 @@ export function MemberSignup(props) {
   const [gender, setGender] = useState("male");
   const [nationality, setNationality] = useState("korean");
   const [name, setName] = useState("");
-  const [birth_date, setBirth_date] = useState("");
-  const [phone_number, setPhone_number] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [postcode, setPostcode] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
@@ -48,7 +48,7 @@ export function MemberSignup(props) {
     nationality &&
     name &&
     isBirthDateValid &&
-    phone_number &&
+    phoneNumber &&
     postcode;
 
   /* 유효성 */
@@ -95,7 +95,7 @@ export function MemberSignup(props) {
   // 생년월일 정규식
   function handleBirthDateChange(e) {
     const birthDateRegex = e.target.value.replace(/[^0-9]/g, "").slice(0, 8); // 숫자만 입력받고 8자리로 제한
-    setBirth_date(birthDateRegex);
+    setBirthDate(birthDateRegex);
 
     const isValid = validateBirthDate(birthDateRegex); // 생년월일 유효성 검사 호출
     setIsBirthDateValid(isValid); // 유효성 검사 결과 업데이트
@@ -106,7 +106,7 @@ export function MemberSignup(props) {
     const phoneNumberRegex = e.target.value
       .replace(/[^0-9]/g, "") // 숫자만 입력받기
       .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3");
-    setPhone_number(phoneNumberRegex);
+    setPhoneNumber(phoneNumberRegex);
   }
 
   // 이메일 중복확인
@@ -393,10 +393,10 @@ export function MemberSignup(props) {
             <FormControl isRequired>
               <Input
                 placeholder="생년월일 8자리 ( YYYYMMDD )"
-                value={birth_date}
+                value={birthDate}
                 onChange={handleBirthDateChange}
               />
-              {!isBirthDateValid && birth_date && (
+              {!isBirthDateValid && birthDate && (
                 <FormHelperText color="red">
                   유효하지 않은 생년월일입니다.
                 </FormHelperText>
@@ -406,7 +406,7 @@ export function MemberSignup(props) {
               <Input
                 placeholder="연락처 ( '-' 제외하고 입력 )"
                 type="tel"
-                value={phone_number}
+                value={phoneNumber}
                 maxlength={13}
                 onChange={handlePhoneNumberChange}
               />
