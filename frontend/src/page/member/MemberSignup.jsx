@@ -30,7 +30,6 @@ export function MemberSignup(props) {
   const [nationality, setNationality] = useState("korean");
   const [birth_date, setBirth_date] = useState("");
   const [phone_number, setPhone_number] = useState("");
-
   const [postcode, setPostcode] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
@@ -163,16 +162,6 @@ export function MemberSignup(props) {
     postcodePopup.open();
   }
 
-  const handleSubmit = () => {
-    // 폼 검증 로직 등을 추가하고 유효성 검사 후 경로 이동
-    if (isEmailValid && password === confirmPassword) {
-      navigate("/signup/stepb");
-    } else {
-      // 오류 처리
-      alert("입력정보를 확인해주세요.");
-    }
-  };
-
   function testFunction() {
     console.log(name);
     console.log(gender);
@@ -192,6 +181,17 @@ export function MemberSignup(props) {
   function handleNationalitySelect(selectedNationality) {
     setNationality(selectedNationality);
   }
+
+  // 가입 버튼
+  const handleSubmit = () => {
+    // 폼 검증 로직 등을 추가하고 유효성 검사 후 경로 이동
+    if (isEmailValid && password === confirmPassword) {
+      navigate("/s");
+    } else {
+      // 오류 처리
+      alert("입력정보를 확인해주세요.");
+    }
+  };
 
   return (
     <>
@@ -406,13 +406,13 @@ export function MemberSignup(props) {
             </FormControl>
           </Box>
           <Button
-            onClick={() => {
-              navigate("/signup/stepa");
-            }}
+            width={"100%"}
+            cursor={"pointer"}
+            _hover={{ bgColor: "purple.200" }}
+            onClick={handleSubmit}
           >
-            이전
+            가입 완료
           </Button>
-          <Button onClick={handleSubmit}>다음</Button>
           <Button onClick={testFunction}>test</Button>
         </Box>
       </Center>
