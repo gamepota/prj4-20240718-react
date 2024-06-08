@@ -43,7 +43,23 @@ export function DiaryBoardView() {
   }, []);
 
   function handleClickRemove() {
-    axios.delete(`/api/diaryBoard/${id}`);
+    axios
+      .delete(`/api/diaryBoard/${id}`)
+      .then(() => {
+        toast({
+          status: "success",
+          description: "게시물이 삭제되었습니다.",
+          position: "top",
+        });
+        navigate("/");
+      })
+      .catch((err) => {
+        toast({
+          status: "error",
+          description: "게시물 삭제에 실패했습니다.",
+          position: "top",
+        });
+      });
   }
 
   if (board === null) {
@@ -52,52 +68,43 @@ export function DiaryBoardView() {
 
   return (
     <Box>
-      <Box>{board.id}번 겟시물</Box>
+      <Box>{board.id}번 게시물</Box>
       <Box>
-        <Box>
-          <FormControl>
-            <FormLabel>제목</FormLabel>
-            <Input value={board.title} readOnly />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>본문</FormLabel>
-            <Textarea value={board.content} readOnly />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>작성자</FormLabel>
-            <Input value={board.writer} readOnly />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>작성일시</FormControl>
-          <Input type={"datetime-local"} value={board.inserted} readOnly />
-        </Box>
-        <Box>
-          <Button colorScheme={"purple"}>수정</Button>
-          <Button colorScheme={"red"} onClick={onOpen}>
-            삭제
-          </Button>
-        </Box>
+        <FormControl>
+          <FormLabel>제목</FormLabel>
+          <Input value={board.title} readOnly />
+        </FormControl>
+        <FormControl>
+          <FormLabel>본문</FormLabel>
+          <Textarea value={board.content} readOnly />
+        </FormControl>
+        <FormControl>
+          <FormLabel>작성자</FormLabel>
+          <Input value={board.writer} readOnly />
+        </FormControl>
+        <FormControl>
+          <FormLabel>작성일시</FormLabel>
+          <Input type="datetime-local" value={board.inserted} readOnly />
+        </FormControl>
+        <Button colorScheme="purple">수정</Button>
+        <Button colorScheme="red" onClick={onOpen}>
+          삭제
+        </Button>
 
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader></ModalHeader>
+            <ModalHeader>게시물 삭제</ModalHeader>
             <ModalBody>삭제하시겠습니까?</ModalBody>
             <ModalFooter>
               <Button onClick={onClose}>취소</Button>
-              <Button colorScheme={"red"} onClick={handleClickRemove}>
+              <Button colorScheme="red" onClick={handleClickRemove}>
                 확인
               </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
       </Box>
-      );
-      }
-
-
+    </Box>
+  );
+}
