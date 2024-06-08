@@ -14,23 +14,27 @@ import axios from "axios";
 
 export function MemberSignup(props) {
   const [email, setEmail] = useState("");
-  const [isEmailValid, setIsEmailValid] = useState(false);
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const [name, setName] = useState("");
   const [gender, setGender] = useState("male");
   const [nationality, setNationality] = useState("korean");
   const [birth_date, setBirth_date] = useState("");
   const [phone_number, setPhone_number] = useState("");
+
+  const [postcode, setPostcode] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
-  const [postcode, setPostcode] = useState("");
+
   const navigate = useNavigate();
 
-  // 계정 유효성 검사
+  // 이메일 유효성 검사
   function validateEmail(email) {
     const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(email);
     if (emailRegex) {
@@ -39,6 +43,7 @@ export function MemberSignup(props) {
     console.log(emailRegex);
   }
 
+  // 비밀번호 유효성 검사
   function validatePassword(password) {
     const passwordRegex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
@@ -57,7 +62,7 @@ export function MemberSignup(props) {
       .then((res) => {
         toast({
           status: "warning",
-          description: "사용할 수 없는 아이디입니다.",
+          description: "사용할 수 없는 이메일입니다.",
           position: "top",
         });
       }) // 이미 있는 이메일 (사용 못함)
@@ -140,6 +145,12 @@ export function MemberSignup(props) {
   // 국적 선택 핸들러
   function handleNationalitySelect(selectedNationality) {
     setNationality(selectedNationality);
+  }
+
+  // 생년월일 입력 핸들러
+  function handleBirthDateChange(e) {
+    const value = e.target.value.replace(/[^0-9]/g, "").slice(0, 8); // 숫자만 입력받고 8자리로 제한
+    setBirth_date(value);
   }
 
   return (
@@ -292,11 +303,10 @@ export function MemberSignup(props) {
             </Flex>
             <FormControl>
               <Input
-                placeholder="생년월일"
-                type="date"
-                onChange={(e) => {
-                  setBirth_date(e.target.value);
-                }}
+                placeholder="생년월일 8자리 ( YYYYMMDD )"
+                maxLength={8}
+                value={birth_date}
+                onChange={handleBirthDateChange}
               />
             </FormControl>
             <FormControl>
