@@ -7,15 +7,15 @@ import java.time.LocalDateTime;
 
 @Data
 public class Member {
-    private Integer id;
-    private String name;
-    private String email;
-    private String password;
-    private String nickname;
-    private String gender;
-    private String nationality;
-    private LocalDate birthDate;
-    private String phoneNumber;
-    private String address;
-    private LocalDateTime inserted;
+    Integer id;
+    String name;
+    String email;
+    String password;
+    String nickname;
+    String gender;
+    String nationality;
+    LocalDate birthDate;
+    String phoneNumber;
+    String address;
+    LocalDateTime inserted;
 }
