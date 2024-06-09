@@ -260,7 +260,9 @@ export function MemberSignup(props) {
     <>
       <Center>
         <Box w={500}>
-          <Box mb={10}>회원 가입</Box>
+          <Box mb={10} fontSize="2xl" fontWeight="bold">
+            회원 가입
+          </Box>
           <Box>
             <FormControl isRequired>
               <InputGroup>
