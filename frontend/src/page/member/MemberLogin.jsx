@@ -45,7 +45,7 @@ export function MemberLogin(props) {
       <Center>
         <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
           <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
-            회원 로그인
+            로그인
           </Box>
           <Box>
             {error && (
@@ -109,7 +109,7 @@ export function MemberLogin(props) {
                   whiteSpace="nowrap"
                   _hover={{ fontWeight: "bold" }}
                 >
-                  신규 가입
+                  회원가입
                 </Link>
               </Flex>
             </Flex>
