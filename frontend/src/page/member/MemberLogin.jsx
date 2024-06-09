@@ -5,16 +5,21 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
+  Flex,
   FormControl,
   FormLabel,
   Input,
   InputGroup,
+  Link,
   Spinner,
 } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 
 export function MemberLogin(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -68,6 +73,26 @@ export function MemberLogin(props) {
                 ></Input>
               </InputGroup>
             </FormControl>
+            <Flex justifyContent="space-between" mb={5}>
+              <FormControl mb={4} display="flex" alignItems="center">
+                <Checkbox
+                  isChecked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  colorScheme="purple"
+                >
+                  로그인 유지
+                </Checkbox>
+              </FormControl>
+              <Link as={RouterLink} to="/find-id">
+                아이디 찾기
+              </Link>
+              <Link as={RouterLink} to="/find-password">
+                비밀번호 찾기
+              </Link>
+              <Link as={RouterLink} to="/signup">
+                회원가입
+              </Link>
+            </Flex>
             <Box mt={5}>
               <Button
                 width={"100%"}
