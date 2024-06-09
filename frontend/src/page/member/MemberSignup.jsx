@@ -297,7 +297,7 @@ export function MemberSignup(props) {
                       _hover={
                         !isEmailValid
                           ? { bgColor: "gray.100" }
-                          : { bgColor: "purple.500" }
+                          : { bgColor: "purple.500 ", color: "white" }
                       }
                     >
                       중복확인
@@ -342,7 +342,7 @@ export function MemberSignup(props) {
                       _hover={
                         !isNicknameValid
                           ? { bgColor: "gray.100" }
-                          : { bgColor: "purple.500" }
+                          : { bgColor: "purple.500 ", color: "white" }
                       }
                     >
                       중복확인
@@ -515,7 +515,7 @@ export function MemberSignup(props) {
                 </Flex>
                 <Box>
                   <Button
-                    _hover={{ bgColor: "purple.500" }}
+                    _hover={{ bgColor: "purple.500 ", color: "white" }}
                     height={"100%"}
                     onClick={openPostcodePopup}
                   >
@@ -538,7 +538,9 @@ export function MemberSignup(props) {
             width={"100%"}
             cursor={!isFormValid ? "not-allowed" : "pointer"}
             _hover={
-              !isFormValid ? { bgColor: "gray.100" } : { bgColor: "purple.500" }
+              !isFormValid
+                ? { bgColor: "gray.100" }
+                : { bgColor: "purple.500 ", color: "white" }
             }
             onClick={handleSubmit}
           >

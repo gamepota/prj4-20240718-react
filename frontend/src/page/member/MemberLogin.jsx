@@ -79,19 +79,26 @@ export function MemberLogin(props) {
                   isChecked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                   colorScheme="purple"
+                  css={{
+                    "& .chakra-checkbox__label": {
+                      cursor: "default",
+                    },
+                  }}
                 >
                   로그인 유지
                 </Checkbox>
               </FormControl>
-              <Link as={RouterLink} to="/find-id">
-                아이디 찾기
-              </Link>
-              <Link as={RouterLink} to="/find-password">
-                비밀번호 찾기
-              </Link>
-              <Link as={RouterLink} to="/signup">
-                회원가입
-              </Link>
+              <Flex gap={4} fontSize="sm">
+                <Link as={RouterLink} to="/find-id">
+                  아이디 찾기
+                </Link>
+                <Link as={RouterLink} to="/find-password">
+                  비밀번호 찾기
+                </Link>
+                <Link as={RouterLink} to="/signup">
+                  회원 가입
+                </Link>
+              </Flex>
             </Flex>
             <Box mt={5}>
               <Button
