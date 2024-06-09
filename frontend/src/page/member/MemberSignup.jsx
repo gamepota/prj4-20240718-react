@@ -223,7 +223,7 @@ export function MemberSignup(props) {
     postcodePopup.open();
   }
 
-  // 가입 버튼
+  // 제출
   function handleSubmit() {
     const signupData = {
       name: name,
@@ -251,7 +251,7 @@ export function MemberSignup(props) {
       .catch((err) => {
         Swal.fire({
           title: "회원가입에 실패하였습니다.",
-          text: "모든 정보가 입력되지 않았습니다.",
+          text: "오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
           icon: "error",
           confirmButtonText: "확인",
         });
@@ -407,7 +407,7 @@ export function MemberSignup(props) {
             <Flex>
               <FormControl isRequired>
                 <Flex justifyContent={"space-around"} mt={4} mb={4}>
-                  <Box
+                  <Button
                     w="100px"
                     h="40px"
                     border="1px solid"
@@ -415,14 +415,11 @@ export function MemberSignup(props) {
                     bg={gender === "male" ? "blue.100" : "white"}
                     onClick={() => handleGenderSelect("male")}
                     cursor="pointer"
-                    textAlign="center"
-                    lineHeight="40px"
-                    borderRadius="5px"
-                    mx={2}
+                    _hover={{ bg: "blue.200" }}
                   >
                     남성
-                  </Box>
-                  <Box
+                  </Button>
+                  <Button
                     w="100px"
                     h="40px"
                     border="1px solid"
@@ -430,19 +427,15 @@ export function MemberSignup(props) {
                     bg={gender === "female" ? "red.100" : "white"}
                     onClick={() => handleGenderSelect("female")}
                     cursor="pointer"
-                    textAlign="center"
-                    lineHeight="40px"
-                    borderRadius="5px"
-                    mx={2}
+                    _hover={{ bg: "red.200" }}
                   >
                     여성
-                  </Box>
+                  </Button>
                 </Flex>
               </FormControl>
-              <Box border={"1px solid #f1f1f1"}></Box>
               <FormControl isRequired>
                 <Flex justifyContent={"space-around"} mt={4} mb={4}>
-                  <Box
+                  <Button
                     w="100px"
                     h="40px"
                     border="1px solid"
@@ -450,14 +443,11 @@ export function MemberSignup(props) {
                     bg={nationality === "korean" ? "green.100" : "white"}
                     onClick={() => handleNationalitySelect("korean")}
                     cursor="pointer"
-                    textAlign="center"
-                    lineHeight="40px"
-                    borderRadius="5px"
-                    mx={2}
+                    _hover={{ bg: "green.200" }}
                   >
-                    내국인
-                  </Box>
-                  <Box
+                    한국인
+                  </Button>
+                  <Button
                     w="100px"
                     h="40px"
                     border="1px solid"
@@ -467,13 +457,10 @@ export function MemberSignup(props) {
                     bg={nationality === "foreigner" ? "orange.100" : "white"}
                     onClick={() => handleNationalitySelect("foreigner")}
                     cursor="pointer"
-                    textAlign="center"
-                    lineHeight="40px"
-                    borderRadius="5px"
-                    mx={2}
+                    _hover={{ bg: "orange.200" }}
                   >
                     외국인
-                  </Box>
+                  </Button>
                 </Flex>
               </FormControl>
             </Flex>
@@ -535,17 +522,16 @@ export function MemberSignup(props) {
           <Button
             mt={5}
             width={"100%"}
-            _hover={{ bgColor: "purple.500 ", color: "white" }}
-            // isDisabled={!isFormValid}
-            // cursor={!isFormValid ? "not-allowed" : "pointer"}
-            // _hover={
-            //   !isFormValid
-            //     ? { bgColor: "gray.100" }
-            //     : { bgColor: "purple.500 ", color: "white" }
-            // }
+            isDisabled={!isFormValid}
+            cursor={!isFormValid ? "not-allowed" : "pointer"}
+            _hover={
+              !isFormValid
+                ? { bgColor: "gray.100" }
+                : { bgColor: "purple.500 ", color: "white" }
+            }
             onClick={handleSubmit}
           >
-            완료
+            제출
           </Button>
         </Box>
       </Center>
