@@ -14,6 +14,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export function MemberSignup(props) {
   const [email, setEmail] = useState("");
@@ -259,8 +261,8 @@ export function MemberSignup(props) {
   return (
     <>
       <Center>
-        <Box w={500}>
-          <Box mb={10} fontSize="2xl" fontWeight="bold">
+        <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
+          <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
             회원 가입
           </Box>
           <Box>
@@ -278,8 +280,13 @@ export function MemberSignup(props) {
                 />
                 <InputRightElement w={"100px"} mr={1}>
                   {isEmailConfirmed ? (
-                    <Button size={"sm"} onClick={handleReenterEmail}>
-                      재입력
+                    <Button
+                      size={"sm"}
+                      variant="ghost"
+                      onClick={handleReenterEmail}
+                      _hover={{ color: "red.500 " }}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
                     </Button>
                   ) : (
                     <Button
@@ -287,7 +294,11 @@ export function MemberSignup(props) {
                       onClick={handleCheckEmail}
                       isDisabled={!isEmailValid}
                       cursor={!isEmailValid ? "not-allowed" : "pointer"}
-                      _hover={!isEmailValid ? { bgColor: "gray.100" } : {}}
+                      _hover={
+                        !isEmailValid
+                          ? { bgColor: "gray.100" }
+                          : { bgColor: "purple.300" }
+                      }
                     >
                       중복확인
                     </Button>
@@ -314,8 +325,13 @@ export function MemberSignup(props) {
                 />
                 <InputRightElement w={"100px"} mr={1}>
                   {isNicknameConfirmed ? (
-                    <Button size={"sm"} onClick={handleReenterNickname}>
-                      재입력
+                    <Button
+                      size={"sm"}
+                      variant="ghost"
+                      onClick={handleReenterNickname}
+                      _hover={{ color: "red.500 " }}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
                     </Button>
                   ) : (
                     <Button
@@ -323,7 +339,11 @@ export function MemberSignup(props) {
                       onClick={handleCheckNickname}
                       isDisabled={!isNicknameValid}
                       cursor={!isNicknameValid ? "not-allowed" : "pointer"}
-                      _hover={!isNicknameValid ? { bgColor: "gray.100" } : {}}
+                      _hover={
+                        !isNicknameValid
+                          ? { bgColor: "gray.100" }
+                          : { bgColor: "purple.300" }
+                      }
                     >
                       중복확인
                     </Button>
@@ -489,33 +509,40 @@ export function MemberSignup(props) {
             </FormControl>
             <FormControl isRequired>
               <Flex>
-                <Input readOnly value={postcode} placeholder="우편번호" />
-                <Button onClick={openPostcodePopup}>주소 검색</Button>
+                <Flex width={"80%"} direction={"column"}>
+                  <Input readOnly value={postcode} placeholder="우편번호" />
+                  <Input readOnly value={address} placeholder="주소" />
+                </Flex>
+                <Box>
+                  <Button
+                    _hover={{ bgColor: "purple.100" }}
+                    height={"100%"}
+                    onClick={openPostcodePopup}
+                  >
+                    주소 검색
+                  </Button>
+                </Box>
               </Flex>
-              <Input
-                readOnly
-                value={address}
-                placeholder="주소를 선택하세요."
-              />
               <Input
                 value={addressDetail}
                 onChange={(e) => {
                   setAddressDetail(e.target.value);
                 }}
-                placeholder="상세주소 입력"
+                placeholder="상세주소를 입력하세요."
               />
             </FormControl>
           </Box>
           <Button
+            mt={5}
             isDisabled={!isFormValid}
             width={"100%"}
             cursor={!isFormValid ? "not-allowed" : "pointer"}
             _hover={
-              !isFormValid ? { bgColor: "gray.100" } : { bgColor: "purple.200" }
+              !isFormValid ? { bgColor: "gray.100" } : { bgColor: "purple.300" }
             }
             onClick={handleSubmit}
           >
-            가입 완료
+            가입
           </Button>
         </Box>
       </Center>
