@@ -37,6 +37,7 @@ export function MemberSignup(props) {
   const [isNicknameConfirmed, setIsNicknameConfirmed] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isBirthDateValid, setIsBirthDateValid] = useState(false);
+  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -62,7 +63,7 @@ export function MemberSignup(props) {
     nationality &&
     name &&
     isBirthDateValid &&
-    phoneNumber &&
+    isPhoneNumberValid &&
     postcode;
 
   /* 유효성 */
@@ -112,13 +113,22 @@ export function MemberSignup(props) {
     return true; // 위 조건에 모두 부합하면 true 반환
   }
 
+  // 연락처 유효성 검사
+  function validatePhoneNumber(phoneNumber) {
+    const phoneNumberRegex =
+      /^01[0-9]{1}-[0-9]{3,4}-[0-9]{4}$/.test(phoneNumber) ||
+      /^02-[0-9]{3,4}-[0-9]{4}$/.test(phoneNumber);
+    return phoneNumberRegex;
+  }
+
   // 생년월일 정규식
   function handleBirthDateChange(e) {
     const birthDateRegex = e.target.value.replace(/[^0-9]/g, "").slice(0, 8); // 숫자만 입력받고 8자리로 제한
     setBirthDate(birthDateRegex);
 
-    const isValid = validateBirthDate(birthDateRegex); // 생년월일 유효성 검사 호출
-    setIsBirthDateValid(isValid); // 유효성 검사 결과 업데이트
+    // 유효성 검사 호출
+    const isValid = validateBirthDate(birthDateRegex);
+    setIsBirthDateValid(isValid);
   }
 
   // 휴대폰 번호 정규식
@@ -127,6 +137,10 @@ export function MemberSignup(props) {
       .replace(/[^0-9]/g, "") // 숫자만 입력받기
       .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3");
     setPhoneNumber(phoneNumberRegex);
+
+    // 유효성 검사 호출
+    const isValid = validatePhoneNumber(phoneNumberRegex);
+    setIsPhoneNumberValid(isValid);
   }
 
   // 이메일 중복확인
@@ -493,6 +507,11 @@ export function MemberSignup(props) {
                 maxlength={13}
                 onChange={handlePhoneNumberChange}
               />
+              {!isPhoneNumberValid && phoneNumber && (
+                <FormHelperText color="red">
+                  유효하지 않은 번호입니다.
+                </FormHelperText>
+              )}
             </FormControl>
             <FormControl isRequired>
               <Flex>
