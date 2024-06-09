@@ -250,8 +250,8 @@ export function MemberSignup(props) {
       })
       .catch((err) => {
         Swal.fire({
-          title: "회원가입 실패",
-          text: "오류가 발생했습니다. 나중에 다시 시도해주세요.",
+          title: "회원가입에 실패하였습니다.",
+          text: "모든 정보가 입력되지 않았습니다.",
           icon: "error",
           confirmButtonText: "확인",
         });
@@ -534,17 +534,18 @@ export function MemberSignup(props) {
           </Box>
           <Button
             mt={5}
-            isDisabled={!isFormValid}
             width={"100%"}
-            cursor={!isFormValid ? "not-allowed" : "pointer"}
-            _hover={
-              !isFormValid
-                ? { bgColor: "gray.100" }
-                : { bgColor: "purple.500 ", color: "white" }
-            }
+            _hover={{ bgColor: "purple.500 ", color: "white" }}
+            // isDisabled={!isFormValid}
+            // cursor={!isFormValid ? "not-allowed" : "pointer"}
+            // _hover={
+            //   !isFormValid
+            //     ? { bgColor: "gray.100" }
+            //     : { bgColor: "purple.500 ", color: "white" }
+            // }
             onClick={handleSubmit}
           >
-            가입
+            완료
           </Button>
         </Box>
       </Center>
