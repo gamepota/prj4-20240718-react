@@ -38,8 +38,8 @@ export function MemberLogin(props) {
   return (
     <>
       <Center>
-        <Box w={500}>
-          <Box mb={10} fontSize="2xl" fontWeight="bold">
+        <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
+          <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
             회원 로그인
           </Box>
           <Box>
@@ -71,7 +71,7 @@ export function MemberLogin(props) {
             <Box mt={5}>
               <Button
                 width={"100%"}
-                colorScheme={"purple"}
+                _hover={{ bgColor: "purple.500 ", color: "white" }}
                 onClick={handleLogin}
                 isLoading={isLoading}
               >
