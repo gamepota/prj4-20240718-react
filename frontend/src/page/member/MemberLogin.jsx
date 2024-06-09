@@ -29,12 +29,12 @@ export function MemberLogin(props) {
 
     // 유효성 검사
     if (!email) {
-      setError("이메일을 입력하세요.");
+      setError("이메일이 입력되지 않았습니다.");
       setIsLoading(false);
       return;
     }
     if (!password) {
-      setError("비밀번호를 입력하세요.");
+      setError("비밀번호가 입력되지 않았습니다.");
       setIsLoading(false);
       return;
     }
@@ -74,7 +74,7 @@ export function MemberLogin(props) {
               </InputGroup>
             </FormControl>
             <Flex justifyContent="space-between" mb={5}>
-              <FormControl mb={4} display="flex" alignItems="center">
+              <FormControl display="flex" alignItems="center">
                 <Checkbox
                   isChecked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
@@ -88,15 +88,28 @@ export function MemberLogin(props) {
                   로그인 유지
                 </Checkbox>
               </FormControl>
-              <Flex gap={4} fontSize="sm">
-                <Link as={RouterLink} to="/find-id">
-                  아이디 찾기
+              <Flex
+                gap={5}
+                fontSize="sm"
+                justifyContent="flex-end"
+                alignItems="center"
+                minWidth="200px"
+              >
+                <Link
+                  as={RouterLink}
+                  to="/member/find"
+                  whiteSpace="nowrap"
+                  _hover={{ fontWeight: "bold" }}
+                >
+                  이메일/비밀번호 찾기
                 </Link>
-                <Link as={RouterLink} to="/find-password">
-                  비밀번호 찾기
-                </Link>
-                <Link as={RouterLink} to="/signup">
-                  회원 가입
+                <Link
+                  as={RouterLink}
+                  to="/member/signup"
+                  whiteSpace="nowrap"
+                  _hover={{ fontWeight: "bold" }}
+                >
+                  신규 가입
                 </Link>
               </Flex>
             </Flex>
