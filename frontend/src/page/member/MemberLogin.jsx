@@ -14,7 +14,7 @@ import {
   Link,
   Spinner,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import {Link as RouterLink, useNavigate} from "react-router-dom";
 
 export function MemberLogin(props) {
   const [email, setEmail] = useState("");
@@ -22,10 +22,14 @@ export function MemberLogin(props) {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     setIsLoading(true);
     setError("");
+    navigate("/");
+    setIsLoading(false);
+
 
     // 유효성 검사
     if (!email) {

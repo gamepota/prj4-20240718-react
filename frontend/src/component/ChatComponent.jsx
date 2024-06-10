@@ -18,7 +18,7 @@ export function ChatComponent() {
       reconnectDelay: 5000,
       onConnect: () => {
         console.log("Connected to WebSocket");
-        client.subscribe('/user/queue/messages', (message) => {
+        client.subscribe('/topic/messages', (message) => {
           const receivedMessage = JSON.parse(message.body);
           console.log("Received message:", receivedMessage);
           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
@@ -50,18 +50,18 @@ export function ChatComponent() {
   }, []);
 
   const sendMessage = () => {
-    if (isConnected && message && recipient) {
+    if (isConnected && message) {
       const chatMessage = {
         sender: name,
         recipient: recipient,
         content: message,
-        timestamp: new Date()
+        timestamp: new Date().toISOString()
       };
       console.log("Sending message:", chatMessage);
       stompClient.publish({ destination: '/app/chat', body: JSON.stringify(chatMessage) });
       setMessage('');
     } else {
-      console.error("Cannot send message: WebSocket is not connected or recipient/message is empty.");
+      console.error("Cannot send message: WebSocket is not connected or message is empty.");
     }
   };
 
