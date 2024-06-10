@@ -6,21 +6,31 @@ import {
   Input,
   Spinner,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export function BoardEdit() {
   const { id } = useParams();
   const [board, setBoard] = useState(null);
+  const toast = useToast();
+  const navigate = useNavigate();
   useEffect(() => {
     axios.get(`/api/board/${id}`).then((res) => {
       setBoard(res.data);
     });
   }, []);
   function handleClickSave() {
-    axios.post(`/api/board/edit/`, board);
+    axios.put(`/api/board/edit`, board).then(() => {
+      toast({
+        status: "success",
+        description: `${board.id}번 게시글이 수정되었습니다`,
+        position: "top",
+      });
+      navigate(`/board/${id}`);
+    });
   }
 
   //useEffect가 실행될때까지 스피너 돌아감..
