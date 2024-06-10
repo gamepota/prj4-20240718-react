@@ -4,17 +4,27 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 export function BoardView() {
   const { id } = useParams();
   console.log(id);
   const [board, setBoard] = useState(null);
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const navigate = useNavigate();
   const toast = useToast();
   useEffect(() => {
     axios
@@ -39,7 +49,17 @@ export function BoardView() {
   }
 
   function handleClickRemove() {
-    axios.delete("/api/board/" + board.id);
+    axios
+      .delete("/api/board/" + board.id)
+      .then(() => {
+        toast({
+          status: "success",
+          description: `${id}번 게시물이 삭제되었습니다`,
+          position: "top",
+        });
+        navigate(`/`);
+      })
+      .finally(() => onClose);
   }
 
   return (
@@ -70,11 +90,27 @@ export function BoardView() {
         </FormControl>
       </Box>
       <Box>
-        <Button colorScheme={"purple"}>수정</Button>
-        <Button colorScheme={"red"} onClick={handleClickRemove}>
+        <Button colorScheme={"purple"} onClick={() => navigate(`/edit/${id}`)}>
+          수정
+        </Button>
+        <Button colorScheme={"red"} onClick={onOpen}>
           삭제
         </Button>
       </Box>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>삭제하시곘습니까?</ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>취소</Button>
+            <Button colorScheme={"red"} onClick={handleClickRemove}>
+              확인
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

@@ -35,4 +35,16 @@ public class BoardController {
     public Board get(@PathVariable Integer id) {
         return service.get(id);
     }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable Integer id) {
+        service.delete(id);
+    }
+
+    @PutMapping("edit")
+    public void edit(@RequestBody Board board) {
+        service.edit(board);
+    }
+
 }
+
