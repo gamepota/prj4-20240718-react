@@ -1,4 +1,4 @@
-package com.backend.diary.domain;
+package com.backend.domain.diary;
 
 import lombok.Data;
 

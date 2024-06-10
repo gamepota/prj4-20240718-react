@@ -1,7 +1,7 @@
-package com.backend.diary.service;
+package com.backend.service.diary;
 
-import com.backend.diary.domain.DiaryBoard;
-import com.backend.diary.mapper.DiaryBoardMapper;
+import com.backend.domain.diary.DiaryBoard;
+import com.backend.mapper.diary.DiaryBoardMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

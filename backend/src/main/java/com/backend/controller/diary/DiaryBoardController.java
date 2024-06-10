@@ -1,7 +1,7 @@
-package com.backend.diary.controller;
+package com.backend.controller.diary;
 
-import com.backend.diary.domain.DiaryBoard;
-import com.backend.diary.service.DiaryBoardService;
+import com.backend.domain.diary.DiaryBoard;
+import com.backend.service.diary.DiaryBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +23,6 @@ public class DiaryBoardController {
         } else {
             return ResponseEntity.badRequest().build();
         }
-
-
     }
 
     @GetMapping("list")

@@ -1,7 +1,7 @@
-package com.backend.diary.mapper;
+package com.backend.mapper.diary;
 
 
-import com.backend.diary.domain.DiaryBoard;
+import com.backend.domain.diary.DiaryBoard;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
