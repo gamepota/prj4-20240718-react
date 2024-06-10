@@ -1,12 +1,10 @@
-import Navbar from "./for_develop/Navbar.jsx";
 import React from "react";
-import { Outlet } from "react-router-dom";
 import { Box } from "@chakra-ui/react";
+import { Outlet } from "react-router-dom";
 
 export function Home() {
   return (
     <Box>
-      <Navbar />
       <Outlet />
     </Box>
   );
