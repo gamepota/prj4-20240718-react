@@ -1,5 +1,6 @@
-import { Box, Input, Button, VStack, HStack, Text } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { Box, Input, Button, VStack, HStack, Text, InputGroup, InputRightElement, IconButton } from "@chakra-ui/react";
+import { useState, useEffect, useRef } from "react";
+import { MinusIcon, ChatIcon } from "@chakra-ui/icons";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
@@ -10,6 +11,8 @@ export function ChatComponent() {
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false); // 최소화 상태 관리
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const socket = new SockJS('http://localhost:8080/ws');
@@ -49,6 +52,10 @@ export function ChatComponent() {
     };
   }, []);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  }, [messages]);
+
   const sendMessage = () => {
     if (isConnected && message) {
       const chatMessage = {
@@ -65,40 +72,69 @@ export function ChatComponent() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  };
+
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized);
+  };
+
   return (
-    <Box p={5} maxW="md" borderWidth="1px" borderRadius="lg" overflow="hidden">
-      <VStack spacing={4}>
-        <HStack width="100%">
-          <Input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="이름을 입력하세요"
-          />
-          <Input
-            type="text"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-            placeholder="수신자를 입력하세요"
-          />
-        </HStack>
-        <Input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="메시지를 입력하세요"
+    <Box position="fixed" bottom={2} right={2} p={2} minW="200px" maxW="md" borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white">
+      <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
+        <Text fontWeight="bold">Chat</Text>
+        <IconButton
+          icon={isMinimized ? <ChatIcon /> : <MinusIcon />}
+          size="sm"
+          onClick={toggleMinimize}
+          aria-label={isMinimized ? "Expand Chat" : "Minimize Chat"}
         />
-        <Button onClick={sendMessage} disabled={!isConnected}>Send</Button>
-        <Box width="100%" maxH="300px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg">
-          {messages.map((msg, index) => (
-            <Box key={index} bg={msg.sender === name ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
-              <Text fontWeight="bold">{msg.sender}</Text>
-              <Text>{msg.content}</Text>
-              <Text fontSize="xs" color="gray.500">{new Date(msg.timestamp).toLocaleTimeString()}</Text>
-            </Box>
-          ))}
-        </Box>
-      </VStack>
+      </Box>
+      {!isMinimized && (
+        <VStack spacing={4} p={2}>
+          <HStack width="100%">
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="이름을 입력하세요"
+            />
+            <Input
+              type="text"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              placeholder="수신자를 입력하세요"
+            />
+          </HStack>
+          <Box width="100%" h="300px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg">
+            {messages.map((msg, index) => (
+              <Box key={index} bg={msg.sender === name ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
+                <Text fontWeight="bold">{msg.sender}</Text>
+                <Text>{msg.content}</Text>
+                <Text fontSize="xs" color="gray.500">{new Date(msg.timestamp).toLocaleTimeString()}</Text>
+              </Box>
+            ))}
+            <div ref={messagesEndRef} />
+          </Box>
+          <InputGroup>
+            <Input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown} // onKeyDown 이벤트 핸들러 추가
+              placeholder="메시지를 입력하세요"
+            />
+            <InputRightElement width="4.5rem">
+              <Button h="1.75rem" size="sm" onClick={sendMessage} disabled={!isConnected}>
+                Send
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </VStack>
+      )}
     </Box>
   );
 }

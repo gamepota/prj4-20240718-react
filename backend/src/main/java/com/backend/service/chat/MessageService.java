@@ -1,7 +1,7 @@
 package com.backend.service.chat;
 
-import com.backend.domain.ChatMessage;
-import com.backend.mapper.MessageMapper;
+import com.backend.domain.chat.ChatMessage;
+import com.backend.mapper.chat.MessageMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
