@@ -13,8 +13,8 @@ const router = createBrowserRouter([
     path: "/",
     element: <Home />,
     children: [
-      { path: "member/signup", element: <MemberSignup /> },
-      { path: "member/login", element: <MemberLogin /> },
+      { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
+      { path: "member/login", element: <MemberLogin /> }, // 회원 로그인
       { path: "write", element: <BoardWrite /> }, //게시판 글쓰기
       { path: "board", element: <BoardList /> }, //게시판 목록
       { path: "board/:id", element: <BoardView /> }, //게시글 보기

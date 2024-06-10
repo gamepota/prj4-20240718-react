@@ -143,8 +143,417 @@ export function MemberSignup(props) {
     setIsPhoneNumberValid(isValid);
   }
 
-function MemberSignup(props) {
-  return <div></div>;
-}
+  // 이메일 중복확인
+  function handleCheckEmail() {
+    if (!isEmailValid) return; // 이메일 유효성 검사를 통과한 경우에만 요청
+    axios
+      .get(`/api/member/check?email=${email}`)
+      .then((res) => {
+        toast({
+          status: "warning",
+          description: "사용할 수 없는 이메일입니다.",
+          position: "top",
+          duration: 3000,
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          toast({
+            status: "info",
+            description: "사용할 수 있는 이메일입니다.",
+            position: "top",
+            duration: 3000,
+          });
+          setIsEmailConfirmed(true); // 이메일 확인 상태 업데이트
+        }
+      })
+      .finally();
+  }
 
-export default MemberSignup;
+  // 닉네임 중복확인
+  function handleCheckNickname() {
+    if (!isNicknameValid) return; // 닉네임 유효성 검사를 통과한 경우에만 요청
+    axios
+      .get(`/api/member/check?nickname=${nickname}`)
+      .then((res) => {
+        toast({
+          status: "warning",
+          description: "사용할 수 없는 닉네임입니다.",
+          position: "top",
+          duration: 3000,
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          toast({
+            status: "info",
+            description: "사용할 수 있는 닉네임입니다.",
+            position: "top",
+            duration: 3000,
+          });
+          setIsNicknameConfirmed(true); // 닉네임 확인 상태 업데이트
+        }
+      })
+      .finally();
+  }
+
+  // 이메일 재입력
+  function handleReenterEmail() {
+    setEmail(""); // 이메일 입력란 초기화
+    setIsEmailConfirmed(false); // 이메일 확인 상태 초기화
+    setIsEmailValid(false); // 이메일 유효성 초기화
+  }
+
+  // 닉네임 재입력
+  function handleReenterNickname() {
+    setNickname(""); // 닉네임 입력란 초기화
+    setIsNicknameConfirmed(false); // 닉네임 확인 상태 초기화
+    setIsNicknameValid(false); // 닉네임 유효성 초기화
+  }
+
+  // 비밀번호 보기/숨기기
+  function handleClickPassword() {
+    setShowPassword(!showPassword);
+  }
+
+  // 성별 선택
+  function handleGenderSelect(selectedGender) {
+    setGender(selectedGender);
+  }
+
+  // 국적 선택
+  function handleNationalitySelect(selectedNationality) {
+    setNationality(selectedNationality);
+  }
+
+  // 주소 검색
+  function openPostcodePopup() {
+    const postcodePopup = new window.daum.Postcode({
+      onComplete: function (data) {
+        setAddress(data.address);
+        setPostcode(data.zonecode);
+      },
+    });
+    postcodePopup.open();
+  }
+
+  // 제출
+  function handleSubmit() {
+    const signupData = {
+      name: name,
+      email: email,
+      nickname: nickname,
+      password: password,
+      gender: gender,
+      nationality: nationality,
+      birthDate: formattedBirthDate,
+      phoneNumber: phoneNumber,
+      address: fullAddress,
+    };
+    axios
+      .post("/api/member/signup", signupData)
+      .then((res) => {
+        Swal.fire({
+          title: "회원가입이 완료되었습니다.",
+          text: "로그인 페이지로 이동합니다.",
+          icon: "success",
+          confirmButtonText: "확인",
+        }).then(() => {
+          navigate("/member/login");
+        });
+      })
+      .catch((err) => {
+        Swal.fire({
+          title: "회원가입에 실패하였습니다.",
+          text: "오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
+          icon: "error",
+          confirmButtonText: "확인",
+        });
+      });
+  }
+
+  return (
+    <>
+      <Center>
+        <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
+          <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
+            회원가입
+          </Box>
+          <Box>
+            <FormControl isRequired>
+              <InputGroup>
+                <Input
+                  placeholder={"이메일"}
+                  value={email}
+                  readOnly={isEmailConfirmed} // 이메일 확인 후 readOnly 설정
+                  onChange={(e) => {
+                    setEmail(e.target.value.trim());
+                    validateEmail(e.target.value.trim());
+                  }}
+                  backgroundColor={isEmailConfirmed ? "gray.200" : "white"}
+                />
+                <InputRightElement w={"100px"} mr={1}>
+                  {isEmailConfirmed ? (
+                    <Button
+                      size={"sm"}
+                      variant="ghost"
+                      onClick={handleReenterEmail}
+                      _hover={{ color: "red.500 " }}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  ) : (
+                    <Button
+                      size={"sm"}
+                      onClick={handleCheckEmail}
+                      isDisabled={!isEmailValid}
+                      cursor={!isEmailValid ? "not-allowed" : "pointer"}
+                      _hover={
+                        !isEmailValid
+                          ? { bgColor: "gray.100" }
+                          : { bgColor: "purple.500 ", color: "white" }
+                      }
+                    >
+                      중복확인
+                    </Button>
+                  )}
+                </InputRightElement>
+              </InputGroup>
+              {!isEmailValid && email && (
+                <FormHelperText color="red">
+                  올바르지 않은 이메일 형식입니다.
+                </FormHelperText>
+              )}
+            </FormControl>
+            <FormControl isRequired>
+              <InputGroup>
+                <Input
+                  placeholder={"닉네임"}
+                  value={nickname}
+                  readOnly={isNicknameConfirmed} // 닉네임 확인 후 readOnly 설정
+                  onChange={(e) => {
+                    setNickname(e.target.value.trim());
+                    validateNickname(e.target.value.trim());
+                  }}
+                  backgroundColor={isNicknameConfirmed ? "gray.200" : "white"}
+                />
+                <InputRightElement w={"100px"} mr={1}>
+                  {isNicknameConfirmed ? (
+                    <Button
+                      size={"sm"}
+                      variant="ghost"
+                      onClick={handleReenterNickname}
+                      _hover={{ color: "red.500 " }}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  ) : (
+                    <Button
+                      size={"sm"}
+                      onClick={handleCheckNickname}
+                      isDisabled={!isNicknameValid}
+                      cursor={!isNicknameValid ? "not-allowed" : "pointer"}
+                      _hover={
+                        !isNicknameValid
+                          ? { bgColor: "gray.100" }
+                          : { bgColor: "purple.500 ", color: "white" }
+                      }
+                    >
+                      중복확인
+                    </Button>
+                  )}
+                </InputRightElement>
+              </InputGroup>
+              {!isNicknameValid && nickname && (
+                <FormHelperText color="red">
+                  닉네임은 3~12자 사이의 한글, 영문, 숫자로 구성되어야 합니다.
+                </FormHelperText>
+              )}
+            </FormControl>
+            <FormControl isRequired>
+              <InputGroup>
+                <Input
+                  placeholder="비밀번호"
+                  value={password}
+                  type={showPassword ? "text" : "password"}
+                  onChange={(e) => {
+                    setPassword(e.target.value.trim());
+                    validatePassword(e.target.value);
+                  }}
+                />
+                <InputRightElement width="4.5rem">
+                  {password && (
+                    <Button h="1.75rem" size="sm" onClick={handleClickPassword}>
+                      {showPassword ? "숨기기" : "보기"}
+                    </Button>
+                  )}
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl isRequired>
+              <InputGroup>
+                {password && (
+                  <Input
+                    placeholder="비밀번호 확인"
+                    value={confirmPassword}
+                    type={showPassword ? "text" : "password"}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value.trim());
+                    }}
+                  />
+                )}
+              </InputGroup>
+              {!isPasswordValid && password && (
+                <FormHelperText color="red">
+                  비밀번호는 최소 8자에서 최대 16자 사이
+                  <br />
+                  영문 대소문자, 숫자, 특수문자를 모두 포함해야 합니다.
+                </FormHelperText>
+              )}
+              {confirmPassword && (
+                <FormHelperText color={isPasswordRight ? "green" : "red"}>
+                  {isPasswordRight
+                    ? "비밀번호가 일치합니다."
+                    : "비밀번호가 일치하지 않습니다."}
+                </FormHelperText>
+              )}
+            </FormControl>
+            <Flex>
+              <FormControl isRequired>
+                <Flex justifyContent={"space-around"} mt={4} mb={4}>
+                  <Button
+                    w="100px"
+                    h="40px"
+                    border="1px solid"
+                    borderColor={gender === "male" ? "blue" : "gray"}
+                    bg={gender === "male" ? "blue.100" : "white"}
+                    onClick={() => handleGenderSelect("male")}
+                    cursor="pointer"
+                    _hover={{ bg: "blue.200" }}
+                  >
+                    남성
+                  </Button>
+                  <Button
+                    w="100px"
+                    h="40px"
+                    border="1px solid"
+                    borderColor={gender === "female" ? "red" : "gray"}
+                    bg={gender === "female" ? "red.100" : "white"}
+                    onClick={() => handleGenderSelect("female")}
+                    cursor="pointer"
+                    _hover={{ bg: "red.200" }}
+                  >
+                    여성
+                  </Button>
+                </Flex>
+              </FormControl>
+              <FormControl isRequired>
+                <Flex justifyContent={"space-around"} mt={4} mb={4}>
+                  <Button
+                    w="100px"
+                    h="40px"
+                    border="1px solid"
+                    borderColor={nationality === "korean" ? "green" : "gray"}
+                    bg={nationality === "korean" ? "green.100" : "white"}
+                    onClick={() => handleNationalitySelect("korean")}
+                    cursor="pointer"
+                    _hover={{ bg: "green.200" }}
+                  >
+                    한국인
+                  </Button>
+                  <Button
+                    w="100px"
+                    h="40px"
+                    border="1px solid"
+                    borderColor={
+                      nationality === "foreigner" ? "orange" : "gray"
+                    }
+                    bg={nationality === "foreigner" ? "orange.100" : "white"}
+                    onClick={() => handleNationalitySelect("foreigner")}
+                    cursor="pointer"
+                    _hover={{ bg: "orange.200" }}
+                  >
+                    외국인
+                  </Button>
+                </Flex>
+              </FormControl>
+            </Flex>
+            <FormControl isRequired>
+              <Input
+                placeholder="이름"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value.trim());
+                }}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <Input
+                placeholder="생년월일 8자리 ( YYYYMMDD )"
+                value={birthDate}
+                onChange={handleBirthDateChange}
+              />
+              {!isBirthDateValid && birthDate && (
+                <FormHelperText color="red">
+                  유효하지 않은 생년월일입니다.
+                </FormHelperText>
+              )}
+            </FormControl>
+            <FormControl isRequired>
+              <Input
+                placeholder="연락처 ( '-' 제외하고 입력 )"
+                type="tel"
+                value={phoneNumber}
+                maxlength={13}
+                onChange={handlePhoneNumberChange}
+              />
+              {!isPhoneNumberValid && phoneNumber && (
+                <FormHelperText color="red">
+                  유효하지 않은 번호입니다.
+                </FormHelperText>
+              )}
+            </FormControl>
+            <FormControl isRequired>
+              <Flex>
+                <Flex width={"80%"} direction={"column"}>
+                  <Input readOnly value={postcode} placeholder="우편번호" />
+                  <Input readOnly value={address} placeholder="주소" />
+                </Flex>
+                <Box>
+                  <Button
+                    _hover={{ bgColor: "purple.500 ", color: "white" }}
+                    height={"100%"}
+                    onClick={openPostcodePopup}
+                  >
+                    주소 검색
+                  </Button>
+                </Box>
+              </Flex>
+              <Input
+                value={addressDetail}
+                onChange={(e) => {
+                  setAddressDetail(e.target.value);
+                }}
+                placeholder="상세주소를 입력하세요."
+              />
+            </FormControl>
+          </Box>
+          <Button
+            mt={5}
+            width={"100%"}
+            isDisabled={!isFormValid}
+            cursor={!isFormValid ? "not-allowed" : "pointer"}
+            _hover={
+              !isFormValid
+                ? { bgColor: "gray.100" }
+                : { bgColor: "purple.500 ", color: "white" }
+            }
+            onClick={handleSubmit}
+          >
+            제출
+          </Button>
+        </Box>
+      </Center>
+    </>
+  );
+}
