@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Box } from "@chakra-ui/react";
 import { DiaryNavbar } from "../diaryComment/DiaryNavbar.jsx";
 
-function DiaryHome(props) {
+export function DiaryHome() {
   return (
     <Box mb={300}>
       <DiaryNavbar />
@@ -19,5 +19,3 @@ function DiaryHome(props) {
     </Box>
   );
 }
-
-export default DiaryHome;

@@ -22,7 +22,7 @@ export function DiaryBoardWrite() {
   function handleSaveClick() {
     setLoading(true);
     axios
-      .post(`/api/DiaryBoard/add`, {
+      .post(`/api/diaryBoard/add`, {
         title,
         content,
         writer,
