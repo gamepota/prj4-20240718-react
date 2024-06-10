@@ -20,6 +20,7 @@ public class MemberController {
 
     @GetMapping(value = "check", params = "email")
     public ResponseEntity checkEmail(@RequestParam("email") String email) {
+        System.out.println("email = " + email);
         Member member = service.getByEmail(email);
         if (member == null) {
             return ResponseEntity.notFound().build();

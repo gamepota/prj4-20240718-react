@@ -1,6 +1,7 @@
 package com.backend.service.member;
 
 import com.backend.domain.member.Member;
+import com.backend.domain.member.Role;
 import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +15,7 @@ public class MemberService {
 
     public void signup(Member member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
+        member.setRole(Role.USER);
         mapper.signup(member);
     }
 
