@@ -17,7 +17,7 @@ public interface MessageMapper {
 	void insertMessage(ChatMessage message);
 
 	@Select("""
-					SELECT * 
+					SELECT *
 					FROM chat_message
 					WHERE recipient = #{recipient}
 					""")
