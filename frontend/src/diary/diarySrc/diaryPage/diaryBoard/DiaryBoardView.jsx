@@ -48,7 +48,7 @@ export function DiaryBoardView() {
       .then(() => {
         toast({
           status: "success",
-          description: "게시물이 삭제되었습니다.",
+          description: `${id}번 게시물이 삭제되었습니다.`,
           position: "top",
         });
         navigate("/");
@@ -56,9 +56,12 @@ export function DiaryBoardView() {
       .catch((err) => {
         toast({
           status: "error",
-          description: "게시물 삭제에 실패했습니다.",
+          description: `${id}번 게시물 삭제 중 오류가 발하였습니다.`,
           position: "top",
         });
+      })
+      .finally(() => {
+        onClose();
       });
   }
 
@@ -86,7 +89,12 @@ export function DiaryBoardView() {
           <FormLabel>작성일시</FormLabel>
           <Input type="datetime-local" value={board.inserted} readOnly />
         </FormControl>
-        <Button colorScheme="purple">수정</Button>
+        <Button
+          onClick={() => navigate(`/edit/${board.id}`)}
+          colorScheme="purple"
+        >
+          수정
+        </Button>
         <Button colorScheme="red" onClick={onOpen}>
           삭제
         </Button>

@@ -5,6 +5,7 @@ import DiaryHome from "./diaryPage/DiaryHome.jsx";
 import { DiaryBoardWrite } from "./diaryPage/diaryBoard/DiaryBoardWrite.jsx";
 import { DiaryBoardList } from "./diaryPage/diaryBoard/DiaryBoardList.jsx";
 import { DiaryBoardView } from "./diaryPage/diaryBoard/DiaryBoardView.jsx";
+import { DiaryBoardEdit } from "./diaryPage/diaryBoard/DiaryBoardEdit.jsx";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       },
       { path: "write", element: <DiaryBoardWrite /> },
       { path: "board/:id", element: <DiaryBoardView /> },
+      { path: "edit/:id", element: <DiaryBoardEdit /> },
     ],
   },
 ]);
