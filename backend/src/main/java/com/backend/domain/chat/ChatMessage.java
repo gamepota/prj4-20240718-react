@@ -1,4 +1,4 @@
-package com.backend.domain;
+package com.backend.domain.chat;
 
 import lombok.Data;
 import software.amazon.awssdk.services.s3.endpoints.internal.Value;

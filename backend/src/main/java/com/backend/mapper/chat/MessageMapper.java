@@ -1,4 +1,4 @@
-package com.backend.mapper;
+package com.backend.mapper.chat;
 
 import com.backend.domain.ChatMessage;
 import org.apache.ibatis.annotations.Insert;

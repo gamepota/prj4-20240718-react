@@ -1,4 +1,4 @@
-package com.backend.service;
+package com.backend.service.chat;
 
 import com.backend.domain.ChatMessage;
 import com.backend.mapper.MessageMapper;
