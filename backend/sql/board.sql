@@ -10,3 +10,24 @@ CREATE TABLE board
 );
 SELECT *
 FROM board;
+
+ALTER TABLE board
+    CHANGE id board_id INT AUTO_INCREMENT;
+
+INSERT INTO board(title, content, writer)
+SELECT title, content, writer
+FROM board;
+
+SELECT COUNT(*)
+FROM board;
+
+
+
+
+
+
+
+
+
+
+
