@@ -8,6 +8,7 @@ import { BoardWrite } from "./page/board/BoardWrite.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
 import { PlaceMap } from "./page/place/PlaceMap.jsx";
+import { PlaceReview } from "./page/place/PlaceReview.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: "board", element: <BoardList /> }, //게시판 목록
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
       { path: "place/map", element: <PlaceMap /> }, // 지도보기
+      { path: "place/review", element: <PlaceReview /> }, // 병원 정보 보기
     ],
   },
 ]);
