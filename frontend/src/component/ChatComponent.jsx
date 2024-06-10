@@ -12,14 +12,14 @@ export function ChatComponent() {
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false); // 최소화 상태 관리
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef(null); // 메시지 스크롤 관리
 
   useEffect(() => {
-    const socket = new SockJS('http://localhost:8080/ws');
-    const client = new Client({
-      webSocketFactory: () => socket,
-      reconnectDelay: 5000,
-      onConnect: () => {
+    const socket = new SockJS('http://localhost:8080/ws'); // SockJS 서버 URL
+    const client = new Client({ // STOMP 클라이언트 생성
+      webSocketFactory: () => socket, // WebSocket 팩토리 설정
+      reconnectDelay: 5000, // 재연결 지연 시간 설정
+      onConnect: () => { // 연결 이벤트 핸들러
         console.log("Connected to WebSocket");
         client.subscribe('/topic/messages', (message) => {
           const receivedMessage = JSON.parse(message.body);
@@ -85,7 +85,7 @@ export function ChatComponent() {
   return (
     <Box position="fixed" bottom={2} right={2} p={2} minW="200px" maxW="md" borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white">
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
-        <Text fontWeight="bold">Chat</Text>
+        <Text fontWeight="bold"> 채팅 </Text>
         <IconButton
           icon={isMinimized ? <ChatIcon /> : <MinusIcon />}
           size="sm"
@@ -129,7 +129,7 @@ export function ChatComponent() {
             />
             <InputRightElement width="4.5rem">
               <Button h="1.75rem" size="sm" onClick={sendMessage} disabled={!isConnected}>
-                Send
+                보내기
               </Button>
             </InputRightElement>
           </InputGroup>
