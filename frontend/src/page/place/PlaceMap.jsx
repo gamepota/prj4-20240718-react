@@ -1,7 +1,6 @@
 import React from "react";
+import { Box } from "@chakra-ui/react";
 
-function PlaceMap(props) {
-  return <div></div>;
+export function PlaceMap(props) {
+  return <Box>지도</Box>;
 }
-
-export default PlaceMap;
