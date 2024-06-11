@@ -53,7 +53,7 @@ export function DiaryBoardView() {
         });
         navigate("/");
       })
-      .catch((err) => {
+      .catch(() => {
         toast({
           status: "error",
           description: `${id}번 게시물 삭제 중 오류가 발하였습니다.`,

@@ -10,13 +10,17 @@ import { BoardView } from "./page/board/BoardView.jsx";
 import { DiaryHome } from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
 import { DiaryBoardWrite } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardWrite.jsx";
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
+import { DiaryBoardView } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardView.jsx";
+import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardEdit.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
     children: [
-      { path: "diary/list", element: <DiaryBoardList /> }, //
+      { path: "diary/list", element: <DiaryBoardList /> }, // 방명록 목록
+      { path: "diary/edit", element: <DiaryBoardEdit /> },
+      { path: "diary/view", element: <DiaryBoardView /> }, //
       { path: "diary/write", element: <DiaryBoardWrite /> }, // 방명록 쓰기
       { path: "diary/home", element: <DiaryHome /> }, // 다이어리 홈
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
