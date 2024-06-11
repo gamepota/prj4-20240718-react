@@ -16,11 +16,15 @@ VALUES ('서울 성윤모 병원', '서울특별시 성북구 이대로 111', '0
 # 댓글 테이블
 CREATE TABLE hospital_comment
 (
-    id        INT PRIMARY KEY AUTO_INCREMENT,
-    board_id  INT          NOT NULL REFERENCES hospital (id),
-    member_id INT          NOT NULL REFERENCES member (id),
-    comment   VARCHAR(500) NOT NULL,
-    inserted  DATETIME     NOT NULL DEFAULT NOW()
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    hospital_id INT          NOT NULL REFERENCES hospital (id),
+    member_id   INT          NOT NULL REFERENCES member (id),
+    comment     VARCHAR(500) NOT NULL,
+    inserted    DATETIME     NOT NULL DEFAULT NOW()
 );
+
+
 SELECT *
 FROM hospital_comment;
+
+DROP TABLE hospital_comment;
