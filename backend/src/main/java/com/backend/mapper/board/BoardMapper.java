@@ -40,4 +40,17 @@ public interface BoardMapper {
                     WHERE id=#{id}
             """)
     int update(Board board);
+
+    @Select("""
+            SELECT COUNT(*) FROM board;
+
+                        """)
+    int selectAllCount();
+
+    @Select("""
+            SELECT * FROM board 
+            ORDER BY id DESC
+            LIMIT #{offset}
+            """)
+    Object selectAllPaging(Integer offset);
 }

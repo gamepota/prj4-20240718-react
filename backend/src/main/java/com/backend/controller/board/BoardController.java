@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,8 +27,8 @@ public class BoardController {
     }
 
     @GetMapping("list")
-    public List<Board> list(@RequestParam Integer pageAmount, @RequestParam Integer currentPage) throws Exception {
-        return service.list(pageAmount, currentPage);
+    public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page) throws Exception {
+        return service.list(page);
     }
 
     @GetMapping("{id}")
