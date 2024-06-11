@@ -18,14 +18,14 @@ export function PlaceReview() {
     <Box>
       <Box>
         <FormControl>
-          <FormLabel>병원이름</FormLabel>
-          <Input value={hospital.name} readOnly />
+          <FormLabel>병원사진</FormLabel>
+          {/*<Input value={sss} readOnly />*/}
         </FormControl>
       </Box>
       <Box>
         <FormControl>
-          <FormLabel>병원사진</FormLabel>
-          {/*<Input value={sss} readOnly />*/}
+          <FormLabel>병원이름</FormLabel>
+          <Input value={hospital.name} readOnly />
         </FormControl>
       </Box>
       <Box>
