@@ -20,7 +20,7 @@ const router = createBrowserRouter([
       { path: "write", element: <BoardWrite /> }, //게시판 글쓰기
       { path: "board", element: <BoardList /> }, //게시판 목록
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
-      { path: "place/map", element: <PlaceMap /> }, // 지도보기
+      { path: "place", element: <PlaceMap /> }, // 지도보기
       { path: "place/review", element: <PlaceReview /> }, // 병원 정보 보기
     ],
   },
