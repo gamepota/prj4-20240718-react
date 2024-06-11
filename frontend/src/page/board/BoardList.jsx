@@ -25,7 +25,7 @@ export function BoardList() {
   useEffect(() => {
     axios
       .get("/api/board/list", {
-        data: {
+        params: {
           pageAmount: pageAmount,
         },
       })
