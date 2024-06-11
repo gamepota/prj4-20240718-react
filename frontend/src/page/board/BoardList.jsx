@@ -21,12 +21,14 @@ import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [pageAmount, setPageAmount] = useState(50);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   useEffect(() => {
     axios
       .get("/api/board/list", {
         params: {
           pageAmount: pageAmount,
+          currentPage: currentPage,
         },
       })
       .then((res) => {
@@ -35,10 +37,13 @@ export function BoardList() {
         setBoardList(res.data);
         console.log(res.data);
       });
-  }, [pageAmount]);
+  }, [pageAmount, currentPage]);
 
   function handlePageSizeChange(number) {
     setPageAmount(number);
+  }
+  function handleClickPageNumber(pageNumber) {
+    setCurrentPage(pageNumber);
   }
 
   return (
@@ -120,6 +125,13 @@ export function BoardList() {
             </Tbody>
           </Table>
         </Box>
+      </Center>
+      <Center>
+        <Button>처음</Button>
+        <Button>이전</Button>
+        <Button>{[1, 2, 3, 4, 5, 6, 7, 8, 9]}</Button>
+        <Button>이후</Button>
+        <Button>맨끝</Button>
       </Center>
     </>
   );
