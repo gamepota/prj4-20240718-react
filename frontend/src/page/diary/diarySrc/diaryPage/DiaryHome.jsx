@@ -5,14 +5,14 @@ import { DiaryNavbar } from "../diaryComment/DiaryNavbar.jsx";
 
 export function DiaryHome() {
   return (
-    <Box mb={300}>
+    <Box mb={30}>
       <DiaryNavbar />
       <Box
         mx={{
           base: 0,
           lg: 200,
         }}
-        mt={10}
+        mt={100}
       >
         <Outlet />
       </Box>

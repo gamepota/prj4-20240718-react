@@ -16,8 +16,24 @@ export function DiaryBoardWrite() {
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
   const [loading, setLoading] = useState(false);
+  const [addFileList, setAddFileList] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const fetchMemberName = async () => {
+  //     try {
+  //       const response = await axios.get("/api/member"); // API 엔드포인트를 적절히 변경하세요
+  //       setWriter(response.data.name); // API 응답에 맞게 조정
+  //     } catch (error) {
+  //       // console.error("멤버 이름을 가져오는 데 실패했습니다", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //
+  //   fetchMemberName();
+  // }, []);
 
   function handleSaveClick() {
     setLoading(true);
@@ -62,14 +78,15 @@ export function DiaryBoardWrite() {
 
   return (
     <Box>
-      <Box>방명록</Box>
+      <Box textAlign="center">방명록 작성</Box>
       <Box>
         <Box>
           <FormControl>
-            <FormLabel>방명록 작성</FormLabel>
-            <Input onChange={(e) => setTitle(e.target.value)} />
+            <FormLabel>작성자</FormLabel>
+            <Input value={writer} readOnly />
           </FormControl>
         </Box>
+
         <Box>
           <FormControl>
             <FormLabel>글 작성</FormLabel>
@@ -78,19 +95,23 @@ export function DiaryBoardWrite() {
         </Box>
         <Box>
           <FormControl>
-            <FormLabel>작성자</FormLabel>
-            <Input onChange={(e) => setWriter(e.target.value)} />
+            <Input
+              multiple
+              type="file"
+              accept="image/*"
+              onChange={(e) => setAddFileList(e.target.files)}
+            />
           </FormControl>
-        </Box>
-        <Box>
-          <Button
-            isLoading={loading}
-            isDisabled={disableSaveButton}
-            colorScheme={"blue"}
-            onClick={handleSaveClick}
-          >
-            저장
-          </Button>
+          <FormControl>
+            <Button
+              isLoading={loading}
+              isDisabled={disableSaveButton}
+              colorScheme={"blue"}
+              onClick={handleSaveClick}
+            >
+              등록
+            </Button>
+          </FormControl>
         </Box>
       </Box>
     </Box>
