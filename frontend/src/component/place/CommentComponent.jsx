@@ -2,10 +2,10 @@ import { Box } from "@chakra-ui/react";
 import { CommentList } from "./CommentList.jsx";
 import { CommentWrite } from "./CommentWrite.jsx";
 
-export function CommentComponent() {
+export function CommentComponent({ hospitalId }) {
   return (
     <Box>
-      <CommentWrite />
+      <CommentWrite hospitalId={hospitalId} />
       <CommentList />
     </Box>
   );

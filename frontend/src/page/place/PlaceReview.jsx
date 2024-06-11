@@ -42,7 +42,7 @@ export function PlaceReview() {
         </FormControl>
       </Box>
       <Box>
-        <CommentComponent />
+        <CommentComponent hospitalId={hospital.id} />
       </Box>
     </Box>
   );
