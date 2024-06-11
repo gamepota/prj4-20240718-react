@@ -23,20 +23,20 @@ public interface BoardMapper {
     @Select("""
             Select * 
             from board
-            WHERE board_id = #{id}
+            WHERE id = #{id}
                         """)
     Board selectById(Integer id);
 
     @Delete("""
             DELETE FROM board
-            WHERE board_id = #{id}
+            WHERE id = #{id}
             """)
     int deleteById(Integer id);
 
     @Update("""
                     UPDATE board
                     SET title=#{title},content=#{content},writer=#{writer}
-                    WHERE board_id=#{id}
+                    WHERE id=#{id}
             """)
     int update(Board board);
 }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  Center,
   FormControl,
   FormLabel,
   Input,
@@ -32,39 +33,48 @@ export function BoardWrite() {
   }
 
   return (
-    <Box>
-      <Box>
-        <FormControl>
-          <FormLabel>제목</FormLabel>
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          ></Input>
-        </FormControl>
+    <Center>
+      <Box
+        maxW={"500px"}
+        w={"100%"}
+        p={4}
+        boxShadow={"md"}
+        borderRadius={"md"}
+        mt={10}
+      >
+        <Box>
+          <FormControl>
+            <FormLabel>제목</FormLabel>
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            ></Input>
+          </FormControl>
+        </Box>
+        <Box>
+          <FormControl>
+            <FormLabel>내용</FormLabel>
+            <Textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            ></Textarea>
+          </FormControl>
+        </Box>
+        <Box>
+          <FormControl>
+            <FormLabel>작성자</FormLabel>
+            <Input
+              value={writer}
+              onChange={(e) => setWriter(e.target.value)}
+            ></Input>
+          </FormControl>
+        </Box>
+        <Box>
+          <Button colorScheme={"blue"} onClick={handleSaveClick}>
+            저장
+          </Button>
+        </Box>
       </Box>
-      <Box>
-        <FormControl>
-          <FormLabel>내용</FormLabel>
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          ></Textarea>
-        </FormControl>
-      </Box>
-      <Box>
-        <FormControl>
-          <FormLabel>작성자</FormLabel>
-          <Input
-            value={writer}
-            onChange={(e) => setWriter(e.target.value)}
-          ></Input>
-        </FormControl>
-      </Box>
-      <Box>
-        <Button colorScheme={"blue"} onClick={handleSaveClick}>
-          저장
-        </Button>
-      </Box>
-    </Box>
+    </Center>
   );
 }

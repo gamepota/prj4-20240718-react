@@ -1,4 +1,4 @@
-import { Box, Heading, Table, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Center, Table, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -15,38 +15,45 @@ export function BoardList() {
     });
   }, []);
   return (
-    <Box>
-      <Box mb={10}>
-        <Heading>게시물 목록</Heading>
-      </Box>
-      <Box mb={10}>
-        <Table>
-          <Thead>
-            <Tr>
-              <Th w={100}>게시글ID</Th>
-              <Th>제목</Th>
-              <Th>작성자</Th>
-              <Th>조회수</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {boardList.map((board) => (
-              <Tr
-                _hover={{
-                  bgColor: "gray.200",
-                }}
-                cursor={"pointer"}
-                onClick={() => navigate(`/board/${board.id}`)}
-                key={board.id}
-              >
-                <td>{board.id}</td>
-                <td>{board.title}</td>
-                <td>{board.writer}</td>
+    <>
+      <Center>
+        <Box m={"auto"} fontSize={"xl"}>
+          종합 게시판
+        </Box>
+      </Center>
+      <Center>
+        <Box mb={10}></Box>
+        <Box mb={10}>
+          <Table boxShadow="lg" borderRadius="10">
+            <Thead>
+              <Tr>
+                <Th>게시글ID</Th>
+                <Th w={500} textAlign={"center"}>
+                  제목
+                </Th>
+                <Th>작성자</Th>
+                <Th>조회수</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Box>
-    </Box>
+            </Thead>
+            <Tbody>
+              {boardList.map((board) => (
+                <Tr
+                  _hover={{
+                    bgColor: "gray.200",
+                  }}
+                  cursor={"pointer"}
+                  onClick={() => navigate(`/board/${board.id}`)}
+                  key={board.id}
+                >
+                  <td>{board.id}</td>
+                  <td>{board.title}</td>
+                  <td>{board.writer}</td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      </Center>
+    </>
   );
 }

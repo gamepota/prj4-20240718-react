@@ -56,6 +56,7 @@ export function BoardView() {
           status: "success",
           description: `${id}번 게시물이 삭제되었습니다`,
           position: "top",
+          duration: "100",
         });
         navigate(`/`);
       })
@@ -63,7 +64,14 @@ export function BoardView() {
   }
 
   return (
-    <Box>
+    <Box
+      maxW={"500px"}
+      m={"auto"}
+      p={4}
+      boxShadow={"md"}
+      borderRadius={"md"}
+      mt={10}
+    >
       <Box>{board.id}번 게시물</Box>
       <Box>
         <FormControl>
