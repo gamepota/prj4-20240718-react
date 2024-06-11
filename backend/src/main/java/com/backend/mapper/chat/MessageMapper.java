@@ -11,7 +11,7 @@ import java.util.List;
 public interface MessageMapper {
 	@Insert("""
 					INSERT INTO chat_message
-					    (sender, recipient, content, timestamp)
+					    (sender_id, recipient_id, content, timestamp)
 					VALUES (#{sender}, #{recipient}, #{content}, #{timestamp})
 					""")
 	void insertMessage(ChatMessage message);
@@ -19,7 +19,7 @@ public interface MessageMapper {
 	@Select("""
 					SELECT *
 					FROM chat_message
-					WHERE recipient = #{recipient}
+					WHERE recipient_id = #{recipient}
 					""")
 	List<ChatMessage> findMessagesByRecipient(String recipient);
 }

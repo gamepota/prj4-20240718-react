@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import * as dotenv from "dotenv";
 
 const targetServer = process.env.TARGET_SERVER || 'localhost';
+dotenv.config();
 
 export default defineConfig({
   plugins: [react()],

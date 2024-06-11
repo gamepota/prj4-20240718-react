@@ -12,30 +12,30 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
-	@Override
-	public void configureMessageBroker(org.springframework.messaging.simp.config.MessageBrokerRegistry config) {
-		config.enableSimpleBroker("/topic");
-		config.setApplicationDestinationPrefixes("/app");
-	}
+    @Override
+    public void configureMessageBroker(org.springframework.messaging.simp.config.MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
+    }
 
-	@Override
-	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws")
-						.setAllowedOriginPatterns("*")
-						.withSockJS();
-	}
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws/{senderId}/{recipientId}")
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
+    }
 
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-								.allowedOrigins("http://localhost:5173","http://172.30.1.13")
-								.allowedMethods("*")
-								.allowedHeaders("*")
-								.allowCredentials(true);
-			}
-		};
-	}
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173")
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
+    }
 }
