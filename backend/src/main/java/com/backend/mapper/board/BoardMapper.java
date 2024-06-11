@@ -17,8 +17,9 @@ public interface BoardMapper {
     @Select("""
             SELECT * FROM board 
             ORDER BY id DESC
+            LIMIT #{offset},#{pageAmount}
             """)
-    List<Board> selectAll();
+    List<Board> selectAll(Integer offset, Integer pageAmount);
 
     @Select("""
             Select * 

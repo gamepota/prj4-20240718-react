@@ -32,8 +32,9 @@ public class BoardService {
         return true;
     }
 
-    public List<Board> list() {
-        return mapper.selectAll();
+    public List<Board> list(Integer pageAmount, Integer currentPage) throws Exception {
+        Integer offset = ((currentPage - 1) * pageAmount);
+        return mapper.selectAll(offset, pageAmount);
     }
 
 

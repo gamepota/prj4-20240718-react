@@ -27,8 +27,8 @@ public class BoardController {
     }
 
     @GetMapping("list")
-    public List<Board> list() {
-        return service.list();
+    public List<Board> list(@RequestParam Integer pageAmount, @RequestParam Integer currentPage) throws Exception {
+        return service.list(pageAmount, currentPage);
     }
 
     @GetMapping("{id}")
