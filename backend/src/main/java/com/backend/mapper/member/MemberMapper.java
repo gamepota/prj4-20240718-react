@@ -5,8 +5,12 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface MemberMapper {
+
+    // MemberSignup
     @Insert("""
             INSERT INTO member(name, email, nickname, password, gender, nationality, birth_date, phone_number, address)
             VALUES (#{name}, #{email}, #{nickname}, #{password}, #{gender}, #{nationality}, #{birthDate}, #{phoneNumber}, #{address})
@@ -28,4 +32,12 @@ public interface MemberMapper {
             WHERE nickname = #{nickname}
             """)
     Member selectByNickname(String nickname);
+
+    // MemberList
+    @Select("""
+            SELECT *
+            FROM member
+            ORDER BY id ASC
+            """)
+    List<Member> selectAll();
 }
