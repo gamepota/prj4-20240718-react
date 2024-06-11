@@ -17,7 +17,7 @@ VALUES ('서울 성윤모 병원', '서울특별시 성북구 이대로 111', '0
 CREATE TABLE hospital_comment
 (
     id        INT PRIMARY KEY AUTO_INCREMENT,
-    board_id  INT          NOT NULL REFERENCES hospital (hospital_id),
+    board_id  INT          NOT NULL REFERENCES hospital (id),
     member_id INT          NOT NULL REFERENCES member (id),
     comment   VARCHAR(500) NOT NULL,
     inserted  DATETIME     NOT NULL DEFAULT NOW()

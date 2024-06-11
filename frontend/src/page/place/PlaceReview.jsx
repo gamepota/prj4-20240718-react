@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, FormControl, FormLabel, Input, Spinner } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { CommentComponent } from "../../component/place/CommentComponent.jsx";
 
 export function PlaceReview() {
   const { id } = useParams();
@@ -39,6 +40,9 @@ export function PlaceReview() {
           <FormLabel>병원번호</FormLabel>
           <Input value={hospital.callNumber} readOnly />
         </FormControl>
+      </Box>
+      <Box>
+        <CommentComponent hospitalId={hospital.id} />
       </Box>
     </Box>
   );

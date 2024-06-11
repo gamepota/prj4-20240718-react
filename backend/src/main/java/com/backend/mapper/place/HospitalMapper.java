@@ -10,7 +10,7 @@ public interface HospitalMapper {
     @Select("""
             SELECT *
             FROM hospital
-            WHERE hospital_id = #{id}
+            WHERE id = #{id}
             """)
     Hospital selectById(Integer id);
 }
