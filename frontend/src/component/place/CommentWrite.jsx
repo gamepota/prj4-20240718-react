@@ -8,7 +8,7 @@ export function CommentWrite({ hospitalId }) {
   function handleCommentSubmitClick() {
     axios
       .post("/api/comment/add", { hospitalId, comment })
-      .then()
+      .then((res) => {})
       .catch()
       .finally();
   }
