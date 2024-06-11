@@ -2,10 +2,7 @@ package com.backend.mapper.diary;
 
 
 import com.backend.domain.diary.DiaryBoard;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -13,24 +10,30 @@ import java.util.List;
 public interface DiaryBoardMapper {
 
     @Insert("""
-                INSERT INTO diary(title, content, writer)
-                VALUES (#{title}, #{content}, #{writer}
+                INSERT INTO diary(content, writer,member_id)
+                VALUES (#{content}, #{writer},#{memberId})
             """)
     public int insert(DiaryBoard diaryBoard);
 
 
     @Select("""
-                SELECT id,title,writer
-                FROM diary
-                ORDER BY id DESC
+                SELECT 
+                d.id,
+                d.title,
+                m.nick_name.writer
+                FROM diary d JOIN member m ON d.member_id = m.id
+                ORDER BY d.id DESC
             """)
     List<DiaryBoard> selectAll();
 
 
     @Select("""
-                SELECT *
-                FROM diary
-                WHERE id = #{id}
+                SELECT d.id,
+                       d.content,
+                       d.inserted,
+                       m.nick_name.writer
+                FROM diary d JOIN member m on d.member_id = m.id
+                WHERE d.id = #{id}
             """)
     DiaryBoard selectById(Integer id);
 
@@ -41,4 +44,12 @@ public interface DiaryBoardMapper {
             """)
     int deleteById(Integer id);
 
+
+    @Update("""
+                UPDATE diary
+                SET content=#{content},
+                    writer=#{writer}
+                WHERE d.id=#{id}
+            """)
+    int update(DiaryBoard diaryBoard);
 }
