@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -12,18 +13,17 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export function DiaryBoardWrite() {
-  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
   const [loading, setLoading] = useState(false);
-  const [addFileList, setAddFileList] = useState([]);
+  const [files, setFiles] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
 
   // useEffect(() => {
   //   const fetchMemberName = async () => {
   //     try {
-  //       const response = await axios.get("/api/member"); // API 엔드포인트를 적절히 변경하세요
+  //       const response = await axios.get("/api/member"); // API 엔드포인트를 적절히 변경
   //       setWriter(response.data.name); // API 응답에 맞게 조정
   //     } catch (error) {
   //       // console.error("멤버 이름을 가져오는 데 실패했습니다", error);
@@ -38,8 +38,7 @@ export function DiaryBoardWrite() {
   function handleSaveClick() {
     setLoading(true);
     axios
-      .post(`/api/diaryBoard/add`, {
-        title,
+      .postForm(`/api/diaryBoard/add`, {
         content,
         writer,
       })
@@ -66,21 +65,25 @@ export function DiaryBoardWrite() {
   }
 
   let disableSaveButton = false;
-  if (title.trim().length === 0) {
-    disableSaveButton = true;
-  }
+
   if (content.trim().length === 0) {
     disableSaveButton = true;
   }
-  if (writer.trim().length === 0) {
-    disableSaveButton = true;
+
+  const fileNameList = [];
+  for (let i = 0; i < files; i++) {
+    fileNameList.push(
+      <Box>
+        <Text fontSize={"mb"}>{files[i].name}</Text>
+      </Box>,
+    );
   }
 
   return (
     <Box>
       <Box textAlign="center">방명록 작성</Box>
       <Box>
-        <Box>
+        <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
             <Input value={writer} readOnly />
@@ -94,15 +97,16 @@ export function DiaryBoardWrite() {
           </FormControl>
         </Box>
         <Box>
-          <FormControl>
+          <FormControl mt={0.5}>
             <Input
               multiple
               type="file"
               accept="image/*"
-              onChange={(e) => setAddFileList(e.target.files)}
+              onChange={(e) => setFiles(e.target.files)}
             />
           </FormControl>
-          <FormControl>
+
+          <FormControl mt={3}>
             <Button
               isLoading={loading}
               isDisabled={disableSaveButton}

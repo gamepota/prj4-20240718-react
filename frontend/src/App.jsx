@@ -16,7 +16,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <Home />,
     children: [
-      { path: "diary/view", element: <DiaryBoardView /> }, // 방명록 쓰기
+      { path: "diary/view", element: <DiaryBoardView /> }, //
       { path: "diary/write", element: <DiaryBoardWrite /> }, // 방명록 쓰기
       { path: "diary/home", element: <DiaryHome /> }, // 다이어리 홈
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
