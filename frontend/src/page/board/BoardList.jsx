@@ -8,7 +8,10 @@ export function BoardList() {
   const navigate = useNavigate();
   useEffect(() => {
     axios.get("/api/board/list").then((res) => {
+      console.log("API 응답데이터", res.data);
+      // const validData = res.data.filter((board) => board.board_id != null);
       setBoardList(res.data);
+      console.log(res.data);
     });
   }, []);
   return (
