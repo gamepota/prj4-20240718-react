@@ -1,4 +1,4 @@
-import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
@@ -14,13 +14,18 @@ export function DiaryBoardList() {
   }, []);
   return (
     <Box>
-      <Box>미니홈피 목록</Box>
+      <Box mb={7} textAlign={"center"}>
+        방명록 목록
+      </Box>
+      <Box>
+        <Button onClick={() => navigate(`/diary/write`)}>글쓰기</Button>
+      </Box>
       <Box>
         <Table>
           <Thead>
             <Tr>
-              <Th>#</Th>
-              <Th>Title</Th>
+              <Td>#</Td>
+              <Td>Title</Td>
               <Th>
                 <FontAwesomeIcon icon={faUserPen} />
               </Th>
@@ -37,8 +42,8 @@ export function DiaryBoardList() {
                 key={diary.id}
               >
                 <Td>{diary.id}</Td>
-                <Td>{diary.title}</Td>
                 <Td>{diary.writer}</Td>
+                <Td>{diary.inserted}</Td>
               </Tr>
             ))}
           </Tbody>

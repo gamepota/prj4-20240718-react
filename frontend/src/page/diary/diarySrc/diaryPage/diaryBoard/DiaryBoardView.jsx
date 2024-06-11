@@ -74,10 +74,6 @@ export function DiaryBoardView() {
       <Box>{board.id}번 게시물</Box>
       <Box>
         <FormControl>
-          <FormLabel>제목</FormLabel>
-          <Input value={board.title} readOnly />
-        </FormControl>
-        <FormControl>
           <FormLabel>본문</FormLabel>
           <Textarea value={board.content} readOnly />
         </FormControl>

@@ -3,18 +3,27 @@ import {
   Button,
   FormControl,
   FormLabel,
+  Spinner,
   Textarea,
-  useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export function DiaryBoardEdit() {
   const [board, setBoard] = useState(null);
-  const { id } = useDisclosure();
+  const { id } = useParams();
+
+  useEffect(() => {
+    axios.get(`/api/diaryBoard/${id}`).then((res) => setBoard(res.data));
+  }, []);
 
   function handleClickSave() {
-    axios.put();
+    axios.put("/api/diaryBoard/edit", board);
+  }
+
+  if (board === null) {
+    return <Spinner />;
   }
 
   return (
