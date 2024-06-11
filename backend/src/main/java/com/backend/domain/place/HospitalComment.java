@@ -13,5 +13,6 @@ public class HospitalComment {
     private LocalDate inserted;
 
     public void setMemberId(Integer integer) {
+
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/hospitalComment")
+@RequestMapping("/api/comment")
 @RequiredArgsConstructor
 public class HospitalCommentController {
 
@@ -19,7 +19,7 @@ public class HospitalCommentController {
 
     @PostMapping("add")
     @PreAuthorize("isAuthenticated()")
-    public void addcomment(@RequestBody HospitalComment hospitalComment,
+    public void addComment(@RequestBody HospitalComment hospitalComment,
                            Authentication authentication) {
         service.add(hospitalComment, authentication);
 

@@ -14,7 +14,6 @@ public class HospitalCommentService {
     final HospitalCommentMapper mapper;
 
     public void add(HospitalComment hospitalComment, Authentication authentication) {
-        hospitalComment.setMemberId(Integer.valueOf(authentication.getName()));
 
         mapper.insert(hospitalComment);
     }
