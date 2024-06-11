@@ -8,7 +8,7 @@ export function PlaceReview() {
   const [hospital, setHospital] = useState(null);
 
   useEffect(() => {
-    axios.get(`/api/place/${id}`).then((res) => setBoard(res.data));
+    axios.get(`/api/place/${id}`).then((res) => setHospital(res.data));
   }, []);
 
   if (hospital === null) {
@@ -19,7 +19,7 @@ export function PlaceReview() {
       <Box>
         <FormControl>
           <FormLabel>병원이름</FormLabel>
-          <Input value={hospital.id} readOnly />
+          <Input value={hospital.name} readOnly />
         </FormControl>
       </Box>
       <Box>
