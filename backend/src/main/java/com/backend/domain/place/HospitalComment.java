@@ -12,7 +12,5 @@ public class HospitalComment {
     private String comment;
     private LocalDate inserted;
 
-    public void setMemberId(Integer integer) {
-
-    }
+    
 }
