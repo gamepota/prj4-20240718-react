@@ -1,13 +1,45 @@
-import React from "react";
-import { Box } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, FormControl, FormLabel, Spinner } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export function PlaceReview() {
+  const { id } = useParams();
+  const [board, setBoard] = useState(null);
+
+  useEffect(() => {
+    axios.get(`/api/place/${id}`).then((res) => setBoard(res.data));
+  }, []);
+
+  if (board === null) {
+    return <Spinner />;
+  }
   return (
     <Box>
-      <Box>병원이름</Box>
-      <Box>사진</Box>
-      <Box>별점</Box>
-      <Box>번호</Box>
+      <Box>
+        <FormControl>
+          <FormLabel>병원이름</FormLabel>
+          {/*<Input value={} readOnly />*/}
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl>
+          <FormLabel>병원사진</FormLabel>
+          {/*<Input value={} readOnly />*/}
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl>
+          <FormLabel>병원주소</FormLabel>
+          {/*<Input value={} readOnly />*/}
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl>
+          <FormLabel>병원번호</FormLabel>
+          {/*<Input value={} readOnly />*/}
+        </FormControl>
+      </Box>
     </Box>
   );
 }
