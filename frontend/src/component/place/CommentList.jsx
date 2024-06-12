@@ -24,7 +24,7 @@ export function CommentList({ hospitalId, isSending }) {
       {commentList.map((comment) => (
         <Box key={comment.id} border={"1px solid black"} my={3}>
           <Flex>
-            <Box>{comment.memberId}</Box>
+            <Box>{comment.nickname}</Box>
             <Spacer />
             <Box>{comment.inserted}</Box>
           </Flex>
