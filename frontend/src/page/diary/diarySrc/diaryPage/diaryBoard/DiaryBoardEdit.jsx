@@ -19,26 +19,26 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function DiaryBoardEdit() {
-  const [board, setBoard] = useState(null);
+  const [diary, setDiary] = useState(null);
   const { id } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    axios.get(`/api/diaryBoard/${id}`).then((res) => setBoard(res.data));
+    axios.get(`/api/diaryBoard/${id}`).then((res) => setDiary(res.data.diary));
   }, []);
 
   function handleClickSave() {
     axios
-      .put("/api/diaryBoard/edit", board)
+      .put("/api/diaryBoard/edit", diary)
       .then(() => {
         toast({
           status: "success",
           description: "수정이 완료되었습니다.",
           position: "top",
         });
-        navigate(`/diaryBoard/${board.id}`);
+        navigate(`/diaryBoard/${diary.id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
@@ -55,20 +55,20 @@ export function DiaryBoardEdit() {
       });
   }
 
-  if (board === null) {
+  if (diary === null) {
     return <Spinner />;
   }
 
   return (
     <Box>
-      <Box>{board.writer}님 방명록 수정</Box>
+      <Box>{diary.writer}님 방명록 수정</Box>
       <Box>
         <Box>
           <FormControl>
             <FormLabel>글</FormLabel>
             <Textarea
-              defaultValue={board.content}
-              onChange={(e) => setBoard({ ...board, content: e.target.value })}
+              defaultValue={diary.content}
+              onChange={(e) => setDiary({ ...diary, content: e.target.value })}
             ></Textarea>
           </FormControl>
         </Box>

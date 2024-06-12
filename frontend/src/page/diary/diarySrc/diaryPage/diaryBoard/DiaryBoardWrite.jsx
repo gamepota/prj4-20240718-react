@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  Center,
   FormControl,
   FormLabel,
   Input,
@@ -81,43 +82,47 @@ export function DiaryBoardWrite() {
 
   return (
     <Box>
-      <Box textAlign="center">방명록 작성</Box>
-      <Box>
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>작성자</FormLabel>
-            <Input value={writer} readOnly />
-          </FormControl>
-        </Box>
+      <Center>
+        <Box w={700} p={6} boxShadow="lg" borderRadius="md" bg="white">
+          <Box textAlign="center">방명록 작성</Box>
+          <Box>
+            <Box mb={7}>
+              <FormControl>
+                <FormLabel>작성자</FormLabel>
+                <Input value={writer} readOnly />
+              </FormControl>
+            </Box>
 
-        <Box>
-          <FormControl>
-            <FormLabel>글 작성</FormLabel>
-            <Textarea onChange={(e) => setContent(e.target.value)} />
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl mt={0.5}>
-            <Input
-              multiple
-              type="file"
-              accept="image/*"
-              onChange={(e) => setFiles(e.target.files)}
-            />
-          </FormControl>
+            <Box>
+              <FormControl>
+                <FormLabel>글 작성</FormLabel>
+                <Textarea onChange={(e) => setContent(e.target.value)} />
+              </FormControl>
+            </Box>
+            <Box>
+              <FormControl mt={0.5}>
+                <Input
+                  multiple
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setFiles(e.target.files)}
+                />
+              </FormControl>
 
-          <FormControl mt={3}>
-            <Button
-              isLoading={loading}
-              isDisabled={disableSaveButton}
-              colorScheme={"blue"}
-              onClick={handleSaveClick}
-            >
-              등록
-            </Button>
-          </FormControl>
+              <FormControl mt={3}>
+                <Button
+                  isLoading={loading}
+                  isDisabled={disableSaveButton}
+                  colorScheme={"blue"}
+                  onClick={handleSaveClick}
+                >
+                  등록
+                </Button>
+              </FormControl>
+            </Box>
+          </Box>
         </Box>
-      </Box>
+      </Center>
     </Box>
   );
 }

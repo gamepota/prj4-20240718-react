@@ -21,7 +21,7 @@ import {
 
 export function DiaryBoardView() {
   const { id } = useParams();
-  const [board, setBoard] = useState(null);
+  const [diary, setDiary] = useState(null);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,7 +29,7 @@ export function DiaryBoardView() {
   useEffect(() => {
     axios
       .get(`/api/diaryBoard/${id}`)
-      .then((res) => setBoard(res.data))
+      .then((res) => setDiary(res.data))
       .catch((err) => {
         if (err.response.status === 404) {
           toast({
@@ -56,7 +56,7 @@ export function DiaryBoardView() {
       .catch(() => {
         toast({
           status: "error",
-          description: `${id}번 게시물 삭제 중 오류가 발하였습니다.`,
+          description: `${id}번 게시물 삭제 중 오류가 발생하였습니다.`,
           position: "top",
         });
       })
@@ -65,28 +65,28 @@ export function DiaryBoardView() {
       });
   }
 
-  if (board === null) {
+  if (diary === null) {
     return <Spinner />;
   }
 
   return (
     <Box>
-      <Box>{board.id}번 게시물</Box>
+      <Box>{diary.id}번 게시물</Box>
       <Box>
         <FormControl>
           <FormLabel>본문</FormLabel>
-          <Textarea value={board.content} readOnly />
+          <Textarea value={diary.content} readOnly />
         </FormControl>
         <FormControl>
           <FormLabel>작성자</FormLabel>
-          <Input value={board.writer} readOnly />
+          <Input value={diary.writer} />
         </FormControl>
         <FormControl>
           <FormLabel>작성일시</FormLabel>
-          <Input type="datetime-local" value={board.inserted} readOnly />
+          <Input type="datetime-local" value={diary.inserted} readOnly />
         </FormControl>
         <Button
-          onClick={() => navigate(`/edit/${board.id}`)}
+          onClick={() => navigate(`/diary/edit/${diary.id}`)}
           colorScheme="purple"
         >
           수정
