@@ -2,17 +2,20 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box, Flex, Spacer } from "@chakra-ui/react";
 
-export function CommentList({ hospitalId }) {
+export function CommentList({ hospitalId, isSending }) {
   const [commentList, setCommentList] = useState([]);
   useEffect(() => {
-    axios
-      .get(`/api/hospitalComment/list/${hospitalId}`)
-      .then((res) => {
-        setCommentList(res.data);
-      })
-      .catch((err) => console.log(err))
-      .finally(() => {});
-  }, []);
+    axios;
+    if (!isSending) {
+      axios
+        .get(`/api/comment/list/${hospitalId}`)
+        .then((res) => {
+          setCommentList(res.data);
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {});
+    }
+  }, [isSending]);
   if (commentList.length === 0) {
     return <Box>댓글이 없습니다. 첫 댓글을 작성해보세요.</Box>;
   }

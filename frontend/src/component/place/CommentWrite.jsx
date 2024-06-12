@@ -1,11 +1,14 @@
 import { Box, Button, Textarea } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-export function CommentWrite({ hospitalId }) {
+export function CommentWrite({ hospitalId, isSending, setIsSending }) {
   const [comment, setComment] = useState("");
 
   function handleCommentSubmitClick() {
+    setIsSending(true);
     axios
       .post("/api/hospitalComment/add", {
         hospitalId,
@@ -13,7 +16,9 @@ export function CommentWrite({ hospitalId }) {
       })
       .then((res) => {})
       .catch()
-      .finally();
+      .finally(() => {
+        setIsSending(false);
+      });
   }
 
   return (
@@ -23,8 +28,12 @@ export function CommentWrite({ hospitalId }) {
         value={comment}
         onChange={(e) => setComment(e.target.value)}
       />
-      <Button onClick={handleCommentSubmitClick} colorScheme="blue">
-        아이콘
+      <Button
+        isLoading={isSending}
+        onClick={handleCommentSubmitClick}
+        colorScheme="blue"
+      >
+        <FontAwesomeIcon icon={faPaperPlane} />
       </Button>
     </Box>
   );
