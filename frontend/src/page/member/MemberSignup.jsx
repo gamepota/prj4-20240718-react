@@ -37,6 +37,7 @@ export function MemberSignup(props) {
   const [isNicknameValid, setIsNicknameValid] = useState(false);
   const [isNicknameConfirmed, setIsNicknameConfirmed] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isNameValid, setIsNameValid] = useState(false);
   const [isBirthDateValid, setIsBirthDateValid] = useState(false);
   const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
 
@@ -62,7 +63,7 @@ export function MemberSignup(props) {
     isPasswordRight &&
     gender &&
     nationality &&
-    name &&
+    isNameValid &&
     isBirthDateValid &&
     isPhoneNumberValid &&
     postcode;
@@ -86,6 +87,12 @@ export function MemberSignup(props) {
         password,
       );
     setIsPasswordValid(passwordRegex);
+  }
+
+  // 이름 유효성 검사
+  function validateName(name) {
+    const nameRegex = /^[가-힣]+$/.test(name);
+    setIsNameValid(nameRegex);
   }
 
   // 생년월일 유효성 검사
@@ -120,7 +127,14 @@ export function MemberSignup(props) {
     return phoneNumberRegex;
   }
 
-  // 생년월일 정규식
+  // 이름 입력 처리
+  function handleNameChange(e) {
+    const name = e.target.value.trim();
+    setName(name);
+    validateName(name);
+  }
+
+  // 생년월일 입력 처리
   function handleBirthDateChange(e) {
     const birthDateRegex = e.target.value.replace(/[^0-9]/g, "").slice(0, 8); // 숫자만 입력받고 8자리로 제한
     setBirthDate(birthDateRegex);
@@ -130,7 +144,7 @@ export function MemberSignup(props) {
     setIsBirthDateValid(isValid);
   }
 
-  // 휴대폰 번호 정규식
+  // 연락처 입력 처리
   function handlePhoneNumberChange(e) {
     const phoneNumberRegex = e.target.value
       .replace(/[^0-9]/g, "") // 숫자만 입력받기
@@ -485,10 +499,14 @@ export function MemberSignup(props) {
               <Input
                 placeholder="이름"
                 value={name}
-                onChange={(e) => {
-                  setName(e.target.value.trim());
-                }}
+                onChange={handleNameChange}
               />
+              {!isNameValid && name && (
+                <Alert status="error" mt={2}>
+                  <AlertIcon />
+                  이름은 한글만 입력 가능합니다.
+                </Alert>
+              )}
             </FormControl>
             <FormControl isRequired>
               <Input
@@ -499,7 +517,7 @@ export function MemberSignup(props) {
               {!isBirthDateValid && birthDate && (
                 <Alert status="error" mt={2}>
                   <AlertIcon />
-                  올바른 날짜가 아닙니다.
+                  올바르지 않은 생년월일 형식입니다.
                 </Alert>
               )}
             </FormControl>
@@ -514,7 +532,7 @@ export function MemberSignup(props) {
               {!isPhoneNumberValid && phoneNumber && (
                 <Alert status="error" mt={2}>
                   <AlertIcon />
-                  올바른 번호가 아닙니다.
+                  올바르지 않은 연락처 형식입니다.
                 </Alert>
               )}
             </FormControl>
