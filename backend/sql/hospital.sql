@@ -28,3 +28,7 @@ SELECT *
 FROM hospital_comment;
 
 DROP TABLE hospital_comment;
+
+
+INSERT INTO hospital_comment(hospital_id, member_id, comment)
+VALUES (1, 12, '여기 병원 정말 좋습니다.');
