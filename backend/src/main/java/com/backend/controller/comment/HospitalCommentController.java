@@ -1,7 +1,7 @@
-package com.backend.controller.place;
+package com.backend.controller.comment;
 
-import com.backend.domain.place.HospitalComment;
-import com.backend.service.place.HospitalCommentService;
+import com.backend.domain.comment.HospitalComment;
+import com.backend.service.comment.HospitalCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping("/api/hospitalComment")
 @RequiredArgsConstructor
 public class HospitalCommentController {
 

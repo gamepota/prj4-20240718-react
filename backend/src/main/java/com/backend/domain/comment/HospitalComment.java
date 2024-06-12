@@ -1,4 +1,4 @@
-package com.backend.domain.place;
+package com.backend.domain.comment;
 
 import lombok.Data;
 
@@ -7,10 +7,10 @@ import java.time.LocalDate;
 @Data
 public class HospitalComment {
     private Integer id;
-    private String hospitalId;
-    private String memberId;
+    private Integer hospitalId;
+    private Integer memberId;
     private String comment;
     private LocalDate inserted;
 
-    
+
 }
