@@ -26,15 +26,11 @@ export function BoardList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let params = searchParams.toString();
-    // if (!params) {
-    //   params = "page=1"; // 기본값 설정
-    // }
-
     axios
-      .get(`/api/board/list?${params}`)
+      .get(`/api/board/list?${searchParams}`)
       .then((res) => {
-        console.log(`Search Parameters: ${params}`);
+        console.log(`Search Parameters: ${searchParams}`);
+        console.log(`Search Param.toString(): ${searchParams.toString()}`);
         setBoardList(res.data.boardList);
         setPageInfo(res.data.pageInfo);
       })
@@ -42,7 +38,7 @@ export function BoardList() {
         console.error("Error fetching data:", error);
       });
   }, [searchParams]);
-
+  console.log(searchParams.toString());
   function handlePageSizeChange(number) {
     setPageAmount(number);
   }
@@ -54,7 +50,7 @@ export function BoardList() {
 
   function handlePageButtonClick(pageNumber) {
     searchParams.set("page", pageNumber);
-    navigate(`/?${searchParams.toString()}`);
+    navigate(`?${searchParams}`);
   }
 
   return (
