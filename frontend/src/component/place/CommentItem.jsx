@@ -1,17 +1,23 @@
-import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
+import { Box, Button, Flex, Spacer, useToast } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export function CommentItem({ comment }) {
+export function CommentItem({ comment, isProcessing, setIsProcessing }) {
+  const toast = useToast();
+  const navigate = useNavigate();
   function handleRemoveClick() {
+    setIsProcessing(true);
     axios
-      .delete("/api/hopitalComments/remove", {
+      .delete("/api/hospitalComments/remove", {
         data: { id: comment.id },
       })
       .then((res) => {})
       .catch((err) => {})
-      .finally(() => {});
+      .finally(() => {
+        setIsProcessing(false);
+      });
   }
 
   return (
@@ -25,7 +31,11 @@ export function CommentItem({ comment }) {
         <Box>{comment.comment}</Box>
         <Spacer />
         <Box>
-          <Button colorScheme="red" onClick={handleRemoveClick}>
+          <Button
+            isLoading={isProcessing}
+            colorScheme="red"
+            onClick={handleRemoveClick}
+          >
             <FontAwesomeIcon icon={faTrashCan} />
           </Button>
         </Box>

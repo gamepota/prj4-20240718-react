@@ -4,11 +4,11 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-export function CommentWrite({ hospitalId, isSending, setIsSending }) {
+export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
   const [comment, setComment] = useState("");
   const toast = useToast();
   function handleCommentSubmitClick() {
-    setIsSending(true);
+    setIsProcessing(true);
     axios
       .post("/api/hospitalComment/add", {
         hospitalId,
@@ -24,7 +24,7 @@ export function CommentWrite({ hospitalId, isSending, setIsSending }) {
       })
       .catch()
       .finally(() => {
-        setIsSending(false);
+        setIsProcessing(false);
       });
   }
 
@@ -37,7 +37,7 @@ export function CommentWrite({ hospitalId, isSending, setIsSending }) {
       />
       <Button
         isDisabled={comment.trim().length === 0}
-        isLoading={isSending}
+        isLoading={isProcessing}
         onClick={handleCommentSubmitClick}
         colorScheme="blue"
       >

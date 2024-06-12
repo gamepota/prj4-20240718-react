@@ -4,15 +4,19 @@ import { CommentWrite } from "./CommentWrite.jsx";
 import { useState } from "react";
 
 export function CommentComponent({ hospitalId }) {
-  const [isSending, setIsSending] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   return (
     <Box>
       <CommentWrite
         hospitalId={hospitalId}
-        isSending={isSending}
-        setIsSending={setIsSending}
+        isSending={isProcessing}
+        setIsSending={setIsProcessing}
       />
-      <CommentList hospitalId={hospitalId} />
+      <CommentList
+        hospitalId={hospitalId}
+        setIsProcessing={setIsProcessing}
+        isProcessing={isProcessing}
+      />
     </Box>
   );
 }

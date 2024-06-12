@@ -6,11 +6,11 @@ import { CommentItem } from "./CommentItem.jsx";
 
 CommentItem.propTypes = { comment: PropTypes.any };
 
-export function CommentList({ hospitalId, isSending }) {
+export function CommentList({ hospitalId, isProcessing, setIsProcessing }) {
   const [commentList, setCommentList] = useState([]);
   useEffect(() => {
     axios;
-    if (!isSending) {
+    if (!isProcessing) {
       axios
         .get(`/api/hospitalComment/list/${hospitalId}`)
         .then((res) => {
@@ -19,14 +19,19 @@ export function CommentList({ hospitalId, isSending }) {
         .catch((err) => console.log(err))
         .finally(() => {});
     }
-  }, [isSending]);
+  }, [isProcessing]);
   if (commentList.length === 0) {
     return <Box>댓글이 없습니다. 첫 댓글을 작성해보세요.</Box>;
   }
   return (
     <Box>
       {commentList.map((comment) => (
-        <CommentItem comment={comment} key={comment.id} />
+        <CommentItem
+          isProcessing={isProcessing}
+          setIsProcessing={setIsProcessing}
+          comment={comment}
+          key={comment.id}
+        />
       ))}
     </Box>
   );
