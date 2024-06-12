@@ -12,6 +12,7 @@ import { DiaryBoardWrite } from "./page/diary/diarySrc/diaryPage/diaryBoard/Diar
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
 import { DiaryBoardView } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardView.jsx";
 import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardEdit.jsx";
+import { DiaryGalleryAlbumList } from "./page/diary/diarySrc/diaryPage/diarygallery/DiaryGalleryAlbumList.jsx";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
     element: <Home />,
     children: [
       { path: "diary/list", element: <DiaryBoardList /> }, // 방명록 목록
+      { path: "diary/gallery", element: <DiaryGalleryAlbumList /> },
       { path: "diary/edit/:id", element: <DiaryBoardEdit /> },
       { path: "diary/view/:id", element: <DiaryBoardView /> }, //
       { path: "diary/write", element: <DiaryBoardWrite /> }, // 방명록 쓰기
