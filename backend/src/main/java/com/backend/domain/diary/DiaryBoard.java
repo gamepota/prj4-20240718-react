@@ -11,5 +11,6 @@ public class DiaryBoard {
     private String content;
     private String writer;
     private Integer memberId;
+    private String nick_name;
     private LocalDateTime inserted;
 }

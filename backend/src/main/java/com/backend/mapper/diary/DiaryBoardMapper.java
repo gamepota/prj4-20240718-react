@@ -10,46 +10,46 @@ import java.util.List;
 public interface DiaryBoardMapper {
 
     @Insert("""
-                INSERT INTO diary(content, writer,member_id)
-                VALUES (#{content}, #{writer},#{memberId})
+                INSERT INTO test(content,writer,title)
+                VALUES (#{content}, #{writer},#{title})
             """)
-    public int insert(DiaryBoard diaryBoard);
+    int insert(DiaryBoard diaryBoard);
 
 
     @Select("""
                 SELECT 
-                d.id,
-                d.title,
-                m.nick_name.writer
-                FROM diary d JOIN member m ON d.member_id = m.id
-                ORDER BY d.id DESC
+                id,
+                title,
+                writer
+                FROM test
+                ORDER BY id DESC
             """)
     List<DiaryBoard> selectAll();
 
 
     @Select("""
-                SELECT d.id,
-                       d.content,
-                       d.inserted,
-                       m.nick_name.writer
-                FROM diary d JOIN member m on d.member_id = m.id
-                WHERE d.id = #{id}
+                SELECT id,
+                       content,
+                       inserted,
+                       writer,
+                FROM test
+                WHERE id = #{id}
             """)
     DiaryBoard selectById(Integer id);
 
 
     @Delete("""
-            DELETE FROM diary
+            DELETE FROM test
             WHERE id = #{id}
             """)
     int deleteById(Integer id);
 
 
     @Update("""
-                UPDATE diary
+                UPDATE test
                 SET content=#{content},
                     writer=#{writer}
-                WHERE d.id=#{id}
+                WHERE id=#{id}
             """)
     int update(DiaryBoard diaryBoard);
 }
