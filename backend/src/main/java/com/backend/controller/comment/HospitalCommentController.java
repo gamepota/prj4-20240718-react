@@ -3,12 +3,12 @@ package com.backend.controller.comment;
 import com.backend.domain.comment.HospitalComment;
 import com.backend.service.comment.HospitalCommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/hospitalComment")
@@ -19,9 +19,21 @@ public class HospitalCommentController {
 
     @PostMapping("add")
     @PreAuthorize("isAuthenticated()")
-    public void addComment(@RequestBody HospitalComment hospitalComment,
-                           Authentication authentication) {
-        service.add(hospitalComment, authentication);
+    public ResponseEntity<Object> addComment(@RequestBody HospitalComment hospitalComment,
+                                             Authentication authentication) {
+        if (service.validate(hospitalComment)) {
+            service.add(hospitalComment, authentication);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
 
+    }
+
+    @GetMapping("list/{hospitalId}")
+    public List<HospitalComment> list(@PathVariable Integer hospitalId) {
+
+
+        return service.list(hospitalId);
     }
 }

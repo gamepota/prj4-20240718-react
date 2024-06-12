@@ -3,6 +3,9 @@ package com.backend.mapper.comment;
 import com.backend.domain.comment.HospitalComment;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface HospitalCommentMapper {
@@ -12,4 +15,12 @@ public interface HospitalCommentMapper {
             VALUES (#{hospitalId}, #{memberId}, #{comment})
             """)
     int insert(HospitalComment hospitalComment);
+
+    @Select("""
+            SELECT *
+            FROM hospital_comment
+            WHERE  hospital_id = #{hospitalId}
+            ORDER BY id
+            """)
+    List<HospitalComment> selectByHospitalId(Integer hospitalId);
 }

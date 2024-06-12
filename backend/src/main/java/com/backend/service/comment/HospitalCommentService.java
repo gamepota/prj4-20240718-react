@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
@@ -16,5 +18,19 @@ public class HospitalCommentService {
     public void add(HospitalComment hospitalComment, Authentication authentication) {
         hospitalComment.setMemberId(Integer.valueOf(authentication.getName()));
         mapper.insert(hospitalComment);
+    }
+
+    public boolean validate(HospitalComment hospitalComment) {
+        if (hospitalComment == null) {
+            return false;
+        }
+        if (hospitalComment.getComment().isBlank()) {
+            return false;
+        }
+        return true;
+    }
+
+    public List<HospitalComment> list(Integer hospitalId) {
+        return mapper.selectByHospitalId(hospitalId);
     }
 }
