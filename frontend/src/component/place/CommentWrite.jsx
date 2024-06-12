@@ -1,4 +1,4 @@
-import { Box, Button, Textarea } from "@chakra-ui/react";
+import { Box, Button, Textarea, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,7 +6,7 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export function CommentWrite({ hospitalId, isSending, setIsSending }) {
   const [comment, setComment] = useState("");
-
+  const toast = useToast();
   function handleCommentSubmitClick() {
     setIsSending(true);
     axios
@@ -14,7 +14,14 @@ export function CommentWrite({ hospitalId, isSending, setIsSending }) {
         hospitalId,
         comment,
       })
-      .then((res) => {})
+      .then((res) => {
+        setComment("");
+        toast({
+          description: "댓글이 등록되었습니다.",
+          position: "top",
+          status: "success",
+        });
+      })
       .catch()
       .finally(() => {
         setIsSending(false);
