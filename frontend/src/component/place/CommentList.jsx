@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Flex, Spacer } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import * as PropTypes from "prop-types";
+import { CommentItem } from "./CommentItem.jsx";
+
+CommentItem.propTypes = { comment: PropTypes.any };
 
 export function CommentList({ hospitalId, isSending }) {
   const [commentList, setCommentList] = useState([]);
@@ -8,7 +12,7 @@ export function CommentList({ hospitalId, isSending }) {
     axios;
     if (!isSending) {
       axios
-        .get(`/api/comment/list/${hospitalId}`)
+        .get(`/api/hospitalComment/list/${hospitalId}`)
         .then((res) => {
           setCommentList(res.data);
         })
@@ -22,14 +26,7 @@ export function CommentList({ hospitalId, isSending }) {
   return (
     <Box>
       {commentList.map((comment) => (
-        <Box key={comment.id} border={"1px solid black"} my={3}>
-          <Flex>
-            <Box>{comment.nickname}</Box>
-            <Spacer />
-            <Box>{comment.inserted}</Box>
-          </Flex>
-          <Box>{comment.comment}</Box>
-        </Box>
+        <CommentItem comment={comment} key={comment.id} />
       ))}
     </Box>
   );
