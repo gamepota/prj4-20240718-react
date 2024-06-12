@@ -48,9 +48,9 @@ public interface BoardMapper {
     int selectAllCount();
 
     @Select("""
-            SELECT * FROM board 
+            SELECT id,title,writer FROM board 
             ORDER BY id DESC
-            LIMIT #{offset}
+            LIMIT #{offset},10
             """)
-    Object selectAllPaging(Integer offset);
+    List<Board> selectAllPaging(Integer offset);
 }

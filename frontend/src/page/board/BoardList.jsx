@@ -24,14 +24,23 @@ export function BoardList() {
   const [pageInfo, setPageInfo] = useState({});
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  useEffect(() => {
-    axios.get(`/api/board/list?${searchParams}`).then((res) => {
-      console.log("API 응답데이터", res.data);
-      // const validData = res.data.filter((board) => board.board_id != null);
 
-      setBoardList(res.data.boardList);
-      setPageInfo(res.data.pageInfo);
-    });
+  useEffect(() => {
+    let params = searchParams.toString();
+    // if (!params) {
+    //   params = "page=1"; // 기본값 설정
+    // }
+
+    axios
+      .get(`/api/board/list?${params}`)
+      .then((res) => {
+        console.log(`Search Parameters: ${params}`);
+        setBoardList(res.data.boardList);
+        setPageInfo(res.data.pageInfo);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   }, [searchParams]);
 
   function handlePageSizeChange(number) {
@@ -39,13 +48,13 @@ export function BoardList() {
   }
 
   const pageNumbers = [];
-  for (let i = pageInfo.leftpageNumber; i < pageInfo.rightPageNumber; i++) {
+  for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
     pageNumbers.push(i);
   }
 
   function handlePageButtonClick(pageNumber) {
     searchParams.set("page", pageNumber);
-    navigate(`/?${searchParams}`);
+    navigate(`/?${searchParams.toString()}`);
   }
 
   return (

@@ -28,6 +28,7 @@ public class BoardController {
 
     @GetMapping("list")
     public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page) throws Exception {
+        System.out.println("page = " + page);
         return service.list(page);
     }
 

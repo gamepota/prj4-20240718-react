@@ -40,7 +40,7 @@ public class BoardService {
         }
         Map<String, Object> pageInfo = new HashMap();
         Integer countAll = mapper.selectAllCount();
-
+        System.out.println(page);
         Integer offset = (page - 1) * 10;
         Integer lastPageNumber = (countAll - 1) / 10 + 1;
         Integer leftPageNumber = (page - 1) / 10 * 10 + 1;
@@ -57,6 +57,7 @@ public class BoardService {
         if (nextPageNumber <= lastPageNumber) {
             pageInfo.put("nextPageNumber", nextPageNumber);
         }
+        System.out.println("offset = " + offset);
         pageInfo.put("currentPageNumber", page);
         pageInfo.put("lastPageNumber", lastPageNumber);
         pageInfo.put("leftPageNumber", leftPageNumber);
