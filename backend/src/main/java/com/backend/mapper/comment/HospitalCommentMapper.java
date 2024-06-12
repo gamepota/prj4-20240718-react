@@ -30,4 +30,11 @@ public interface HospitalCommentMapper {
             WHERE id = #{id}
             """)
     int deletById(Integer id);
+
+    @Select("""
+            SELECT *
+            FROM hospital_comment
+            WHERE id = #{id}
+            """)
+    HospitalComment selectById(Integer id);
 }

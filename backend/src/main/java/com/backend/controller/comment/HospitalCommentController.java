@@ -3,6 +3,7 @@ package com.backend.controller.comment;
 import com.backend.domain.comment.HospitalComment;
 import com.backend.service.comment.HospitalCommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -38,7 +39,13 @@ public class HospitalCommentController {
     }
 
     @DeleteMapping("remove")
-    public void remove(@RequestBody HospitalComment hospitalComment) {
-        service.remove(hospitalComment);
+    public ResponseEntity remove(@RequestBody HospitalComment hospitalComment,
+                                 Authentication authentication) {
+        if (service.hasAccess(hospitalComment, authentication)) {
+            service.remove(hospitalComment);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 }
