@@ -12,5 +12,7 @@ public class HospitalComment {
     private String comment;
     private LocalDate inserted;
 
+    private String nickName;
+
 
 }
