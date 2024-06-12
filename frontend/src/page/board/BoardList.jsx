@@ -20,7 +20,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
-  const [pageAmount, setPageAmount] = useState(50);
+  const [pageAmount, setPageAmount] = useState(30);
   const [pageInfo, setPageInfo] = useState({});
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -29,8 +29,6 @@ export function BoardList() {
     axios
       .get(`/api/board/list?${searchParams}`)
       .then((res) => {
-        console.log(`Search Parameters: ${searchParams}`);
-        console.log(`Search Param.toString(): ${searchParams.toString()}`);
         setBoardList(res.data.boardList);
         setPageInfo(res.data.pageInfo);
       })
@@ -38,9 +36,13 @@ export function BoardList() {
         console.error("Error fetching data:", error);
       });
   }, [searchParams]);
-  console.log(searchParams.toString());
+  console.log("searchParam=", searchParams.toString());
+  console.log("pageAmount=", pageAmount);
+
   function handlePageSizeChange(number) {
     setPageAmount(number);
+    searchParams.set("pageAmount", number);
+    navigate(`?${searchParams}`);
   }
 
   const pageNumbers = [];
@@ -83,6 +85,9 @@ export function BoardList() {
                     {`게시글 (${pageAmount})개씩 보기`}
                   </MenuButton>
                   <MenuList>
+                    <MenuItem onClick={() => handlePageSizeChange(10)}>
+                      10개씩 보기
+                    </MenuItem>
                     <MenuItem onClick={() => handlePageSizeChange(30)}>
                       30개씩 보기
                     </MenuItem>

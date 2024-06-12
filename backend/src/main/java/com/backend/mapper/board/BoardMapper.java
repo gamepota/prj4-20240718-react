@@ -50,7 +50,7 @@ public interface BoardMapper {
     @Select("""
             SELECT id,title,writer FROM board 
             ORDER BY id DESC
-            LIMIT #{offset},10
+            LIMIT #{offset},#{pageAmount}
             """)
-    List<Board> selectAllPaging(Integer offset);
+    List<Board> selectAllPaging(Integer offset, Integer pageAmount);
 }

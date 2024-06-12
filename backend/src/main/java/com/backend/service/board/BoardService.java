@@ -34,15 +34,15 @@ public class BoardService {
         return true;
     }
 
-    public Map<String, Object> list(Integer page) throws Exception {
+    public Map<String, Object> list(Integer page, Integer pageAmount) throws Exception {
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
         }
         Map<String, Object> pageInfo = new HashMap();
         Integer countAll = mapper.selectAllCount();
 //        System.out.println(page);
-        Integer offset = (page - 1) * 10;
-        Integer lastPageNumber = (countAll - 1) / 10 + 1;
+        Integer offset = (page - 1) * pageAmount;
+        Integer lastPageNumber = (countAll - 1) / pageAmount + 1;
         Integer leftPageNumber = (page - 1) / 10 * 10 + 1;
         Integer rightPageNumber = leftPageNumber + 9;
         rightPageNumber = Math.min(rightPageNumber, lastPageNumber);
@@ -63,7 +63,7 @@ public class BoardService {
         pageInfo.put("leftPageNumber", leftPageNumber);
         pageInfo.put("rightPageNumber", rightPageNumber);
         return Map.of("pageInfo", pageInfo,
-                "boardList", mapper.selectAllPaging(offset));
+                "boardList", mapper.selectAllPaging(offset, pageAmount));
     }
 
 

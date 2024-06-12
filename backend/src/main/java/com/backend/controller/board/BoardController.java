@@ -27,9 +27,10 @@ public class BoardController {
     }
 
     @GetMapping("list")
-    public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page) throws Exception {
+    public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
+                                    @RequestParam(defaultValue = "30") Integer pageAmount) throws Exception {
 //        System.out.println("page = " + page);
-        return service.list(page);
+        return service.list(page, pageAmount);
     }
 
     @GetMapping("{id}")
