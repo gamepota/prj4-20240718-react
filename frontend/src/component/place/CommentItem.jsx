@@ -4,6 +4,7 @@ import {
   Flex,
   Modal,
   ModalBody,
+  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -52,20 +53,22 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
           <Button isLoading={isProcessing} colorScheme="red" onClick={onOpen}>
             <FontAwesomeIcon icon={faTrashCan} />
           </Button>
-          <Modal>
+          <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
-            <ModalHeader>삭제 확인</ModalHeader>
-            <ModalBody>댓글을 삭제 하시겠습니까?</ModalBody>
-            <ModalFooter>
-              <Button onClick={onClose}>취소</Button>
-              <Button
-                isLoading={isProcessing}
-                colorScheme={"red"}
-                onClick={handleRemoveClick}
-              >
-                삭제
-              </Button>
-            </ModalFooter>
+            <ModalContent>
+              <ModalHeader>삭제 확인</ModalHeader>
+              <ModalBody>댓글을 삭제 하시겠습니까?</ModalBody>
+              <ModalFooter>
+                <Button onClick={onClose}>취소</Button>
+                <Button
+                  isLoading={isProcessing}
+                  colorScheme={"red"}
+                  onClick={handleRemoveClick}
+                >
+                  삭제
+                </Button>
+              </ModalFooter>
+            </ModalContent>
           </Modal>
         </Box>
       </Flex>
