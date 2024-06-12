@@ -6,7 +6,7 @@ export function CommentComponent({ hospitalId }) {
   return (
     <Box>
       <CommentWrite hospitalId={hospitalId} />
-      <CommentList />
+      <CommentList hospitalId={hospitalId} />
     </Box>
   );
 }
