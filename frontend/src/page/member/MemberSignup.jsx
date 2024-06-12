@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Center,
   Flex,
   FormControl,
-  FormHelperText,
   Input,
   InputGroup,
   InputRightElement,
@@ -65,8 +66,6 @@ export function MemberSignup(props) {
     isBirthDateValid &&
     isPhoneNumberValid &&
     postcode;
-
-  /* 유효성 */
 
   // 이메일 유효성 검사
   function validateEmail(email) {
@@ -320,9 +319,10 @@ export function MemberSignup(props) {
                 </InputRightElement>
               </InputGroup>
               {!isEmailValid && email && (
-                <FormHelperText color="red">
+                <Alert status="error" mt={2}>
+                  <AlertIcon />
                   올바르지 않은 이메일 형식입니다.
-                </FormHelperText>
+                </Alert>
               )}
             </FormControl>
             <FormControl isRequired>
@@ -365,9 +365,10 @@ export function MemberSignup(props) {
                 </InputRightElement>
               </InputGroup>
               {!isNicknameValid && nickname && (
-                <FormHelperText color="red">
+                <Alert status="error" mt={2}>
+                  <AlertIcon />
                   닉네임은 3~12자 사이의 한글, 영문, 숫자로 구성되어야 합니다.
-                </FormHelperText>
+                </Alert>
               )}
             </FormControl>
             <FormControl isRequired>
@@ -404,18 +405,20 @@ export function MemberSignup(props) {
                 )}
               </InputGroup>
               {!isPasswordValid && password && (
-                <FormHelperText color="red">
+                <Alert status="error" mt={2}>
+                  <AlertIcon />
                   비밀번호는 최소 8자에서 최대 16자 사이
                   <br />
-                  영문 대소문자, 숫자, 특수문자를 모두 포함해야 합니다.
-                </FormHelperText>
+                  영문 대소문자, 숫자, 특수문자를 포함해야 합니다.
+                </Alert>
               )}
               {confirmPassword && (
-                <FormHelperText color={isPasswordRight ? "green" : "red"}>
+                <Alert status={isPasswordRight ? "success" : "error"} mt={2}>
+                  <AlertIcon />
                   {isPasswordRight
                     ? "비밀번호가 일치합니다."
                     : "비밀번호가 일치하지 않습니다."}
-                </FormHelperText>
+                </Alert>
               )}
             </FormControl>
             <Flex>
@@ -494,9 +497,10 @@ export function MemberSignup(props) {
                 onChange={handleBirthDateChange}
               />
               {!isBirthDateValid && birthDate && (
-                <FormHelperText color="red">
-                  유효하지 않은 생년월일입니다.
-                </FormHelperText>
+                <Alert status="error" mt={2}>
+                  <AlertIcon />
+                  올바른 날짜가 아닙니다.
+                </Alert>
               )}
             </FormControl>
             <FormControl isRequired>
@@ -508,9 +512,10 @@ export function MemberSignup(props) {
                 onChange={handlePhoneNumberChange}
               />
               {!isPhoneNumberValid && phoneNumber && (
-                <FormHelperText color="red">
-                  유효하지 않은 번호입니다.
-                </FormHelperText>
+                <Alert status="error" mt={2}>
+                  <AlertIcon />
+                  올바른 번호가 아닙니다.
+                </Alert>
               )}
             </FormControl>
             <FormControl isRequired>
