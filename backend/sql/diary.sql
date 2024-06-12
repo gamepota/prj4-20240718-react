@@ -28,3 +28,15 @@ INSERT INTO test(id, title, content, writer)
 
 SELECT *
 FROM test;
+
+CREATE TABLE gallery
+(
+    id       INT PRIMARY KEY AUTO_INCREMENT,
+    title    VARCHAR(100) NOT NULL,
+    data     BLOB,
+    inserted DATETIME     NOT NULL DEFAULT NOW()
+);
+
+SELECT *
+FROM gallery;
+DROP TABLE gallery;

@@ -1,8 +1,10 @@
 package com.backend.mapper.diary;
 
-import com.backend.domain.diary.DiaryAlbum;
+import com.backend.domain.diary.DiaryGallery;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,9 +13,15 @@ public interface DiaryGalleryMapper {
 
     @Select("""
                 SELECT *
-                FROM Gallery
+                FROM gallery
                 ORDER BY inserted DESC
             """)
-    List<DiaryAlbum> selectAllAlbum();
+    List<DiaryGallery> selectAllGallery();
 
+
+    @Insert("""
+            INSERT INTO gallery(writer,title,data)
+            VALUES (#{writer},#{title},#{data})
+            """)
+    int upLoadGallery(DiaryGallery diaryAlbum, MultipartFile file);
 }

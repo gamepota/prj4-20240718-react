@@ -4,7 +4,7 @@ import jakarta.persistence.Lob;
 import lombok.Data;
 
 @Data
-public class DiaryAlbum {
+public class DiaryGallery {
     private Integer id;
     private String title;
 
