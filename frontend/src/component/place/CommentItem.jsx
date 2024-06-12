@@ -1,12 +1,24 @@
-import { Box, Button, Flex, Spacer, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Spacer,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 export function CommentItem({ comment, isProcessing, setIsProcessing }) {
   const toast = useToast();
-  const navigate = useNavigate();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
   function handleRemoveClick() {
     setIsProcessing(true);
     axios
@@ -16,7 +28,13 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
       .then((res) => {})
       .catch((err) => {})
       .finally(() => {
+        onClose();
         setIsProcessing(false);
+        toast({
+          description: "댓글이 삭제되었습니다.",
+          status: "info",
+          position: "top",
+        });
       });
   }
 
@@ -31,13 +49,24 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
         <Box>{comment.comment}</Box>
         <Spacer />
         <Box>
-          <Button
-            isLoading={isProcessing}
-            colorScheme="red"
-            onClick={handleRemoveClick}
-          >
+          <Button isLoading={isProcessing} colorScheme="red" onClick={onOpen}>
             <FontAwesomeIcon icon={faTrashCan} />
           </Button>
+          <Modal>
+            <ModalOverlay />
+            <ModalHeader>삭제 확인</ModalHeader>
+            <ModalBody>댓글을 삭제 하시겠습니까?</ModalBody>
+            <ModalFooter>
+              <Button onClick={onClose}>취소</Button>
+              <Button
+                isLoading={isProcessing}
+                colorScheme={"red"}
+                onClick={handleRemoveClick}
+              >
+                삭제
+              </Button>
+            </ModalFooter>
+          </Modal>
         </Box>
       </Flex>
     </Box>
