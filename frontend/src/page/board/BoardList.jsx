@@ -152,6 +152,7 @@ export function BoardList() {
           )}
           {pageNumbers.map((pageNumber) => (
             <Button
+              w={"10"}
               onClick={() => handlePageButtonClick(pageNumber)}
               key={pageNumber}
               colorScheme={
