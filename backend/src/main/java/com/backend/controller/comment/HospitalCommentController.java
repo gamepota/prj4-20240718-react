@@ -36,4 +36,9 @@ public class HospitalCommentController {
 
         return service.list(hospitalId);
     }
+
+    @DeleteMapping("remove")
+    public void remove(@RequestBody HospitalComment hospitalComment) {
+        service.remove(hospitalComment);
+    }
 }

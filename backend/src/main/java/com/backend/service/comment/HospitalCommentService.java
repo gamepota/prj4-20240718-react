@@ -33,4 +33,8 @@ public class HospitalCommentService {
     public List<HospitalComment> list(Integer hospitalId) {
         return mapper.selectByHospitalId(hospitalId);
     }
+
+    public void remove(HospitalComment hospitalComment) {
+        mapper.deletById(hospitalComment.getId());
+    }
 }
