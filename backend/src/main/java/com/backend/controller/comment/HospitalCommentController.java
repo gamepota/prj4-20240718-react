@@ -50,8 +50,15 @@ public class HospitalCommentController {
     }
 
     @PutMapping("edit")
-    public void edit(@RequestBody HospitalComment hospitalComment,
-                     Authentication authentication) {
-        service.edit(hospitalComment);
+    public ResponseEntity edit(@RequestBody HospitalComment hospitalComment,
+                               Authentication authentication) {
+        if (service.validate(hospitalComment)) {
+            service.edit(hospitalComment);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
+
     }
 }
