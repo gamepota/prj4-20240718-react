@@ -476,7 +476,7 @@ export function MemberSignup(props) {
                     cursor="pointer"
                     _hover={{ bg: "green.200" }}
                   >
-                    한국인
+                    내국인
                   </Button>
                   <Button
                     w="100px"

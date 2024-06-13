@@ -48,7 +48,7 @@ export function MemberInfo(props) {
     <Center>
       <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
         <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
-          회원 정보
+          나의 정보
         </Box>
         <Box>
           <FormControl>
@@ -87,7 +87,7 @@ export function MemberInfo(props) {
             onClick={() => setIsEditing(true)}
             _hover={{ bgColor: "purple.500 ", color: "white" }}
           >
-            수정 <FontAwesomeIcon icon={faEdit} />
+            <FontAwesomeIcon icon={faEdit} />
           </Button>
         </Box>
       </Box>
