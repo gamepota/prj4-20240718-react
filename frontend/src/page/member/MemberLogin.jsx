@@ -24,7 +24,9 @@ export function MemberLogin(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
+  async function handleLogin(event) {
+    if (event) event.preventDefault(); // form submit 방지
+
     setIsLoading(true);
     setError("");
 
@@ -65,7 +67,13 @@ export function MemberLogin(props) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }
+
+  function handleKeyPress(event) {
+    if (event.key === "Enter") {
+      handleLogin();
+    }
+  }
 
   return (
     <>
@@ -87,6 +95,7 @@ export function MemberLogin(props) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="이메일을 입력하세요"
+                onKeyPress={handleKeyPress}
               />
             </FormControl>
             <FormControl mb={4}>
@@ -97,7 +106,8 @@ export function MemberLogin(props) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="비밀번호를 입력하세요"
-                ></Input>
+                  onKeyPress={handleKeyPress}
+                />
               </InputGroup>
             </FormControl>
             <Flex justifyContent="space-between" mb={5}>
