@@ -37,7 +37,7 @@ export function BoardList() {
       });
   }, [searchParams]);
   console.log("searchParam=", searchParams.toString());
-  console.log("pageAmount=", pageAmount);
+  console.log("pageInfo=", pageInfo);
 
   function handlePageSizeChange(number) {
     setPageAmount(number);

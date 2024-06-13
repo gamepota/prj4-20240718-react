@@ -3,6 +3,7 @@ package com.backend.service.board;
 
 import com.backend.domain.board.Board;
 import com.backend.mapper.board.BoardMapper;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardService {
     final BoardMapper mapper;
+    private static final String PAGE_INFO_SEESION_KEY = "offset";
+//    private static final String PAGE_INFO_SEESION_KEY = "keyOffset";
+
 
     public void add(Board board) {
         mapper.insert(board);
@@ -34,14 +38,23 @@ public class BoardService {
         return true;
     }
 
-    public Map<String, Object> list(Integer page, Integer pageAmount) throws Exception {
+    public Map<String, Object> list(Integer page, Integer pageAmount, HttpSession session) throws Exception {
+
+
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
         }
+
+        Integer offset = (Integer) session.getAttribute(PAGE_INFO_SEESION_KEY);
+
+        if (offset == null) {
+            offset = (page - 1) * pageAmount;
+        }
+
+
         Map<String, Object> pageInfo = new HashMap();
         Integer countAll = mapper.selectAllCount();
 //        System.out.println(page);
-        Integer offset = (page - 1) * pageAmount;
         Integer lastPageNumber = (countAll - 1) / pageAmount + 1;
         Integer leftPageNumber = (page - 1) / 10 * 10 + 1;
         Integer rightPageNumber = leftPageNumber + 9;
@@ -62,6 +75,9 @@ public class BoardService {
         pageInfo.put("lastPageNumber", lastPageNumber);
         pageInfo.put("leftPageNumber", leftPageNumber);
         pageInfo.put("rightPageNumber", rightPageNumber);
+        pageInfo.put("offset", offset);
+        session.setAttribute(PAGE_INFO_SEESION_KEY, offset);
+
         return Map.of("pageInfo", pageInfo,
                 "boardList", mapper.selectAllPaging(offset, pageAmount));
     }

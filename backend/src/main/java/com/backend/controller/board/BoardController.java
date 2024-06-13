@@ -2,6 +2,7 @@ package com.backend.controller.board;
 
 import com.backend.domain.board.Board;
 import com.backend.service.board.BoardService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +29,10 @@ public class BoardController {
 
     @GetMapping("list")
     public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
-                                    @RequestParam(defaultValue = "30") Integer pageAmount) throws Exception {
+                                    @RequestParam(defaultValue = "30") Integer pageAmount,
+                                    HttpSession session) throws Exception {
 //        System.out.println("page = " + page);
-        return service.list(page, pageAmount);
+        return service.list(page, pageAmount, session);
     }
 
     @GetMapping("{id}")
