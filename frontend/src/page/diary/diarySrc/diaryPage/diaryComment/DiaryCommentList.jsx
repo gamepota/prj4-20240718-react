@@ -5,6 +5,7 @@ import { DiaryCommentItem } from "./DiaryCommentItem.jsx";
 
 export function DiaryCommentList({ boardId, isProcessing, setIsProcessing }) {
   const [commentList, setCommentList] = useState([]);
+
   useEffect(() => {
     if (!isProcessing) {
       axios
