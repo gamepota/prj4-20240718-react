@@ -1,10 +1,7 @@
 package com.backend.mapper.comment;
 
 import com.backend.domain.comment.HospitalComment;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -37,4 +34,11 @@ public interface HospitalCommentMapper {
             WHERE id = #{id}
             """)
     HospitalComment selectById(Integer id);
+
+    @Update("""
+            UPDATE hospital_comment
+            SET comment= #{comment}
+            WHERE id = #{id}
+            """)
+    int update(HospitalComment hospitalComment);
 }

@@ -48,4 +48,10 @@ public class HospitalCommentController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
+
+    @PutMapping("edit")
+    public void edit(@RequestBody HospitalComment hospitalComment,
+                     Authentication authentication) {
+        service.edit(hospitalComment);
+    }
 }

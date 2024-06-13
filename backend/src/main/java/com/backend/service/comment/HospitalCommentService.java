@@ -50,5 +50,9 @@ public class HospitalCommentService {
 
         return true;
     }
+
+    public void edit(HospitalComment hospitalComment) {
+        mapper.update(hospitalComment);
+    }
 }
 
