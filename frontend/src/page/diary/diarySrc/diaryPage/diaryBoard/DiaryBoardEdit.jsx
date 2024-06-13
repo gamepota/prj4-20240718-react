@@ -45,7 +45,7 @@ export function DiaryBoardEdit() {
           toast({
             status: "error",
             description:
-              "방명록이 수정되지 않았습니다. 작성한 내용을 확인해주세요.",
+              "게시물이 수정되지 않았습니다. 작성한 내용을 확인해주세요.",
             position: "top",
           });
         }
@@ -61,11 +61,11 @@ export function DiaryBoardEdit() {
 
   return (
     <Box>
-      <Box>{diary.writer}님 방명록 수정</Box>
+      <Box>사진첩 수정</Box>
       <Box>
         <Box>
           <FormControl>
-            <FormLabel>글</FormLabel>
+            <FormLabel>사진</FormLabel>
             <Textarea
               defaultValue={diary.content}
               onChange={(e) => setDiary({ ...diary, content: e.target.value })}

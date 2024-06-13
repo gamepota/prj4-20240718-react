@@ -12,18 +12,18 @@ import { DiaryBoardWrite } from "./page/diary/diarySrc/diaryPage/diaryBoard/Diar
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
 import { DiaryBoardView } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardView.jsx";
 import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardEdit.jsx";
-import { DiaryGalleryAlbumList } from "./page/diary/diarySrc/diaryPage/diarygallery/DiaryGalleryAlbumList.jsx";
+import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
     children: [
-      { path: "diary/list", element: <DiaryBoardList /> }, // 방명록 목록
-      { path: "diary/gallery", element: <DiaryGalleryAlbumList /> },
-      { path: "diary/edit/:id", element: <DiaryBoardEdit /> },
+      { path: "diary/comment", element: <DiaryCommentList /> }, // 사진첩 목록
+      { path: "diary/list", element: <DiaryBoardList /> }, // 사진첩 목록
+      { path: "diary/edit/:id", element: <DiaryBoardEdit /> }, // 사진첩 수정
       { path: "diary/view/:id", element: <DiaryBoardView /> }, //
-      { path: "diary/write", element: <DiaryBoardWrite /> }, // 방명록 쓰기
+      { path: "diary/write", element: <DiaryBoardWrite /> }, // 사진첩 쓰기
       { path: "diary/home", element: <DiaryHome /> }, // 다이어리 홈
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
       { path: "member/login", element: <MemberLogin /> }, // 회원 로그인

@@ -70,7 +70,6 @@ export function DiaryBoardWrite() {
   if (content.trim().length === 0) {
     disableSaveButton = true;
   }
-
   const fileNameList = [];
   for (let i = 0; i < files; i++) {
     fileNameList.push(
@@ -84,7 +83,7 @@ export function DiaryBoardWrite() {
     <Box>
       <Center>
         <Box w={700} p={6} boxShadow="lg" borderRadius="md" bg="white">
-          <Box textAlign="center">방명록 작성</Box>
+          <Box textAlign="center">게시물 업로드</Box>
           <Box>
             <Box mb={7}>
               <FormControl>
@@ -108,7 +107,8 @@ export function DiaryBoardWrite() {
                   onChange={(e) => setFiles(e.target.files)}
                 />
               </FormControl>
-
+            </Box>
+            <Box>
               <FormControl mt={3}>
                 <Button
                   isLoading={loading}

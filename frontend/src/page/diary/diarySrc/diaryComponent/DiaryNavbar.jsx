@@ -17,7 +17,7 @@ export function DiaryNavbar() {
         홈
       </Box>
       <Box
-        onClick={() => navigate("/diary/list")}
+        onClick={() => navigate("/diary/comment")}
         cursor={"pointer"}
         _hover={{
           bg: "blue.200",
@@ -26,7 +26,7 @@ export function DiaryNavbar() {
         방명록
       </Box>
       <Box
-        onClick={() => navigate("/diary/gallery")}
+        onClick={() => navigate("/diary/list")}
         cursor={"pointer"}
         _hover={{
           bg: "blue.200",

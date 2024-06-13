@@ -27,10 +27,10 @@ export function DiaryBoardList() {
       <Center>
         <Box w={1000} p={6} boxShadow="lg" borderRadius="md" bg="white">
           <Box mb={7} textAlign={"center"}>
-            방명록 목록
+            사진첩
           </Box>
           <Box>
-            <Button onClick={() => navigate(`/diary/write`)}>글쓰기</Button>
+            <Button onClick={() => navigate(`/diary/write`)}>업로드</Button>
           </Box>
           <Box>
             <Table>
