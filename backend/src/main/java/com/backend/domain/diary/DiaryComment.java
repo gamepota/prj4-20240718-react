@@ -11,4 +11,6 @@ public class DiaryComment {
     private Integer memberId;
     private String comment;
     private LocalDateTime inserted;
+
+    private String nick_name;
 }
