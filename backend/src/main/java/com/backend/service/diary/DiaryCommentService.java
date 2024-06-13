@@ -41,4 +41,21 @@ public class DiaryCommentService {
     public void diaryDelete(DiaryComment diaryComment) {
         mapper.deleteById(diaryComment.getId());
     }
+
+    public boolean hasAcess(DiaryComment diaryComment, Authentication authentication) {
+        DiaryComment db = mapper.selectById(diaryComment.getId());
+
+        if (db == null) {
+            return false;
+        }
+
+        if (!authentication.getName().equals(db.getMemberId().toString())) {
+            return false;
+        }
+        return true;
+    }
+
+    public void diaryUpdate(DiaryComment diaryComment) {
+        mapper.diaryUpdate(diaryComment);
+    }
 }
