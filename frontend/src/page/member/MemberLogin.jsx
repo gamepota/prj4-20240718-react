@@ -85,7 +85,7 @@ export function MemberLogin(props) {
                     },
                   }}
                 >
-                  로그인 유지
+                  <Box fontSize="sm">로그인 유지</Box>
                 </Checkbox>
               </FormControl>
               <Flex
@@ -101,7 +101,7 @@ export function MemberLogin(props) {
                   whiteSpace="nowrap"
                   _hover={{ fontWeight: "bold" }}
                 >
-                  이메일/비밀번호 찾기
+                  비밀번호 찾기
                 </Link>
                 <Link
                   as={RouterLink}
