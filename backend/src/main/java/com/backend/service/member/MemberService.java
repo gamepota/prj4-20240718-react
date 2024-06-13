@@ -37,11 +37,6 @@ public class MemberService {
         return mapper.selectByNickname(nickname);
     }
 
-    // MemberList
-    public List<Member> list() {
-        return mapper.selectAll();
-    }
-
     // MemberLogin
     public Map<String, Object> getToken(Member member) {
 
@@ -71,5 +66,24 @@ public class MemberService {
         }
 
         return result;
+    }
+
+    // MemberList
+    public List<Member> list() {
+        return mapper.selectAll();
+    }
+
+    // MemberEdit
+    public boolean update(Integer id, Member member) {
+        member.setId(id);
+        // 비밀번호가 변경된 경우만 암호화
+        if (member.getPassword() != null && !member.getPassword().isEmpty()) {
+            member.setPassword(passwordEncoder.encode(member.getPassword()));
+        }
+        return mapper.update(member) > 0;
+    }
+
+    public Member getMemberInfoById(Integer id) {
+        return mapper.selectByMemberId(id);
     }
 }

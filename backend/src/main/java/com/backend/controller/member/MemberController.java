@@ -15,6 +15,7 @@ import java.util.Map;
 @RequestMapping("/api/member")
 public class MemberController {
     private final MemberService service;
+    private final MemberService memberService;
 
     // MemberSignup
     @PostMapping("/signup")
@@ -42,14 +43,18 @@ public class MemberController {
         return ResponseEntity.ok(nickname);
     }
 
-    // MemberList
-    @GetMapping("/list")
-    public List<Member> list() {
-        return service.list();
+    // MemberLogin
+    @GetMapping("/{id}")
+    public ResponseEntity<Member> getMemberInfoById(@PathVariable Integer id) {
+        try {
+            Member member = service.getMemberInfoById(id);
+            return ResponseEntity.ok().body(member);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // MemberLogin
-    @PostMapping("token")
+    @PostMapping("/token")
     public ResponseEntity token(@RequestBody Member member) {
         Map<String, Object> map = service.getToken(member);
 
@@ -58,5 +63,21 @@ public class MemberController {
         }
 
         return ResponseEntity.ok(map);
+    }
+
+    // MemberList
+    @GetMapping("/list")
+    public List<Member> list() {
+        return service.list();
+    }
+
+    // MemberEdit
+    @PutMapping("/{id}")
+    public ResponseEntity update(@PathVariable Integer id, @RequestBody Member member) {
+        if (service.update(id, member)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
