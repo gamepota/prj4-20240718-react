@@ -15,6 +15,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+import axios from "axios";
 
 export function MemberLogin(props) {
   const [email, setEmail] = useState("");
@@ -37,6 +38,32 @@ export function MemberLogin(props) {
       setError("비밀번호가 입력되지 않았습니다.");
       setIsLoading(false);
       return;
+    }
+
+    try {
+      const response = await axios.post("/api/member/token", {
+        email: email,
+        password: password,
+      });
+
+      if (response.status === 200) {
+        // 로그인 성공 시 처리
+        const { token, id } = response.data;
+        // 토큰을 로컬 스토리지에 저장
+        if (rememberMe) {
+          localStorage.setItem("token", token);
+        } else {
+          sessionStorage.setItem("token", token);
+        }
+        // 로그인 후 리다이렉션
+        window.location.href = `/member/edit/${id}`;
+      } else {
+        setError("로그인에 실패했습니다.");
+      }
+    } catch (error) {
+      setError("이메일 또는 비밀번호를 다시 확인해주세요.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
