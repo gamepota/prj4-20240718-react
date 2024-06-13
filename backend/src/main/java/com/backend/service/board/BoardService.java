@@ -16,8 +16,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardService {
     final BoardMapper mapper;
-    private static final String PAGE_INFO_SEESION_KEY = "offset";
-//    private static final String PAGE_INFO_SEESION_KEY = "keyOffset";
+    //session의
+    private static String PAGE_INFO_SESSION_KEY = "pageInfo";
+//    private static final String PAGE_INFO_SESSION_KEY = null;
 
 
     public void add(Board board) {
@@ -39,44 +40,57 @@ public class BoardService {
     }
 
     public Map<String, Object> list(Integer page, Integer pageAmount, HttpSession session) throws Exception {
-
-
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
         }
 
-        Integer offset = (Integer) session.getAttribute(PAGE_INFO_SEESION_KEY);
+        // 세션에서 값 가져오기
+        Object sessionValue = session.getAttribute(PAGE_INFO_SESSION_KEY);
+        Integer offset;
 
-        if (offset == null) {
-            offset = (page - 1) * pageAmount;
+        // 세션 값이 없을 때 초기화
+        if (sessionValue == null) {
+            offset = 1;
+            session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
+        } else if (sessionValue instanceof Integer) {
+            offset = (Integer) sessionValue;
+        } else if (sessionValue instanceof String) {
+            try {
+                offset = Integer.valueOf((String) sessionValue);
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException("Invalid type for session attribute", e);
+            }
+        } else {
+            throw new IllegalStateException("Invalid type for session attribute");
         }
 
+        // 페이지에 따른 offset 계산
+        offset = (page - 1) * pageAmount;
 
-        Map<String, Object> pageInfo = new HashMap();
+        // 세션에 새로운 offset 저장
+        session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
+
+        // 페이지 정보 계산
+        Map<String, Object> pageInfo = new HashMap<>();
         Integer countAll = mapper.selectAllCount();
-//        System.out.println(page);
         Integer lastPageNumber = (countAll - 1) / pageAmount + 1;
         Integer leftPageNumber = (page - 1) / 10 * 10 + 1;
-        Integer rightPageNumber = leftPageNumber + 9;
-        rightPageNumber = Math.min(rightPageNumber, lastPageNumber);
-//        leftPageNumber = rightPageNumber - 9;
-        leftPageNumber = Math.max(leftPageNumber, 1);
-        Integer prevPageNumber = leftPageNumber - 1;
-        Integer nextPageNumber = rightPageNumber + 1;
+        Integer rightPageNumber = Math.min(leftPageNumber + 9, lastPageNumber);
+        Integer prevPageNumber = (leftPageNumber > 1) ? leftPageNumber - 1 : null;
+        Integer nextPageNumber = (rightPageNumber < lastPageNumber) ? rightPageNumber + 1 : null;
 
-        if (prevPageNumber > 0) {
+        if (prevPageNumber != null) {
             pageInfo.put("prevPageNumber", prevPageNumber);
         }
-        if (nextPageNumber <= lastPageNumber) {
+        if (nextPageNumber != null) {
             pageInfo.put("nextPageNumber", nextPageNumber);
         }
-//        System.out.println("offset = " + offset);
+
         pageInfo.put("currentPageNumber", page);
         pageInfo.put("lastPageNumber", lastPageNumber);
         pageInfo.put("leftPageNumber", leftPageNumber);
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
-        session.setAttribute(PAGE_INFO_SEESION_KEY, offset);
 
         return Map.of("pageInfo", pageInfo,
                 "boardList", mapper.selectAllPaging(offset, pageAmount));
