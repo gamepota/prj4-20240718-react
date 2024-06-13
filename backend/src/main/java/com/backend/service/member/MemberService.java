@@ -66,7 +66,7 @@ public class MemberService {
                 token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
                 result.put("token", token);
-                result.put("token", db.getId());
+                result.put("id", db.getId());
             }
         }
 
