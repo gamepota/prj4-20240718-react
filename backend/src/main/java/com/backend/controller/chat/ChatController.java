@@ -1,32 +1,30 @@
-package com.backend.controller;
+package com.backend.controller.chat;
 
-import com.backend.domain.ChatMessage;
-import com.backend.service.MessageService;
+import com.backend.domain.chat.ChatMessage;
+import com.backend.service.chat.MessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
 public class ChatController {
+	private final MessageService service;
 
-    private final SimpMessageSendingOperations messagingTemplate; // 메시지 템플릿
-    private final MessageService messageService;
+	@MessageMapping("/chat/{senderId}/{recipientId}")
+	@SendTo("/topic/public") // 모든 클라이언트가 구독하는 공통 채널
+	public ChatMessage processMessage(@Payload ChatMessage message) {
+		return message;
+	}
 
-    // 생성자 주입을 통해 메시지 템플릿과 메시지 서비스 초기화
-    public ChatController(SimpMessageSendingOperations messagingTemplate, MessageService messageService) {
-        this.messagingTemplate = messagingTemplate; // 메시지 템플릿 초기화
-        this.messageService = messageService; // 메시지 서비스 초기화
-    }
+	@PostMapping("/chat")
+	public void saveMessage(@RequestBody ChatMessage message) {
+		service.saveMessage(message);
+	}
 
-    // 클라이언트로부터 /app/chat 경로로 메시지 수신 시 처리
-    @MessageMapping("/chat")
-    public void processMessageFromClient(@Payload ChatMessage chatMessage) { // 메시지 페이로드 수신
-        messageService.saveMessage(chatMessage); // 메시지 저장
-        System.out.println("chatMessage.getSender() = " + chatMessage.getSender());
-        System.out.println("Sending message to user: " + chatMessage.getRecipient());
-        System.out.println("chatMessage = " + chatMessage.getContent());
-        // 전송 경로가 클라이언트 구독 경로와 일치하는지 확인합니다.
-        messagingTemplate.convertAndSendToUser(chatMessage.getRecipient(), "/queue/messages", chatMessage);
-    }
 }

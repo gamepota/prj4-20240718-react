@@ -1,11 +1,11 @@
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Home } from "./page/Home.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
-import { Home } from "./page/Home.jsx";
 import { BoardWrite } from "./page/board/BoardWrite.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
@@ -18,12 +18,15 @@ import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/Diary
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
 import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
+import {AIChat} from "./component/chat/AIChat.jsx";
+import {MainPage} from "./page/MainPage.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
     children: [
+      { index: true, element: <MainPage />}, // 메인페이지 렌더링
       { path: "diary/comment", element: <DiaryCommentList /> }, // 사진첩 목록
       { path: "diary/list", element: <DiaryBoardList /> }, // 사진첩 목록
       { path: "diary/edit/:id", element: <DiaryBoardEdit /> }, // 사진첩 수정
@@ -37,9 +40,10 @@ const router = createBrowserRouter([
       { path: "write", element: <BoardWrite /> }, //게시판 글쓰기
       { path: "board", element: <BoardList /> }, //게시판 목록
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
-      { path: "place", element: <PlaceMap /> }, // 지도보기
+      { path: "place", element: <PlaceMap /> }, // 지도 보기
       { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기
       { path: "edit/:id", element: <BoardEdit /> }, //게시글 수정
+      { path: "aichat", element: <AIChat /> }, // 챗봇 기능
     ],
   },
 ]);
