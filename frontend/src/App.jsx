@@ -15,6 +15,8 @@ import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/Diary
 import { DiaryBoardView } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardView.jsx";
 import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardEdit.jsx";
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
+import { PlaceMap } from "./page/place/PlaceMap.jsx";
+import { PlaceReview } from "./page/place/PlaceReview.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,8 @@ const router = createBrowserRouter([
       { path: "write", element: <BoardWrite /> }, //게시판 글쓰기
       { path: "board", element: <BoardList /> }, //게시판 목록
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
+      { path: "place", element: <PlaceMap /> }, // 지도보기
+      { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기
     ],
   },
 ]);
