@@ -18,15 +18,15 @@ import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/Diary
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
 import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
-import {AIChat} from "./component/chat/AIChat.jsx";
-import {MainPage} from "./page/MainPage.jsx";
+import { AIChat } from "./component/chat/AIChat.jsx";
+import { MainPage } from "./page/MainPage.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
     children: [
-      { index: true, element: <MainPage />}, // 메인페이지 렌더링
+      { index: true, element: <MainPage /> }, // 메인페이지 렌더링
       { path: "diary/comment", element: <DiaryCommentList /> }, // 사진첩 목록
       { path: "diary/list", element: <DiaryBoardList /> }, // 사진첩 목록
       { path: "diary/edit/:id", element: <DiaryBoardEdit /> }, // 사진첩 수정
@@ -37,8 +37,8 @@ const router = createBrowserRouter([
       { path: "member/login", element: <MemberLogin /> }, // 회원 로그인
       { path: "member/list", element: <MemberList /> }, // 회원 목록
       { path: "member/edit/:id", element: <MemberEdit /> }, // 회원 정보 수정 및 탈퇴
-      { path: "write", element: <BoardWrite /> }, //게시판 글쓰기
-      { path: "board", element: <BoardList /> }, //게시판 목록
+      { path: "board/write", element: <BoardWrite /> }, //게시판 글쓰기
+      { path: "board/list", element: <BoardList /> }, //게시판 목록
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
       { path: "place", element: <PlaceMap /> }, // 지도 보기
       { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기
