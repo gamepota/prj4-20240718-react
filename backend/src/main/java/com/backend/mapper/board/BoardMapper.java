@@ -8,10 +8,12 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
 
+
     @Insert("""
             INSERT INTO board(title,content,writer)
             VALUES (#{title},#{content},#{writer})
                         """)
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Board board);
 
     @Select("""
@@ -57,7 +59,7 @@ public interface BoardMapper {
 
     @Insert("""
             INSERT INTO board_file(board_id,name)
-            VALUES (#{boardId},#{name})
+            VALUES (#{id},#{name})
             """)
-    void insertFileName(Integer board_id, String name);
+    void insertFileName(Integer id, String name);
 }

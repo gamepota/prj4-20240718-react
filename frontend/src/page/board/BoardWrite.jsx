@@ -27,11 +27,19 @@ export function BoardWrite() {
         files,
       })
       .then(() => {
-        navigate("/board");
+        navigate("/board/list");
       })
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  let disableSaveButton = false;
+  if (title.trim().length === 0) {
+    disableSaveButton = true;
+  }
+  if (content.trim().length === 0) {
+    disableSaveButton = true;
   }
 
   const fileNameList = [];
@@ -91,7 +99,11 @@ export function BoardWrite() {
           </FormControl>
         </Box>
         <Box>
-          <Button colorScheme={"blue"} onClick={handleSaveClick}>
+          <Button
+            colorScheme={"blue"}
+            onClick={handleSaveClick}
+            isDisabled={disableSaveButton}
+          >
             저장
           </Button>
         </Box>

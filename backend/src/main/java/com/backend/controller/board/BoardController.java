@@ -17,12 +17,12 @@ public class BoardController {
     final BoardService service;
 
     @PostMapping("add")
-    public ResponseEntity add(@RequestBody Board board,
+    public ResponseEntity add(Board board,
                               @RequestParam(value = "files[]", required = false)
                               MultipartFile[] files
     ) throws Exception {
 
-
+        System.out.println("files = " + files);
         if (service.validate(board)) {
 
             service.add(board, files);

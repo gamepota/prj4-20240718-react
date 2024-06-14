@@ -22,7 +22,7 @@ public class BoardService {
 //    private static final String PAGE_INFO_SESSION_KEY = null;
 
 
-    public void add(Board board, MultipartFile[] files) {
+    public void add(Board board, MultipartFile[] files) throws Exception {
 
         mapper.insert(board);
         if (files != null && files.length > 0) {
