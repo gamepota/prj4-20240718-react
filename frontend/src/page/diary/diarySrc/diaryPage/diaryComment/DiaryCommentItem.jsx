@@ -17,17 +17,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarDays,
   faPenToSquare,
+  faTrashCan,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import axios from "axios";
 import { DiaryCommentEdit } from "./DiaryCommentEdit.jsx";
 
-export function DiaryCommentItem({
-  diaryComment,
-  isProcessing,
-  setIsProcessing,
-}) {
+export function DiaryCommentItem({ comment, isProcessing, setIsProcessing }) {
   const [isEditing, setIsEditing] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -36,7 +33,7 @@ export function DiaryCommentItem({
     setIsProcessing(true);
     axios
       .delete(`/api/diaryComment/diaryDelete`, {
-        data: { id: diaryComment.id },
+        data: { id: comment.id },
       })
       .then((res) => {})
       .catch((err) => {})
@@ -44,7 +41,7 @@ export function DiaryCommentItem({
         onClose();
         setIsProcessing(false);
         toast({
-          status: "error",
+          status: "info",
           description: "댓글이 삭제되었습니다.",
           position: "top",
         });
@@ -59,19 +56,19 @@ export function DiaryCommentItem({
             <FontAwesomeIcon icon={faUser} />
           </Box>
           {/* eslint-disable-next-line react/jsx-no-undef */}
-          <Text>{diaryComment.nickName}</Text>
+          <Text>{comment.nickName}</Text>
         </Flex>
         <Spacer />
         <Flex gap={2}>
           <Box>
             <FontAwesomeIcon icon={faCalendarDays} />
           </Box>
-          <Box>{diaryComment.inserted}</Box>
+          <Box>{comment.inserted}</Box>
         </Flex>
       </Flex>
       {isEditing || (
         <Flex>
-          <Box whiteSpace="pre">{diaryComment.comment}</Box>
+          <Box whiteSpace="pre">{comment.comment}</Box>
           <Spacer />
           {/*{account.hasAccess(diaryComment.memberId) && (*/}
           <Stack>
@@ -102,7 +99,7 @@ export function DiaryCommentItem({
       )}
       {isEditing && (
         <DiaryCommentEdit
-          diaryComment={comment}
+          comment={comment}
           setIsEditing={setIsEditing}
           setIsProcessing={setIsProcessing}
           isProcessing={isProcessing}

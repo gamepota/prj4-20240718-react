@@ -8,6 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Stack,
   Textarea,
   useDisclosure,
   useToast,
@@ -16,12 +17,12 @@ import { useState } from "react";
 import axios from "axios";
 
 export function DiaryCommentEdit({
-  diaryComment,
+  comment,
   setIsEditing,
-  isProcessing,
   setIsProcessing,
+  isProcessing,
 }) {
-  const [commentText, setCommentText] = useState(diaryComment.comment);
+  const [commentText, setCommentText] = useState(comment.comment);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -29,8 +30,8 @@ export function DiaryCommentEdit({
     setIsProcessing(true);
     axios
       .put(`/api/diaryComment/diaryUpdate`, {
-        id: diaryComment.id,
-        diaryComment: commentText,
+        id: comment.id,
+        comment: commentText,
       })
       .then(() => {
         toast({
@@ -39,9 +40,7 @@ export function DiaryCommentEdit({
           position: "top",
         });
       })
-      .catch(() => {
-        toast({});
-      })
+      .catch(() => {})
       .finally(() => {
         setIsProcessing(false);
         setIsEditing(false);
@@ -50,14 +49,15 @@ export function DiaryCommentEdit({
 
   return (
     <Flex>
-      <Box flex={1}>
+      <Box flex={1} mr={3}>
         <Textarea
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
         />
       </Box>
-      <Box>
+      <Stack>
         <Button
+          size={"sm"}
           variant="outline"
           colorScheme={"gray"}
           onClick={() => setIsEditing(false)}
@@ -65,6 +65,7 @@ export function DiaryCommentEdit({
           무엇일까요?
         </Button>
         <Button
+          size={"sm"}
           isLoading={setIsProcessing}
           variant="outline"
           colorScheme={"blue"}
@@ -72,7 +73,7 @@ export function DiaryCommentEdit({
         >
           무엇일까요2
         </Button>
-      </Box>
+      </Stack>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
