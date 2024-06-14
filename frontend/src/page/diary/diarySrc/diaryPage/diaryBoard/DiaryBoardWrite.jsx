@@ -2,10 +2,16 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  Card,
+  CardBody,
+  CardHeader,
   Center,
   FormControl,
   FormLabel,
+  Heading,
   Input,
+  Stack,
+  StackDivider,
   Text,
   Textarea,
   useToast,
@@ -15,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 export function DiaryBoardWrite() {
   const [content, setContent] = useState("");
-  const [writer, setWriter] = useState("");
+  const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const toast = useToast();
@@ -40,8 +46,9 @@ export function DiaryBoardWrite() {
     setLoading(true);
     axios
       .postForm(`/api/diaryBoard/add`, {
+        title,
         content,
-        writer,
+        files,
       })
       .then(() => {
         toast({
@@ -54,7 +61,7 @@ export function DiaryBoardWrite() {
       .catch((e) => {
         const code = e.response.status;
 
-        if (code === 404) {
+        if (code === 400) {
           toast({
             status: "error",
             description: "등록이 실패되었습니다. 입력한 내용을 확인하세요.",
@@ -67,11 +74,14 @@ export function DiaryBoardWrite() {
 
   let disableSaveButton = false;
 
+  if (title.trim().length === 0) {
+    disableSaveButton = true;
+  }
   if (content.trim().length === 0) {
     disableSaveButton = true;
   }
   const fileNameList = [];
-  for (let i = 0; i < files; i++) {
+  for (let i = 0; i < files.length; i++) {
     fileNameList.push(
       <Box>
         <Text fontSize={"mb"}>{files[i].name}</Text>
@@ -85,13 +95,18 @@ export function DiaryBoardWrite() {
         <Box w={700} p={6} boxShadow="lg" borderRadius="md" bg="white">
           <Box textAlign="center">게시물 업로드</Box>
           <Box>
-            <Box mb={7}>
+            {/*<Box mb={7}>*/}
+            {/*  <FormControl>*/}
+            {/*    <FormLabel>작성자</FormLabel>*/}
+            {/*    <Input value={writer} readOnly />*/}
+            {/*  </FormControl>*/}
+            {/*</Box>*/}
+            <Box>
               <FormControl>
-                <FormLabel>작성자</FormLabel>
-                <Input value={writer} readOnly />
+                <FormLabel>제목</FormLabel>
+                <Input onChange={(e) => setTitle(e.target.value)} />
               </FormControl>
             </Box>
-
             <Box>
               <FormControl>
                 <FormLabel>글 작성</FormLabel>
@@ -109,16 +124,30 @@ export function DiaryBoardWrite() {
               </FormControl>
             </Box>
             <Box>
-              <FormControl mt={3}>
+              {fileNameList.length > 0 && (
+                <Box mb={7}>
+                  <Card>
+                    <CardHeader>
+                      <Heading size="md">선택된 파일 목록</Heading>
+                    </CardHeader>
+                    <CardBody>
+                      <Stack divider={<StackDivider />} spacing={4}>
+                        {fileNameList}
+                      </Stack>
+                    </CardBody>
+                  </Card>
+                </Box>
+              )}
+              <Box mb={7}>
                 <Button
                   isLoading={loading}
                   isDisabled={disableSaveButton}
                   colorScheme={"blue"}
                   onClick={handleSaveClick}
                 >
-                  등록
+                  저장
                 </Button>
-              </FormControl>
+              </Box>
             </Box>
           </Box>
         </Box>

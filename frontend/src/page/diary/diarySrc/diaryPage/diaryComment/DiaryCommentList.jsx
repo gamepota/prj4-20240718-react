@@ -9,7 +9,7 @@ export function DiaryCommentList({ boardId, isProcessing, setIsProcessing }) {
   useEffect(() => {
     if (!isProcessing) {
       axios
-        .get(`/api/comment/list/${boardId}`)
+        .get(`/api/diaryComment/list/${boardId}`)
         .then((res) => {
           setCommentList(res.data);
         })

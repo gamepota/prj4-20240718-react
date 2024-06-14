@@ -23,7 +23,7 @@ const router = createBrowserRouter([
       { path: "diary/list", element: <DiaryBoardList /> }, // 사진첩 목록
       { path: "diary/edit/:id", element: <DiaryBoardEdit /> }, // 사진첩 수정
       { path: "diary/view/:id", element: <DiaryBoardView /> }, //
-      { path: "diary/write", element: <DiaryBoardWrite /> }, // 사진첩 쓰기
+      { path: "diary/write/:id", element: <DiaryBoardWrite /> }, // 사진첩 쓰기
       { path: "diary/home", element: <DiaryHome /> }, // 다이어리 홈
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
       { path: "member/login", element: <MemberLogin /> }, // 회원 로그인

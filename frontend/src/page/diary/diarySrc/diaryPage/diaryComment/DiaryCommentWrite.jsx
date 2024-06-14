@@ -7,7 +7,7 @@ export function DiaryCommentWrite({ boardId, isProcessing, setIsProcessing }) {
 
   function handleDiaryCommentSubmitClick() {
     axios
-      .post("/api/diaryComment/commentAdd", {
+      .post("/api/diaryComment/add", {
         boardId,
         comment,
       })
