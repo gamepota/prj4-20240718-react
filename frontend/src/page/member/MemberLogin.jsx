@@ -51,6 +51,7 @@ export function MemberLogin(props) {
       if (response.status === 200) {
         // 로그인 성공 시 처리
         const { token, id } = response.data;
+        console.log(response.data);
         // 토큰을 로컬 스토리지에 저장
         if (rememberMe) {
           localStorage.setItem("token", token);
