@@ -59,7 +59,7 @@ export function MemberLogin(props) {
           sessionStorage.setItem("token", token);
         }
         // 로그인 후 리다이렉션
-        window.location.href = `/member/edit/${id}`;
+        window.location.href = `/`;
       } else {
         setError("로그인에 실패했습니다.");
       }
