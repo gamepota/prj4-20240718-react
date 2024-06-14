@@ -48,6 +48,7 @@ public class DiaryBoardService {
     }
 
     public void edit(DiaryBoard diaryBoard) {
+
         mapper.update(diaryBoard);
     }
 
