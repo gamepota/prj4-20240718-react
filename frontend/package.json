@@ -19,6 +19,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.1",
+    "@sweetalert2/themes": "^5.0.16",
     "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.1",
     "framer-motion": "^11.2.4",

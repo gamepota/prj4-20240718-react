@@ -1,9 +1,7 @@
 package com.backend.mapper.board;
 
 import com.backend.domain.board.Board;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -19,8 +17,9 @@ public interface BoardMapper {
     @Select("""
             SELECT * FROM board 
             ORDER BY id DESC
+            LIMIT #{offset},#{pageAmount}
             """)
-    List<Board> selectAll();
+    List<Board> selectAll(Integer offset, Integer pageAmount);
 
     @Select("""
             Select * 
@@ -28,4 +27,37 @@ public interface BoardMapper {
             WHERE id = #{id}
                         """)
     Board selectById(Integer id);
+
+    @Delete("""
+            DELETE FROM board
+            WHERE id = #{id}
+            """)
+    int deleteById(Integer id);
+
+    @Update("""
+                    UPDATE board
+                    SET title=#{title},content=#{content},writer=#{writer}
+                    WHERE id=#{id}
+            """)
+    int update(Board board);
+
+    @Select("""
+            SELECT COUNT(*) FROM board;
+
+                        """)
+    int selectAllCount();
+
+    @Select("""
+            SELECT id,title,writer FROM board 
+            ORDER BY id DESC
+            LIMIT #{offset},#{pageAmount}
+            """)
+    List<Board> selectAllPaging(Integer offset, Integer pageAmount);
+
+
+    @Insert("""
+            INSERT INTO board_file(board_id,name)
+            VALUES (#{boardId},#{name})
+            """)
+    void insertFileName(Integer board_id, String name);
 }

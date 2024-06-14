@@ -9,6 +9,7 @@ import { Home } from "./page/Home.jsx";
 import { BoardWrite } from "./page/board/BoardWrite.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
+import { BoardEdit } from "./page/board/BoardEdit.jsx";
 import { DiaryHome } from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
 import { DiaryBoardWrite } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardWrite.jsx";
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
       { path: "place", element: <PlaceMap /> }, // 지도보기
       { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기
+      { path: "edit/:id", element: <BoardEdit /> }, //게시글 수정
     ],
   },
 ]);
