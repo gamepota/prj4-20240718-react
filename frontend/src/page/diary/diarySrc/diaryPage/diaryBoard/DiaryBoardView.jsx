@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -29,11 +30,11 @@ export function DiaryBoardView() {
   useEffect(() => {
     axios
       .get(`/api/diaryBoard/${id}`)
-      .then((res) => setBoard(res.data))
+      .then((res) => setBoard(res.data.board))
       .catch((err) => {
         if (err.response.status === 404) {
           toast({
-            status: "error",
+            status: "info",
             description: "해당 게시물이 존재하지 않습니다.",
             position: "top",
           });
@@ -48,15 +49,15 @@ export function DiaryBoardView() {
       .then(() => {
         toast({
           status: "success",
-          description: `${id}번 게시물이 삭제되었습니다.`,
+          description: `게시물이 삭제되었습니다.`,
           position: "top",
         });
         navigate("/");
       })
-      .catch((err) => {
+      .catch(() => {
         toast({
           status: "error",
-          description: `${id}번 게시물 삭제 중 오류가 발하였습니다.`,
+          description: `${id}번 게시물 삭제 중 오류가 발생하였습니다.`,
           position: "top",
         });
       })
@@ -71,33 +72,49 @@ export function DiaryBoardView() {
 
   return (
     <Box>
-      <Box>{board.id}번 게시물</Box>
+      <Box>게시물</Box>
       <Box>
-        <FormControl>
-          <FormLabel>제목</FormLabel>
-          <Input value={board.title} readOnly />
-        </FormControl>
-        <FormControl>
-          <FormLabel>본문</FormLabel>
-          <Textarea value={board.content} readOnly />
-        </FormControl>
-        <FormControl>
-          <FormLabel>작성자</FormLabel>
-          <Input value={board.writer} readOnly />
-        </FormControl>
-        <FormControl>
-          <FormLabel>작성일시</FormLabel>
-          <Input type="datetime-local" value={board.inserted} readOnly />
-        </FormControl>
-        <Button
-          onClick={() => navigate(`/edit/${board.id}`)}
-          colorScheme="purple"
-        >
-          수정
-        </Button>
-        <Button colorScheme="red" onClick={onOpen}>
-          삭제
-        </Button>
+        <Box mb={7}>
+          <FormControl>
+            <FormLabel>제목</FormLabel>
+            <Textarea value={board.title} readOnly />
+          </FormControl>
+        </Box>
+        <Box mb={7}>
+          <FormControl>
+            <FormLabel>본문</FormLabel>
+            <Textarea value={board.content} readOnly />
+          </FormControl>
+        </Box>
+        <Box mb={7}>
+          <FormControl>
+            <FormLabel>본문</FormLabel>
+            <Textarea value={board.content} readOnly />
+          </FormControl>
+        </Box>
+        <Box mb={7}>
+          <FormControl>
+            <FormLabel>작성자</FormLabel>
+            <Input value={board.writer} readOnly />
+          </FormControl>
+        </Box>
+        <Box mb={7}>
+          <FormControl>
+            <FormLabel>작성일시</FormLabel>
+            <Input type="datetime-local" value={board.inserted} readOnly />
+          </FormControl>
+        </Box>
+        <Flex mb={7} gap={2}>
+          <Button
+            onClick={() => navigate(`/diary/edit/${board.id}`)}
+            colorScheme="purple"
+          >
+            수정
+          </Button>
+          <Button colorScheme="red" onClick={onOpen}>
+            삭제
+          </Button>
+        </Flex>
 
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />

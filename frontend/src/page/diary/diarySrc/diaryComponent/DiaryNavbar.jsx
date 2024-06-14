@@ -7,9 +7,17 @@ export function DiaryNavbar() {
 
   return (
     <Flex gap={3}>
-      <Box onClick={() => navigate("/")}>홈</Box>
       <Box
-        onClick={() => navigate("/DiaryBoardWrite")}
+        onClick={() => navigate("/diary/home")}
+        cursor={"pointer"}
+        _hover={{
+          bg: "blue.200",
+        }}
+      >
+        홈
+      </Box>
+      <Box
+        onClick={() => navigate("/diary/comment")}
         cursor={"pointer"}
         _hover={{
           bg: "blue.200",
@@ -18,13 +26,22 @@ export function DiaryNavbar() {
         방명록
       </Box>
       <Box
-        onClick={() => navigate("/DiaryGallery")}
+        onClick={() => navigate("/diary/list")}
         cursor={"pointer"}
         _hover={{
           bg: "blue.200",
         }}
       >
         사진첩
+      </Box>
+      <Box
+        onClick={() => navigate("/diary/schedule")}
+        cursor={"pointer"}
+        _hover={{
+          bg: "blue.200",
+        }}
+      >
+        접종 날짜
       </Box>
     </Flex>
   );

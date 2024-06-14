@@ -10,5 +10,7 @@ public class DiaryBoard {
     private String title;
     private String content;
     private String writer;
+    private Integer memberId;
+    private String nick_name;
     private LocalDateTime inserted;
 }
