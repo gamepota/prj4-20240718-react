@@ -30,9 +30,10 @@ public class BoardController {
     @GetMapping("list")
     public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(defaultValue = "30") Integer pageAmount,
+                                    @RequestParam(defaultValue = "false") Boolean offsetReset,
                                     HttpSession session) throws Exception {
 //        System.out.println("page = " + page);
-        return service.list(page, pageAmount, session);
+        return service.list(page, pageAmount, offsetReset, session);
     }
 
     @GetMapping("{id}")

@@ -22,7 +22,9 @@ export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [pageAmount, setPageAmount] = useState(30);
   const [pageInfo, setPageInfo] = useState({});
+  // const [offsetReset, setOffsetReset] = useState(false);
   const [searchParams] = useSearchParams();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,7 +43,10 @@ export function BoardList() {
 
   function handlePageSizeChange(number) {
     setPageAmount(number);
+    // setOffsetReset(true);
     searchParams.set("pageAmount", number);
+    searchParams.set("offsetReset", true);
+    console.log("searchParams=" + searchParams.toString());
     navigate(`?${searchParams}`);
   }
 
@@ -52,6 +57,7 @@ export function BoardList() {
 
   function handlePageButtonClick(pageNumber) {
     searchParams.set("page", pageNumber);
+    searchParams.set("offsetReset", false);
     navigate(`?${searchParams}`);
   }
 

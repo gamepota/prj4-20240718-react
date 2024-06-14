@@ -39,7 +39,7 @@ public class BoardService {
         return true;
     }
 
-    public Map<String, Object> list(Integer page, Integer pageAmount, HttpSession session) throws Exception {
+    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session) throws Exception {
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
         }
@@ -65,13 +65,23 @@ public class BoardService {
         }
 
         // 페이지에 따른 offset 계산
-        offset = (page - 1) * pageAmount;
+
 
         // 세션에 새로운 offset 저장
         session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
 
         // 페이지 정보 계산
         Map<String, Object> pageInfo = new HashMap<>();
+        if (offsetReset) {
+            offset = 0;
+            page = 1;
+            pageInfo.put("currentPageNumber", 1);
+        } else {
+            offset = (page - 1) * pageAmount;
+            pageInfo.put("currentPageNumber", page);
+
+        }
+
         Integer countAll = mapper.selectAllCount();
         Integer lastPageNumber = (countAll - 1) / pageAmount + 1;
         Integer leftPageNumber = (page - 1) / 10 * 10 + 1;
@@ -86,11 +96,11 @@ public class BoardService {
             pageInfo.put("nextPageNumber", nextPageNumber);
         }
 
-        pageInfo.put("currentPageNumber", page);
         pageInfo.put("lastPageNumber", lastPageNumber);
         pageInfo.put("leftPageNumber", leftPageNumber);
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
+        System.out.println("PAGE_INFO_SESSION_KEY=" + PAGE_INFO_SESSION_KEY);
 
         return Map.of("pageInfo", pageInfo,
                 "boardList", mapper.selectAllPaging(offset, pageAmount));
