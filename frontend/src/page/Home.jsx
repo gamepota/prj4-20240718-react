@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 import { FriendsListComponent } from "../component/chat/FriendsListComponent.jsx";
@@ -18,10 +18,15 @@ export const Home = () => {
   return (
     <Box>
       <Box>
-      <Outlet />
+        <Outlet />
       </Box>
       <FriendsListComponent onSelectFriend={handleSelectFriend} />
-      {selectedFriend && <ChatComponent selectedFriend={selectedFriend} onClose={handleCloseChat} />}
+      {selectedFriend && (
+        <ChatComponent
+          selectedFriend={selectedFriend}
+          onClose={handleCloseChat}
+        />
+      )}
     </Box>
   );
 };
