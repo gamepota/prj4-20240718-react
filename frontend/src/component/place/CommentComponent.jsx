@@ -9,8 +9,8 @@ export function CommentComponent({ hospitalId }) {
     <Box>
       <CommentWrite
         hospitalId={hospitalId}
-        isSending={isProcessing}
-        setIsSending={setIsProcessing}
+        isProcessing={isProcessing}
+        setIsProcessing={setIsProcessing}
       />
       <CommentList
         hospitalId={hospitalId}

@@ -3,10 +3,12 @@ import { useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { StarRating } from "./StarRating.jsx";
 
 export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
   const [comment, setComment] = useState("");
   const toast = useToast();
+
   function handleCommentSubmitClick() {
     setIsProcessing(true);
     axios
@@ -30,6 +32,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
 
   return (
     <Box>
+      <StarRating />
       <Textarea
         placeholder="리뷰를 남겨주세요."
         value={comment}
