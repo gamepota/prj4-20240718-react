@@ -29,8 +29,8 @@ export function MemberSignup(props) {
   const [birthDate, setBirthDate] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [postcode, setPostcode] = useState("");
-  const [address, setAddress] = useState("");
-  const [addressDetail, setAddressDetail] = useState("");
+  const [mainAddress, setMainAddress] = useState("");
+  const [detailedAddress, setDetailedAddress] = useState("");
 
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
@@ -52,7 +52,7 @@ export function MemberSignup(props) {
     birthDate.slice(4, 6) +
     "-" +
     birthDate.slice(6, 8);
-  const fullAddress = postcode + " " + address + " " + addressDetail;
+  const address = postcode + " " + mainAddress + " " + detailedAddress;
 
   const isFormValid =
     isEmailValid &&
@@ -243,7 +243,7 @@ export function MemberSignup(props) {
   function openPostcodePopup() {
     const postcodePopup = new window.daum.Postcode({
       onComplete: function (data) {
-        setAddress(data.address);
+        setMainAddress(data.address);
         setPostcode(data.zonecode);
       },
     });
@@ -261,7 +261,7 @@ export function MemberSignup(props) {
       nationality: nationality,
       birthDate: formattedBirthDate,
       phoneNumber: phoneNumber,
-      address: fullAddress,
+      address: address,
     };
     axios
       .post("/api/member/signup", signupData)
@@ -540,7 +540,7 @@ export function MemberSignup(props) {
               <Flex>
                 <Flex width={"80%"} direction={"column"}>
                   <Input readOnly value={postcode} placeholder="우편번호" />
-                  <Input readOnly value={address} placeholder="주소" />
+                  <Input readOnly value={mainAddress} placeholder="주소" />
                 </Flex>
                 <Box>
                   <Button
@@ -553,9 +553,9 @@ export function MemberSignup(props) {
                 </Box>
               </Flex>
               <Input
-                value={addressDetail}
+                value={detailedAddress}
                 onChange={(e) => {
-                  setAddressDetail(e.target.value);
+                  setDetailedAddress(e.target.value);
                 }}
                 placeholder="상세주소를 입력하세요."
               />
