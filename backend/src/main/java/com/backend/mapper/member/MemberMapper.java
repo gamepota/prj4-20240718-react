@@ -13,8 +13,8 @@ public interface MemberMapper {
 
     // MemberSignup
     @Insert("""
-            INSERT INTO member(name, email, nickname, password, gender, nationality, birth_date, phone_number, address)
-            VALUES (#{name}, #{email}, #{nickname}, #{password}, #{gender}, #{nationality}, #{birthDate}, #{phoneNumber}, #{address})
+            INSERT INTO member(name, email, nickname, password, gender, nationality, birth_date, phone_number, postcode, main_address, detailed_address)
+            VALUES (#{name}, #{email}, #{nickname}, #{password}, #{gender}, #{nationality}, #{birthDate}, #{phoneNumber}, #{postcode}, #{mainAddress}, #{detailedAddress})
             """
     )
     public int signup(Member member);
@@ -52,7 +52,9 @@ public interface MemberMapper {
                     name = #{name},
                     birth_date = #{birthDate},
                     phone_number = #{phoneNumber},
-                    address = #{address}
+                    postcode = #{postcode},
+                    main_address = #{mainAddress},
+                    detailed_address = #{detailedAddress}
                 WHERE id = #{id}
             """)
     int update(Member member);

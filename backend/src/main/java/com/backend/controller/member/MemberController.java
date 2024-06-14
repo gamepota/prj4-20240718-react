@@ -15,7 +15,6 @@ import java.util.Map;
 @RequestMapping("/api/member")
 public class MemberController {
     private final MemberService service;
-    private final MemberService memberService;
 
     // MemberSignup
     @PostMapping("/signup")

@@ -16,7 +16,9 @@ public class Member {
     private String nationality;
     private LocalDate birthDate;
     private String phoneNumber;
-    private String address;
+    private Integer postcode;
+    private String mainAddress;
+    private String detailedAddress;
     private LocalDateTime inserted;
     private Role role;
 }
