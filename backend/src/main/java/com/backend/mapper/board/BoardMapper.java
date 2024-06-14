@@ -53,4 +53,11 @@ public interface BoardMapper {
             LIMIT #{offset},#{pageAmount}
             """)
     List<Board> selectAllPaging(Integer offset, Integer pageAmount);
+
+
+    @Insert("""
+            INSERT INTO board_file(board_id,name)
+            VALUES (#{boardId},#{name})
+            """)
+    void insertFileName(Integer board_id, String name);
 }

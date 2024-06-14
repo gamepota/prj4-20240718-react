@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -16,11 +17,15 @@ public class BoardController {
     final BoardService service;
 
     @PostMapping("add")
-    public ResponseEntity add(@RequestBody Board board) throws Exception {
-        System.out.println("board = " + board);
+    public ResponseEntity add(@RequestBody Board board,
+                              @RequestParam(value = "files[]", required = false)
+                              MultipartFile[] files
+    ) throws Exception {
+
+
         if (service.validate(board)) {
 
-            service.add(board);
+            service.add(board, files);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();

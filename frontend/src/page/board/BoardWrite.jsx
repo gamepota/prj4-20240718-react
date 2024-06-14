@@ -15,14 +15,16 @@ export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
+  const [files, setFiles] = useState([]);
   const navigate = useNavigate();
 
   function handleSaveClick() {
     axios
-      .post("/api/board/add", {
+      .postForm("/api/board/add", {
         title,
         content,
         writer,
+        files,
       })
       .then(() => {
         navigate("/board");
@@ -30,6 +32,11 @@ export function BoardWrite() {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  const fileNameList = [];
+  for (let i = 0; i < files.length; i++) {
+    fileNameList.push(<li>{files[i].name}</li>);
   }
 
   return (
@@ -59,6 +66,20 @@ export function BoardWrite() {
               onChange={(e) => setContent(e.target.value)}
             ></Textarea>
           </FormControl>
+        </Box>
+        <Box>
+          <FormControl>
+            <FormLabel>파일</FormLabel>
+            <Input
+              multiple
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFiles(e.target.files)}
+            ></Input>
+          </FormControl>
+        </Box>
+        <Box>
+          <ul>{fileNameList}</ul>
         </Box>
         <Box>
           <FormControl>

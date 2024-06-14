@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +22,15 @@ public class BoardService {
 //    private static final String PAGE_INFO_SESSION_KEY = null;
 
 
-    public void add(Board board) {
-        mapper.insert(board);
+    public void add(Board board, MultipartFile[] files) {
 
+        mapper.insert(board);
+        if (files != null && files.length > 0) {
+            for (MultipartFile file : files) {
+                mapper.insertFileName(board.getId(),
+                        file.getOriginalFilename());
+            }
+        }
     }
 
     public boolean validate(Board board) throws Exception {
@@ -100,7 +107,6 @@ public class BoardService {
         pageInfo.put("leftPageNumber", leftPageNumber);
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
-        System.out.println("PAGE_INFO_SESSION_KEY=" + PAGE_INFO_SESSION_KEY);
 
         return Map.of("pageInfo", pageInfo,
                 "boardList", mapper.selectAllPaging(offset, pageAmount));
