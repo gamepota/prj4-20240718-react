@@ -16,7 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faHammer } from "@fortawesome/free-solid-svg-icons";
 
 export function MemberEdit(props) {
   const [email, setEmail] = useState("");
@@ -29,8 +29,8 @@ export function MemberEdit(props) {
   const [birthDate, setBirthDate] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [postcode, setPostcode] = useState("");
-  const [address, setAddress] = useState("");
-  const [addressDetail, setAddressDetail] = useState("");
+  const [mainAddress, setMainAddress] = useState("");
+  const [detailedAddress, setDetailedAddress] = useState("");
 
   const [isNicknameValid, setIsNicknameValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
@@ -50,11 +50,22 @@ export function MemberEdit(props) {
     birthDate.slice(4, 6) +
     "-" +
     birthDate.slice(6, 8);
-  const fullAddress = postcode + " " + address + " " + addressDetail;
+
+  const isFormValid =
+    isNicknameValid &&
+    isPasswordValid &&
+    isPasswordRight &&
+    gender &&
+    nationality &&
+    isNameValid &&
+    isBirthDateValid &&
+    isPhoneNumberValid &&
+    postcode;
 
   useEffect(() => {
     console.log(id);
-    const fetchMemberData = async () => {
+
+    async function fetchMemberData() {
       try {
         const res = await axios.get(`/api/member/${id}`);
         console.log(res.data);
@@ -67,8 +78,16 @@ export function MemberEdit(props) {
         setBirthDate(memberData.birthDate.replace(/-/g, "")); // YYYY-MM-DD 형식을 YYYYMMDD로 변환
         setPhoneNumber(memberData.phoneNumber);
         setPostcode(memberData.postcode);
-        setAddress(memberData.address);
-        setAddressDetail(memberData.addressDetail);
+        setMainAddress(memberData.mainAddress);
+        setDetailedAddress(memberData.detailedAddress);
+
+        // // 주소 정보 파싱
+        // const [parsedPostcode, parsedMainAddress, ...parsedDetailedAddress] =
+        //   memberData.address.split(" ");
+        // setPostcode(parsedPostcode);
+        // setMainAddress(parsedMainAddress);
+        // setDetailedAddress(parsedDetailedAddress.join(" "));
+
         setIsNicknameValid(true); // 초기 로딩 시 유효성 검사 통과된 것으로 간주
         setIsNameValid(true);
         setIsBirthDateValid(true);
@@ -81,21 +100,10 @@ export function MemberEdit(props) {
           confirmButtonText: "확인",
         });
       }
-    };
+    }
 
     fetchMemberData();
   }, [id]);
-
-  const isFormValid =
-    isNicknameValid &&
-    isPasswordValid &&
-    isPasswordRight &&
-    gender &&
-    nationality &&
-    isNameValid &&
-    isBirthDateValid &&
-    isPhoneNumberValid &&
-    postcode;
 
   function validateNickname(nickname) {
     const nicknameRegex = /^[가-힣a-zA-Z0-9]{3,12}$/.test(nickname);
@@ -183,7 +191,7 @@ export function MemberEdit(props) {
   function openPostcodePopup() {
     const postcodePopup = new window.daum.Postcode({
       onComplete: function (data) {
-        setAddress(data.address);
+        setMainAddress(data.address);
         setPostcode(data.zonecode);
       },
     });
@@ -201,7 +209,9 @@ export function MemberEdit(props) {
       nationality: nationality,
       birthDate: formattedBirthDate,
       phoneNumber: phoneNumber,
-      address: fullAddress,
+      postcode: postcode,
+      mainAddress: mainAddress,
+      detailedAddress: detailedAddress,
     };
 
     axios
@@ -263,7 +273,7 @@ export function MemberEdit(props) {
                   }}
                   _hover={{ color: "red.500 " }}
                 >
-                  <FontAwesomeIcon icon={faTrash} />
+                  <FontAwesomeIcon icon={faHammer} />
                 </Button>
               </InputRightElement>
             </InputGroup>
@@ -427,7 +437,7 @@ export function MemberEdit(props) {
             <Flex>
               <Flex width={"80%"} direction={"column"}>
                 <Input readOnly value={postcode} placeholder="우편번호" />
-                <Input readOnly value={address} placeholder="주소" />
+                <Input readOnly value={mainAddress} placeholder="주소" />
               </Flex>
               <Box>
                 <Button
@@ -440,9 +450,9 @@ export function MemberEdit(props) {
               </Box>
             </Flex>
             <Input
-              value={addressDetail}
+              value={detailedAddress}
               onChange={(e) => {
-                setAddressDetail(e.target.value);
+                setDetailedAddress(e.target.value);
               }}
               placeholder="상세주소를 입력하세요."
             />
@@ -459,7 +469,7 @@ export function MemberEdit(props) {
                 : { bgColor: "purple.500 ", color: "white" }
             }
           >
-            제출
+            수정
           </Button>
         </form>
       </Box>

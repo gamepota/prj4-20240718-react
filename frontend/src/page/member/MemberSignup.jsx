@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faHammer } from "@fortawesome/free-solid-svg-icons";
 
 export function MemberSignup(props) {
   const [email, setEmail] = useState("");
@@ -52,7 +52,6 @@ export function MemberSignup(props) {
     birthDate.slice(4, 6) +
     "-" +
     birthDate.slice(6, 8);
-  const address = postcode + " " + mainAddress + " " + detailedAddress;
 
   const isFormValid =
     isEmailValid &&
@@ -243,8 +242,8 @@ export function MemberSignup(props) {
   function openPostcodePopup() {
     const postcodePopup = new window.daum.Postcode({
       onComplete: function (data) {
-        setMainAddress(data.address);
         setPostcode(data.zonecode);
+        setMainAddress(data.address);
       },
     });
     postcodePopup.open();
@@ -261,8 +260,12 @@ export function MemberSignup(props) {
       nationality: nationality,
       birthDate: formattedBirthDate,
       phoneNumber: phoneNumber,
-      address: address,
+      postcode: postcode,
+      mainAddress: mainAddress,
+      detailedAddress: detailedAddress,
     };
+    console.log("signupData:", signupData);
+
     axios
       .post("/api/member/signup", signupData)
       .then((res) => {
@@ -313,7 +316,7 @@ export function MemberSignup(props) {
                       onClick={handleReenterEmail}
                       _hover={{ color: "red.500 " }}
                     >
-                      <FontAwesomeIcon icon={faTrash} />
+                      <FontAwesomeIcon icon={faHammer} />
                     </Button>
                   ) : (
                     <Button
@@ -359,7 +362,7 @@ export function MemberSignup(props) {
                       onClick={handleReenterNickname}
                       _hover={{ color: "red.500 " }}
                     >
-                      <FontAwesomeIcon icon={faTrash} />
+                      <FontAwesomeIcon icon={faHammer} />
                     </Button>
                   ) : (
                     <Button
