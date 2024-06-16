@@ -1,4 +1,4 @@
-import {Box, Flex} from "@chakra-ui/react";
+import {Box, Button, Flex, FormLabel, Input} from "@chakra-ui/react";
 import React from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -7,7 +7,6 @@ export function Navbar() {
   const navigate = useNavigate();
   return (
     <Flex
-      bgColor={"gray.100"}
       boxSize={"100%"}
       h={"50px"}
       gap={5}
@@ -17,12 +16,40 @@ export function Navbar() {
         onClick={() => navigate("/")}>
         Home
       </Box>
+      <Box>
+        <Button
+          bgColor={"purple.100"}
+          _hover={{cursor: "pointer", bgColor: "purple.200"}}
+          onClick={() => navigate("/write")}> 새 글쓰기</Button>
+      </Box>
+      <Box
+        _hover={{cursor: "pointer", bgColor: "gray.200"}}
+        onClick={() => navigate("/board")}>
+        게시판
+      </Box>
+      <Box
+        _hover={{cursor: "pointer", bgColor: "gray.200"}}
+        onClick={() => navigate("/board")}>
+        동물병원 찾기
+      </Box>
+      <Box
+        _hover={{cursor: "pointer", bgColor: "gray.200"}}
+        onClick={() => navigate("/board")}>
+        반려동물 정보
+      </Box>
       <Box
         _hover={{cursor: "pointer", bgColor: "gray.200"}}
         onClick={() => navigate("/aichat")}>
         AI 수의사
       </Box>
       <Flex gap={5} position={"absolute"} right={5}>
+        <Box>
+        <Input type={"text"} placeholder={"통합 검색"}></Input>
+        </Box>
+        <Button
+          bgColor={"purple.100"}
+          _hover={{cursor: "pointer", bgColor: "purple.200"}}
+        > 검색 </Button>
         <Box
           _hover={{cursor: "pointer", bgColor: "gray.200"}}
           onClick={() => navigate("/member/signup")}>
