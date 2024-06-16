@@ -39,3 +39,6 @@ WHERE id = 12;
 
 ALTER TABLE member
     DROP COLUMN address;
+
+ALTER TABLE member
+    CHANGE COLUMN email username VARCHAR(255) NOT NULL UNIQUE;

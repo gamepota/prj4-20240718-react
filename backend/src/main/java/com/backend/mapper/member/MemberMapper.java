@@ -13,19 +13,18 @@ public interface MemberMapper {
 
     // MemberSignup
     @Insert("""
-            INSERT INTO member(name, email, nickname, password, gender, nationality, birth_date, phone_number, postcode, main_address, detailed_address)
-            VALUES (#{name}, #{email}, #{nickname}, #{password}, #{gender}, #{nationality}, #{birthDate}, #{phoneNumber}, #{postcode}, #{mainAddress}, #{detailedAddress})
+            INSERT INTO member(name, username, nickname, password, gender, nationality, birth_date, phone_number, postcode, main_address, detailed_address)
+            VALUES (#{name}, #{username}, #{nickname}, #{password}, #{gender}, #{nationality}, #{birthDate}, #{phoneNumber}, #{postcode}, #{mainAddress}, #{detailedAddress})
             """
     )
     public int signup(Member member);
 
-
     @Select("""
             SELECT *
             FROM member
-            WHERE email = #{email}
+            WHERE username = #{username}
             """)
-    Member selectByEmail(String email);
+    Member selectByUsername(String username);
 
     @Select("""
             SELECT *
@@ -33,6 +32,21 @@ public interface MemberMapper {
             WHERE nickname = #{nickname}
             """)
     Member selectByNickname(String nickname);
+
+    // MemberLogin
+    @Select("""
+            SELECT COUNT(*)
+            FROM member
+            WHERE username = #{username}
+            """)
+    Boolean existsByUsername(String username);
+
+    @Select("""
+            SELECT *
+            FROM member
+            WHERE username = #{username}
+            """)
+    Member findByUsername(String username);
 
     // MemberList
     @Select("""

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class Member {
     private Integer id;
     private String name;
-    private String email;
+    private String username;
     private String nickname;
     private String password;
     private String gender;

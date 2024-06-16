@@ -23,14 +23,14 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "check", params = "email")
-    public ResponseEntity checkEmail(@RequestParam("email") String email) {
-        System.out.println("email = " + email);
-        Member member = service.getByEmail(email);
+    @GetMapping(value = "check", params = "username")
+    public ResponseEntity checkUsername(@RequestParam("username") String username) {
+        System.out.println("username = " + username);
+        Member member = service.getByUsername(username);
         if (member == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(email);
+        return ResponseEntity.ok(username);
     }
 
     @GetMapping(value = "check", params = "nickname")
@@ -42,7 +42,7 @@ public class MemberController {
         return ResponseEntity.ok(nickname);
     }
 
-    // MemberLogin
+
     @GetMapping("/{id}")
     public ResponseEntity<Member> getMemberInfoById(@PathVariable Integer id) {
         try {
@@ -53,6 +53,7 @@ public class MemberController {
         }
     }
 
+    // MemberLogin
     @PostMapping("/token")
     public ResponseEntity token(@RequestBody Member member) {
         Map<String, Object> map = service.getToken(member);

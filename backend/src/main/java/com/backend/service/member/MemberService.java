@@ -29,8 +29,8 @@ public class MemberService {
         mapper.signup(member);
     }
 
-    public Member getByEmail(String email) {
-        return mapper.selectByEmail(email);
+    public Member getByUsername(String username) {
+        return mapper.selectByUsername(username);
     }
 
     public Member getByNickname(String nickname) {
@@ -42,7 +42,7 @@ public class MemberService {
 
         Map<String, Object> result = null;
 
-        Member db = mapper.selectByEmail(member.getEmail());
+        Member db = mapper.selectByUsername(member.getUsername());
 
         if (db != null) {
             if (passwordEncoder.matches(member.getPassword(), db.getPassword())) {
@@ -53,7 +53,7 @@ public class MemberService {
                         .issuer("self")
                         .issuedAt(now)
                         .expiresAt(now.plusSeconds(60 * 60 * 24 * 7))
-                        .subject(member.getEmail())
+                        .subject(member.getUsername())
                         .claim("scope", "") // 권한
                         .claim("nickname", db.getNickname())
                         .build();
