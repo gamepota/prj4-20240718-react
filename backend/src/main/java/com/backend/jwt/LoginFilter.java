@@ -14,17 +14,21 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     public LoginFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
+        // 커스텀 로그인 경로 설정
+        setFilterProcessesUrl("/api/member/login");
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {
 
-        // 클라이언트 요청에서 email , password 추출
-        String email = obtainUsername(req);
+        // 클라이언트 요청에서 username, password 추출
+        String username = obtainUsername(req);
         String password = obtainPassword(req);
 
+        System.out.println(username);
+
         // token 에 담기
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
         // AuthenticationManager 로 전달
         return authenticationManager.authenticate(authToken);
@@ -33,7 +37,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 로그인 성공시 실행 ( jwt 발급 )
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication authentication) {
-
     }
 
     // 로그인 실패시 실행
