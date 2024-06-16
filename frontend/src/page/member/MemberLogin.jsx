@@ -18,7 +18,7 @@ import { Link as RouterLink } from "react-router-dom";
 import axios from "axios";
 
 export function MemberLogin(props) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +31,7 @@ export function MemberLogin(props) {
     setError("");
 
     // 유효성 검사
-    if (!email) {
+    if (!username) {
       setError("이메일이 입력되지 않았습니다.");
       setIsLoading(false);
       return;
@@ -44,7 +44,7 @@ export function MemberLogin(props) {
 
     try {
       const response = await axios.post("/api/member/token", {
-        email: email,
+        username: username,
         password: password,
       });
 
@@ -93,8 +93,8 @@ export function MemberLogin(props) {
             <FormControl mb={4}>
               <FormLabel>이메일</FormLabel>
               <Input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 placeholder="이메일을 입력하세요"
                 onKeyPress={handleKeyPress}
               />

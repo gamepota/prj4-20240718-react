@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHammer } from "@fortawesome/free-solid-svg-icons";
 
 export function MemberEdit(props) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -70,7 +70,7 @@ export function MemberEdit(props) {
         const res = await axios.get(`/api/member/${id}`);
         console.log(res.data);
         const memberData = res.data;
-        setEmail(memberData.email);
+        setUsername(memberData.username);
         setNickname(memberData.nickname);
         setGender(memberData.gender);
         setNationality(memberData.nationality);
@@ -247,7 +247,7 @@ export function MemberEdit(props) {
             <InputGroup>
               <Input
                 placeholder={"이메일"}
-                value={email}
+                value={username}
                 readOnly
                 backgroundColor={"gray.200"}
               />

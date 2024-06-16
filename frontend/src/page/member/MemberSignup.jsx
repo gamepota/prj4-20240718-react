@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHammer } from "@fortawesome/free-solid-svg-icons";
 
 export function MemberSignup(props) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -32,8 +32,8 @@ export function MemberSignup(props) {
   const [mainAddress, setMainAddress] = useState("");
   const [detailedAddress, setDetailedAddress] = useState("");
 
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
+  const [isUsernameValid, setIsUsernameValid] = useState(false);
+  const [isUsernameConfirmed, setIsUsernameConfirmed] = useState(false);
   const [isNicknameValid, setIsNicknameValid] = useState(false);
   const [isNicknameConfirmed, setIsNicknameConfirmed] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
@@ -54,8 +54,8 @@ export function MemberSignup(props) {
     birthDate.slice(6, 8);
 
   const isFormValid =
-    isEmailValid &&
-    isEmailConfirmed &&
+    isUsernameValid &&
+    isUsernameConfirmed &&
     isNicknameValid &&
     isNicknameConfirmed &&
     isPasswordValid &&
@@ -68,9 +68,11 @@ export function MemberSignup(props) {
     postcode;
 
   // 이메일 유효성 검사
-  function validateEmail(email) {
-    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(email);
-    setIsEmailValid(emailRegex);
+  function validateUsername(username) {
+    const usernameRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(
+      username,
+    );
+    setIsUsernameValid(usernameRegex);
   }
 
   // 닉네임 유효성 검사
@@ -156,10 +158,10 @@ export function MemberSignup(props) {
   }
 
   // 이메일 중복확인
-  function handleCheckEmail() {
-    if (!isEmailValid) return; // 이메일 유효성 검사를 통과한 경우에만 요청
+  function handleCheckUsername() {
+    if (!isUsernameValid) return; // 이메일 유효성 검사를 통과한 경우에만 요청
     axios
-      .get(`/api/member/check?email=${email}`)
+      .get(`/api/member/check?username=${username}`)
       .then((res) => {
         toast({
           status: "warning",
@@ -176,7 +178,7 @@ export function MemberSignup(props) {
             position: "top",
             duration: 3000,
           });
-          setIsEmailConfirmed(true); // 이메일 확인 상태 업데이트
+          setIsUsernameConfirmed(true); // 이메일 확인 상태 업데이트
         }
       })
       .finally();
@@ -210,10 +212,10 @@ export function MemberSignup(props) {
   }
 
   // 이메일 재입력
-  function handleReenterEmail() {
-    setEmail(""); // 이메일 입력란 초기화
-    setIsEmailConfirmed(false); // 이메일 확인 상태 초기화
-    setIsEmailValid(false); // 이메일 유효성 초기화
+  function handleReenterUsername() {
+    setUsername(""); // 이메일 입력란 초기화
+    setIsUsernameConfirmed(false); // 이메일 확인 상태 초기화
+    setIsUsernameValid(false); // 이메일 유효성 초기화
   }
 
   // 닉네임 재입력
@@ -253,7 +255,7 @@ export function MemberSignup(props) {
   function handleSubmit() {
     const signupData = {
       name: name,
-      email: email,
+      username: username,
       nickname: nickname,
       password: password,
       gender: gender,
@@ -300,20 +302,20 @@ export function MemberSignup(props) {
               <InputGroup>
                 <Input
                   placeholder={"이메일"}
-                  value={email}
-                  readOnly={isEmailConfirmed} // 이메일 확인 후 readOnly 설정
+                  value={username}
+                  readOnly={isUsernameConfirmed} // 이메일 확인 후 readOnly 설정
                   onChange={(e) => {
-                    setEmail(e.target.value.trim());
-                    validateEmail(e.target.value.trim());
+                    setUsername(e.target.value.trim());
+                    validateUsername(e.target.value.trim());
                   }}
-                  backgroundColor={isEmailConfirmed ? "gray.200" : "white"}
+                  backgroundColor={isUsernameConfirmed ? "gray.200" : "white"}
                 />
                 <InputRightElement w={"100px"} mr={1}>
-                  {isEmailConfirmed ? (
+                  {isUsernameConfirmed ? (
                     <Button
                       size={"sm"}
                       variant="ghost"
-                      onClick={handleReenterEmail}
+                      onClick={handleReenterUsername}
                       _hover={{ color: "red.500 " }}
                     >
                       <FontAwesomeIcon icon={faHammer} />
@@ -321,11 +323,11 @@ export function MemberSignup(props) {
                   ) : (
                     <Button
                       size={"sm"}
-                      onClick={handleCheckEmail}
-                      isDisabled={!isEmailValid}
-                      cursor={!isEmailValid ? "not-allowed" : "pointer"}
+                      onClick={handleCheckUsername}
+                      isDisabled={!isUsernameValid}
+                      cursor={!isUsernameValid ? "not-allowed" : "pointer"}
                       _hover={
-                        !isEmailValid
+                        !isUsernameValid
                           ? { bgColor: "gray.100" }
                           : { bgColor: "purple.500 ", color: "white" }
                       }
@@ -335,7 +337,7 @@ export function MemberSignup(props) {
                   )}
                 </InputRightElement>
               </InputGroup>
-              {!isEmailValid && email && (
+              {!isUsernameValid && username && (
                 <Alert status="error" mt={2}>
                   <AlertIcon />
                   올바르지 않은 이메일 형식입니다.
