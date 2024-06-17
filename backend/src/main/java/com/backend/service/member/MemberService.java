@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,7 @@ public class MemberService {
 
                 result.put("token", token);
                 result.put("id", db.getId());
+                mapper.updateLoginStatus(db.getId(), true, LocalDateTime.now());
             }
         }
 

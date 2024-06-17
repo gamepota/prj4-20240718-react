@@ -1,11 +1,9 @@
 package com.backend.mapper.member;
 
 import com.backend.domain.member.Member;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -78,4 +76,14 @@ public interface MemberMapper {
             FROM member WHERE id = #{id}
                 """)
     Member selectByMemberId(Integer id);
+
+    // logged_in
+    @Insert("""
+            INSERT INTO logged_in(member_id, logged_in, logged_in_at)
+            VALUES (#{memberId}, #{loggedIn}, #{loggedInAt})
+            ON DUPLICATE KEY UPDATE
+            logged_in = VALUES(logged_in),
+            logged_in_at = VALUES(logged_in_at)
+            """)
+    int updateLoginStatus(@Param("memberId") Integer memberId, @Param("loggedIn") boolean loggedIn, @Param("loggedInAt") LocalDateTime now);
 }
