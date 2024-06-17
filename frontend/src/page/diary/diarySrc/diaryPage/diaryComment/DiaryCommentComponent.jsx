@@ -3,7 +3,7 @@ import { Box, Heading } from "@chakra-ui/react";
 import { DiaryCommentList } from "./DiaryCommentList.jsx";
 import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
 
-function DiaryCommentComponent({ boardId }) {
+function DiaryCommentComponent({ diaryId }) {
   const [isProcessing, setIsProcessing] = useState(false);
   return (
     <Box>
@@ -12,14 +12,14 @@ function DiaryCommentComponent({ boardId }) {
       </Box>
       <Box mb={7}>
         <DiaryCommentWrite
-          boardId={boardId}
+          boardId={diaryId}
           isProcessing={isProcessing}
           setIsProcessing={setIsProcessing}
         />
       </Box>
       <Box mb={7}>
         <DiaryCommentList
-          boardId={boardId}
+          diaryId={diaryId}
           isProcessing={isProcessing}
           setIsProcessing={setIsProcessing}
         />

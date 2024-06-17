@@ -37,7 +37,7 @@ export function DiaryBoardList() {
   const [searchKeyword, setSearchKeyword] = useState("");
 
   useEffect(() => {
-    axios.get(`/api/diaryBoard/${searchParams}`).then((res) => {
+    axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
       setBoardList(res.data.boardList);
       setPageInfo(res.data.pageInfo);
     });

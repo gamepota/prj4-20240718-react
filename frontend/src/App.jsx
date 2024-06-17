@@ -29,8 +29,8 @@ const router = createBrowserRouter([
       { index: true, element: <MainPage /> }, // 메인페이지 렌더링
       { path: "diary/comment", element: <DiaryCommentList /> }, // 사진첩 목록
       { path: "diary/list", element: <DiaryBoardList /> }, // 사진첩 목록
-      { path: "diary/edit/:id", element: <DiaryBoardEdit /> }, // 사진첩 수정
-      { path: "diary/view/:id", element: <DiaryBoardView /> }, //
+      { path: "diary/edit", element: <DiaryBoardEdit /> }, // 사진첩 수정
+      { path: "diary/view", element: <DiaryBoardView /> }, //
       { path: "diary/write/:id", element: <DiaryBoardWrite /> }, // 사진첩 쓰기
       { path: "diary/home", element: <DiaryHome /> }, // 다이어리 홈
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입

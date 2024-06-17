@@ -34,7 +34,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 export function DiaryBoardEdit() {
-  const [board, setBoard] = useState(null);
+  const [diary, setDiary] = useState(null);
   const { id } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
@@ -43,15 +43,15 @@ export function DiaryBoardEdit() {
   const [addFileList, setAddFileList] = useState([]);
 
   useEffect(() => {
-    axios.get(`/api/diaryBoard/${id}`).then((res) => setBoard(res.data.board));
+    axios.get(`/api/diaryBoard/${id}`).then((res) => setDiary(res.data.diary));
   }, []);
 
   function handleClickSave() {
     axios
       .putForm("/api/diaryBoard/edit", {
-        id: board.id,
-        title: board.title,
-        content: board.content,
+        id: diary.id,
+        title: diary.title,
+        content: diary.content,
         removeFileList,
         addFileList,
       })
@@ -61,7 +61,7 @@ export function DiaryBoardEdit() {
           description: "수정이 완료되었습니다.",
           position: "top",
         });
-        navigate(`/diaryBoard/${board.id}`);
+        navigate(`/diaryBoard/${diary.id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
@@ -78,14 +78,14 @@ export function DiaryBoardEdit() {
       });
   }
 
-  if (board === null) {
+  if (diary === null) {
     return <Spinner />;
   }
 
   const fileNameList = [];
   for (let addFile of addFileList) {
     let duplicate = false;
-    for (let file of board.fileList) {
+    for (let file of diary.fileList) {
       if (file.name === addFile.name) {
         duplicate = true;
         break;
@@ -117,8 +117,8 @@ export function DiaryBoardEdit() {
           <FormControl>
             <FormLabel>제목</FormLabel>
             <Textarea
-              defaultValue={board.title}
-              onChange={(e) => setBoard({ ...board, title: e.target.value })}
+              defaultValue={diary.title}
+              onChange={(e) => setDiary({ ...diary, title: e.target.value })}
             ></Textarea>
           </FormControl>
         </Box>
@@ -126,14 +126,14 @@ export function DiaryBoardEdit() {
           <FormControl>
             <FormLabel>사진</FormLabel>
             <Textarea
-              defaultValue={board.content}
-              onChange={(e) => setBoard({ ...board, content: e.target.value })}
+              defaultValue={diary.content}
+              onChange={(e) => setDiary({ ...diary, content: e.target.value })}
             ></Textarea>
           </FormControl>
         </Box>
         <Box mb={7}>
-          {board.fileList &&
-            board.fileList.map((file) => (
+          {diary.fileList &&
+            diary.fileList.map((file) => (
               <Card m={3} key={file.name}>
                 <CardFooter>
                   <Flex gap={3}>
@@ -194,7 +194,7 @@ export function DiaryBoardEdit() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input defaultValue={board.writer} readOnly />
+            <Input defaultValue={diary.writer} readOnly />
           </FormControl>
         </Box>
         <Box>

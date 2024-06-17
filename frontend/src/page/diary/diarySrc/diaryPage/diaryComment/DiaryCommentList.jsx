@@ -3,17 +3,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { DiaryCommentItem } from "./DiaryCommentItem.jsx";
 
-export function DiaryCommentList({ boardId, isProcessing, setIsProcessing }) {
+export function DiaryCommentList({ diaryId, isProcessing, setIsProcessing }) {
   const [commentList, setCommentList] = useState([]);
 
   useEffect(() => {
     if (!isProcessing) {
       axios
-        .get(`/api/diaryComment/list/${boardId}`)
+        .get(`/api/diaryComment/list/${diaryId}`)
         .then((res) => {
           setCommentList(res.data);
         })
-        .catch((err) => console.log(err))
+        .catch(() => {})
         .finally(() => {});
     }
   }, [isProcessing]);

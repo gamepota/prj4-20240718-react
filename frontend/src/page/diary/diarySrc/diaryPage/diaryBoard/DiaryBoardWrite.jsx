@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -19,35 +19,25 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+
 export function DiaryBoardWrite() {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
+  const [writer, setWriter] = useState("");
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const fetchMemberName = async () => {
-  //     try {
-  //       const response = await axios.get("/api/member"); // API 엔드포인트를 적절히 변경
-  //       setWriter(response.data.name); // API 응답에 맞게 조정
-  //     } catch (error) {
-  //       // console.error("멤버 이름을 가져오는 데 실패했습니다", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //
-  //   fetchMemberName();
-  // }, []);
+  const account = useContext(LoginContext);
 
   function handleSaveClick() {
     setLoading(true);
     axios
-      .postForm(`/api/diaryBoard/add`, {
+      .postForm("/api/diaryBoard/add", {
         title,
         content,
+        writer,
         files,
       })
       .then(() => {
@@ -56,7 +46,7 @@ export function DiaryBoardWrite() {
           description: "방명록이 등록되었습니다.",
           position: "top",
         });
-        navigate("/");
+        navigate("/diaryBoard/list");
       })
       .catch((e) => {
         const code = e.response.status;
@@ -95,22 +85,28 @@ export function DiaryBoardWrite() {
         <Box w={700} p={6} boxShadow="lg" borderRadius="md" bg="white">
           <Box textAlign="center">게시물 업로드</Box>
           <Box>
-            {/*<Box mb={7}>*/}
-            {/*  <FormControl>*/}
-            {/*    <FormLabel>작성자</FormLabel>*/}
-            {/*    <Input value={writer} readOnly />*/}
-            {/*  </FormControl>*/}
-            {/*</Box>*/}
+            <Box mb={7}>
+              <FormControl>
+                <FormLabel>작성자</FormLabel>
+                <Input value="작성자입니다" readOnly />
+              </FormControl>
+            </Box>
             <Box>
               <FormControl>
                 <FormLabel>제목</FormLabel>
-                <Input onChange={(e) => setTitle(e.target.value)} />
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
               </FormControl>
             </Box>
             <Box>
               <FormControl>
                 <FormLabel>글 작성</FormLabel>
-                <Textarea onChange={(e) => setContent(e.target.value)} />
+                <Textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                />
               </FormControl>
             </Box>
             <Box>

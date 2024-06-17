@@ -20,14 +20,16 @@ import {
   faTrashCan,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { DiaryCommentEdit } from "./DiaryCommentEdit.jsx";
+import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 export function DiaryCommentItem({ comment, isProcessing, setIsProcessing }) {
   const [isEditing, setIsEditing] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+  const account = useContext(LoginContext);
 
   function handleRemoveClick() {
     setIsProcessing(true);
@@ -70,31 +72,31 @@ export function DiaryCommentItem({ comment, isProcessing, setIsProcessing }) {
         <Flex>
           <Box whiteSpace="pre">{comment.comment}</Box>
           <Spacer />
-          {/*{account.hasAccess(diaryComment.memberId) && (*/}
-          <Stack>
-            <Box>
-              <Button
-                variant={"outline"}
-                size={"sm"}
-                colorScheme={"purple"}
-                onClick={() => setIsEditing(true)}
-              >
-                <FontAwesomeIcon icon={faPenToSquare} />
-              </Button>
-            </Box>
-            <Box>
-              <Button
-                variant={"outline"}
-                size={"sm"}
-                isLoading={isProcessing}
-                colorScheme="red"
-                onClick={onOpen}
-              >
-                <FontAwesomeIcon icon={faTrashCan} />
-              </Button>
-            </Box>
-          </Stack>
-          {/*)}*/}
+          {account.hasAccess(diaryComment.memberId) && (
+            <Stack>
+              <Box>
+                <Button
+                  variant={"outline"}
+                  size={"sm"}
+                  colorScheme={"purple"}
+                  onClick={() => setIsEditing(true)}
+                >
+                  <FontAwesomeIcon icon={faPenToSquare} />
+                </Button>
+              </Box>
+              <Box>
+                <Button
+                  variant={"outline"}
+                  size={"sm"}
+                  isLoading={isProcessing}
+                  colorScheme="red"
+                  onClick={onOpen}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} />
+                </Button>
+              </Box>
+            </Stack>
+          )}
         </Flex>
       )}
       {isEditing && (
@@ -105,27 +107,27 @@ export function DiaryCommentItem({ comment, isProcessing, setIsProcessing }) {
           isProcessing={isProcessing}
         />
       )}
-      {/*{account.hasAccess(comment.memberId) && (*/}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>삭제 확인</ModalHeader>
-          <ModalBody>댓글을 삭제 하시겠습니까?</ModalBody>
-          <ModalFooter>
-            <Button mr={2} onClick={onClose}>
-              취소
-            </Button>
-            <Button
-              isLoading={isProcessing}
-              colorScheme={"red"}
-              onClick={handleRemoveClick}
-            >
-              삭제
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-      {/*)}*/}
+      {account.hasAccess(comment.memberId) && (
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>삭제 확인</ModalHeader>
+            <ModalBody>댓글을 삭제 하시겠습니까?</ModalBody>
+            <ModalFooter>
+              <Button mr={2} onClick={onClose}>
+                취소
+              </Button>
+              <Button
+                isLoading={isProcessing}
+                colorScheme={"red"}
+                onClick={handleRemoveClick}
+              >
+                삭제
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
     </Box>
   );
 }

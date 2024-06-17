@@ -41,7 +41,7 @@ export function DiaryBoardView() {
           navigate("/");
         }
       });
-  }, []);
+  }, [id]);
 
   function handleClickRemove() {
     axios
@@ -57,7 +57,7 @@ export function DiaryBoardView() {
       .catch(() => {
         toast({
           status: "error",
-          description: `${id}번 게시물 삭제 중 오류가 발생하였습니다.`,
+          description: `게시물 삭제 중 오류가 발생하였습니다.`,
           position: "top",
         });
       })
@@ -78,12 +78,6 @@ export function DiaryBoardView() {
           <FormControl>
             <FormLabel>제목</FormLabel>
             <Textarea value={board.title} readOnly />
-          </FormControl>
-        </Box>
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>본문</FormLabel>
-            <Textarea value={board.content} readOnly />
           </FormControl>
         </Box>
         <Box mb={7}>
