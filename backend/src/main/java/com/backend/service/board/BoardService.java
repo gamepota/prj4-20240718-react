@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardService {
     final BoardMapper mapper;
+    final S3Client s3Client;
     //session의
     private static String PAGE_INFO_SESSION_KEY = "pageInfo";
 //    private static final String PAGE_INFO_SESSION_KEY = null;
