@@ -36,3 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 /src/main/resources/secret/
+/src/main/resources/static/
+#머지 오류 시 이거 추가

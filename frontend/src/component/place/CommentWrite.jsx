@@ -11,6 +11,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
 
   function handleCommentSubmitClick() {
     setIsProcessing(true);
+
     axios
       .post("/api/hospitalComment/add", {
         hospitalId,
