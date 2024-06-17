@@ -39,3 +39,7 @@ WHERE id = 12;
 
 ALTER TABLE member
     DROP COLUMN address;
+
+
+SELECT *
+FROM member;

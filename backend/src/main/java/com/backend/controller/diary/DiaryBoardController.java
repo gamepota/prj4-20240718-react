@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/diaryBoard")
@@ -32,8 +32,12 @@ public class DiaryBoardController {
     }
 
     @GetMapping("list")
-    public List<DiaryBoard> list() {
-        return service.list();
+    public Map<String, Object> list(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(value = "type", required = false) String searchType,
+            @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+
+        return service.list(page, searchType, keyword);
     }
 
     @GetMapping("{id}")

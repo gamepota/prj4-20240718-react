@@ -32,11 +32,19 @@ FROM test;
 CREATE TABLE diaryComment
 (
     id        INT PRIMARY KEY AUTO_INCREMENT,
-    board_id  INT          NOT NULL REFERENCES board (id),
+    diary_id  INT          NOT NULL REFERENCES diary (id),
     member_id INT          NOT NULL REFERENCES member (id),
     comment   VARCHAR(500) NOT NULL,
     inserted  DATETIME     NOT NULL DEFAULT NOW()
 );
 
+DROP TABLE diaryComment;
 SELECT *
 FROM diaryComment;
+
+CREATE TABLE diary_file
+(
+    diary_id INT          NOT NULL REFERENCES diary (id),
+    name     VARCHAR(500) NOT NULL,
+    PRIMARY KEY (diary_id, name)
+);
