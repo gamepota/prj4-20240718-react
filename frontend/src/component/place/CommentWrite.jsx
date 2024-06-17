@@ -27,7 +27,13 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
           status: "success",
         });
       })
-      .catch()
+      .catch((error) => {
+        toast({
+          description: "댓글 등록에 실패했습니다.",
+          position: "top",
+          status: "error",
+        });
+      })
       .finally(() => {
         setIsProcessing(false);
       });
