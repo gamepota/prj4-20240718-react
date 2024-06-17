@@ -37,8 +37,8 @@ const router = createBrowserRouter([
       { path: "member/login", element: <MemberLogin /> }, // 회원 로그인
       { path: "member/list", element: <MemberList /> }, // 회원 목록
       { path: "member/edit/:id", element: <MemberEdit /> }, // 회원 정보 수정 및 탈퇴
-      { path: "write", element: <BoardWrite /> }, //게시판 글쓰기
-      { path: "board", element: <BoardList /> }, //게시판 목록
+      { path: "board/write", element: <BoardWrite /> }, //게시판 글쓰기
+      { path: "board/list", element: <BoardList /> }, //게시판 목록
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
       { path: "place/map", element: <PlaceMap /> }, // 지도 보기
       { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기

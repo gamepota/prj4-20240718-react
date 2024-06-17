@@ -3,6 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 import { FriendsListComponent } from "../component/chat/FriendsListComponent.jsx";
 import { ChatComponent } from "../component/chat/ChatComponent.jsx";
+import NavbarGH from "./for_develop/NavbarGH.jsx";
 
 export const Home = () => {
   const [selectedFriend, setSelectedFriend] = useState(null);
@@ -17,6 +18,9 @@ export const Home = () => {
 
   return (
     <Box>
+      <Box>
+        <NavbarGH></NavbarGH>
+      </Box>
       <Box>
         <Outlet />
       </Box>

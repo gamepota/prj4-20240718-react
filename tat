@@ -1,0 +1,145 @@
+[33mcommit 6608ffd40296da1187720736cb7e7b84c85115c1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mback-end/feature/한-게시물-불러오기[m[33m, [m[1;32mmaster[m[33m, [m[1;32mfront-end/feature/한-게시물-보기[m[33m, [m[1;32mfront-end/feature/boardList에서-작성된-데이터-불러오기[m[33m)[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Fri Jun 7 13:47:07 2024 +0900
+
+    front --게시판 게시글 보여주는 기능 완성
+
+[33mcommit 3cc0c6840c5f2487b798f5d4f9a5fb247ea8b16b[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/boardWrite작성[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mback-end/feature/boardWrite작성[m[33m, [m[1;32mback-end/feature/boardList데이터-불러오기[m[33m)[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 16:18:41 2024 +0900
+
+    backend --프론트에서 제목 내용 작성자 작성 후 저장버튼 누르면 테이블에 insert
+
+[33mcommit 71781b5953360315f26d06dfab836dd1dcee0251[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 14:27:01 2024 +0900
+
+    시큐리티 설정
+
+[33mcommit 3d379f649a3971748b5f49c9e0fefbdeb0fb930a[m
+Merge: 0e8cfb4 2880417
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 14:26:00 2024 +0900
+
+    Merge branch 'master' into boardWrite작성
+
+[33mcommit 2880417ffec59aaac1157675aa44cc21501a083b[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Wed Jun 5 14:18:58 2024 +0900
+
+    back: security 초기 설정
+
+[33mcommit 0e8cfb44b39bdde433261462f0346935a2573344[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 14:12:56 2024 +0900
+
+    시큐리티 설정
+
+[33mcommit 39a52edd482908082af44768feca7c90b8149e87[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 14:03:50 2024 +0900
+
+    게시판 작업 중...
+
+[33mcommit c2cb759066c662f7ebb7640f600a346521cf1f32[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 11:29:21 2024 +0900
+
+    backend --board.sql 파일 이름 변경
+
+[33mcommit c2333eadf9bfe9bd3b04aed62933d9620453a631[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 11:18:51 2024 +0900
+
+    backend application오타 수정
+
+[33mcommit 28c62ea704891ebf5e1f63c23b4356d75682c8cc[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 11:03:29 2024 +0900
+
+    backend --board테이블 생성 및 데이터삽입
+
+[33mcommit b3082053d72df1779f3b9bac97434a094da27401[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 10:40:05 2024 +0900
+
+    backend --javabean에 담아서 데이터 전달 및 sql파일 생성
+
+[33mcommit be871a2150cfaea96e7912c800dab5e47657d207[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 10:23:32 2024 +0900
+
+    backend --게시판 Create 컨트롤러 서비스 매퍼 작성
+
+[33mcommit 4695733f60bdd1ab5925c92f4b21c529e0402cfb[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Wed Jun 5 10:12:44 2024 +0900
+
+    .gitignore 설정
+
+[33mcommit e88acc737cc2d3758d3d1c781bab96f125c8bc35[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Wed Jun 5 09:32:42 2024 +0900
+
+    front --MemberSignup export형식 바꿔서 홈화면 안보이는 문제 해결
+
+[33mcommit 208d1fb70fcb2ae78c65263154f4a1be5dede8fe[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Tue Jun 4 19:48:32 2024 +0900
+
+    front --프론트 게시글 작성 및 등록 후 boardlist로 이동
+
+[33mcommit d5428f34b052c452cbfc00ab14b322ab64b053e7[m
+Author: ganghyeon jo <ganghyeon4479@naver.com>
+Date:   Tue Jun 4 17:40:42 2024 +0900
+
+    개발용 네브바 생성
+
+[33mcommit 7012ab46b9d78dc7e7294353b316a6adef68c089[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Tue Jun 4 16:55:36 2024 +0900
+
+    front: 경로와 Home, MemberSignup 컴포넌트 생성
+
+[33mcommit 874882494399563bac6e9f776dc9aed512f7d618[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Tue Jun 4 14:08:20 2024 +0900
+
+    application.properties 설정
+    mybatis/key files
+
+[33mcommit a5902611c22eec2c8fd6467d4582aa61cbe98286[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Mon Jun 3 15:32:55 2024 +0900
+
+    react: 필요없는 파일, 코드 삭제
+
+[33mcommit e2bb513499d8fde4cfa96aa6abb54d5e4df17307[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Mon Jun 3 15:27:58 2024 +0900
+
+    custom.properties 추가
+
+[33mcommit d7ce73b25d9ccacf0b016b35f8012c7cecb61e66[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Mon Jun 3 15:20:31 2024 +0900
+
+    react: vite.config.js 에 서버 proxy 설정
+
+[33mcommit 6b22a9de8508fb9b054bcc053fea0045ec6ec57e[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Mon Jun 3 15:18:58 2024 +0900
+
+    react: package.json 설정
+
+[33mcommit ff0f67b0c37c19219506c9ca1e45541c84bf54af[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Mon Jun 3 15:16:36 2024 +0900
+
+    spring boot: build.gradle 변경
+
+[33mcommit dc2fd0d582244d8b99b08719e2deaea32d60cdd8[m
+Author: chaiheung <chaiheung@naver.com>
+Date:   Mon Jun 3 15:14:17 2024 +0900
+
+    first commit
