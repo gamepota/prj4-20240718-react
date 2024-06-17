@@ -3,6 +3,7 @@ import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
+// .env 파일의 경로를 지정합니다.
 dotenv.config();
 
 const app = express();
