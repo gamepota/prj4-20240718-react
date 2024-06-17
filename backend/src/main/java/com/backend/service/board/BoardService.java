@@ -5,10 +5,14 @@ import com.backend.domain.board.Board;
 import com.backend.mapper.board.BoardMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,13 +28,30 @@ public class BoardService {
 //    private static final String PAGE_INFO_SESSION_KEY = null;
 
 
+    //aws.s3.bucket.name의 프로터피 값 주입
+    @Value("${aws.s3.bucket.name}")
+    String bucketName;
+
     public void add(Board board, MultipartFile[] files) throws Exception {
 
         mapper.insert(board);
+
         if (files != null && files.length > 0) {
             for (MultipartFile file : files) {
                 mapper.insertFileName(board.getId(),
                         file.getOriginalFilename());
+
+                //실제 파일 저장 (s3)
+                //부모 디렉토리 만들기
+                String key = STR."prj3/\{board.getId()}/\{file.getOriginalFilename()}";
+                PutObjectRequest objectRequest = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+                s3Client.putObject(objectRequest,
+                        RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
             }
         }
     }
