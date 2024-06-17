@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./page/Home.jsx";
@@ -20,6 +20,8 @@ import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
 import { AIChat } from "./component/chat/AIChat.jsx";
 import { MainPage } from "./page/MainPage.jsx";
+
+const LoginContext = createContext(null);
 
 const router = createBrowserRouter([
   {
@@ -48,11 +50,17 @@ const router = createBrowserRouter([
   },
 ]);
 
+function LoginProvider({ children }) {
+  return <LoginContext.Provider value={null}>{children}</LoginContext.Provider>;
+}
+
 function App(props) {
   return (
-    <ChakraProvider>
-      <RouterProvider router={router} />
-    </ChakraProvider>
+    <LoginProvider value={null}>
+      <ChakraProvider>
+        <RouterProvider router={router} />
+      </ChakraProvider>
+    </LoginProvider>
   );
 }
 
