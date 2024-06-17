@@ -1,6 +1,6 @@
 package com.backend.config;
 
-import com.backend.jwt.LoginFilter;
+import com.backend.security.LoginFilter;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
