@@ -18,15 +18,15 @@ import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/Diary
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
 import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
-import {AIChat} from "./component/chat/AIChat.jsx";
-import {MainPage} from "./page/MainPage.jsx";
+import { AIChat } from "./component/chat/AIChat.jsx";
+import { MainPage } from "./page/MainPage.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
     children: [
-      { index: true, element: <MainPage />}, // 메인페이지 렌더링
+      { index: true, element: <MainPage /> }, // 메인페이지 렌더링
       { path: "diary/comment", element: <DiaryCommentList /> }, // 사진첩 목록
       { path: "diary/list", element: <DiaryBoardList /> }, // 사진첩 목록
       { path: "diary/edit/:id", element: <DiaryBoardEdit /> }, // 사진첩 수정
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       { path: "write", element: <BoardWrite /> }, //게시판 글쓰기
       { path: "board", element: <BoardList /> }, //게시판 목록
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
-      { path: "place", element: <PlaceMap /> }, // 지도 보기
+      { path: "place/map", element: <PlaceMap /> }, // 지도 보기
       { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기
       { path: "edit/:id", element: <BoardEdit /> }, //게시글 수정
       { path: "aichat", element: <AIChat /> }, // 챗봇 기능
