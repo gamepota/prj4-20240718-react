@@ -2,6 +2,7 @@ package com.backend.service.board;
 
 
 import com.backend.domain.board.Board;
+import com.backend.domain.board.BoardFile;
 import com.backend.mapper.board.BoardMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,6 +24,7 @@ import java.util.Map;
 public class BoardService {
     final BoardMapper mapper;
     final S3Client s3Client;
+
     //session의
     private static String PAGE_INFO_SESSION_KEY = "pageInfo";
 //    private static final String PAGE_INFO_SESSION_KEY = null;
@@ -31,6 +33,9 @@ public class BoardService {
     //aws.s3.bucket.name의 프로터피 값 주입
     @Value("${aws.s3.bucket.name}")
     String bucketName;
+
+    @Value("${image.src.prefix")
+    String srcPrefix;
 
     public void add(Board board, MultipartFile[] files) throws Exception {
 
@@ -137,7 +142,23 @@ public class BoardService {
 
 
     public Board get(Integer id) {
-        return mapper.selectById(id);
+        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder()
+                .bucket(bucketName)
+                .prefix(srcPrefix)
+                .build();
+        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
+        for (S3Object object : listResponse.contents()) {
+            System.out.println("object.key() = " + object.key());
+        }
+        System.out.println("이것은 get요청");
+
+        Board board = mapper.selectById(id);
+        List<String> fileNames = mapper.selectFileNameByBoardId(id);
+        List<BoardFile> files = fileNames.stream()
+                .map(name -> new BoardFile(name, STR."\{srcPrefix}\{id}/\{name}"))
+                .toList();
+        board.setFileList(files);
+        return board;
     }
 
     public void delete(Integer id) {

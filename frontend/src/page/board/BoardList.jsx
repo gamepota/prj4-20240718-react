@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Center,
@@ -17,6 +18,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -136,7 +139,15 @@ export function BoardList() {
                   key={board.id}
                 >
                   <td>{board.id}</td>
-                  <td>{board.title}</td>
+                  <td>
+                    {board.title}
+                    {board.numberOfImages && (
+                      <Badge>
+                        <FontAwesomeIcon icon={faImage} />
+                        {board.numbefOfImages}
+                      </Badge>
+                    )}
+                  </td>
                   <td>{board.writer}</td>
                 </Tr>
               ))}
