@@ -12,69 +12,58 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class BoardService {
-    final BoardMapper mapper;
-    final S3Client s3Client;
+    private final BoardMapper mapper;
+    private final S3Client s3Client;
 
-    //session의
+    // session의
     private static String PAGE_INFO_SESSION_KEY = "pageInfo";
-//    private static final String PAGE_INFO_SESSION_KEY = null;
+    // private static final String PAGE_INFO_SESSION_KEY = null;
 
-
-    //aws.s3.bucket.name의 프로터피 값 주입
+    // aws.s3.bucket.name의 프로퍼티 값 주입
     @Value("${aws.s3.bucket.name}")
-    String bucketName;
+    private String bucketName;
 
-    @Value("${image.src.prefix")
-    String srcPrefix;
+    @Value("${image.src.prefix}")
+    private String srcPrefix;
 
     public void add(Board board, MultipartFile[] files) throws Exception {
-
         mapper.insert(board);
 
         if (files != null && files.length > 0) {
             for (MultipartFile file : files) {
-                mapper.insertFileName(board.getId(),
-                        file.getOriginalFilename());
+                mapper.insertFileName(board.getId(), file.getOriginalFilename());
 
-                //실제 파일 저장 (s3)
-                //부모 디렉토리 만들기
-                String key = STR."prj3/\{board.getId()}/\{file.getOriginalFilename()}";
-                PutObjectRequest objectRequest = PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .acl(ObjectCannedACL.PUBLIC_READ)
-                        .build();
-
-                s3Client.putObject(objectRequest,
+                // 실제 파일 저장 (s3)
+                // 부모 디렉토리 만들기
+                String key = String.format("prj3/%d/%s", board.getId(), file.getOriginalFilename());
+                s3Client.putObject(builder -> builder.bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ),
                         RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
             }
         }
     }
 
     public boolean validate(Board board) throws Exception {
-        if (board.getTitle() == null || board.getTitle().isBlank()) {
-            return false;
-        }
-        if (board.getContent() == null || board.getContent().isBlank()) {
-            return false;
-        }
-        if (board.getWriter() == null || board.getWriter().isBlank()) {
-            return false;
-        }
-        return true;
+        return board.getTitle() != null && !board.getTitle().isBlank() &&
+                board.getContent() != null && !board.getContent().isBlank() &&
+                board.getWriter() != null && !board.getWriter().isBlank();
     }
 
-    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session) throws Exception {
+    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session)
+            throws Exception {
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
         }
@@ -101,7 +90,6 @@ public class BoardService {
 
         // 페이지에 따른 offset 계산
 
-
         // 세션에 새로운 offset 저장
         session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
 
@@ -114,7 +102,6 @@ public class BoardService {
         } else {
             offset = (page - 1) * pageAmount;
             pageInfo.put("currentPageNumber", page);
-
         }
 
         Integer countAll = mapper.selectAllCount();
@@ -136,16 +123,13 @@ public class BoardService {
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
 
-        return Map.of("pageInfo", pageInfo,
-                "boardList", mapper.selectAllPaging(offset, pageAmount));
+        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount));
     }
 
-
     public Board get(Integer id) {
-        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder()
-                .bucket(bucketName)
-                .prefix(srcPrefix)
-                .build();
+        String keyPrefix = String.format("prj3/%d/", id);
+        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
+                .prefix(keyPrefix).build();
         ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
         for (S3Object object : listResponse.contents()) {
             System.out.println("object.key() = " + object.key());
@@ -155,8 +139,7 @@ public class BoardService {
         Board board = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByBoardId(id);
         List<BoardFile> files = fileNames.stream()
-                .map(name -> new BoardFile(name, STR."\{srcPrefix}\{id}/\{name}"))
-                .toList();
+                .map(name -> new BoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
         board.setFileList(files);
         return board;
     }
