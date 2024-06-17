@@ -37,11 +37,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 로그인 성공시 실행 ( jwt 발급 )
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication authentication) {
+        System.out.println("successful authentication");
     }
 
     // 로그인 실패시 실행
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest req, HttpServletResponse res, AuthenticationException failed) {
-
+        System.out.println("unsuccessful authentication");
     }
 }
