@@ -12,15 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -127,20 +123,24 @@ public class BoardService {
     }
 
     public Board get(Integer id) {
-        String keyPrefix = String.format("prj3/%d/", id);
-        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
-                .prefix(keyPrefix).build();
-        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
-        for (S3Object object : listResponse.contents()) {
-            System.out.println("object.key() = " + object.key());
-        }
-        System.out.println("이것은 get요청");
+//        String keyPrefix = String.format("prj3/%d/", id);
+//        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
+//                .prefix(keyPrefix).build();
+//        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
+//        for (S3Object object : listResponse.contents()) {
+//            System.out.println("object.key() = " + object.key());
+//        }
+//        System.out.println("이것은 get요청");
 
         Board board = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByBoardId(id);
+        // 버킷객체URL/{id}/{name}
         List<BoardFile> files = fileNames.stream()
-                .map(name -> new BoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
+                .map(name -> new BoardFile(name, STR."\{srcPrefix}\{id}/\{name}"))
+                .toList();
+
         board.setFileList(files);
+
         return board;
     }
 
