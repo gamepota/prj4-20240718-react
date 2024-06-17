@@ -76,7 +76,7 @@ public interface DiaryBoardMapper {
                     OR m.nick_name LIKE #{pattern}
                 </if>
                     </if>
-                    </tirm>
+                    </trim>
                     GROUP BY d.id,
                         ORDER BY d.id DESC
                 LIMIT #{offset}, 10

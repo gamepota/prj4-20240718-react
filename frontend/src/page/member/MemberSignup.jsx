@@ -531,7 +531,7 @@ export function MemberSignup(props) {
                 placeholder="연락처 ( '-' 제외하고 입력 )"
                 type="tel"
                 value={phoneNumber}
-                maxlength={13}
+                maxLength={13}
                 onChange={handlePhoneNumberChange}
               />
               {!isPhoneNumberValid && phoneNumber && (
