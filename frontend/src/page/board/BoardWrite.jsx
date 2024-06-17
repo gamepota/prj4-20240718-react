@@ -4,6 +4,7 @@ import {
   Button,
   Center,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Textarea,
@@ -16,6 +17,8 @@ export function BoardWrite() {
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
   const [files, setFiles] = useState([]);
+  const [invisibledText, setInvisibledText] = useState(true);
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
   const navigate = useNavigate();
 
   function handleSaveClick() {
@@ -34,17 +37,38 @@ export function BoardWrite() {
       });
   }
 
-  let disableSaveButton = false;
-  if (title.trim().length === 0) {
-    disableSaveButton = true;
-  }
-  if (content.trim().length === 0) {
-    disableSaveButton = true;
-  }
+  React.useEffect(() => {
+    if (title.trim().length === 0 || content.trim().length === 0) {
+      setDisableSaveButton(true);
+    } else {
+      setDisableSaveButton(false);
+    }
+  }, [title, content]);
 
-  const fileNameList = [];
-  for (let i = 0; i < files.length; i++) {
-    fileNameList.push(<li>{files[i].name}</li>);
+  const fileNameList = files.map((file, index) => (
+    <li key={index}>{file.name}</li>
+  ));
+
+  function handleChange(e) {
+    const selectedFiles = Array.from(e.target.files);
+    let totalSize = 0;
+    let hasOversizedFile = false;
+
+    selectedFiles.forEach((file) => {
+      if (file.size > 10 * 1024 * 1024) {
+        hasOversizedFile = true;
+      }
+      totalSize += file.size;
+    });
+
+    if (totalSize > 10 * 1024 * 1024 || hasOversizedFile) {
+      setDisableSaveButton(true);
+      setInvisibledText(false);
+    } else {
+      setDisableSaveButton(false);
+      setInvisibledText(true);
+      setFiles(selectedFiles);
+    }
   }
 
   return (
@@ -82,8 +106,13 @@ export function BoardWrite() {
               multiple
               type="file"
               accept="image/*"
-              onChange={(e) => setFiles(e.target.files)}
+              onChange={handleChange}
             ></Input>
+            {!invisibledText && (
+              <FormHelperText color="red.500">
+                총 용량은 10MB, 한 파일은 10MB를 초과할 수 없습니다.
+              </FormHelperText>
+            )}
           </FormControl>
         </Box>
         <Box>
