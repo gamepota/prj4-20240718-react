@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 @Data
 public class DiaryComment {
     private Integer id;
-    private Integer boardId;
+    private Integer diaryId;
     private Integer memberId;
     private String comment;
     private LocalDateTime inserted;

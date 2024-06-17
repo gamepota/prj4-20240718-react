@@ -33,11 +33,11 @@ public class DiaryCommentController {
 
     }
 
-    @GetMapping("list/{boardId}")
-    public List<DiaryComment> listComment(@PathVariable Integer boardId) {
+    @GetMapping("list/{diaryId}")
+    public List<DiaryComment> listComment(@PathVariable Integer diaryId) {
 
 
-        return service.listComment(boardId);
+        return service.listComment(diaryId);
     }
 
     @DeleteMapping("diaryDelete")

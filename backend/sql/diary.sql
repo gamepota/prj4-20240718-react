@@ -5,11 +5,17 @@ CREATE TABLE diary
     content   VARCHAR(1000) NOT NULL,
     writer    VARCHAR(100)  NOT NULL,
     inserted  DATETIME      NOT NULL DEFAULT NOW(),
-    memberId  INT           NOT NULL REFERENCES member (id),
+    member_id INT           NOT NULL REFERENCES member (id),
     nick_name VARCHAR(255)  NOT NULL REFERENCES member (nickname)
 );
 
-DROP TABLE diary;
+ALTER TABLE diary
+    ADD COLUMN member_id INT REFERENCES member (id) AFTER inserted;
+
+
+SELECT *
+FROM diary;
+
 
 SELECT *
 FROM diary;
@@ -22,6 +28,8 @@ CREATE TABLE test
     writer   VARCHAR(100)  NOT NULL,
     inserted DATETIME      NOT NULL DEFAULT NOW()
 );
+
+
 
 INSERT INTO test(id, title, content, writer)
     VALUE ('1', '1', '1', '1');
@@ -48,3 +56,23 @@ CREATE TABLE diary_file
     name     VARCHAR(500) NOT NULL,
     PRIMARY KEY (diary_id, name)
 );
+
+UPDATE diary
+SET member_id = 18
+WHERE id % 2 = 0;
+UPDATE diary
+SET member_id = 19
+WHERE id % 2 = 1;
+
+UPDATE diary
+SET title   = 'abc def',
+    content = 'ghi jkl'
+WHERE id % 3 = 0;
+UPDATE diary
+SET title   = 'mno pqr',
+    content = 'stu vwx'
+WHERE id % 3 = 1;
+UPDATE diary
+SET title   = 'yz1 234',
+    content = '567 890'
+WHERE id % 3 = 2;

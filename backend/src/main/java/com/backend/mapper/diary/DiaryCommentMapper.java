@@ -11,8 +11,8 @@ public interface DiaryCommentMapper {
 
     @Insert("""
             INSERT INTO diaryComment
-            (board_id,member_id,comment)
-            VALUES (#{boardId},#{memberId},#{comment})
+            (diary_id,member_id,comment)
+            VALUES (#{diaryId},#{memberId},#{comment})
             """)
     int diaryCommentInsert(DiaryComment diaryComment, Authentication authentication);
 
@@ -21,9 +21,9 @@ public interface DiaryCommentMapper {
                    c.comment,
                    c.inserted,
                    c.member_id,
-                   m.nick_name 
+                   m.nick_name
             FROM DiaryComment c JOIN member m ON c.member_id=m.id
-            WHERE board_id=#{boardId}
+            WHERE diary_id=#{diaryId}
             ORDER BY id
             """)
     List<DiaryComment> selectAllByBoardId(Integer boardId);

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -21,12 +22,18 @@ public class DiaryBoardService {
     private final DiaryBoardMapper mapper;
     private final MemberMapper memberMapper;
 
+
     @Value("${aws.s3.bucket.name}")
     String bucketName;
 
     public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) {
         diaryBoard.setMemberId(Integer.valueOf(authentication.getName()));
         mapper.insert(diaryBoard);
+        if (files != null) {
+            for (MultipartFile file : files) {
+                mapper.insertFileName(diaryBoard.getId(), file.getOriginalFilename());
+            }
+        }
 
     }
 
@@ -68,8 +75,14 @@ public class DiaryBoardService {
     }
 
     public DiaryBoard get(Integer id) {
+        DiaryBoard diaryBoard = mapper.selectById(id);
+        List<String> fileNames = mapper.selectFileNameByDiaryId(id);
+        List<String> imageSrcList = fileNames.stream()
+                .map(name -> STR."http://localhost:5173/\{id}/\{name}")
+                .toList();
+        diaryBoard.setImageSrcList(imageSrcList);
 
-        return mapper.selectById(id);
+        return diaryBoard;
 
     }
 

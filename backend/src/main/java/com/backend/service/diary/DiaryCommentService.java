@@ -21,8 +21,8 @@ public class DiaryCommentService {
         mapper.diaryCommentInsert(diaryComment, authentication);
     }
 
-    public List<DiaryComment> listComment(Integer boardId) {
-        return mapper.selectAllByBoardId(boardId);
+    public List<DiaryComment> listComment(Integer diaryId) {
+        return mapper.selectAllByBoardId(diaryId);
     }
 
     public boolean validate(DiaryComment diaryComment) {
@@ -32,7 +32,7 @@ public class DiaryCommentService {
         if (diaryComment.getComment().isBlank()) {
             return false;
         }
-        if (diaryComment.getBoardId() == null) {
+        if (diaryComment.getDiaryId() == null) {
             return false;
         }
         return true;

@@ -10,45 +10,47 @@ import java.util.List;
 public interface DiaryBoardMapper {
 
     @Insert("""
-                INSERT INTO test(content,writer,title)
-                VALUES (#{content}, #{writer},#{title})
+                INSERT INTO diary(title,content,member_id)
+                VALUES (#{title}, #{content},#{member_id})
             """)
     int insert(DiaryBoard diaryBoard);
 
 
     @Select("""
                 SELECT
-                id,
-                title,
-                writer
-                FROM test
-                ORDER BY id DESC
+                d.id,
+                d.title,
+                m.member_id writer,
+                FROM diary d JOIN member m ON d.member_id = m.id
+                ORDER BY d.id DESC
             """)
     List<DiaryBoard> selectAll();
 
 
     @Select("""
-                SELECT id,
-                       content,
-                       inserted,
-                       writer,
-                FROM test
-                WHERE id = #{id}
+                SELECT d.id,
+                       d.title,
+                       d.content,
+                       d.inserted,
+                       m.nick_name writer,
+                       d.member_id
+                FROM diary d JOIN member m ON d.member_id = m.id
+                WHERE d.id = #{id}
             """)
     DiaryBoard selectById(Integer id);
 
 
     @Delete("""
-            DELETE FROM test
+            DELETE FROM diary
             WHERE id = #{id}
             """)
     int deleteById(Integer id);
 
 
     @Update("""
-                UPDATE test
-                SET content=#{content},
-                    writer=#{writer}
+                UPDATE diary
+                SET title=#{title},
+                    content=#{content}
                 WHERE id=#{id}
             """)
     int update(DiaryBoard diaryBoard);
@@ -83,4 +85,17 @@ public interface DiaryBoardMapper {
                 </script>
             """)
     List<DiaryBoard> selectAllPaging(Integer offset, String searchType, String keyword);
+
+    @Insert("""
+                INSERT INTO diary_file(diary_id,name)
+                VALUES (#{diaryId}, #{name})
+            """)
+    int insertFileName(Integer diaryId, String name);
+
+    @Select("""
+                SELECT name
+                FROM diary_file
+                WHERE diary_id = #{diaryId}
+            """)
+    List<String> selectFileNameByDiaryId(Integer diaryId);
 }
