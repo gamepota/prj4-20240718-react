@@ -63,21 +63,25 @@ public class JWTUtil {
         return expirationTime != null && expirationTime.before(new Date());
     }
 
-    public String createJwt(String username, String role, Long expiredMs) throws Exception {
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .claim("username", username)
-                .claim("role", role)
-                .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + expiredMs))
-                .build();
+    public String createJwt(String username, String role, Long expiredMs) {
+        try {
+            JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                    .claim("username", username)
+                    .claim("role", role)
+                    .issueTime(new Date())
+                    .expirationTime(new Date(System.currentTimeMillis() + expiredMs))
+                    .build();
 
-        SignedJWT signedJWT = new SignedJWT(
-                new JWSHeader.Builder(JWSAlgorithm.RS256).build(),
-                claimsSet
-        );
+            SignedJWT signedJWT = new SignedJWT(
+                    new JWSHeader.Builder(JWSAlgorithm.RS256).build(),
+                    claimsSet
+            );
 
-        signedJWT.sign(new RSASSASigner(privateKey));
-        return signedJWT.serialize();
+            signedJWT.sign(new RSASSASigner(privateKey));
+            return signedJWT.serialize();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create JWT", e);
+        }
     }
 
     public boolean validateToken(String token) {
