@@ -18,6 +18,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
       .post("/api/hospitalComment/add", {
         hospitalId,
         comment,
+        memberId: account.id,
       })
       .then((res) => {
         setComment("");
