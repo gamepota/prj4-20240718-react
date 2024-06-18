@@ -18,6 +18,12 @@ CREATE TABLE board_file
 SELECT *
 FROM board_file;
 
+ALTER TABLE board
+    ADD COLUMN board_type VARCHAR(50);
+
+UPDATE board
+SET board_type='free';
+
 
 
 SELECT *
