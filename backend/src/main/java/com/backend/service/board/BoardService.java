@@ -12,10 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-import software.amazon.awssdk.services.s3.model.S3Object;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -145,10 +142,31 @@ public class BoardService {
     }
 
     public void delete(Integer id) {
+        //file명 조회
+        List<String> fileNames = mapper.selectFileNameByBoardId(id);
+        //s3에 있는 file
+        for (String fileName : fileNames) {
+            String key = STR."prj3/\{id}/\{fileName}";
+            DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
+            s3Client.deleteObject(objectRequest);
+        }
+        //board_file
+        mapper.deleteFileByBoardId(id);
+        //board
         mapper.deleteById(id);
     }
 
-    public void edit(Board board) {
+    public void edit(Board board, List<String> removeFileList) {
+        if (removeFileList != null && removeFileList.size() > 0) {
+            for (String fileName : removeFileList) {
+                //s3파일 삭제
+                String key = STR."prj3/={board.getId()}/\{fileName}";
+                DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
+                s3Client.deleteObject(objectRequest);
+
+                mapper.deleteFileByBoardIdAndName(board.getId(), fileName);
+            }
+        }
         mapper.update(board);
     }
 }
