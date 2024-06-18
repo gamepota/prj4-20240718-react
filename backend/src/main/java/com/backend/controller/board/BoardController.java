@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -48,12 +49,21 @@ public class BoardController {
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable Integer id) {
+
         service.delete(id);
     }
 
     @PutMapping("edit")
-    public void edit(@RequestBody Board board) {
-        service.edit(board);
+    public ResponseEntity edit(@RequestBody Board board,
+                               @RequestParam(value = "removeFileList[]", required = false)
+                               List<String> removeFileList
+    ) throws Exception {
+        if (service.validate(board)) {
+            service.edit(board, removeFileList);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }
