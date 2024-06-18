@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Box,
   Button,
@@ -8,9 +8,11 @@ import {
   FormLabel,
   Input,
   Textarea,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDropzone } from "react-dropzone";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
@@ -20,6 +22,33 @@ export function BoardWrite() {
   const [invisibledText, setInvisibledText] = useState(true);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const navigate = useNavigate();
+
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      files.reduce((acc, file) => acc + file.size, 0);
+      let hasOversizedFile = false;
+
+      acceptedFiles.forEach((file) => {
+        if (file.size > 10 * 1024 * 1024) {
+          hasOversizedFile = true;
+        }
+      });
+      if (totalSize > 10 * 1024 * 1024 || hasOversizedFile) {
+        setDisableSaveButton(true);
+        setInvisibledText(false);
+      } else {
+        setDisableSaveButton(false);
+        setInvisibledText(true);
+        setFiles([...files, ...acceptedFiles]);
+      }
+    },
+    [files],
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: "image/*",
+  });
 
   function handleSaveClick() {
     axios
@@ -70,6 +99,16 @@ export function BoardWrite() {
       setFiles(selectedFiles);
     }
   }
+
+  function handleContentDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const filesDropped = Array.from(event.dataTransfer.files);
+    onDrop(filesDropped);
+  }
+
+  const borderColor = useColorModeValue("gray.300", "gray.600");
+  const activeBgColor = useColorModeValue("gray.100", "gray.700");
 
   return (
     <Center>
