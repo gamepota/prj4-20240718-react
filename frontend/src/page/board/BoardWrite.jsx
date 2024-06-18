@@ -6,7 +6,9 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Image,
   Input,
+  Text,
   Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
@@ -22,6 +24,7 @@ export function BoardWrite() {
   const [invisibledText, setInvisibledText] = useState(true);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const navigate = useNavigate();
+
   const onDrop = useCallback(
     (acceptedFiles) => {
       let totalSize = files.reduce((acc, file) => acc + file.size, 0);
@@ -33,6 +36,7 @@ export function BoardWrite() {
         }
         totalSize += file.size;
       });
+
       if (totalSize > 10 * 1024 * 1024 || hasOversizedFile) {
         setDisableSaveButton(true);
         setInvisibledText(false);
@@ -44,18 +48,27 @@ export function BoardWrite() {
     },
     [files],
   );
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    noClick: true,
     accept: "image/*",
   });
 
   function handleSaveClick() {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("writer", writer);
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
     axios
-      .postForm("/api/board/add", {
-        title,
-        content,
-        writer,
-        files,
+      .post("/api/board/add", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
       .then(() => {
         navigate("/board/list");
@@ -74,29 +87,17 @@ export function BoardWrite() {
   }, [title, content]);
 
   const fileNameList = files.map((file, index) => (
-    <li key={index}>{file.name}</li>
+    <Box key={index} mt={2}>
+      <Image src={URL.createObjectURL(file)} alt={file.name} boxSize="100px" />
+      <Text>{file.name}</Text>
+    </Box>
   ));
 
-  function handleChange(e) {
-    const selectedFiles = Array.from(e.target.files);
-    let totalSize = 0;
-    let hasOversizedFile = false;
-
-    selectedFiles.forEach((file) => {
-      if (file.size > 10 * 1024 * 1024) {
-        hasOversizedFile = true;
-      }
-      totalSize += file.size;
-    });
-
-    if (totalSize > 10 * 1024 * 1024 || hasOversizedFile) {
-      setDisableSaveButton(true);
-      setInvisibledText(false);
-    } else {
-      setDisableSaveButton(false);
-      setInvisibledText(true);
-      setFiles(selectedFiles);
-    }
+  function handleContentDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const filesDropped = Array.from(event.dataTransfer.files);
+    onDrop(filesDropped);
   }
 
   const borderColor = useColorModeValue("gray.300", "gray.600");
@@ -124,48 +125,39 @@ export function BoardWrite() {
         <Box>
           <FormControl>
             <FormLabel>내용</FormLabel>
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            ></Textarea>
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>파일</FormLabel>
             <Box
               {...getRootProps()}
+              onDrop={handleContentDrop}
               border={`2px dashed ${borderColor}`}
               padding="20px"
               textAlign="center"
               cursor="pointer"
               backgroundColor={isDragActive ? activeBgColor : "transparent"}
-              _hover={{ backgroundColor: activeBgColor }}
               borderRadius="md"
             >
-              <input {...getInputProps()} />
-              {isDragActive ? (
-                <Text>여기에 이미지를 드래그하세요...</Text>
-              ) : (
-                <Text>파일을 드래그하거나 클릭하여 업로드하세요</Text>
-              )}
+              <Textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                height="150px"
+              />
             </Box>
+          </FormControl>
+        </Box>
+        <Box>
+          <FormControl>
+            <FormLabel>파일</FormLabel>
             <Input
               multiple
               type="file"
               accept="image/*"
-              onChange={handleChange}
-            ></Input>
-            {!invisibledText && (
-              <FormHelperText color="red.500">
-                총 용량은 10MB, 한 파일은 10MB를 초과할 수 없습니다.
-              </FormHelperText>
-            )}
+              onChange={(e) => setFiles(e.target.files)}
+            />
+            <FormHelperText>
+              총 용량은 10MB, 한 파일은 1MB를 초과할 수 없습니다.
+            </FormHelperText>
           </FormControl>
         </Box>
-        <Box>
-          <ul>{fileNameList}</ul>
-        </Box>
+        <Box>{fileNameList}</Box>
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
