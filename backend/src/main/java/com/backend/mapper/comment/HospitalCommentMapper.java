@@ -44,7 +44,6 @@ public interface HospitalCommentMapper {
 
     @Insert("""
              INSERT INTO hospital_comment
-               INSERT INTO hospital_comment
             (username)
              VALUES (#{username})
              """)
