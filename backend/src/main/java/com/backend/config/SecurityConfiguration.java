@@ -1,5 +1,6 @@
 package com.backend.config;
 
+import com.backend.security.JWTFilter;
 import com.backend.security.JWTUtil;
 import com.backend.security.LoginFilter;
 import com.nimbusds.jose.jwk.JWK;
@@ -89,7 +90,9 @@ public class SecurityConfiguration {
                 .anyRequest().authenticated());
 
         // 필터 추가
+        http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
         // 세션 설정
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
