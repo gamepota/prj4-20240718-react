@@ -24,7 +24,7 @@ export function LoginProvider({ children }) {
 
   // 권한 있는 지? 확인
   function hasAccess(param) {
-    return id == param;
+    return id === param;
   }
 
   function isAdmin() {

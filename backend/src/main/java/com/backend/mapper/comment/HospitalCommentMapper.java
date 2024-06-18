@@ -15,8 +15,8 @@ public interface HospitalCommentMapper {
     int insert(HospitalComment hospitalComment);
 
     @Select("""
-            SELECT *
-            FROM hospital_comment
+            SELECT c.id,c.comment, c.inserted,m.nickname 
+            FROM hospital_comment c JOIN member m ON c.member_id = m.id 
             WHERE  hospital_id = #{hospitalId}
             ORDER BY id
             """)
@@ -26,7 +26,7 @@ public interface HospitalCommentMapper {
             DELETE FROM hospital_comment
             WHERE id = #{id}
             """)
-    int deletById(Integer id);
+    int deleteById(Integer id);
 
     @Select("""
             SELECT *

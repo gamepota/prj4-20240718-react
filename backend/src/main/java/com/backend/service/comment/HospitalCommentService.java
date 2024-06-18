@@ -2,6 +2,7 @@ package com.backend.service.comment;
 
 import com.backend.domain.comment.HospitalComment;
 import com.backend.mapper.comment.HospitalCommentMapper;
+import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HospitalCommentService {
     final HospitalCommentMapper mapper;
+    private final MemberMapper memberMapper;
 
     public void add(HospitalComment hospitalComment, Authentication authentication) {
         hospitalComment.setMemberId(Integer.valueOf(authentication.getName()));
@@ -31,11 +33,12 @@ public class HospitalCommentService {
     }
 
     public List<HospitalComment> list(Integer hospitalId) {
+
         return mapper.selectByHospitalId(hospitalId);
     }
 
     public void remove(HospitalComment hospitalComment) {
-        mapper.deletById(hospitalComment.getId());
+        mapper.deleteById(hospitalComment.getId());
     }
 
     public boolean hasAccess(HospitalComment hospitalComment, Authentication authentication) {
