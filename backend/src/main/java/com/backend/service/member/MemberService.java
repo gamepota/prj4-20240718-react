@@ -37,18 +37,19 @@ public class MemberService {
 
     // MemberLogin
     public Map<String, Object> getToken(Member member) {
-        Map<String, Object> result = null;
-        Member db = mapper.selectByUsername(member.getUsername());
-        if (db != null) {
-            if (passwordEncoder.matches(member.getPassword(), db.getPassword())) {
-                result = new HashMap<>();
-                String token = jwtUtil.createJwt(member.getUsername(), db.getRole().name(), 60 * 60 * 1000L); // 1시간
-                result.put("token", token);
-                result.put("id", db.getId());
-                mapper.updateLoginStatus(db.getId(), true, LocalDateTime.now());
-            }
+        Member dbMember = mapper.selectByUsername(member.getUsername());
+        if (dbMember != null && passwordEncoder.matches(member.getPassword(), dbMember.getPassword())) {
+            String accessToken = jwtUtil.createJwt("access", dbMember.getUsername(), dbMember.getRole().name(), 600000L); // 10분 유효
+            String refreshToken = jwtUtil.createJwt("refresh", dbMember.getUsername(), dbMember.getRole().name(), 86400000L); // 24시간 유효
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("access", accessToken);
+            result.put("refresh", refreshToken);
+            result.put("id", dbMember.getId());
+            mapper.updateLoginStatus(dbMember.getId(), true, LocalDateTime.now());
+            return result;
         }
-        return result;
+        return null;
     }
 
     // MemberList
