@@ -49,14 +49,15 @@ public class BoardController {
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable Integer id) {
-        
+
         service.delete(id);
     }
 
     @PutMapping("edit")
-    public ResponseEntity edit(@RequestBody Board board,
+    public ResponseEntity edit(Board board,
                                @RequestParam(value = "removeFileList[]", required = false)
                                List<String> removeFileList,
+                               @RequestParam(value = "addFileList[]", required = false)
                                MultipartFile[] addFileList
     ) throws Exception {
 
