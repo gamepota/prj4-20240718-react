@@ -8,10 +8,17 @@ import {
   FormLabel,
   Image,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
   Switch,
   Text,
   Textarea,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,6 +34,7 @@ export function BoardEdit() {
   const [addFileList, setAddFileList] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   useEffect(() => {
     axios.get(`/api/board/${id}`).then((res) => {
       setBoard(res.data);
@@ -154,10 +162,23 @@ export function BoardEdit() {
         </FormControl>
       </Box>
       <Box>
-        <Button colorScheme={"blue"} onClick={handleClickSave}>
+        <Button colorScheme={"blue"} onClick={onOpen}>
           수정
         </Button>
       </Box>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalBody>수정하시겠습니까?</ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>취소</Button>
+            <Button onClick={handleClickSave} colorScheme={"blue"}>
+              확인
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }
