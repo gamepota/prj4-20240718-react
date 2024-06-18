@@ -30,14 +30,19 @@ export function BoardEdit() {
     });
   }, []);
   function handleClickSave() {
-    axios.put(`/api/board/edit`, board).then(() => {
-      toast({
-        status: "success",
-        description: `${board.id}번 게시글이 수정되었습니다`,
-        position: "top",
+    axios
+      .putForm(`/api/board/edit`, {
+        board,
+        removeFileList,
+      })
+      .then(() => {
+        toast({
+          status: "success",
+          description: `${board.id}번 게시글이 수정되었습니다`,
+          position: "top",
+        });
+        navigate(`/board/${id}`);
       });
-      navigate(`/board/${id}`);
-    });
   }
 
   //useEffect가 실행될때까지 스피너 돌아감..
