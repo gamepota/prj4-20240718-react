@@ -4,8 +4,13 @@ import com.backend.domain.member.Member;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -52,6 +57,21 @@ public class MemberController {
     }
 
     // MemberLogin
+
+    @GetMapping
+    public String login() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
+        GrantedAuthority auth = iter.next();
+        String role = auth.getAuthority();
+
+        return "Login" + username + " " + role;
+    }
+
 //    @PostMapping("/token")
 //    public ResponseEntity token(@RequestBody Member member) {
 //        Map<String, Object> map = service.getToken(member);

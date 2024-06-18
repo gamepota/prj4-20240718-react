@@ -18,7 +18,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(() -> member.getRole().name());
+        authorities.add(() -> member.getTokenRole());
         return authorities;
     }
 
@@ -31,7 +31,7 @@ public class CustomUserDetails implements UserDetails {
     public String getPassword() {
         return member.getPassword();
     }
-    
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
