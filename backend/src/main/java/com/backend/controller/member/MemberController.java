@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,8 +58,7 @@ public class MemberController {
     }
 
     // MemberLogin
-
-    @GetMapping
+    @GetMapping("/login")
     public String login() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -72,16 +72,14 @@ public class MemberController {
         return "Login" + username + " " + role;
     }
 
-//    @PostMapping("/token")
-//    public ResponseEntity token(@RequestBody Member member) {
-//        Map<String, Object> map = service.getToken(member);
-//
-//        if (map == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//
-//        return ResponseEntity.ok(map);
-//    }
+    @PostMapping("/token")
+    public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
+        Map<String, Object> response = service.getToken(member);
+        if (response != null) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(401).build();
+    }
 
     // MemberList
     @GetMapping("/list")
