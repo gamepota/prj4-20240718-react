@@ -18,9 +18,10 @@ CREATE TABLE hospital_comment
 (
     id          INT PRIMARY KEY AUTO_INCREMENT,
     hospital_id INT          NOT NULL REFERENCES hospital (id),
-    member_id   INT          NOT NULL REFERENCES member (id),
+    member_id   INT                   DEFAULT NULL,
     comment     VARCHAR(500) NOT NULL,
-    inserted    DATETIME     NOT NULL DEFAULT NOW()
+    inserted    DATETIME     NOT NULL DEFAULT NOW(),
+    username    VARCHAR(255)          DEFAULT NULL
 );
 
 
@@ -35,3 +36,9 @@ VALUES (1, 22, '여기 병원 정말 좋습니다.');
 
 INSERT INTO hospital_comment(hospital_id, member_id, comment)
 VALUES (1, 23, '여기 병원 별로임.');
+ALTER TABLE hospital_comment
+    ADD username VARCHAR(255) DEFAULT NULL;
+
+DELETE
+FROM hospital_comment
+WHERE hospital_id = 1;

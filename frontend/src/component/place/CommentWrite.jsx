@@ -18,7 +18,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
       .post("/api/hospitalComment/add", {
         hospitalId,
         comment,
-        memberId: account.id,
+        username: account.id,
       })
       .then((res) => {
         setComment("");
@@ -28,7 +28,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
           status: "success",
         });
       })
-      .catch((error) => {
+      .catch((err) => {
         toast({
           description: "댓글 등록에 실패했습니다.",
           position: "top",

@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface HospitalCommentMapper {
     @Insert("""
-            INSERT INTO hospital_comment
+            INSERT INTO hospital_comment 
             (hospital_id, member_id, comment)
             VALUES (#{hospitalId}, #{memberId}, #{comment})
             """)
@@ -41,4 +41,20 @@ public interface HospitalCommentMapper {
             WHERE id = #{id}
             """)
     int update(HospitalComment hospitalComment);
+
+    @Insert("""
+             INSERT INTO hospital_comment
+               INSERT INTO hospital_comment
+            (username)
+             VALUES (#{username})
+             """)
+    int insertUsername(HospitalComment hospitalComment);
+
+    @Update("""
+            UPDATE hospital_comment h
+            JOIN  member m ON h.username= m.username
+            SET h.member_id = m.id
+            WHERE h.member_id IS NULL ;
+            """)
+    int searchByUserName(HospitalComment hospitalComment);
 }
