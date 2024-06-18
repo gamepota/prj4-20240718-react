@@ -69,4 +69,17 @@ public interface BoardMapper {
             WHERE board_id=#{boardId}
             """)
     List<String> selectFileNameByBoardId(Integer id);
+
+    @Delete("""
+            DELETE FROM board_file
+            WHERE board_id=#{boardId}
+            """)
+    int deleteFileByBoardId(Integer id);
+
+    @Delete("""
+            DELETE FROM board_file
+            WHERE board_id=#{boardId}
+            AND name=#{fileNAme}
+            """)
+    int deleteFileByBoardIdAndName(Integer id, String fileName);
 }
