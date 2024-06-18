@@ -7,7 +7,7 @@ export function DiaryCommentList({ diaryId, isProcessing, setIsProcessing }) {
   const [commentList, setCommentList] = useState([]);
 
   useEffect(() => {
-    if (!isProcessing) {
+    if (diaryId && !isProcessing) {
       axios
         .get(`/api/diaryComment/list/${diaryId}`)
         .then((res) => {
@@ -16,7 +16,7 @@ export function DiaryCommentList({ diaryId, isProcessing, setIsProcessing }) {
         .catch(() => {})
         .finally(() => {});
     }
-  }, [isProcessing]);
+  }, [isProcessing, isProcessing, diaryId]);
 
   return (
     <Card>

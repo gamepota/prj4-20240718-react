@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Input } from "@chakra-ui/react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -39,6 +39,16 @@ export function Navbar() {
         onClick={() => navigate("/board")}
       >
         반려동물 정보
+      </Box>
+      <Box>
+        <Button
+          bgColor={"purple.100"}
+          _hover={{ cursor: "pointer", bgColor: "purple.200" }}
+        >
+          <Link to="diary/home" target="_blank">
+            미니홈피
+          </Link>
+        </Button>
       </Box>
       <Box
         _hover={{ cursor: "pointer", bgColor: "gray.200" }}

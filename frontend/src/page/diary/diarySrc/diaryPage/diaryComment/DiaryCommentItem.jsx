@@ -24,6 +24,7 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { DiaryCommentEdit } from "./DiaryCommentEdit.jsx";
 import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+import diaryComment from "sockjs-client/lib/transport/receiver/jsonp.js";
 
 export function DiaryCommentItem({ comment, isProcessing, setIsProcessing }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -35,7 +36,7 @@ export function DiaryCommentItem({ comment, isProcessing, setIsProcessing }) {
     setIsProcessing(true);
     axios
       .delete(`/api/diaryComment/diaryDelete`, {
-        data: { id: comment.id },
+        data: { id: diaryComment.id },
       })
       .then((res) => {})
       .catch((err) => {})

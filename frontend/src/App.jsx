@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     element: <Home />,
     children: [
       { index: true, element: <MainPage /> }, // 메인페이지 렌더링
-      { path: "diary/comment", element: <DiaryCommentList /> }, // 사진첩 목록
+      { path: "diary/comment/list", element: <DiaryCommentList /> }, // 사진첩 목록
       { path: "diary/list", element: <DiaryBoardList /> }, // 사진첩 목록
       { path: "diary/edit", element: <DiaryBoardEdit /> }, // 사진첩 수정
       { path: "diary/view", element: <DiaryBoardView /> }, //
