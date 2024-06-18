@@ -37,6 +37,7 @@ export function BoardEdit() {
       .putForm(`/api/board/edit`, {
         board,
         removeFileList,
+        addFileList,
       })
       .then(() => {
         toast({
