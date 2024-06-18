@@ -1,7 +1,6 @@
 package com.backend.security;
 
 import com.backend.domain.member.Member;
-import com.backend.domain.member.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,7 +58,7 @@ public class JWTFilter extends OncePerRequestFilter {
         Member member = new Member();
         member.setUsername(username);
         member.setPassword("password");
-        member.setRole(Role.USER);
+        member.setTokenRole(role);
 
         // UserDetails 에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(member);

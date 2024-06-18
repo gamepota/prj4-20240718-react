@@ -21,4 +21,5 @@ public class Member {
     private String detailedAddress;
     private LocalDateTime inserted;
     private Role role;
+    private String tokenRole;
 }
