@@ -17,7 +17,7 @@ public interface BoardMapper {
     int insert(Board board);
 
     @Select("""
-            SELECT * FROM board 
+            SELECT * FROM board
             ORDER BY id DESC
             LIMIT #{offset},#{pageAmount}
             """)

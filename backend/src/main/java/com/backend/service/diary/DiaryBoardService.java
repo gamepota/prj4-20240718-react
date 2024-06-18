@@ -2,9 +2,7 @@ package com.backend.service.diary;
 
 import com.backend.domain.diary.DiaryBoard;
 import com.backend.mapper.diary.DiaryBoardMapper;
-import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +18,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DiaryBoardService {
     private final DiaryBoardMapper mapper;
-    private final MemberMapper memberMapper;
-
-
-    @Value("${aws.s3.bucket.name}")
-    String bucketName;
 
     public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) {
-        diaryBoard.setMemberId(Integer.valueOf(authentication.getName()));
         mapper.insert(diaryBoard);
         if (files != null) {
             for (MultipartFile file : files) {
@@ -40,6 +32,12 @@ public class DiaryBoardService {
 
     public boolean validate(DiaryBoard diaryBoard) {
         if (diaryBoard.getContent() == null || diaryBoard.getContent().isBlank()) {
+            return false;
+        }
+        if (diaryBoard.getTitle() == null || diaryBoard.getTitle().isBlank()) {
+            return false;
+        }
+        if (diaryBoard.getWriter() == null || diaryBoard.getWriter().isBlank()) {
             return false;
         }
         return true;
