@@ -49,17 +49,19 @@ public class BoardController {
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable Integer id) {
-
+        
         service.delete(id);
     }
 
     @PutMapping("edit")
     public ResponseEntity edit(@RequestBody Board board,
                                @RequestParam(value = "removeFileList[]", required = false)
-                               List<String> removeFileList
+                               List<String> removeFileList,
+                               MultipartFile[] addFileList
     ) throws Exception {
+
         if (service.validate(board)) {
-            service.edit(board, removeFileList);
+            service.edit(board, removeFileList, addFileList);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
