@@ -9,6 +9,8 @@ CREATE TABLE diary
     nick_name VARCHAR(255)  NOT NULL REFERENCES member (nickname)
 );
 
+
+
 ALTER TABLE diary
     ADD COLUMN member_id INT REFERENCES member (id) AFTER inserted;
 
@@ -46,7 +48,17 @@ CREATE TABLE diaryComment
     inserted  DATETIME     NOT NULL DEFAULT NOW()
 );
 
+INSERT INTO diaryComment(member_id, diary_id, comment)
+VALUES (1, 1, 'This is a comment');
+
+SELECT *
+FROM diary
+WHERE id = 1;
+
+
+
 DROP TABLE diaryComment;
+
 SELECT *
 FROM diaryComment;
 
@@ -76,3 +88,4 @@ UPDATE diary
 SET title   = 'yz1 234',
     content = '567 890'
 WHERE id % 3 = 2;
+

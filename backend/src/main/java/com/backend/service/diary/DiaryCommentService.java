@@ -3,7 +3,6 @@ package com.backend.service.diary;
 import com.backend.domain.diary.DiaryComment;
 import com.backend.mapper.diary.DiaryCommentMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +15,9 @@ public class DiaryCommentService {
 
     final DiaryCommentMapper mapper;
 
-    public void addComment(DiaryComment diaryComment, Authentication authentication) {
-        diaryComment.setMemberId(Integer.valueOf(authentication.getName()));
-        mapper.diaryCommentInsert(diaryComment, authentication);
+    public void addComment(DiaryComment diaryComment) {
+//        diaryComment.setMemberId(Integer.valueOf(diaryComment.getId()));
+        mapper.diaryCommentInsert(diaryComment);
     }
 
     public List<DiaryComment> listComment(Integer diaryId) {
@@ -42,20 +41,23 @@ public class DiaryCommentService {
         mapper.deleteById(diaryComment.getId());
     }
 
-    public boolean hasAcess(DiaryComment diaryComment, Authentication authentication) {
-        DiaryComment db = mapper.selectById(diaryComment.getId());
+    public boolean hasAcess(DiaryComment diaryComment) {
 
-        if (db == null) {
-            return false;
-        }
 
-        if (!authentication.getName().equals(db.getMemberId().toString())) {
-            return false;
-        }
+//        if (db == null) {
+//            return false;
+//        }
+//        if (getName().equals(db.getMemberId().toString())) {
+//            return false;
+//        }
         return true;
     }
 
     public void diaryUpdate(DiaryComment diaryComment) {
         mapper.diaryUpdate(diaryComment);
+    }
+
+    public void getById(Integer id) {
+        mapper.selectgetById(id);
     }
 }

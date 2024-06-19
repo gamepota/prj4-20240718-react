@@ -2,7 +2,6 @@ package com.backend.mapper.diary;
 
 import com.backend.domain.diary.DiaryComment;
 import org.apache.ibatis.annotations.*;
-import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public interface DiaryCommentMapper {
             (diary_id,member_id,comment)
             VALUES (#{diaryId},#{memberId},#{comment})
             """)
-    int diaryCommentInsert(DiaryComment diaryComment, Authentication authentication);
+    int diaryCommentInsert(DiaryComment diaryComment);
 
     @Select("""
             SELECT c.id,
@@ -49,4 +48,11 @@ public interface DiaryCommentMapper {
                 WHERE id = #{id}
             """)
     int diaryUpdate(DiaryComment diaryComment);
+
+    @Select("""
+            SELECT *
+            FROM diary
+            WHERE id = #{id}
+            """)
+    int selectgetById(Integer id);
 }

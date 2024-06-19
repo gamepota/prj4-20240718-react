@@ -19,7 +19,9 @@ import java.util.Map;
 public class DiaryBoardService {
     private final DiaryBoardMapper mapper;
 
-    public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) {
+    public void add(DiaryBoard diaryBoard, MultipartFile[] files) {
+
+
         mapper.insert(diaryBoard);
         if (files != null) {
             for (MultipartFile file : files) {
