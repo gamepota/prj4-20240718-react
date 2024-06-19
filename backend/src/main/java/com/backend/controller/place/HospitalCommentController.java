@@ -1,7 +1,7 @@
-package com.backend.controller.comment;
+package com.backend.controller.place;
 
-import com.backend.domain.comment.HospitalComment;
-import com.backend.service.comment.HospitalCommentService;
+import com.backend.domain.place.HospitalComment;
+import com.backend.service.place.HospitalCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

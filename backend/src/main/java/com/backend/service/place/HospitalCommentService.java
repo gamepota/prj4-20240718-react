@@ -1,8 +1,8 @@
-package com.backend.service.comment;
+package com.backend.service.place;
 
-import com.backend.domain.comment.HospitalComment;
-import com.backend.mapper.comment.HospitalCommentMapper;
+import com.backend.domain.place.HospitalComment;
 import com.backend.mapper.member.MemberMapper;
+import com.backend.mapper.place.HospitalCommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.backend.domain.comment;
+package com.backend.domain.place;
 
 import lombok.Data;
 

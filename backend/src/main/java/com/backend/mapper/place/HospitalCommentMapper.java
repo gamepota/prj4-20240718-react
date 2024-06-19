@@ -1,6 +1,6 @@
-package com.backend.mapper.comment;
+package com.backend.mapper.place;
 
-import com.backend.domain.comment.HospitalComment;
+import com.backend.domain.place.HospitalComment;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
