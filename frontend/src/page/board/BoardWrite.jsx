@@ -8,7 +8,6 @@ import {
   FormLabel,
   Input,
   Textarea,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -98,17 +97,6 @@ export function BoardWrite() {
       setFiles(selectedFiles);
     }
   }
-
-  function handleContentDrop(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const filesDropped = Array.from(event.dataTransfer.files);
-    onDrop(filesDropped);
-  }
-
-  const borderColor = useColorModeValue("gray.300", "gray.600");
-  const activeBgColor = useColorModeValue("gray.100", "gray.700");
-
   return (
     <Center>
       <Box
