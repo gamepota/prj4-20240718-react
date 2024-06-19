@@ -34,13 +34,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 export function DiaryBoardEdit() {
-  const [diary, setDiary] = useState(null);
   const { id } = useParams();
+  const [diary, setDiary] = useState(null);
+  const [removeFileList, setRemoveFileList] = useState([]);
+  const [addFileList, setAddFileList] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [removeFileList, setRemoveFileList] = useState([]);
-  const [addFileList, setAddFileList] = useState([]);
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/${id}`).then((res) => setDiary(res.data.diary));
@@ -113,18 +113,18 @@ export function DiaryBoardEdit() {
     <Box>
       <Box>사진첩 수정</Box>
       <Box>
-        <Box>
+        <Box mb={7}>
           <FormControl>
             <FormLabel>제목</FormLabel>
-            <Textarea
+            <Input
               defaultValue={diary.title}
               onChange={(e) => setDiary({ ...diary, title: e.target.value })}
-            ></Textarea>
+            />
           </FormControl>
         </Box>
-        <Box>
+        <Box mb={7}>
           <FormControl>
-            <FormLabel>사진</FormLabel>
+            <FormLabel>본문</FormLabel>
             <Textarea
               defaultValue={diary.content}
               onChange={(e) => setDiary({ ...diary, content: e.target.value })}

@@ -3,6 +3,8 @@ import { Outlet } from "react-router-dom";
 import { Box, Button, VStack } from "@chakra-ui/react";
 import { DiaryNavbar } from "../diaryComponent/DiaryNavbar.jsx";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 
 export function DiaryHome() {
   const memberId = 1; // 하드코딩된 memberId
@@ -28,10 +30,15 @@ export function DiaryHome() {
         }}
         mt={100}
       >
-        <Box p={4}>
-          <VStack spacing={4}>
-            <Button onClick={handleAddFriend} colorScheme="teal">
-              친구추가
+        <Box>
+          <VStack>
+            <Button
+              onClick={handleAddFriend}
+              colorScheme="teal"
+              justifyContent="flex-start"
+              style={{ paddingLeft: 0 }}
+            >
+              <FontAwesomeIcon icon={faUserPlus} />
             </Button>
           </VStack>
         </Box>

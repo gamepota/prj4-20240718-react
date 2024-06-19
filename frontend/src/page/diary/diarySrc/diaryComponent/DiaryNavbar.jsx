@@ -12,23 +12,23 @@ export function DiaryNavbar() {
           onClick={() => navigate("/diary/home")}
           cursor={"pointer"}
           _hover={{
-            bgColor: "gray.200",
+            bgColor: "blue.200",
           }}
         >
           홈
         </Button>
       </Box>
-      <Box>
-        <Button
-          onClick={() => navigate("/diary/comment/list")}
-          cursor={"pointer"}
-          _hover={{
-            bg: "blue.200",
-          }}
-        >
-          방명록
-        </Button>
-      </Box>
+      {/*<Box>*/}
+      {/*<Button*/}
+      {/*  onClick={() => navigate("/diary/comment/list")}*/}
+      {/*  cursor={"pointer"}*/}
+      {/*  _hover={{*/}
+      {/*    bg: "blue.200",*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  방명록*/}
+      {/*</Button>*/}
+      {/*</Box>*/}
       <Box>
         <Button
           onClick={() => navigate("/diary/list")}
@@ -37,7 +37,7 @@ export function DiaryNavbar() {
             bgColor: "blue.200",
           }}
         >
-          사진첩
+          내 다이어리
         </Button>
       </Box>
       <Box>
