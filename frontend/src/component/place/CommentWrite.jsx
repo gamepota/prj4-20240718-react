@@ -12,34 +12,37 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
   const toast = useToast();
   const account = useContext(LoginContext);
 
-  function handleCommentSubmitClick() {
+  async function handleCommentSubmitClick() {
     setIsProcessing(true);
 
-    axios
-      .post("/api/hospitalComment/add", {
+    try {
+      await axios.post("/api/hospitalComment/add", {
         hospitalId,
         comment,
         username: account.id,
-        rating: ratingIndex,
-      })
-      .then((res) => {
-        setComment("");
-        toast({
-          description: "댓글이 등록되었습니다.",
-          position: "top",
-          status: "success",
-        });
-      })
-      .catch((err) => {
-        toast({
-          description: "댓글 등록에 실패했습니다.",
-          position: "top",
-          status: "error",
-        });
-      })
-      .finally(() => {
-        setIsProcessing(false);
       });
+
+      await axios.post("/api/hospitalComment/rating", {
+        hospitalId,
+        rating: ratingIndex,
+        username: account.id,
+      });
+
+      setComment("");
+      toast({
+        description: "댓글이 등록되었습니다.",
+        position: "top",
+        status: "success",
+      });
+    } catch (err) {
+      toast({
+        description: "댓글 등록에 실패했습니다.",
+        position: "top",
+        status: "error",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   }
 
   return (
