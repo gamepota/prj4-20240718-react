@@ -100,12 +100,12 @@ export function BoardEdit() {
     let hasOversizedFile = false;
 
     selectedFiles.forEach((file) => {
-      if (file.size > 10 * 1024 * 1024) {
+      if (file.size > 100 * 1024 * 1024) {
         hasOversizedFile = false;
       }
       totalSize += file.size;
     });
-    if (totalSize > 10 * 1024 * 1024 || hasOversizedFile) {
+    if (totalSize > 100 * 1024 * 1024 || hasOversizedFile) {
       setDisableSaveButton(true);
       setInvisibledText(false);
     } else {
@@ -173,7 +173,7 @@ export function BoardEdit() {
           />
           {!invisibledText && (
             <FormHelperText color="red.500">
-              총 용량은 10MB, 한 파일은 10MB를 초과할 수 없습니다.
+              총 용량은 100MB, 한 파일은 100MB를 초과할 수 없습니다.
             </FormHelperText>
           )}
         </FormControl>
