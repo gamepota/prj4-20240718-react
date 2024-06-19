@@ -59,9 +59,9 @@ public interface BoardMapper {
 
     @Insert("""
             INSERT INTO board_file(board_id,name)
-            VALUES (#{id},#{name})
+            VALUES (#{boardId},#{name})
             """)
-    void insertFileName(Integer id, String name);
+    int insertFileName(Integer boardId, String name);
 
     @Select("""
             SELECT name
