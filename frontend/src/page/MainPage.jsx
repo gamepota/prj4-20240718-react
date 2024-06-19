@@ -29,24 +29,6 @@ const PetInfoTable = ({data}) => (
   </Table>
 );
 
-const LoginSection = () => (
-  <VStack spacing={2} align="flex-start">
-    <Box mb={10}>
-      <h2>로그인</h2>
-      <br/>
-      <Input border={"1px solid black"} bgColor={"white"} placeholder="Username" mb={2}/>
-      <Input border={"1px solid black"} bgColor={"white"} placeholder="Password" type="password"/>
-    </Box>
-
-    <Text fontWeight="bold">인기 급상승 게시물</Text>
-    <Text>1. 아아아아메리카노</Text>
-    <Text>2. 좋아좋아좋아</Text>
-    <Text>3. 한잔주세요</Text>
-    <Text>4. 두잔 주세요 </Text>
-    <Text>5. 그만 주세요 </Text>
-  </VStack>
-);
-
 export const MainPage = () => {
   const board1 = [
     {no: 1, name: "안녕", value: "나야"},
@@ -93,9 +75,6 @@ export const MainPage = () => {
         <Box w={"40%"} h={"auto"}>
           <Image src="/img/지도.png"/>
         </Box>
-      </Flex>
-      <Flex position="absolute" top={20} right={4} bg="gray.200" p={4} borderRadius="md">
-        <LoginSection/>
       </Flex>
     </Box>
   );
