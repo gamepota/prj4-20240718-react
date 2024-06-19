@@ -32,6 +32,8 @@ export function BoardEdit() {
   const [board, setBoard] = useState(null);
   const [removeFileList, setRemoveFileList] = useState([]);
   const [addFileList, setAddFileList] = useState([]);
+  const [invisibledText, setInvisibledText] = useState(true);
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -92,6 +94,27 @@ export function BoardEdit() {
     return undefined;
   }
 
+  function handleChange(e) {
+    const selectedFiles = Array.from(e.target.files);
+    let totalSize = 0;
+    let hasOversizedFile = false;
+
+    selectedFiles.forEach((file) => {
+      if (file.size > 10 * 1024 * 1024) {
+        hasOversizedFile = false;
+      }
+      totalSize += file.size;
+    });
+    if (totalSize > 10 * 1024 * 1024 || hasOversizedFile) {
+      setDisableSaveButton(true);
+      setInvisibledText(false);
+    } else {
+      setDisableSaveButton(false);
+      setInvisibledText(true);
+      setAddFileList(selectedFiles);
+    }
+  }
+
   return (
     <Box>
       <Box>{id}번 게시물 수정</Box>
@@ -146,11 +169,13 @@ export function BoardEdit() {
             multiple
             type="file"
             accept="image/*"
-            onChange={(e) => setAddFileList(e.target.files)}
+            onChange={handleChange}
           />
-          <FormHelperText>
-            총 용량은 10MB, 한 파일은 1MB를 초과할 수 없습니다.
-          </FormHelperText>
+          {!invisibledText && (
+            <FormHelperText color="red.500">
+              총 용량은 10MB, 한 파일은 10MB를 초과할 수 없습니다.
+            </FormHelperText>
+          )}
         </FormControl>
       </Box>
       <Box>
@@ -166,7 +191,11 @@ export function BoardEdit() {
         </FormControl>
       </Box>
       <Box>
-        <Button colorScheme={"blue"} onClick={onOpen}>
+        <Button
+          colorScheme={"blue"}
+          onClick={onOpen}
+          isDisabled={disableSaveButton}
+        >
           수정
         </Button>
       </Box>
