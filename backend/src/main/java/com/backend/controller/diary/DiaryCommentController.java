@@ -1,3 +1,4 @@
+// DiaryCommentController.java
 package com.backend.controller.diary;
 
 import com.backend.domain.diary.DiaryComment;
@@ -12,55 +13,30 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/diaryComment")
 public class DiaryCommentController {
-
-    private DiaryCommentService service;
+    private final DiaryCommentService service; // final로 선언하여 @RequiredArgsConstructor가 초기화
 
     @PostMapping("add")
-//    @PreAuthorize("isAuthenticated()")
-    public void addComment(@RequestBody DiaryComment diaryComment
-    ) {
-//        if (service.validate(diaryComment)) {
+    public void addComment(@RequestBody DiaryComment diaryComment) {
         service.addComment(diaryComment);
-//
-//            return ResponseEntity.ok().build();
-//        } else {
-//            return ResponseEntity.badRequest().build();
-//        }
-
     }
 
     @GetMapping("list/{diaryId}")
     public List<DiaryComment> listComment(@PathVariable Integer diaryId) {
-
-
         return service.listComment(diaryId);
     }
 
     @DeleteMapping("diaryDelete")
-    public void diaryDelete(@RequestBody DiaryComment diaryComment
-    ) {
-//        if (service.hasAcess(diaryComment)) {
+    public void diaryDelete(@RequestBody DiaryComment diaryComment) {
         service.diaryDelete(diaryComment);
-//            return ResponseEntity.ok().build();
-//        } else {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//        }
     }
 
     @PutMapping("diaryUpdate")
-//    @PreAuthorize("isAuthenticated()")
-    public void diaryUpdate(@RequestBody DiaryComment diaryComment
-    ) {
-//        if (service.hasAcess(diaryComment, authentication)) {
+    public void diaryUpdate(@RequestBody DiaryComment diaryComment) {
         service.diaryUpdate(diaryComment);
-//            return ResponseEntity.ok().build();
-//        } else {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//        }
     }
 
     @GetMapping("{id}")
-    public void getDiaryCommentById(@PathVariable Integer id) {
-        service.getById(id);
+    public DiaryComment getDiaryCommentById(@PathVariable Integer id) {
+        return service.getById(id); // 반환 타입 추가
     }
 }

@@ -4,6 +4,8 @@ import com.backend.domain.diary.DiaryBoard;
 import com.backend.service.diary.DiaryBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,9 +21,10 @@ public class DiaryBoardController {
     private final DiaryBoardService service;
 
     @PostMapping("add")
-
+    @PreAuthorize("isAuthenticated()")
     public void add(DiaryBoard diaryBoard,
-                    @RequestParam(value = "files[]", required = false) MultipartFile[] files) {
+                    @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+                    Authentication authentication) {
         service.add(diaryBoard, files);
     }
 

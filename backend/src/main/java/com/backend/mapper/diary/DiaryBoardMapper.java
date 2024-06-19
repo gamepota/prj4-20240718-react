@@ -9,17 +9,16 @@ import java.util.List;
 public interface DiaryBoardMapper {
 
     @Insert("""
-                INSERT INTO diary(title, content, member_id)
-                VALUES (#{title}, #{content}, #{memberId})
+                INSERT INTO diary(title, content, member_id, nick_name)
+                VALUES (#{title}, #{content}, #{memberId}, #{nickName})
             """)
-    @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(DiaryBoard diaryBoard);
 
     @Select("""
                 SELECT
                 d.id,
                 d.title,
-                m.nick_name AS writer
+                m.nickname
                 FROM diary d
                 JOIN member m ON d.member_id = m.id
                 ORDER BY d.id DESC
@@ -31,7 +30,7 @@ public interface DiaryBoardMapper {
                        d.title,
                        d.content,
                        d.inserted,
-                       m.nick_name AS writer,
+                       m.nickname,
                        d.member_id
                 FROM diary d
                 JOIN member m ON d.member_id = m.id
@@ -57,7 +56,7 @@ public interface DiaryBoardMapper {
                 <script>
                 SELECT d.id,
                        d.title,
-                       m.nick_name AS writer,
+                       m.nickname,
                        COUNT(DISTINCT f.name) AS number_of_images,
                        COUNT(DISTINCT c.id) AS number_of_comments
                 FROM diary d
@@ -67,12 +66,14 @@ public interface DiaryBoardMapper {
                 <where>
                 <if test="searchType != null">
                 <bind name="pattern" value="'%' + keyword + '%'"/>
-                <if test="searchType == 'all' or searchType == 'text'">
-                OR d.title LIKE #{pattern}
-                OR d.content LIKE #{pattern}
+                <if test="searchType == 'all'">
+                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
                 </if>
-                <if test="searchType == 'all' or searchType == 'nickName'">
-                OR m.nick_name LIKE #{pattern}
+                <if test="searchType == 'text'">
+                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
+                </if>
+                <if test="searchType == 'nickName'">
+                    m.nickname LIKE #{pattern}
                 </if>
                 </if>
                 </where>
@@ -91,12 +92,14 @@ public interface DiaryBoardMapper {
             <where>
             <if test="searchType != null">
                 <bind name="pattern" value="'%' + keyword + '%'" />
-                <if test="searchType == 'all' or searchType == 'text'">
-                    OR d.title LIKE #{pattern}
-                    OR d.content LIKE #{pattern}
+                <if test="searchType == 'all'">
+                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
                 </if>
-                <if test="searchType == 'all' or searchType == 'nickName'">
-                    OR m.nick_name LIKE #{pattern}
+                <if test="searchType == 'text'">
+                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
+                </if>
+                <if test="searchType == 'nickName'">
+                    m.nickname LIKE #{pattern}
                 </if>
             </if>
             </where>

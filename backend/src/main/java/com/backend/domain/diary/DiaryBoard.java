@@ -10,9 +10,9 @@ public class DiaryBoard {
     private Integer id;
     private String title;
     private String content;
-    private String writer;
     private Integer memberId;
-    private String nick_name;
+    private String nickName;
+    private String username;
     private LocalDateTime inserted;
 
     private Integer numberOfImages;

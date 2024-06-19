@@ -9,6 +9,8 @@ CREATE TABLE diary
     nick_name VARCHAR(255)  NOT NULL REFERENCES member (nickname)
 );
 
+ALTER TABLE diary
+    DROP COLUMN writer;
 
 
 ALTER TABLE diary

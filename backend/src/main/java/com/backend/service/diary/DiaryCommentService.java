@@ -1,3 +1,4 @@
+// DiaryCommentService.java
 package com.backend.service.diary;
 
 import com.backend.domain.diary.DiaryComment;
@@ -12,11 +13,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class DiaryCommentService {
-
     final DiaryCommentMapper mapper;
 
     public void addComment(DiaryComment diaryComment) {
-//        diaryComment.setMemberId(Integer.valueOf(diaryComment.getId()));
         mapper.diaryCommentInsert(diaryComment);
     }
 
@@ -24,40 +23,15 @@ public class DiaryCommentService {
         return mapper.selectAllByBoardId(diaryId);
     }
 
-    public boolean validate(DiaryComment diaryComment) {
-        if (diaryComment == null) {
-            return false;
-        }
-        if (diaryComment.getComment().isBlank()) {
-            return false;
-        }
-        if (diaryComment.getDiaryId() == null) {
-            return false;
-        }
-        return true;
-    }
-
     public void diaryDelete(DiaryComment diaryComment) {
         mapper.deleteById(diaryComment.getId());
-    }
-
-    public boolean hasAcess(DiaryComment diaryComment) {
-
-
-//        if (db == null) {
-//            return false;
-//        }
-//        if (getName().equals(db.getMemberId().toString())) {
-//            return false;
-//        }
-        return true;
     }
 
     public void diaryUpdate(DiaryComment diaryComment) {
         mapper.diaryUpdate(diaryComment);
     }
 
-    public void getById(Integer id) {
-        mapper.selectgetById(id);
+    public DiaryComment getById(Integer id) { // 반환 타입 수정
+        return mapper.selectById(id);
     }
 }

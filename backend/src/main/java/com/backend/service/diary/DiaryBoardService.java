@@ -1,9 +1,12 @@
 package com.backend.service.diary;
 
 import com.backend.domain.diary.DiaryBoard;
+import com.backend.domain.member.Member;
 import com.backend.mapper.diary.DiaryBoardMapper;
+import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,11 +21,20 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DiaryBoardService {
     private final DiaryBoardMapper mapper;
+    private final MemberMapper memberMapper;
 
     public void add(DiaryBoard diaryBoard, MultipartFile[] files) {
 
+        String username = diaryBoard.getUsername();
+        Member member = memberMapper.selectByDiaryName(username);
 
-        mapper.insert(diaryBoard);
+        if (member != null) {
+            diaryBoard.setMemberId(member.getId());
+            mapper.insert(diaryBoard);
+        } else {
+            throw new UsernameNotFoundException("Usesrname not found" + username);
+        }
+
         if (files != null) {
             for (MultipartFile file : files) {
                 mapper.insertFileName(diaryBoard.getId(), file.getOriginalFilename());
@@ -39,7 +51,7 @@ public class DiaryBoardService {
         if (diaryBoard.getTitle() == null || diaryBoard.getTitle().isBlank()) {
             return false;
         }
-        if (diaryBoard.getWriter() == null || diaryBoard.getWriter().isBlank()) {
+        if (diaryBoard.getUsername() == null || diaryBoard.getUsername().isBlank()) {
             return false;
         }
         return true;
