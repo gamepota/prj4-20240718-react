@@ -99,6 +99,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
+                .requestMatchers("/reissue").permitAll()
                 .anyRequest().authenticated());
 
         // 필터 추가
