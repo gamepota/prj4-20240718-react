@@ -42,6 +42,19 @@ export function BoardEdit() {
       setBoard(res.data);
     });
   }, []);
+
+  React.useEffect(() => {
+    if (
+      board.title.trim().length === 0 ||
+      board.content.trim().length === 0 ||
+      board.writer.trim().length === 0
+    ) {
+      setDisableSaveButton(true);
+    } else {
+      setDisableSaveButton(false);
+    }
+  }, [board]);
+
   //파일 업로드 crud완료...
   function handleClickSave() {
     axios

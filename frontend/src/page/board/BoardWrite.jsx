@@ -65,12 +65,16 @@ export function BoardWrite() {
   }
 
   React.useEffect(() => {
-    if (title.trim().length === 0 || content.trim().length === 0) {
+    if (
+      title.trim().length === 0 ||
+      content.trim().length === 0 ||
+      writer.trim().length === 0
+    ) {
       setDisableSaveButton(true);
     } else {
       setDisableSaveButton(false);
     }
-  }, [title, content]);
+  }, [title, content, writer]);
 
   const fileNameList = files.map((file, index) => (
     <li key={index}>{file.name}</li>
