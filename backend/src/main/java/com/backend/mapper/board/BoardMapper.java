@@ -81,5 +81,5 @@ public interface BoardMapper {
             WHERE board_id=#{boardId}
             AND name=#{fileNAme}
             """)
-    int deleteFileByBoardIdAndName(Integer id, String fileName);
+    int deleteFileByBoardIdAndName(Integer boardId, String fileName);
 }

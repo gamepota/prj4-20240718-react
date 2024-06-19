@@ -21,7 +21,10 @@ public class BoardController {
     public ResponseEntity add(Board board,
                               @RequestParam(value = "files[]", required = false)
                               MultipartFile[] files
+
     ) throws Exception {
+        System.out.println("이것은 Post요청 board = " + board);
+
 
         System.out.println("files = " + files);
         if (service.validate(board)) {
@@ -60,6 +63,7 @@ public class BoardController {
                                @RequestParam(value = "addFileList[]", required = false)
                                MultipartFile[] addFileList
     ) throws Exception {
+        System.out.println("이것은 PUT요청 board= " + board);
 
         if (service.validate(board)) {
             service.edit(board, removeFileList, addFileList);
