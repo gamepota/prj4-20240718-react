@@ -20,6 +20,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
         hospitalId,
         comment,
         username: account.id,
+        rating: ratingIndex,
       })
       .then((res) => {
         setComment("");
