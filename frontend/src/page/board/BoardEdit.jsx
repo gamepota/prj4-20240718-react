@@ -40,6 +40,7 @@ export function BoardEdit() {
       setBoard(res.data);
     });
   }, []);
+  //파일 업로드 crud완료...
   function handleClickSave() {
     axios
       .putForm(`/api/board/edit`, {
