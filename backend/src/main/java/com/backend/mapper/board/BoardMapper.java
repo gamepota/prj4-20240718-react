@@ -79,7 +79,7 @@ public interface BoardMapper {
     @Delete("""
             DELETE FROM board_file
             WHERE board_id=#{boardId}
-            AND name=#{fileNAme}
+            AND name=#{fileName}
             """)
     int deleteFileByBoardIdAndName(Integer boardId, String fileName);
 }
