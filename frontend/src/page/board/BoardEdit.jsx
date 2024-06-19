@@ -43,7 +43,9 @@ export function BoardEdit() {
   function handleClickSave() {
     axios
       .putForm(`/api/board/edit`, {
-        board,
+        id: board.id,
+        title: board.title,
+        content: board.content,
         removeFileList,
         addFileList,
       })
