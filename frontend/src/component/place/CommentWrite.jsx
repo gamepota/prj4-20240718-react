@@ -8,6 +8,7 @@ import { StarRating } from "./StarRating.jsx";
 
 export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
   const [comment, setComment] = useState("");
+  const [ratingIndex, setRatingIndex] = useState(1);
   const toast = useToast();
   const account = useContext(LoginContext);
 
@@ -42,7 +43,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
 
   return (
     <Box>
-      <StarRating />
+      <StarRating ratingIndex={ratingIndex} setRatingIndex={setRatingIndex} />
       <Textarea
         isDisabled={!account.isLoggedIn()}
         placeholder={
