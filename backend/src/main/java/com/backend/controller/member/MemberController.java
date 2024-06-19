@@ -4,15 +4,9 @@ import com.backend.domain.member.Member;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,40 +40,28 @@ public class MemberController {
         return ResponseEntity.ok(nickname);
     }
 
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Member> getMemberInfoById(@PathVariable Integer id) {
-        try {
-            Member member = service.getMemberInfoById(id);
-            return ResponseEntity.ok().body(member);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // MemberLogin
-    @GetMapping("/login")
-    public String login() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
-        GrantedAuthority auth = iter.next();
-        String role = auth.getAuthority();
-
-        return "Login" + username + " " + role;
-    }
-
-    @PostMapping("/token")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
-        Map<String, Object> response = service.getToken(member);
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.status(401).build();
-    }
+//    // MemberLogin
+//    @PostMapping("/login")
+//    public String login() {
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+//        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
+//        GrantedAuthority auth = iter.next();
+//        String role = auth.getAuthority();
+//        System.out.println(" Login 결과 " + "Login" + username + " " + role);
+//        return "Login" + username + " " + role;
+//    }
+//    @PostMapping("/token")
+//    public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
+//        Map<String, Object> response = service.getToken(member);
+//        if (response != null) {
+//            return ResponseEntity.ok(response);
+//        }
+//        return ResponseEntity.status(401).build();
+//    }
 
     // MemberList
     @GetMapping("/list")

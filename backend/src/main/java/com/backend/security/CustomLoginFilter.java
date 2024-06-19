@@ -37,19 +37,6 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-//        Member member = new Member();
-//        try {
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            ServletInputStream inputStream = request.getInputStream();
-//            String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
-//            member = objectMapper.readValue(messageBody, Member.class);
-//
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        String username = member.getUsername();
-//        String password = member.getPassword();
-
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
