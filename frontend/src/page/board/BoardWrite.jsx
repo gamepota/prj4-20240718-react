@@ -96,9 +96,18 @@ export function BoardWrite() {
       setDisableSaveButton(true);
       setInvisibledText(false);
     } else {
-      setDisableSaveButton(false);
-      setInvisibledText(true);
       setFiles(selectedFiles);
+      setInvisibledText(true);
+
+      if (
+        title.trim().length === 0 ||
+        content.trim().length === 0 ||
+        writer.trim().length === 0
+      ) {
+        setDisableSaveButton(true);
+      } else {
+        setDisableSaveButton(false);
+      }
     }
   }
   return (

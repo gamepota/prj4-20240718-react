@@ -43,15 +43,17 @@ export function BoardEdit() {
     });
   }, []);
 
-  React.useEffect(() => {
-    if (
-      board.title.trim().length === 0 ||
-      board.content.trim().length === 0 ||
-      board.writer.trim().length === 0
-    ) {
-      setDisableSaveButton(true);
-    } else {
-      setDisableSaveButton(false);
+  useEffect(() => {
+    if (board) {
+      if (
+        board.title.trim().length === 0 ||
+        board.content.trim().length === 0 ||
+        board.writer.trim().length === 0
+      ) {
+        setDisableSaveButton(true);
+      } else {
+        setDisableSaveButton(false);
+      }
     }
   }, [board]);
 
@@ -91,7 +93,7 @@ export function BoardEdit() {
       }
     }
     fileNameList.push(
-      <li>
+      <li key={addFile.name}>
         {addFile.name}
         {duplicate && <Badge colorScheme="red">override</Badge>}
       </li>,
@@ -125,6 +127,15 @@ export function BoardEdit() {
       setDisableSaveButton(false);
       setInvisibledText(true);
       setAddFileList(selectedFiles);
+    }
+    if (
+      board.title.trim().length === 0 ||
+      board.content.trim().length === 0 ||
+      board.writer.trim().length === 0
+    ) {
+      setDisableSaveButton(true);
+    } else {
+      setDisableSaveButton(false);
     }
   }
 
