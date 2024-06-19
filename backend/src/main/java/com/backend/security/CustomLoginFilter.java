@@ -1,5 +1,7 @@
 package com.backend.security;
 
+import com.backend.domain.member.RefreshEntity;
+import com.backend.mapper.member.RefreshMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,18 +14,22 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final RefreshMapper refreshMapper;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    public CustomLoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshMapper refreshMapper) {
 
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.refreshMapper = refreshMapper;
+
         // 커스텀 로그인 경로 설정
         setFilterProcessesUrl("/api/member/login");
     }
@@ -31,10 +37,26 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        String username = obtainUsername(request);
-        String password = obtainPassword(request);
+//        Member member = new Member();
+//        try {
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            ServletInputStream inputStream = request.getInputStream();
+//            String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+//            member = objectMapper.readValue(messageBody, Member.class);
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        String username = member.getUsername();
+//        String password = member.getPassword();
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        System.out.println("username = " + username);
+        System.out.println("password = " + password);
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
 
         return authenticationManager.authenticate(authToken);
     }
@@ -42,10 +64,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
 
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-
         // 유저 정보
-        String username = customUserDetails.getUsername();
+        String username = authentication.getName();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -55,6 +75,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // 토큰 생성
         String access = jwtUtil.createJwt("access", username, role, 600000L); // 10분
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 24시간
+
+        // 토큰 저장
+        addRefreshEntity(username, refresh, 86400000L);
 
         // 응답 설정
         response.setHeader("access", access);
@@ -66,6 +89,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
 
         response.setStatus(401);
+    }
+
+    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+        Timestamp expiration = new Timestamp(System.currentTimeMillis() + expiredMs); // 현재 시간 + 만료 시간으로 Timestamp 생성
+        RefreshEntity refreshEntity = new RefreshEntity();
+        refreshEntity.setUsername(username);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(expiration); // Timestamp 객체 설정
+
+        refreshMapper.insertbyRefresh(refreshEntity);
     }
 
     private Cookie createCookie(String key, String value) {

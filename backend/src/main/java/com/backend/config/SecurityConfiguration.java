@@ -1,8 +1,10 @@
 package com.backend.config;
 
+import com.backend.mapper.member.RefreshMapper;
+import com.backend.security.CustomLoginFilter;
+import com.backend.security.CustomLogoutFilter;
 import com.backend.security.JWTFilter;
 import com.backend.security.JWTUtil;
-import com.backend.security.LoginFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +16,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -27,38 +31,18 @@ public class SecurityConfiguration {
     private final AuthenticationConfiguration authenticationConfiguration;
     // JWTUtil 주입
     private final JWTUtil jwtUtil;
+    private final RefreshMapper refreshMapper;
 
-    public SecurityConfiguration(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
+    public SecurityConfiguration(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshMapper refreshMapper) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
+        this.refreshMapper = refreshMapper;
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
-//    // 기존 방식
-//    @Value("${jwt.public.key}")
-//    RSAPublicKey publicKey;
-//
-//    @Value("${jwt.private.key}")
-//    RSAPrivateKey privateKey;
-//
-//    @Bean
-//    public JwtDecoder jwtDecoder() {
-//        return NimbusJwtDecoder.withPublicKey(this.publicKey).build();
-//    }
-//
-//    @Bean
-//    public JwtEncoder jwtEncoder() {
-//        JWK jwk = new RSAKey.Builder(this.publicKey)
-//                .privateKey(this.privateKey)
-//                .build();
-//
-//        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-//        return new NimbusJwtEncoder(jwks);
-//    }
 
     // BCryptPasswordEncoder
     @Bean
@@ -69,7 +53,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
+        http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -82,11 +66,11 @@ public class SecurityConfiguration {
                 configuration.setAllowedHeaders(Collections.singletonList("*"));
                 configuration.setMaxAge(3600L);
 
-                configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+                configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "access"));
 
                 return configuration;
             }
-        })));
+        }));
 
         // csrf disable
         http.csrf((auth) -> auth.disable());
@@ -103,8 +87,9 @@ public class SecurityConfiguration {
                 .anyRequest().authenticated());
 
         // 필터 추가
-        http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JWTFilter(jwtUtil), CustomLoginFilter.class);
+        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshMapper), LogoutFilter.class);
+        http.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshMapper), UsernamePasswordAuthenticationFilter.class);
 
         // 세션 설정
         http.sessionManagement((session) -> session
