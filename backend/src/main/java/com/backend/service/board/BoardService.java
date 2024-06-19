@@ -161,7 +161,7 @@ public class BoardService {
         if (removeFileList != null && removeFileList.size() > 0) {
             for (String fileName : removeFileList) {
                 //s3파일 삭제
-                String key = STR."prj3/={board.getId()}/\{fileName}";
+                String key = STR."prj3/\{board.getId()}/\{fileName}";
                 DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
                 s3Client.deleteObject(objectRequest);
 
