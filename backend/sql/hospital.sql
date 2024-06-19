@@ -13,7 +13,7 @@ CREATE TABLE hospital
 INSERT INTO hospital(name, address, call_number)
 VALUES ('서울 성윤모 병원', '서울특별시 성북구 이대로 111', '02-1111-1111');
 
-# 댓글 테이블
+# 리뷰 테이블
 CREATE TABLE hospital_comment
 (
     id          INT PRIMARY KEY AUTO_INCREMENT,
