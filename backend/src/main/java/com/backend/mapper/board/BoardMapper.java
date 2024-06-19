@@ -68,13 +68,13 @@ public interface BoardMapper {
             FROM board_file
             WHERE board_id=#{boardId}
             """)
-    List<String> selectFileNameByBoardId(Integer id);
+    List<String> selectFileNameByBoardId(Integer boardId);
 
     @Delete("""
             DELETE FROM board_file
             WHERE board_id=#{boardId}
             """)
-    int deleteFileByBoardId(Integer id);
+    int deleteFileByBoardId(Integer boardId);
 
     @Delete("""
             DELETE FROM board_file
