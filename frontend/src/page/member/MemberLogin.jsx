@@ -14,7 +14,7 @@ import {
   Link,
   Spinner,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export function MemberLogin(props) {
@@ -23,6 +23,7 @@ export function MemberLogin(props) {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   async function handleLogin(event) {
     if (event) event.preventDefault(); // form submit 방지
@@ -43,23 +44,24 @@ export function MemberLogin(props) {
     }
 
     try {
-      const response = await axios.post("/api/member/token", {
-        username: username,
-        password: password,
+      // FormData 객체 생성
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("password", password);
+
+      const response = await axios.post("/api/member/login", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       if (response.status === 200) {
         // 로그인 성공 시 처리
-        const { token } = response.data;
         console.log(response.data);
+
         // 토큰을 로컬 스토리지에 저장
-        if (rememberMe) {
-          localStorage.setItem("token", token);
-        } else {
-          sessionStorage.setItem("token", token);
-        }
-        // 로그인 후 리다이렉션
-        window.location.href = `/`;
+        localStorage.setItem("access", response.headers["access"]);
+        navigate("/");
       } else {
         setError("로그인에 실패했습니다.");
       }
