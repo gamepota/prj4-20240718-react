@@ -78,4 +78,11 @@ public interface MemberMapper {
             FROM member WHERE id = #{id}
                 """)
     Member selectByMemberId(Integer id);
+
+    @Select("""
+            SELECT id, username
+            FROM member
+            WHERE username = #{username}
+            """)
+    Member detectByUsername(String username);
 }

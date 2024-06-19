@@ -9,8 +9,8 @@ import java.util.List;
 public interface HospitalCommentMapper {
     @Insert("""
             INSERT INTO hospital_comment 
-            (hospital_id, member_id, comment)
-            VALUES (#{hospitalId}, #{memberId}, #{comment})
+            (hospital_id, member_id, comment, username)
+            VALUES (#{hospitalId}, #{memberId}, #{comment}, #{username})
             """)
     int insert(HospitalComment hospitalComment);
 
@@ -42,18 +42,5 @@ public interface HospitalCommentMapper {
             """)
     int update(HospitalComment hospitalComment);
 
-    @Insert("""
-             INSERT INTO hospital_comment
-            (username)
-             VALUES (#{username})
-             """)
-    int insertUsername(HospitalComment hospitalComment);
 
-    @Update("""
-            UPDATE hospital_comment h
-            JOIN  member m ON h.username= m.username
-            SET h.member_id = m.id
-            WHERE h.member_id IS NULL ;
-            """)
-    int searchByUserName(HospitalComment hospitalComment);
 }
