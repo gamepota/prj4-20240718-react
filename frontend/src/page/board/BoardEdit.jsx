@@ -81,7 +81,7 @@ export function BoardEdit() {
 
   function handleRemoveSwitchChange(name, checked) {
     if (checked) {
-      setRemoveFileList([...setRemoveFileList, name]);
+      setRemoveFileList([...removeFileList, name]);
     } else {
       setRemoveFileList(removeFileList.filter((item) => item !== name));
     }
