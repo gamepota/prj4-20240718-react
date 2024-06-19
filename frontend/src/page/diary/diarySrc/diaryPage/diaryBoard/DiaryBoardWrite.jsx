@@ -34,6 +34,7 @@ export function DiaryBoardWrite() {
       .post("/api/diaryBoard/add", {
         title,
         content,
+        username: account.id,
         files,
       })
       .then(() => {

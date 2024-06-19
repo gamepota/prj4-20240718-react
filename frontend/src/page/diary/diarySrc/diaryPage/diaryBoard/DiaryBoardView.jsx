@@ -46,7 +46,7 @@ export function DiaryBoardView() {
           navigate("/");
         }
       });
-  }, []);
+  }, [id, navigate, toast]);
 
   function handleClickRemove() {
     axios
@@ -58,7 +58,7 @@ export function DiaryBoardView() {
       .then(() => {
         toast({
           status: "success",
-          description: `${id}게시물이 삭제되었습니다.`,
+          description: `${id} 게시물이 삭제되었습니다.`,
           position: "top",
         });
         navigate("/");

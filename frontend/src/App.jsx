@@ -20,6 +20,8 @@ import { MainPage } from "./page/MainPage.jsx";
 import { LoginProvider } from "./page/diary/diarySrc/diaryComponent/LoginProvider.jsx";
 import { DiaryHome } from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
+import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentWrite.jsx";
+import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
 
 const router = createBrowserRouter([
   {
@@ -27,8 +29,8 @@ const router = createBrowserRouter([
     element: <Home />,
     children: [
       { index: true, element: <MainPage /> }, // 메인페이지 렌더링
-      // { path: "diary/comment/list", element: <DiaryCommentList /> }, // 방명록 목록
-      // { path: "diary/comment/write", element: <DiaryCommentWrite /> }, // 방명록 쓰기
+      { path: "diary/comment/list", element: <DiaryCommentList /> }, // 방명록 목록
+      { path: "diary/comment/write", element: <DiaryCommentWrite /> }, // 방명록 쓰기
       { path: "diary/home", element: <DiaryHome /> }, // 다이어리 홈
       { path: "diary/list", element: <DiaryBoardList /> }, // 다이어리 목록
       { path: "diary/edit:/id", element: <DiaryBoardEdit /> }, // 일기 수정
@@ -51,11 +53,11 @@ const router = createBrowserRouter([
 
 function App(props) {
   return (
-    <LoginProvider>
-      <ChakraProvider>
+    <ChakraProvider>
+      <LoginProvider>
         <RouterProvider router={router} />
-      </ChakraProvider>
-    </LoginProvider>
+      </LoginProvider>
+    </ChakraProvider>
   );
 }
 

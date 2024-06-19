@@ -18,17 +18,17 @@ export function DiaryNavbar() {
           홈
         </Button>
       </Box>
-      {/*<Box>*/}
-      {/*<Button*/}
-      {/*  onClick={() => navigate("/diary/comment/list")}*/}
-      {/*  cursor={"pointer"}*/}
-      {/*  _hover={{*/}
-      {/*    bg: "blue.200",*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  방명록*/}
-      {/*</Button>*/}
-      {/*</Box>*/}
+      <Box>
+        <Button
+          onClick={() => navigate("/diary/comment/list")}
+          cursor={"pointer"}
+          _hover={{
+            bg: "blue.200",
+          }}
+        >
+          방명록
+        </Button>
+      </Box>
       <Box>
         <Button
           onClick={() => navigate("/diary/list")}

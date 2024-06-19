@@ -50,6 +50,7 @@ export function Navbar() {
           </Link>
         </Button>
       </Box>
+
       <Box
         _hover={{ cursor: "pointer", bgColor: "gray.200" }}
         onClick={() => navigate("/aichat")}
