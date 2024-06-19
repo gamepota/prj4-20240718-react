@@ -46,6 +46,7 @@ export function BoardEdit() {
         id: board.id,
         title: board.title,
         content: board.content,
+        writer: board.writer,
         removeFileList,
         addFileList,
       })
