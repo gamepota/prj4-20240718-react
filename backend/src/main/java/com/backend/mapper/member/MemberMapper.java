@@ -94,4 +94,12 @@ public interface MemberMapper {
             WHERE username = #{username}
             """)
     Member detectByUsername(String username);
+
+    // DiaryBoard
+    @Select("""
+            SELECT id,nickName
+            FROM member
+            WHERE userName = #{username}
+            """)
+    Member selectByDiaryName(String userName);
 }
