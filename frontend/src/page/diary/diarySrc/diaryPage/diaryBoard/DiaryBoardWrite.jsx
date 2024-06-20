@@ -123,7 +123,7 @@ export function DiaryBoardWrite() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input readOnly value={account.nickName} />
+            <Input readOnly value={account.nickname} />
           </FormControl>
         </Box>
         <Box mb={7}>
