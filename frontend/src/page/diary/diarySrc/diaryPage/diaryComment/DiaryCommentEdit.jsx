@@ -17,12 +17,12 @@ import { useState } from "react";
 import axios from "axios";
 
 export function DiaryCommentEdit({
-  comment,
+  diaryComment,
   setIsEditing,
   setIsProcessing,
   isProcessing,
 }) {
-  const [commentText, setCommentText] = useState(comment.comment);
+  const [commentText, setCommentText] = useState(diaryComment.comment);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -30,7 +30,7 @@ export function DiaryCommentEdit({
     setIsProcessing(true);
     axios
       .put(`/api/diaryComment/diaryUpdate`, {
-        id: comment.id,
+        id: diaryComment.id,
         comment: commentText,
       })
       .then(() => {

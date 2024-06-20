@@ -1,9 +1,9 @@
+// DiaryCommentService.java
 package com.backend.service.diary;
 
 import com.backend.domain.diary.DiaryComment;
 import com.backend.mapper.diary.DiaryCommentMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,49 +13,25 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class DiaryCommentService {
-
     final DiaryCommentMapper mapper;
 
-    public void addComment(DiaryComment diaryComment, Authentication authentication) {
-        diaryComment.setMemberId(Integer.valueOf(authentication.getName()));
-        mapper.diaryCommentInsert(diaryComment, authentication);
+    public void addComment(DiaryComment diaryComment) {
+        mapper.diaryCommentInsert(diaryComment);
     }
 
-    public List<DiaryComment> listComment(Integer boardId) {
-        return mapper.selectAllByBoardId(boardId);
-    }
-
-    public boolean validate(DiaryComment diaryComment) {
-        if (diaryComment == null) {
-            return false;
-        }
-        if (diaryComment.getComment().isBlank()) {
-            return false;
-        }
-        if (diaryComment.getBoardId() == null) {
-            return false;
-        }
-        return true;
+    public List<DiaryComment> listComment(Integer diaryId) {
+        return mapper.selectAllByBoardId(diaryId);
     }
 
     public void diaryDelete(DiaryComment diaryComment) {
         mapper.deleteById(diaryComment.getId());
     }
 
-    public boolean hasAcess(DiaryComment diaryComment, Authentication authentication) {
-        DiaryComment db = mapper.selectById(diaryComment.getId());
-
-        if (db == null) {
-            return false;
-        }
-
-        if (!authentication.getName().equals(db.getMemberId().toString())) {
-            return false;
-        }
-        return true;
-    }
-
     public void diaryUpdate(DiaryComment diaryComment) {
         mapper.diaryUpdate(diaryComment);
+    }
+
+    public DiaryComment getById(Integer id) { // 반환 타입 수정
+        return mapper.selectById(id);
     }
 }

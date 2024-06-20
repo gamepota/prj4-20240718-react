@@ -2,7 +2,6 @@ package com.backend.mapper.diary;
 
 import com.backend.domain.diary.DiaryComment;
 import org.apache.ibatis.annotations.*;
-import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -11,22 +10,22 @@ public interface DiaryCommentMapper {
 
     @Insert("""
             INSERT INTO diaryComment
-            (board_id,member_id,comment)
-            VALUES (#{boardId},#{memberId},#{comment})
+            (member_id,nickname,comment,inserted)
+            VALUES (#{member},#{nickname},#{comment},#{inserted})
             """)
-    int diaryCommentInsert(DiaryComment diaryComment, Authentication authentication);
+    int diaryCommentInsert(DiaryComment diaryComment);
 
     @Select("""
             SELECT c.id,
                    c.comment,
                    c.inserted,
                    c.member_id,
-                   m.nick_name 
-            FROM DiaryComment c JOIN member m ON c.member_id=m.id
-            WHERE board_id=#{boardId}
+                   m.nickname
+            FROM diaryComment c JOIN member m ON c.member_id=m.id
+            WHERE diary_id=#{diaryId}
             ORDER BY id
             """)
-    List<DiaryComment> selectAllByBoardId(Integer boardId);
+    List<DiaryComment> selectAllByBoardId(Integer diaryId);
 
 
     @Delete("""
@@ -49,4 +48,11 @@ public interface DiaryCommentMapper {
                 WHERE id = #{id}
             """)
     int diaryUpdate(DiaryComment diaryComment);
+
+    @Select("""
+            SELECT *
+            FROM diaryComment
+            WHERE id = #{id}
+            """)
+    int selectgetById(Integer id);
 }

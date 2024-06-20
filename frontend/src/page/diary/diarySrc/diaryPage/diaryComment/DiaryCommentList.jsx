@@ -2,34 +2,42 @@ import { Card, CardBody, Stack, StackDivider } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { DiaryCommentItem } from "./DiaryCommentItem.jsx";
+import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
 
-export function DiaryCommentList({ boardId, isProcessing, setIsProcessing }) {
+export function DiaryCommentList({ diaryId, isProcessing, setIsProcessing }) {
   const [commentList, setCommentList] = useState([]);
-
+  console.log(isProcessing);
+  console.log(setIsProcessing);
   useEffect(() => {
-    if (!isProcessing) {
+    if (diaryId && !isProcessing) {
       axios
-        .get(`/api/diaryComment/list/${boardId}`)
+        .get(`/api/diaryComment/list/${diaryId}`)
         .then((res) => {
           setCommentList(res.data);
         })
-        .catch((err) => console.log(err))
-        .finally(() => {});
+        .catch((error) => {
+          console.error("Error fetching comments:", error);
+        });
     }
-  }, [isProcessing]);
+  }, [diaryId, isProcessing]);
 
   return (
     <Card>
       <CardBody>
         <Stack divider={<StackDivider />} spacing={4}>
-          {commentList.map((comment) => (
+          {commentList.map((diaryComment) => (
             <DiaryCommentItem
               isProcessing={isProcessing}
               setIsProcessing={setIsProcessing}
-              comment={comment}
-              key={comment.id}
+              diaryComment={diaryComment}
+              key={diaryComment.id}
             />
           ))}
+          <DiaryCommentWrite
+            isProcessing={isProcessing}
+            setIsProcessing={setIsProcessing}
+            diaryId={diaryId}
+          />
         </Stack>
       </CardBody>
     </Card>

@@ -1,16 +1,18 @@
 package com.backend.service.diary;
 
 import com.backend.domain.diary.DiaryBoard;
+import com.backend.domain.member.Member;
 import com.backend.mapper.diary.DiaryBoardMapper;
 import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -21,18 +23,35 @@ public class DiaryBoardService {
     private final DiaryBoardMapper mapper;
     private final MemberMapper memberMapper;
 
-    @Value("${aws.s3.bucket.name}")
-    String bucketName;
+    public void add(DiaryBoard diaryBoard, MultipartFile[] files) {
 
-    public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) {
-        diaryBoard.setMemberId(Integer.valueOf(authentication.getName()));
-        mapper.insert(diaryBoard);
+        String username = diaryBoard.getUsername();
+        Member member = memberMapper.selectByDiaryName(username);
+
+        if (member != null) {
+            diaryBoard.setMemberId(member.getId());
+            mapper.insert(diaryBoard);
+        } else {
+            throw new UsernameNotFoundException("Usesrname not found" + username);
+        }
+
+        if (files != null) {
+            for (MultipartFile file : files) {
+                mapper.insertFileName(diaryBoard.getId(), file.getOriginalFilename());
+            }
+        }
 
     }
 
 
     public boolean validate(DiaryBoard diaryBoard) {
         if (diaryBoard.getContent() == null || diaryBoard.getContent().isBlank()) {
+            return false;
+        }
+        if (diaryBoard.getTitle() == null || diaryBoard.getTitle().isBlank()) {
+            return false;
+        }
+        if (diaryBoard.getUsername() == null || diaryBoard.getUsername().isBlank()) {
             return false;
         }
         return true;
@@ -68,8 +87,14 @@ public class DiaryBoardService {
     }
 
     public DiaryBoard get(Integer id) {
+        DiaryBoard diaryBoard = mapper.selectById(id);
+        List<String> fileNames = mapper.selectFileNameByDiaryId(id);
+        List<String> imageSrcList = fileNames.stream()
+                .map(name -> STR."http://localhost:5173/\{id}/\{name}")
+                .toList();
+        diaryBoard.setImageSrcList(imageSrcList);
 
-        return mapper.selectById(id);
+        return diaryBoard;
 
     }
 

@@ -3,13 +3,14 @@ package com.backend.controller.diary;
 import com.backend.domain.diary.DiaryBoard;
 import com.backend.service.diary.DiaryBoardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,14 +22,10 @@ public class DiaryBoardController {
 
     @PostMapping("add")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity add(DiaryBoard diaryBoard, Authentication authentication,
-                              @RequestParam(value = "files[]", required = false) MultipartFile[] files) {
-        if (service.validate(diaryBoard)) {
-            service.add(diaryBoard, files, authentication);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+    public void add(DiaryBoard diaryBoard,
+                    @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+                    Authentication authentication) {
+        service.add(diaryBoard, files);
     }
 
     @GetMapping("list")
@@ -52,30 +49,34 @@ public class DiaryBoardController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity delete(@PathVariable Integer id,
-                                 Authentication authentication) {
-        if (service.hasAccess(id, authentication)) {
-            service.remove(id);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//    @PreAuthorize("isAuthenticated()")
+    public void delete(@PathVariable Integer id
+    ) {
+//        if (service.hasAccess(id, authentication)) {
+        service.remove(id);
+//            return ResponseEntity.ok().build();
+//        }
+//        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @PutMapping("edit")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity edit(@RequestBody DiaryBoard diaryBoard,
-                               Authentication authentication) {
-        if (service.hasAccess(diaryBoard.getId(), authentication)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        if (service.validate(diaryBoard)) {
-            service.edit(diaryBoard);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+//    @PreAuthorize("isAuthenticated()")
+    public void edit(DiaryBoard diaryBoard,
+                     @RequestParam(value = "removeFileList[]", required = false)
+                     List<String> removeFileList,
+                     @RequestParam(value = "addFileList[]", required = false)
+                     MultipartFile[] addFileList
+    ) throws IOException {
+//        if (service.hasAccess(diaryBoard.getId(), authentication)) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        }
+//
+//        if (service.validate(diaryBoard)) {
+        service.edit(diaryBoard);
+//            return ResponseEntity.ok().build();
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
 
     }
 }
