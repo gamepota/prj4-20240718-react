@@ -5,9 +5,9 @@ import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 export function DiaryCommentWrite() {
   const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
   const account = useContext(LoginContext);
-  const [loading, setLoading] = useState(false);
 
   const handleDiaryCommentSubmitClick = () => {
     setLoading(true);
