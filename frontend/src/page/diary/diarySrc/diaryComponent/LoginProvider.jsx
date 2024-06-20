@@ -5,7 +5,7 @@ export const LoginContext = createContext(null);
 
 export function LoginProvider({ children }) {
   const [username, setUsername] = useState("");
-  const [nickName, setNickName] = useState("");
+  const [nickname, setNickname] = useState("");
   const [expired, setExpired] = useState(0);
   const [authority, setAuthority] = useState([]);
 
@@ -37,7 +37,7 @@ export function LoginProvider({ children }) {
     const payload = jwtDecode(token);
     setExpired(payload.exp);
     setUsername(payload.username);
-    setNickName(payload.nickName);
+    setNickname(payload.nickname);
     setAuthority(payload.scope.split(" ")); // "admin manager user"
   }
 
@@ -46,7 +46,7 @@ export function LoginProvider({ children }) {
     localStorage.removeItem("token");
     setExpired(0);
     setUsername("");
-    setNickName("");
+    setNickname("");
     setAuthority([]);
   }
 
@@ -54,7 +54,7 @@ export function LoginProvider({ children }) {
     <LoginContext.Provider
       value={{
         username: username,
-        nickName: nickName,
+        nickname: nickname,
         login: login,
         logout: logout,
         isLoggedIn: isLoggedIn,

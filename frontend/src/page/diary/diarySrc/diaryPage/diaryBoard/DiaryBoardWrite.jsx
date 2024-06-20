@@ -67,6 +67,10 @@ export function DiaryBoardWrite() {
     disableSaveButton = true;
   }
 
+  if (!account) {
+    return null; // 또는 로딩 스피너를 표시할 수 있습니다.
+  }
+
   // file 목록 작성
   const fileNameList = [];
   for (let i = 0; i < files.length; i++) {
