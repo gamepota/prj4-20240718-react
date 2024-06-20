@@ -86,4 +86,12 @@ public interface MemberMapper {
             logged_in_at = VALUES(logged_in_at)
             """)
     int updateLoginStatus(@Param("memberId") Integer memberId, @Param("loggedIn") boolean loggedIn, @Param("loggedInAt") LocalDateTime now);
+
+    // HospitalCommentWrite
+    @Select("""
+            SELECT id, username
+            FROM member
+            WHERE username = #{username}
+            """)
+    Member detectByUsername(String username);
 }
