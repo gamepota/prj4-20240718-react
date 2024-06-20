@@ -81,6 +81,12 @@ export function BoardView() {
         </FormControl>
       </Box>
       <Box>
+        <FormControl>
+          <FormLabel>내용</FormLabel>
+          <Input value={board.content} readOnly />
+        </FormControl>
+      </Box>
+      <Box>
         {board.fileList &&
           board.fileList.map((file) => (
             <Box border={"2px solid black"} m={3} key={file.name}>
