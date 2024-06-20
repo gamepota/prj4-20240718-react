@@ -11,7 +11,7 @@ public interface DiaryCommentMapper {
     @Insert("""
             INSERT INTO diaryComment
             (memberId,nickname,comment,inserted)
-            VALUES (#{member},#{nickname},#{comment},#{inserted})
+            VALUES (#{memberId},#{nickname},#{comment},#{inserted})
             """)
     int diaryCommentInsert(DiaryComment diaryComment);
 
