@@ -38,6 +38,10 @@ export function DiaryCommentWrite() {
       .finally(() => setLoading(false));
   };
 
+  if (!account) {
+    return null; // 또는 로딩 스피너를 표시할 수 있습니다.
+  }
+
   return (
     <Flex gap={2}>
       <Box flex={1}>
