@@ -50,6 +50,13 @@ public interface BoardMapper {
     int selectAllCount();
 
     @Select("""
+                SELECT COUNT(*) FROM board
+                WHERE board_type=#{boardType};
+
+            """)
+    Integer selectByBoardType(String boardType);
+
+    @Select("""
             <script>
             SELECT id,title,writer,board_type FROM board 
                 <if test="boardType !='전체'">
@@ -87,4 +94,6 @@ public interface BoardMapper {
             AND name=#{fileName}
             """)
     int deleteFileByBoardIdAndName(Integer boardId, String fileName);
+
+
 }

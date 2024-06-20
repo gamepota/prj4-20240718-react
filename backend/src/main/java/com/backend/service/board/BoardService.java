@@ -91,6 +91,8 @@ public class BoardService {
         // 세션에 새로운 offset 저장
         session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
 
+
+        System.out.println("이것은 서비스의 boardType = " + boardType);
         // 페이지 정보 계산
         Map<String, Object> pageInfo = new HashMap<>();
         if (offsetReset) {
@@ -102,8 +104,15 @@ public class BoardService {
             pageInfo.put("currentPageNumber", page);
         }
 
-        Integer countAll = mapper.selectAllCount();
-        Integer lastPageNumber = (countAll - 1) / pageAmount + 1;
+        Integer countByBoardType;
+        if (boardType.equals("전체")) {
+
+            countByBoardType = mapper.selectAllCount();
+        } else {
+            countByBoardType = mapper.selectByBoardType(boardType);
+        }
+
+        Integer lastPageNumber = (countByBoardType - 1) / pageAmount + 1;
         Integer leftPageNumber = (page - 1) / 10 * 10 + 1;
         Integer rightPageNumber = Math.min(leftPageNumber + 9, lastPageNumber);
         Integer prevPageNumber = (leftPageNumber > 1) ? leftPageNumber - 1 : null;
