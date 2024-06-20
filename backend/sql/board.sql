@@ -25,32 +25,32 @@ FROM board;
 
 
 UPDATE board
-SET board_type='free'
-WHERE board_type IS NULL;
+SET board_type='자유'
+WHERE board_type = 'free';
 
 
 UPDATE board
-SET board_type='picture'
+SET board_type='사진 공유'
 WHERE id % 2 = 0;
 
 UPDATE board
-SET board_type='health'
+SET board_type='반려동물 건강'
 WHERE id % 3 = 0;
 
 UPDATE board
-SET board_type='qna'
+SET board_type='질문/답변'
 WHERE id % 7 = 0;
 
 UPDATE board
-SET board_type='training'
+SET board_type='훈련/교육'
 WHERE id % 11 = 0;
 
 UPDATE board
-SET board_type='review'
+SET board_type='리뷰'
 WHERE id % 13 = 0;
 
 UPDATE board
-SET board_type='meeting'
+SET board_type='이벤트/모임'
 WHERE id % 17 = 0;
 
 
