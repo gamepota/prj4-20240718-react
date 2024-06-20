@@ -23,6 +23,35 @@ FROM board_file;
 SELECT *
 FROM board;
 
+SELECT *
+FROM member;
+
+
+#memberId속성 추가 및 writer삭제
+ALTER TABLE board
+    ADD COLUMN member_id INT REFERENCES member (id) AFTER content;
+#memberId속성 대입
+UPDATE board
+SET member_id = 28;
+#memberId속성 무결성 보장...
+ALTER TABLE board
+    MODIFY COLUMN member_id INT NOT NULL;
+
+#writer삭제
+ALTER TABLE board
+    DROP COLUMN writer;
+#writer 쿼리 대체하기 전까지 임시 사용...
+ALTER TABLE board
+    ADD COLUMN writer VARCHAR(50); -- 삭제한 컬럼의 정의를 정확히 복구합니다.
+UPDATE board
+SET writer='test';
+#조회수 컬럼 추가...
+ALTER TABLE board
+    ADD COLUMN views INT;
+UPDATE board
+SET views=0;
+
+
 
 UPDATE board
 SET board_type='자유'
