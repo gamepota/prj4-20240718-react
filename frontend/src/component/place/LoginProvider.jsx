@@ -10,7 +10,7 @@ export function LoginProvider({ children }) {
   const [authority, setAuthority] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access");
     if (token === null) {
       return;
     }
@@ -33,10 +33,10 @@ export function LoginProvider({ children }) {
 
   // login
   function login(token) {
-    localStorage.setItem("token", token);
+    localStorage.setItem("access", token);
     const payload = jwtDecode(token);
     setExpired(payload.exp);
-    setId(payload.sub);
+    setId(payload.username);
     setNickName(payload.nickName);
     setAuthority(payload.scope.split(" ")); // "admin manager user"
   }
