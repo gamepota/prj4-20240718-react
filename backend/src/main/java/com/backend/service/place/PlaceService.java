@@ -1,7 +1,7 @@
 package com.backend.service.place;
 
 import com.backend.domain.place.Hospital;
-import com.backend.mapper.place.HospitalCommentMapper;
+import com.backend.mapper.place.HospitalMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class PlaceService {
-    private final HospitalCommentMapper mapper;
+    private final HospitalMapper mapper;
 
     public Hospital get(Integer id) {
-        return null;
+        return mapper.selectById(id);
     }
 }
