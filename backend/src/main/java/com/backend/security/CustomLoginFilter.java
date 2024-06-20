@@ -54,7 +54,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         // 유저 정보
         String username = authentication.getName();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        System.out.println("customUserDetails = " + customUserDetails.getNickname());
+        String nickname = customUserDetails.getNickname();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -71,6 +71,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         // 응답 설정
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
+        response.setHeader("nickname", nickname); // 닉네임 정보 포함
         response.setStatus(HttpStatus.OK.value());
     }
 
