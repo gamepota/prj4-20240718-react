@@ -31,7 +31,7 @@ public class ReissueController {
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 
-        // get refresh token
+        // Refresh token 발급
         String refresh = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
@@ -48,7 +48,7 @@ public class ReissueController {
             return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
         }
 
-        // expired check
+        // 만료 확인
         try {
             jwtUtil.isExpired(refresh);
         } catch (ExpiredJwtException e) {
@@ -77,7 +77,7 @@ public class ReissueController {
         String username = jwtUtil.getUsername(refresh);
         String role = jwtUtil.getRole(refresh);
 
-        // make new JWT
+        // JWT 신규 발급
         String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
         String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
@@ -85,7 +85,7 @@ public class ReissueController {
         refreshMapper.deleteByRefresh(refresh);
         addRefreshEntity(username, newRefresh, 86400000L);
 
-        // response
+        // 응답
         response.setHeader("access", newAccess);
         response.addCookie(createCookie("refresh", newRefresh));
 
