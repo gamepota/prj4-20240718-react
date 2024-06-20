@@ -56,8 +56,7 @@ public class BoardService {
 
     public boolean validate(Board board) throws Exception {
         return board.getTitle() != null && !board.getTitle().isBlank() &&
-                board.getContent() != null && !board.getContent().isBlank() &&
-                board.getWriter() != null && !board.getWriter().isBlank();
+                board.getContent() != null && !board.getContent().isBlank();
     }
 
     public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType)
