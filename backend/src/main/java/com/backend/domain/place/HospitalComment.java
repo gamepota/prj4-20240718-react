@@ -1,4 +1,4 @@
-package com.backend.domain.comment;
+package com.backend.domain.place;
 
 import lombok.Data;
 
@@ -10,9 +10,8 @@ public class HospitalComment {
     private Integer hospitalId;
     private Integer memberId;
     private String comment;
+    private String username;
     private LocalDate inserted;
-
-    private String nickName;
 
 
 }

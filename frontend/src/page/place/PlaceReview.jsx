@@ -9,7 +9,7 @@ export function PlaceReview() {
   const [hospital, setHospital] = useState(null);
 
   useEffect(() => {
-    axios.get(`/api/place/${id}`).then((res) => setHospital(res.data));
+    axios.get(`/api/place/map/${id}`).then((res) => setHospital(res.data));
   }, []);
 
   if (hospital === null) {

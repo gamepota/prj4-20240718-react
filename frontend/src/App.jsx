@@ -54,9 +54,7 @@ const router = createBrowserRouter([
 function App(props) {
   return (
     <ChakraProvider>
-      <LoginProvider>
-        <RouterProvider router={router} />
-      </LoginProvider>
+      <RouterProvider router={router} />
     </ChakraProvider>
   );
 }

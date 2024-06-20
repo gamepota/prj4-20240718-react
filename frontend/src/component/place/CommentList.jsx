@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box } from "@chakra-ui/react";
-import * as PropTypes from "prop-types";
 import { CommentItem } from "./CommentItem.jsx";
-
-CommentItem.propTypes = { comment: PropTypes.any };
 
 export function CommentList({ hospitalId, isProcessing, setIsProcessing }) {
   const [commentList, setCommentList] = useState([]);

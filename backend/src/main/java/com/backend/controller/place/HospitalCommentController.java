@@ -1,11 +1,10 @@
-package com.backend.controller.comment;
+package com.backend.controller.place;
 
-import com.backend.domain.comment.HospitalComment;
-import com.backend.service.comment.HospitalCommentService;
+import com.backend.domain.place.HospitalComment;
+import com.backend.service.place.HospitalCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +18,6 @@ public class HospitalCommentController {
     final HospitalCommentService service;
 
     @PostMapping("add")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Object> addComment(@RequestBody HospitalComment hospitalComment,
                                              Authentication authentication) {
         if (service.validate(hospitalComment)) {

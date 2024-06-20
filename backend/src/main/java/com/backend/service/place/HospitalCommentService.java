@@ -1,9 +1,12 @@
-package com.backend.service.comment;
+package com.backend.service.place;
 
-import com.backend.domain.comment.HospitalComment;
-import com.backend.mapper.comment.HospitalCommentMapper;
+import com.backend.domain.member.Member;
+import com.backend.domain.place.HospitalComment;
+import com.backend.mapper.member.MemberMapper;
+import com.backend.mapper.place.HospitalCommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +17,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HospitalCommentService {
     final HospitalCommentMapper mapper;
+    private final MemberMapper memberMapper;
 
     public void add(HospitalComment hospitalComment, Authentication authentication) {
-        hospitalComment.setMemberId(Integer.valueOf(authentication.getName()));
-        mapper.insert(hospitalComment);
+        // 유저 이름을 가진 유저를 검색
+        String username = hospitalComment.getUsername();
+        Member member = memberMapper.detectByUsername(username);
+
+        if (member != null) {
+            // 회원 ID를 설정
+            hospitalComment.setMemberId(member.getId());
+
+            // 코멘트를 hospital_comment 테이블에 삽입
+            mapper.insert(hospitalComment);
+        } else {
+            throw new UsernameNotFoundException("Username not found: " + username);
+        }
+
     }
 
     public boolean validate(HospitalComment hospitalComment) {
@@ -31,11 +47,12 @@ public class HospitalCommentService {
     }
 
     public List<HospitalComment> list(Integer hospitalId) {
+
         return mapper.selectByHospitalId(hospitalId);
     }
 
     public void remove(HospitalComment hospitalComment) {
-        mapper.deletById(hospitalComment.getId());
+        mapper.deleteById(hospitalComment.getId());
     }
 
     public boolean hasAccess(HospitalComment hospitalComment, Authentication authentication) {
