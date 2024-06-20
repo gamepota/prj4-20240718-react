@@ -61,6 +61,8 @@ export function MemberLogin(props) {
 
         // 토큰을 로컬 스토리지에 저장
         localStorage.setItem("access", response.headers["access"]);
+        // 닉네임을 로컬 스토리지에 저장
+        localStorage.setItem("nickname", response.headers["nickname"]);
         navigate("/");
       } else {
         setError("로그인에 실패했습니다.");

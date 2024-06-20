@@ -1,9 +1,35 @@
 import { Box, Button, Flex, Input } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // axios 추가
 
 export function Navbar() {
   const navigate = useNavigate();
+
+  // 로그인
+  const accessToken = localStorage.getItem("access");
+  const nickname = localStorage.getItem("nickname");
+
+  async function handleLogout() {
+    try {
+      // 로그아웃 요청
+      await axios.post(
+        "/api/member/logout",
+        {},
+        {
+          withCredentials: true, // 쿠키 포함 요청
+        },
+      );
+
+      // 로컬 스토리지 정리
+      localStorage.removeItem("access");
+      localStorage.removeItem("nickname");
+      navigate("/member/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  }
+
   return (
     <Flex boxSize={"100%"} h={"50px"} gap={5} alignContent={"space-between"}>
       <Box
@@ -18,7 +44,6 @@ export function Navbar() {
           _hover={{ cursor: "pointer", bgColor: "purple.200" }}
           onClick={() => navigate("/board/write")}
         >
-          {" "}
           새 글쓰기
         </Button>
       </Box>
@@ -54,21 +79,34 @@ export function Navbar() {
           bgColor={"purple.100"}
           _hover={{ cursor: "pointer", bgColor: "purple.200" }}
         >
-          {" "}
-          검색{" "}
+          검색
         </Button>
-        <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
-          onClick={() => navigate("/member/signup")}
-        >
-          회원가입
-        </Box>
-        <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
-          onClick={() => navigate("/member/login")}
-        >
-          로그인
-        </Box>
+        {accessToken ? (
+          <>
+            <Box>{nickname}님</Box>
+            <Box
+              _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+              onClick={handleLogout}
+            >
+              로그아웃
+            </Box>
+          </>
+        ) : (
+          <>
+            <Box
+              _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+              onClick={() => navigate("/member/signup")}
+            >
+              회원가입
+            </Box>
+            <Box
+              _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+              onClick={() => navigate("/member/login")}
+            >
+              로그인
+            </Box>
+          </>
+        )}
       </Flex>
     </Flex>
   );
