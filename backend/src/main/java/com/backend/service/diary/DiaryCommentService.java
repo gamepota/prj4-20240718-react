@@ -19,8 +19,8 @@ public class DiaryCommentService {
         mapper.diaryCommentInsert(diaryComment);
     }
 
-    public List<DiaryComment> listComment(Integer diaryId) {
-        return mapper.selectAllByBoardId(diaryId);
+    public List<DiaryComment> listComment(Integer id) {
+        return mapper.selectAllByBoardId(id);
     }
 
     public void diaryDelete(DiaryComment diaryComment) {

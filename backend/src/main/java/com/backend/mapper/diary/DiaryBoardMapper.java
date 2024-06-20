@@ -9,7 +9,7 @@ import java.util.List;
 public interface DiaryBoardMapper {
 
     @Insert("""
-                INSERT INTO diary(title, content, member_id, nick_name)
+                INSERT INTO diary(title, content, memberId, nick_name)
                 VALUES (#{title}, #{content}, #{memberId}, #{nickname})
             """)
     int insert(DiaryBoard diaryBoard);
@@ -20,7 +20,7 @@ public interface DiaryBoardMapper {
                 d.title,
                 m.nickname
                 FROM diary d
-                JOIN member m ON d.member_id = m.id
+                JOIN member m ON d.memberId = m.id
                 ORDER BY d.id DESC
             """)
     List<DiaryBoard> selectAll();
@@ -31,16 +31,16 @@ public interface DiaryBoardMapper {
                        d.content,
                        d.inserted,
                        m.nickname,
-                       d.member_id
+                       d.memberId
                 FROM diary d
-                JOIN member m ON d.member_id = m.id
+                JOIN member m ON d.memberId = m.id
                 WHERE d.id = #{id}
             """)
     DiaryBoard selectById(Integer id);
 
     @Delete("""
-            DELETE FROM diary
-            WHERE id = #{id}
+                DELETE FROM diary
+                WHERE id = #{id}
             """)
     int deleteById(Integer id);
 
@@ -57,12 +57,10 @@ public interface DiaryBoardMapper {
                 SELECT d.id,
                        d.title,
                        m.nickname,
-                       COUNT(DISTINCT f.name) AS number_of_images,
-                       COUNT(DISTINCT c.id) AS number_of_comments
+                       COUNT(DISTINCT f.name) AS number_of_images
                 FROM diary d
-                JOIN member m ON d.member_id = m.id
+                JOIN member m ON d.memberId = m.id
                 LEFT JOIN diary_file f ON d.id = f.diary_id
-                LEFT JOIN diaryComment c ON d.id = c.diary_id
                 <where>
                 <if test="searchType != null">
                 <bind name="pattern" value="'%' + keyword + '%'"/>
@@ -72,7 +70,7 @@ public interface DiaryBoardMapper {
                 <if test="searchType == 'text'">
                     (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
                 </if>
-                <if test="searchType == 'nickName'">
+                <if test="searchType == 'nickname'">
                     m.nickname LIKE #{pattern}
                 </if>
                 </if>
@@ -85,25 +83,25 @@ public interface DiaryBoardMapper {
     List<DiaryBoard> selectAllPaging(@Param("offset") Integer offset, @Param("searchType") String searchType, @Param("keyword") String keyword);
 
     @Select("""
-            <script>
-            SELECT COUNT(d.id)
-            FROM diary d
-            JOIN member m ON d.member_id = m.id
-            <where>
-            <if test="searchType != null">
-                <bind name="pattern" value="'%' + keyword + '%'" />
-                <if test="searchType == 'all'">
-                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                <script>
+                SELECT COUNT(d.id)
+                FROM diary d
+                JOIN member m ON d.memberId = m.id
+                <where>
+                <if test="searchType != null">
+                    <bind name="pattern" value="'%' + keyword + '%'" />
+                    <if test="searchType == 'all'">
+                        (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                    </if>
+                    <if test="searchType == 'text'">
+                        (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
+                    </if>
+                    <if test="searchType == 'nickname'">
+                        m.nickname LIKE #{pattern}
+                    </if>
                 </if>
-                <if test="searchType == 'text'">
-                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
-                </if>
-                <if test="searchType == 'nickname'">
-                    m.nickname LIKE #{pattern}
-                </if>
-            </if>
-            </where>
-            </script>
+                </where>
+                </script>
             """)
     Integer countAllWithSearch(@Param("searchType") String searchType, @Param("keyword") String keyword);
 

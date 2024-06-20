@@ -21,8 +21,8 @@ public class DiaryCommentController {
     }
 
     @GetMapping("list/{id}")
-    public List<DiaryComment> listComment(@PathVariable Integer diaryId) {
-        return service.listComment(diaryId);
+    public List<DiaryComment> listComment(@PathVariable Integer id) {
+        return service.listComment(id);
     }
 
     @DeleteMapping("diaryDelete")
