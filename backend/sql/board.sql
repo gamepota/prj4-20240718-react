@@ -14,14 +14,45 @@ CREATE TABLE board_file
     name     VARCHAR(500) NOT NULL,
     PRIMARY KEY (board_id, name)
 );
+ALTER TABLE board
+    ADD COLUMN board_type VARCHAR(50);
 
 SELECT *
 FROM board_file;
 
-
-
 SELECT *
 FROM board;
+
+
+UPDATE board
+SET board_type='free'
+WHERE board_type IS NULL;
+
+
+UPDATE board
+SET board_type='picture'
+WHERE id % 2 = 0;
+
+UPDATE board
+SET board_type='health'
+WHERE id % 3 = 0;
+
+UPDATE board
+SET board_type='qna'
+WHERE id % 7 = 0;
+
+UPDATE board
+SET board_type='training'
+WHERE id % 11 = 0;
+
+UPDATE board
+SET board_type='review'
+WHERE id % 13 = 0;
+
+UPDATE board
+SET board_type='meeting'
+WHERE id % 17 = 0;
+
 
 #id 컬럼 board_id로 변경
 ALTER TABLE board

@@ -2,51 +2,66 @@ package com.backend.service.board;
 
 
 import com.backend.domain.board.Board;
+import com.backend.domain.board.BoardFile;
 import com.backend.mapper.board.BoardMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.*;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class BoardService {
-    final BoardMapper mapper;
-    //session의
-    private static String PAGE_INFO_SESSION_KEY = "pageInfo";
-//    private static final String PAGE_INFO_SESSION_KEY = null;
+    private final BoardMapper mapper;
+    private final S3Client s3Client;
 
+    // session의
+    private static String PAGE_INFO_SESSION_KEY = "pageInfo";
+    // private static final String PAGE_INFO_SESSION_KEY = null;
+
+    // aws.s3.bucket.name의 프로퍼티 값 주입
+    @Value("${aws.s3.bucket.name}")
+    private String bucketName;
+
+    @Value("${image.src.prefix}")
+    private String srcPrefix;
 
     public void add(Board board, MultipartFile[] files) throws Exception {
-
         mapper.insert(board);
+
         if (files != null && files.length > 0) {
             for (MultipartFile file : files) {
-                mapper.insertFileName(board.getId(),
-                        file.getOriginalFilename());
+                mapper.insertFileName(board.getId(), file.getOriginalFilename());
+
+                // 실제 파일 저장 (s3)
+                // 부모 디렉토리 만들기
+                String key = String.format("prj3/%d/%s", board.getId(), file.getOriginalFilename());
+                s3Client.putObject(builder -> builder.bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ),
+                        RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
             }
         }
     }
 
     public boolean validate(Board board) throws Exception {
-        if (board.getTitle() == null || board.getTitle().isBlank()) {
-            return false;
-        }
-        if (board.getContent() == null || board.getContent().isBlank()) {
-            return false;
-        }
-        if (board.getWriter() == null || board.getWriter().isBlank()) {
-            return false;
-        }
-        return true;
+        return board.getTitle() != null && !board.getTitle().isBlank() &&
+                board.getContent() != null && !board.getContent().isBlank() &&
+                board.getWriter() != null && !board.getWriter().isBlank();
     }
 
-    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session) throws Exception {
+    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session)
+            throws Exception {
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
         }
@@ -73,7 +88,6 @@ public class BoardService {
 
         // 페이지에 따른 offset 계산
 
-
         // 세션에 새로운 offset 저장
         session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
 
@@ -86,7 +100,6 @@ public class BoardService {
         } else {
             offset = (page - 1) * pageAmount;
             pageInfo.put("currentPageNumber", page);
-
         }
 
         Integer countAll = mapper.selectAllCount();
@@ -108,20 +121,69 @@ public class BoardService {
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
 
-        return Map.of("pageInfo", pageInfo,
-                "boardList", mapper.selectAllPaging(offset, pageAmount));
+        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount));
     }
 
-
     public Board get(Integer id) {
-        return mapper.selectById(id);
+        String keyPrefix = String.format("prj3/%d/", id);
+        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
+                .prefix(keyPrefix).build();
+        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
+        for (S3Object object : listResponse.contents()) {
+            System.out.println("object.key() = " + object.key());
+        }
+        System.out.println("이것은 get요청");
+
+        Board board = mapper.selectById(id);
+        List<String> fileNames = mapper.selectFileNameByBoardId(id);
+        List<BoardFile> files = fileNames.stream()
+                .map(name -> new BoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
+        board.setFileList(files);
+        return board;
     }
 
     public void delete(Integer id) {
+        //file명 조회
+        List<String> fileNames = mapper.selectFileNameByBoardId(id);
+        //s3에 있는 file
+        for (String fileName : fileNames) {
+            String key = STR."prj3/\{id}/\{fileName}";
+            DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
+            s3Client.deleteObject(objectRequest);
+        }
+        //board_file
+        mapper.deleteFileByBoardId(id);
+        //board
         mapper.deleteById(id);
     }
 
-    public void edit(Board board) {
+    public void edit(Board board, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
+        if (removeFileList != null && removeFileList.size() > 0) {
+            for (String fileName : removeFileList) {
+                //s3파일 삭제
+                String key = STR."prj3/\{board.getId()}/\{fileName}";
+                DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
+                s3Client.deleteObject(objectRequest);
+
+                //db 레코드 삭제
+                mapper.deleteFileByBoardIdAndName(board.getId(), fileName);
+            }
+        }
+        if (addFileList != null && addFileList.length > 0) {
+            List<String> fileNameList = mapper.selectFileNameByBoardId(board.getId());
+            for (MultipartFile file : addFileList) {
+                String fileName = file.getOriginalFilename();
+                if (!fileNameList.contains(fileName)) {
+                    //새 파일이 기존에 없을때만 db에 추가
+                    mapper.insertFileName(board.getId(), fileName);
+                }
+                //s3에 쓰기
+                String key = STR."prj3/\{board.getId()}/\{fileName}";
+                PutObjectRequest objectRequest = PutObjectRequest.builder().bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ).build();
+
+                s3Client.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+            }
+        }
         mapper.update(board);
     }
 }

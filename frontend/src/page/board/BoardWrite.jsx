@@ -21,6 +21,33 @@ export function BoardWrite() {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const navigate = useNavigate();
 
+  // const onDrop = useCallback(
+  //   (acceptedFiles) => {
+  //     files.reduce((acc, file) => acc + file.size, 0);
+  //     let hasOversizedFile = false;
+  //
+  //     acceptedFiles.forEach((file) => {
+  //       if (file.size > 10 * 1024 * 1024) {
+  //         hasOversizedFile = true;
+  //       }
+  //     });
+  //     if (totalSize > 10 * 1024 * 1024 || hasOversizedFile) {
+  //       setDisableSaveButton(true);
+  //       setInvisibledText(false);
+  //     } else {
+  //       setDisableSaveButton(false);
+  //       setInvisibledText(true);
+  //       setFiles([...files, ...acceptedFiles]);
+  //     }
+  //   },
+  //   [files],
+  // );
+  //
+  // const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  //   onDrop,
+  //   accept: "image/*",
+  // });
+
   function handleSaveClick() {
     axios
       .postForm("/api/board/add", {
@@ -38,12 +65,16 @@ export function BoardWrite() {
   }
 
   React.useEffect(() => {
-    if (title.trim().length === 0 || content.trim().length === 0) {
+    if (
+      title.trim().length === 0 ||
+      content.trim().length === 0 ||
+      writer.trim().length === 0
+    ) {
       setDisableSaveButton(true);
     } else {
       setDisableSaveButton(false);
     }
-  }, [title, content]);
+  }, [title, content, writer]);
 
   const fileNameList = files.map((file, index) => (
     <li key={index}>{file.name}</li>
@@ -55,22 +86,30 @@ export function BoardWrite() {
     let hasOversizedFile = false;
 
     selectedFiles.forEach((file) => {
-      if (file.size > 10 * 1024 * 1024) {
+      if (file.size > 100 * 1024 * 1024) {
         hasOversizedFile = true;
       }
       totalSize += file.size;
     });
 
-    if (totalSize > 10 * 1024 * 1024 || hasOversizedFile) {
+    if (totalSize > 100 * 1024 * 1024 || hasOversizedFile) {
       setDisableSaveButton(true);
       setInvisibledText(false);
     } else {
-      setDisableSaveButton(false);
-      setInvisibledText(true);
       setFiles(selectedFiles);
+      setInvisibledText(true);
+
+      if (
+        title.trim().length === 0 ||
+        content.trim().length === 0 ||
+        writer.trim().length === 0
+      ) {
+        setDisableSaveButton(true);
+      } else {
+        setDisableSaveButton(false);
+      }
     }
   }
-
   return (
     <Center>
       <Box
@@ -110,7 +149,7 @@ export function BoardWrite() {
             ></Input>
             {!invisibledText && (
               <FormHelperText color="red.500">
-                총 용량은 10MB, 한 파일은 10MB를 초과할 수 없습니다.
+                총 용량은 100MB, 한 파일은 10MB를 초과할 수 없습니다.
               </FormHelperText>
             )}
           </FormControl>

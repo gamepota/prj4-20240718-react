@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Center,
@@ -17,11 +18,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [pageAmount, setPageAmount] = useState(30);
   const [pageInfo, setPageInfo] = useState({});
+  const [boardType, setBoardType] = useState("전체 게시판");
   // const [offsetReset, setOffsetReset] = useState(false);
   const [searchParams] = useSearchParams();
 
@@ -61,15 +65,96 @@ export function BoardList() {
     navigate(`?${searchParams}`);
   }
 
+  function handleClickBoardTypeButton(boardType) {
+    setBoardType(boardType);
+  }
+
   return (
     <>
       <Center>
-        <Flex maxW={"500"}>
-          <Box m={"auto"} fontSize={"xl"}>
-            종합 게시판
+        <Flex
+          maxW={"500px"}
+          flexDirection={"column"}
+          alignItems={"center"}
+          gap={6}
+        >
+          <Box>
+            <Menu textAlign={"center"} m={"auto"} fontSize={"2xl"}>
+              {({ isOpen }) => (
+                <>
+                  <MenuButton
+                    as={Button}
+                    rightIcon={
+                      isOpen ? (
+                        <span>
+                          <ChevronDownIcon />
+                        </span>
+                      ) : (
+                        <span>
+                          <ChevronUpIcon />
+                        </span>
+                      )
+                    }
+                    bg={"gray.700"}
+                    color={"white"}
+                    fontWeight={"bold"}
+                    _hover={{ bg: "gray.800" }}
+                    size={"lg"}
+                    p={6}
+                  >
+                    {`${boardType} 게시판`}
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem
+                      onClick={() => handleClickBoardTypeButton("전체")}
+                    >
+                      전체 게시판
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => handleClickBoardTypeButton("자유")}
+                    >
+                      자유 게시판
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => handleClickBoardTypeButton("사진 공유")}
+                    >
+                      사진 공유 게시판
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => handleClickBoardTypeButton("질문/답변")}
+                    >
+                      질문/답변 게시판
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() =>
+                        handleClickBoardTypeButton("반려동물 건강")
+                      }
+                    >
+                      반려동물 건강 게시판
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => handleClickBoardTypeButton("훈련/교육")}
+                    >
+                      훈련/교육 게시판
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => handleClickBoardTypeButton("리뷰")}
+                    >
+                      리뷰게시판
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => handleClickBoardTypeButton("이벤트/모임")}
+                    >
+                      이벤트/모임 게시판
+                    </MenuItem>
+                  </MenuList>
+                </>
+              )}
+            </Menu>
           </Box>
-          <Box m={"50"}>
-            <Menu textAlign={"center"} fontSize={"xl"}>
+
+          <Box>
+            <Menu textAlign={"center"} fontSize={"lg"}>
               {({ isOpen }) => (
                 <>
                   <MenuButton
@@ -86,7 +171,7 @@ export function BoardList() {
                       )
                     }
                     colorScheme={"blue"}
-                    size={"sm"}
+                    size={"md"}
                   >
                     {`게시글 (${pageAmount})개씩 보기`}
                   </MenuButton>
@@ -136,7 +221,15 @@ export function BoardList() {
                   key={board.id}
                 >
                   <td>{board.id}</td>
-                  <td>{board.title}</td>
+                  <td>
+                    {board.title}
+                    {board.numberOfImages && (
+                      <Badge>
+                        <FontAwesomeIcon icon={faImage} />
+                        {board.numbefOfImages}
+                      </Badge>
+                    )}
+                  </td>
                   <td>{board.writer}</td>
                 </Tr>
               ))}

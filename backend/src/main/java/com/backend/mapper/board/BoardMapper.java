@@ -59,7 +59,27 @@ public interface BoardMapper {
 
     @Insert("""
             INSERT INTO board_file(board_id,name)
-            VALUES (#{id},#{name})
+            VALUES (#{boardId},#{name})
             """)
-    void insertFileName(Integer id, String name);
+    int insertFileName(Integer boardId, String name);
+
+    @Select("""
+            SELECT name
+            FROM board_file
+            WHERE board_id=#{boardId}
+            """)
+    List<String> selectFileNameByBoardId(Integer boardId);
+
+    @Delete("""
+            DELETE FROM board_file
+            WHERE board_id=#{boardId}
+            """)
+    int deleteFileByBoardId(Integer boardId);
+
+    @Delete("""
+            DELETE FROM board_file
+            WHERE board_id=#{boardId}
+            AND name=#{fileName}
+            """)
+    int deleteFileByBoardIdAndName(Integer boardId, String fileName);
 }
