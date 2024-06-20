@@ -51,10 +51,11 @@ public interface BoardMapper {
 
     @Select("""
             SELECT id,title,writer,board_type FROM board 
+            WHERE board_type = #{boardType}
             ORDER BY id DESC
             LIMIT #{offset},#{pageAmount}
             """)
-    List<Board> selectAllPaging(Integer offset, Integer pageAmount);
+    List<Board> selectAllPaging(Integer offset, Integer pageAmount, String boardType);
 
 
     @Insert("""

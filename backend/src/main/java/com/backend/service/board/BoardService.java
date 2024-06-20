@@ -60,7 +60,7 @@ public class BoardService {
                 board.getWriter() != null && !board.getWriter().isBlank();
     }
 
-    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session)
+    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType)
             throws Exception {
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
@@ -121,7 +121,7 @@ public class BoardService {
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
 
-        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount));
+        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount, boardType));
     }
 
     public Board get(Integer id) {
