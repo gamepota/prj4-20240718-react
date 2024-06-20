@@ -27,6 +27,11 @@ public class CustomUserDetails implements UserDetails {
         return member.getUsername();
     }
 
+    // 닉네임 정보
+    public String getNickname() {
+        return member.getNickname();
+    }
+
     @Override
     public String getPassword() {
         return member.getPassword();

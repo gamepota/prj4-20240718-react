@@ -53,6 +53,8 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         // 유저 정보
         String username = authentication.getName();
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        System.out.println("customUserDetails = " + customUserDetails.getNickname());
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
