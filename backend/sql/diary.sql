@@ -1,13 +1,38 @@
 CREATE TABLE diary
 (
+    id       INT PRIMARY KEY AUTO_INCREMENT,
+    title    VARCHAR(100)  NOT NULL,
+    content  VARCHAR(1000) NOT NULL,
+    writer   VARCHAR(100)  NOT NULL,
+    inserted DATETIME      NOT NULL DEFAULT NOW(),
+    memberId INT           NOT NULL REFERENCES member (id),
+    nickname VARCHAR(255)  NOT NULL REFERENCES member (nickname)
+);
+
+
+SHOW CREATE TABLE diaryComment;
+
+
+-- 컬럼 이름 변경
+ALTER TABLE diaryComment
+    CHANGE member_id memberId INT;
+
+-- 외부 키 제약 조건 다시 추가
+ALTER TABLE diaryComment
+    ADD CONSTRAINT fk_diaryMemberId FOREIGN KEY (memberId) REFERENCES member (id);
+
+
+CREATE TABLE diaryComment
+(
     id        INT PRIMARY KEY AUTO_INCREMENT,
-    title     VARCHAR(100)  NOT NULL,
-    content   VARCHAR(1000) NOT NULL,
-    writer    VARCHAR(100)  NOT NULL,
+    comment   VARCHAR(1000) NOT NULL,
     inserted  DATETIME      NOT NULL DEFAULT NOW(),
     member_id INT           NOT NULL REFERENCES member (id),
-    nick_name VARCHAR(255)  NOT NULL REFERENCES member (nickname)
+    nickname  VARCHAR(255)  NOT NULL REFERENCES member (nickname)
 );
+
+SELECT *
+FROM diaryComment;
 
 ALTER TABLE diary
     DROP COLUMN writer;
@@ -24,6 +49,8 @@ FROM diary;
 SELECT *
 FROM diary;
 
+
+
 CREATE TABLE test
 (
     id       INT PRIMARY KEY AUTO_INCREMENT,
@@ -35,23 +62,7 @@ CREATE TABLE test
 
 
 
-INSERT INTO test(id, title, content, writer)
-    VALUE ('1', '1', '1', '1');
-
-SELECT *
-FROM test;
-
-CREATE TABLE diaryComment
-(
-    id        INT PRIMARY KEY AUTO_INCREMENT,
-    diary_id  INT          NOT NULL REFERENCES diary (id),
-    member_id INT          NOT NULL REFERENCES member (id),
-    comment   VARCHAR(500) NOT NULL,
-    inserted  DATETIME     NOT NULL DEFAULT NOW()
-);
-
-INSERT INTO diaryComment(member_id, diary_id, comment)
-VALUES (1, 1, 'This is a comment');
+DROP TABLE diaryComment;
 
 SELECT *
 FROM diary

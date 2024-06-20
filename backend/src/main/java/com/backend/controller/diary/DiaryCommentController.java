@@ -13,14 +13,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/diaryComment")
 public class DiaryCommentController {
-    private final DiaryCommentService service; // final로 선언하여 @RequiredArgsConstructor가 초기화
+    private final DiaryCommentService service;
 
     @PostMapping("add")
     public void addComment(@RequestBody DiaryComment diaryComment) {
         service.addComment(diaryComment);
     }
 
-    @GetMapping("list/{diaryId}")
+    @GetMapping("list/{id}")
     public List<DiaryComment> listComment(@PathVariable Integer diaryId) {
         return service.listComment(diaryId);
     }

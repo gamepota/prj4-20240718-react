@@ -11,7 +11,7 @@ public class DiaryBoard {
     private String title;
     private String content;
     private Integer memberId;
-    private String nickName;
+    private String nickname;
     private String username;
     private LocalDateTime inserted;
 

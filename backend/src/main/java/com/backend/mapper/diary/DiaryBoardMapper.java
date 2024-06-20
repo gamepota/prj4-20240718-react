@@ -10,7 +10,7 @@ public interface DiaryBoardMapper {
 
     @Insert("""
                 INSERT INTO diary(title, content, member_id, nick_name)
-                VALUES (#{title}, #{content}, #{memberId}, #{nickName})
+                VALUES (#{title}, #{content}, #{memberId}, #{nickname})
             """)
     int insert(DiaryBoard diaryBoard);
 
@@ -98,7 +98,7 @@ public interface DiaryBoardMapper {
                 <if test="searchType == 'text'">
                     (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
                 </if>
-                <if test="searchType == 'nickName'">
+                <if test="searchType == 'nickname'">
                     m.nickname LIKE #{pattern}
                 </if>
             </if>

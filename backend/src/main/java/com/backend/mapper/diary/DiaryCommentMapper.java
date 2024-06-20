@@ -10,8 +10,8 @@ public interface DiaryCommentMapper {
 
     @Insert("""
             INSERT INTO diaryComment
-            (diary_id,member_id,comment)
-            VALUES (#{diaryId},#{memberId},#{comment})
+            (member_id,nickname,comment,inserted)
+            VALUES (#{member},#{nickname},#{comment},#{inserted})
             """)
     int diaryCommentInsert(DiaryComment diaryComment);
 
@@ -20,12 +20,12 @@ public interface DiaryCommentMapper {
                    c.comment,
                    c.inserted,
                    c.member_id,
-                   m.nick_name
-            FROM DiaryComment c JOIN member m ON c.member_id=m.id
+                   m.nickname
+            FROM diaryComment c JOIN member m ON c.member_id=m.id
             WHERE diary_id=#{diaryId}
             ORDER BY id
             """)
-    List<DiaryComment> selectAllByBoardId(Integer boardId);
+    List<DiaryComment> selectAllByBoardId(Integer diaryId);
 
 
     @Delete("""
@@ -51,7 +51,7 @@ public interface DiaryCommentMapper {
 
     @Select("""
             SELECT *
-            FROM diary
+            FROM diaryComment
             WHERE id = #{id}
             """)
     int selectgetById(Integer id);
