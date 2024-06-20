@@ -27,11 +27,12 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 export function DiaryBoardEdit() {
   const { id } = useParams();
@@ -41,6 +42,7 @@ export function DiaryBoardEdit() {
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const account = useContext(LoginContext);
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/${id}`).then((res) => setDiary(res.data.diary));
@@ -194,7 +196,7 @@ export function DiaryBoardEdit() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input defaultValue={diary.writer} readOnly />
+            <Input defaultValue={diary.nickname} readOnly />
           </FormControl>
         </Box>
         <Box>

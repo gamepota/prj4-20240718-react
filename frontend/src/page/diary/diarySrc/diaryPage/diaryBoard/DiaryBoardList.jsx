@@ -126,7 +126,7 @@ export function DiaryBoardList() {
                       </Badge>
                     )}
                   </Td>
-                  <Td>{diary.writer}</Td>
+                  <Td>{diary.nickname}</Td>
                 </Tr>
               ))}
             </Tbody>

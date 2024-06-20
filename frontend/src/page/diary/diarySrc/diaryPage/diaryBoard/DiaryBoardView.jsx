@@ -108,7 +108,7 @@ export function DiaryBoardView() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input value={diary.writer} readOnly />
+            <Input value={diary.nickname} readOnly />
           </FormControl>
         </Box>
         <Box mb={7}>
