@@ -1,6 +1,11 @@
 import React from "react";
-import { Box } from "@chakra-ui/react";
+import KakaoMap from "../../KakaoMap.jsx";
+import geojson from "../../../public/data/json/TL_SCCO_CTPRVN";
 
 export function PlaceMap() {
-  return <Box>지도</Box>;
+  return (
+    <div className="App">
+      <KakaoMap geojson={geojson} />
+    </div>
+  );
 }
