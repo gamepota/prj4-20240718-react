@@ -25,7 +25,7 @@ export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [pageAmount, setPageAmount] = useState(30);
   const [pageInfo, setPageInfo] = useState({});
-  const [boardType, setBoardType] = useState("전체 게시판");
+  const [boardType, setBoardType] = useState("전체");
   // const [offsetReset, setOffsetReset] = useState(false);
   const [searchParams] = useSearchParams();
 
