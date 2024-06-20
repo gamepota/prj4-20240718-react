@@ -50,10 +50,14 @@ public interface BoardMapper {
     int selectAllCount();
 
     @Select("""
+            <script>
             SELECT id,title,writer,board_type FROM board 
+                <if test="boardType !='전체'">
             WHERE board_type = #{boardType}
+                 </if>
             ORDER BY id DESC
             LIMIT #{offset},#{pageAmount}
+            </script>
             """)
     List<Board> selectAllPaging(Integer offset, Integer pageAmount, String boardType);
 

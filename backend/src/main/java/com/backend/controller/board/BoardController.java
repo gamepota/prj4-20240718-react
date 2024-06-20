@@ -41,7 +41,7 @@ public class BoardController {
                                     @RequestParam(defaultValue = "30") Integer pageAmount,
                                     @RequestParam(defaultValue = "false") Boolean offsetReset,
                                     HttpSession session,
-                                    @RequestParam String boardType) throws Exception {
+                                    @RequestParam(defaultValue = "전체") String boardType) throws Exception {
 //        System.out.println("page = " + page);
         return service.list(page, pageAmount, offsetReset, session, boardType);
     }

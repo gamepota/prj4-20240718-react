@@ -66,6 +66,7 @@ export function BoardList() {
   }
 
   function handleClickBoardTypeButton(boardType) {
+    searchParams.set("offsetReset", true);
     setBoardType(boardType);
     searchParams.set("boardType", boardType);
     navigate(`?${searchParams}`);
