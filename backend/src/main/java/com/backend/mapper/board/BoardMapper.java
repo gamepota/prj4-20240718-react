@@ -50,7 +50,7 @@ public interface BoardMapper {
     int selectAllCount();
 
     @Select("""
-            SELECT id,title,writer FROM board 
+            SELECT id,title,writer,board_type FROM board 
             ORDER BY id DESC
             LIMIT #{offset},#{pageAmount}
             """)
