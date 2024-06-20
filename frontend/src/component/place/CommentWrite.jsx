@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "./LoginProvider.jsx";
+import { LoginContext } from "../LoginProvider.jsx";
 import { StarRating } from "./StarRating.jsx";
 
 export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
@@ -12,6 +12,10 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
   const toast = useToast();
   const account = useContext(LoginContext);
 
+  if (!account) {
+    return null; // 또는 로딩 스피너를 표시할 수 있습니다.
+  }
+
   async function handleCommentSubmitClick() {
     setIsProcessing(true);
 
@@ -19,13 +23,14 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
       await axios.post("/api/hospitalComment/add", {
         hospitalId,
         comment,
-        username: account.id,
+        username: account.username,
+        nickname: account.nickname,
       });
 
       await axios.post("/api/hospitalComment/rating", {
         hospitalId,
         rating: ratingIndex,
-        username: account.id,
+        username: account.username,
       });
 
       setComment("");

@@ -4,8 +4,8 @@ import { jwtDecode } from "jwt-decode";
 export const LoginContext = createContext(null);
 
 export function LoginProvider({ children }) {
-  const [id, setId] = useState("");
-  const [nickName, setNickName] = useState("");
+  const [username, setUsername] = useState("");
+  const [nickname, setNickname] = useState("");
   const [expired, setExpired] = useState(0);
   const [authority, setAuthority] = useState([]);
 
@@ -24,7 +24,7 @@ export function LoginProvider({ children }) {
 
   // 권한 있는 지? 확인
   function hasAccess(param) {
-    return id === param;
+    return username === param;
   }
 
   function isAdmin() {
@@ -36,8 +36,8 @@ export function LoginProvider({ children }) {
     localStorage.setItem("access", token);
     const payload = jwtDecode(token);
     setExpired(payload.exp);
-    setId(payload.username);
-    setNickName(payload.nickName);
+    setUsername(payload.username);
+    setNickname(payload.nickname);
     setAuthority(payload.scope.split(" ")); // "admin manager user"
   }
 
@@ -45,16 +45,16 @@ export function LoginProvider({ children }) {
   function logout() {
     localStorage.removeItem("token");
     setExpired(0);
-    setId("");
-    setNickName("");
+    setUsername("");
+    setNickname("");
     setAuthority([]);
   }
 
   return (
     <LoginContext.Provider
       value={{
-        id: id,
-        nickName: nickName,
+        username: username,
+        nickname: nickname,
         login: login,
         logout: logout,
         isLoggedIn: isLoggedIn,
