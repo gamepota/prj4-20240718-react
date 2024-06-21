@@ -30,22 +30,7 @@ public interface MemberMapper {
             WHERE nickname = #{nickname}
             """)
     Member selectByNickname(String nickname);
-
-    // MemberLogin
-    @Select("""
-            SELECT COUNT(*)
-            FROM member
-            WHERE username = #{username}
-            """)
-    Boolean existsByUsername(String username);
-
-    @Select("""
-            SELECT *
-            FROM member
-            WHERE username = #{username}
-            """)
-    Member findByUsername(String username);
-
+    
     // MemberList
     @Select("""
             SELECT *

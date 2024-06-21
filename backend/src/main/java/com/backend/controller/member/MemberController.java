@@ -40,29 +40,6 @@ public class MemberController {
         return ResponseEntity.ok(nickname);
     }
 
-//    // MemberLogin
-//    @PostMapping("/login")
-//    public String login() {
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-//        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
-//        GrantedAuthority auth = iter.next();
-//        String role = auth.getAuthority();
-//        System.out.println(" Login 결과 " + "Login" + username + " " + role);
-//        return "Login" + username + " " + role;
-//    }
-//    @PostMapping("/token")
-//    public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
-//        Map<String, Object> response = service.getToken(member);
-//        if (response != null) {
-//            return ResponseEntity.ok(response);
-//        }
-//        return ResponseEntity.status(401).build();
-//    }
-
     // MemberList
     @GetMapping("/list")
     public List<Member> list() {
