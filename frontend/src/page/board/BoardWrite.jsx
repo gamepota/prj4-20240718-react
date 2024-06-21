@@ -162,7 +162,7 @@ export function BoardWrite() {
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input readOnly value={account.nickNam} />
+            <Input readOnly value={account.nickName} />
           </FormControl>
         </Box>
         <Box>
