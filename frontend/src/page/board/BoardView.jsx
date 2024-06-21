@@ -16,9 +16,10 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import {LoginContext} from "../../component/place/LoginProvider.jsx";
 
 export function BoardView() {
   const { id } = useParams();
@@ -26,6 +27,7 @@ export function BoardView() {
   const [board, setBoard] = useState(null);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const navigate = useNavigate();
+  const account = useContext(LoginContext);
   const toast = useToast();
   useEffect(() => {
     axios

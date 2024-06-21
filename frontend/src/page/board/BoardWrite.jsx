@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {LoginContext} from "../../component/place/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
@@ -20,6 +21,7 @@ export function BoardWrite() {
   const [invisibledText, setInvisibledText] = useState(true);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const navigate = useNavigate();
+  const account = useContext(LoginContext);
 
   // const onDrop = useCallback(
   //   (acceptedFiles) => {
