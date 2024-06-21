@@ -6,12 +6,12 @@ import axios from "axios";
 export function Navbar() {
   const navigate = useNavigate();
 
-  const accessToken = localStorage.getItem("access");
+  const access = localStorage.getItem("access");
   const nickname = localStorage.getItem("nickname");
 
-  async function handleLogout() {
+  function handleLogout() {
     try {
-      await axios.post(
+      axios.post(
         "/api/member/logout",
         {},
         {
@@ -100,7 +100,7 @@ export function Navbar() {
         >
           새 글쓰기
         </Button>
-        {accessToken ? (
+        {access ? (
           <>
             <Box>{nickname}님</Box>
             <Box
