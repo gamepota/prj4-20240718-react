@@ -17,11 +17,11 @@ import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
 import { AIChat } from "./component/chat/AIChat.jsx";
 import { MainPage } from "./page/MainPage.jsx";
-import { LoginProvider } from "./page/diary/diarySrc/diaryComponent/LoginProvider.jsx";
 import { DiaryHome } from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
 import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentWrite.jsx";
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
+import { BoardLoginProvider } from "./component/board/BoardLoginProvider.jsx";
 
 const router = createBrowserRouter([
   {
@@ -53,9 +53,11 @@ const router = createBrowserRouter([
 
 function App(props) {
   return (
-    <ChakraProvider>
-      <RouterProvider router={router} />
-    </ChakraProvider>
+    <BoardLoginProvider>
+      <ChakraProvider>
+        <RouterProvider router={router} />
+      </ChakraProvider>
+    </BoardLoginProvider>
   );
 }
 
