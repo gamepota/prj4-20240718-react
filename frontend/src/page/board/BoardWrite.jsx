@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {LoginContext} from "../../component/place/LoginProvider.jsx";
+import { LoginContext } from "../../component/place/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
@@ -162,10 +162,7 @@ export function BoardWrite() {
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input
-              value={writer}
-              onChange={(e) => setWriter(e.target.value)}
-            ></Input>
+            <Input readOnly value={account.nickNam} />
           </FormControl>
         </Box>
         <Box>
