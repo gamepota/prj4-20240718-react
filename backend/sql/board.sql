@@ -82,6 +82,18 @@ UPDATE board
 SET board_type='이벤트/모임'
 WHERE id % 17 = 0;
 
+CREATE TABLE board_comment
+(
+    id        INT PRIMARY KEY AUTO_INCREMENT,
+    board_id  INT          NOT NULL REFERENCES board (id),
+    member_id INT          NOT NULL REFERENCES member (id),
+    comment   VARCHAR(500) NOT NULL,
+    inserted  DATETIME     NOT NULL DEFAULT NOW()
+);
+
+SELECT *
+FROM board_comment;
+
 
 #id 컬럼 board_id로 변경
 ALTER TABLE board
