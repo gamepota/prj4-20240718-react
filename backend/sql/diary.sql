@@ -1,16 +1,47 @@
 CREATE TABLE diary
 (
-    id       INT PRIMARY KEY AUTO_INCREMENT,
-    title    VARCHAR(100)  NOT NULL,
-    content  VARCHAR(1000) NOT NULL,
-    writer   VARCHAR(100)  NOT NULL,
-    inserted DATETIME      NOT NULL DEFAULT NOW(),
-    memberId INT           NOT NULL REFERENCES member (id),
-    nickname VARCHAR(255)  NOT NULL REFERENCES member (nickname)
+    id        INT PRIMARY KEY AUTO_INCREMENT,
+    title     VARCHAR(100)  NOT NULL,
+    content   VARCHAR(1000) NOT NULL,
+    inserted  DATETIME      NOT NULL DEFAULT NOW(),
+    member_id INT           NOT NULL REFERENCES member (id),
+    nickname  VARCHAR(255)  NOT NULL REFERENCES member (nickname)
 );
+INSERT INTO diary
+    (title, content, member_id)
+SELECT title, content, member_id
+FROM diary;
 
+SELECT COUNT(*)
+FROM diary;
 
 SHOW CREATE TABLE diaryComment;
+START TRANSACTION;
+
+SELECT *
+FROM diary;
+-- 외부 키 제약 조건 제거
+ALTER TABLE diaryComment
+    DROP FOREIGN KEY fk_diaryMemberId;
+
+-- 컬럼 이름 변경
+ALTER TABLE diaryComment
+    CHANGE memberId member_id INT;
+ALTER TABLE diary
+    DROP COLUMN writer;
+
+UPDATE diary
+SET member_id = (SELECT id FROM member ORDER BY id DESC LIMIT 1)
+WHERE id > 0;
+
+SELECT *
+FROM diary;
+
+-- 외부 키 제약 조건 다시 추가 (새로운 이름으로)
+ALTER TABLE diaryComment
+    ADD CONSTRAINT fk_diaryComment_memberId FOREIGN KEY (member_id) REFERENCES member (id);
+
+COMMIT;
 
 
 -- 컬럼 이름 변경
@@ -32,14 +63,14 @@ CREATE TABLE diaryComment
 );
 
 SELECT *
-FROM diaryComment;
+FROM diary;
 
 ALTER TABLE diary
     DROP COLUMN writer;
 
 
 ALTER TABLE diary
-    ADD COLUMN member_id INT REFERENCES member (id) AFTER inserted;
+    ADD COLUMN writer VARCHAR(100) NOT NULL AFTER content;
 
 
 SELECT *

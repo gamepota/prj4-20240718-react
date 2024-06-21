@@ -9,31 +9,25 @@ import java.util.List;
 public interface DiaryBoardMapper {
 
     @Insert("""
-                INSERT INTO diary(title, content, memberId, nick_name)
-                VALUES (#{title}, #{content}, #{memberId}, #{nickname})
+                INSERT INTO diary(title, content, member_id)
+                VALUES (#{title}, #{content},  #{memberId})
             """)
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(DiaryBoard diaryBoard);
 
     @Select("""
                 SELECT
                 d.id,
                 d.title,
-                m.nickname
-                FROM diary d
-                JOIN member m ON d.memberId = m.id
+                m.nickname writer
+                FROM diary d JOIN member m ON d.member_id = m.id
                 ORDER BY d.id DESC
             """)
     List<DiaryBoard> selectAll();
 
     @Select("""
-                SELECT d.id,
-                       d.title,
-                       d.content,
-                       d.inserted,
-                       m.nickname,
-                       d.memberId
-                FROM diary d
-                JOIN member m ON d.memberId = m.id
+                SELECT d.id, d.title, d.content, d.inserted,m.nickname writer,d.member_id
+                FROM diary d JOIN member m ON d.member_id = m.id
                 WHERE d.id = #{id}
             """)
     DiaryBoard selectById(Integer id);
@@ -47,7 +41,8 @@ public interface DiaryBoardMapper {
     @Update("""
                 UPDATE diary
                 SET title = #{title},
-                    content = #{content}
+                    content = #{content},
+                    member_id = #{memberId}
                 WHERE id = #{id}
             """)
     int update(DiaryBoard diaryBoard);
@@ -59,7 +54,7 @@ public interface DiaryBoardMapper {
                        m.nickname,
                        COUNT(DISTINCT f.name) AS number_of_images
                 FROM diary d
-                JOIN member m ON d.memberId = m.id
+                JOIN member m ON d.member_id = m.id
                 LEFT JOIN diary_file f ON d.id = f.diary_id
                 <where>
                 <if test="searchType != null">
@@ -117,4 +112,18 @@ public interface DiaryBoardMapper {
                 WHERE diary_id = #{diaryId}
             """)
     List<String> selectFileNameByDiaryId(Integer diaryId);
+
+
+    @Delete("""
+                DELETE FROM diary
+                WHERE member_id = #{memberId}
+            """)
+    int deleteByMemberId(Integer memberId);
+
+
+    @Select("""
+                SELECT COUNT(*)
+                FROM diary
+            """)
+    int countAll();
 }
