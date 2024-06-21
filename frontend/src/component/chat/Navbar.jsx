@@ -124,16 +124,18 @@ export function Navbar() {
             </Box>
           </>
         )}
-        <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
-          p={2}
-          borderRadius="md"
-          onClick={() => navigate("/diary/home")}
-        >
-          <Link to="diary/home" target="_blank">
-            미니홈피
-          </Link>
-        </Box>
+        {accessToken && (
+          <Box
+            _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+            p={2}
+            borderRadius="md"
+            onClick={() => navigate("/diary/home")}
+          >
+            <Link to="diary/home" target="_blank">
+              미니홈피
+            </Link>
+          </Box>
+        )}
       </Flex>
     </Flex>
   );

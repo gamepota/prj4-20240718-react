@@ -45,7 +45,7 @@ export function DiaryBoardEdit() {
   const account = useContext(LoginContext);
 
   useEffect(() => {
-    axios.get(`/api/diaryBoard/${id}`).then((res) => setDiary(res.data.diary));
+    axios.get(`/api/diaryBoard/${id}`).then((res) => setDiary(res.data));
   }, []);
 
   function handleClickSave() {
@@ -113,7 +113,7 @@ export function DiaryBoardEdit() {
 
   return (
     <Box>
-      <Box>사진첩 수정</Box>
+      <Box>다이어리 수정</Box>
       <Box>
         <Box mb={7}>
           <FormControl>
@@ -126,7 +126,7 @@ export function DiaryBoardEdit() {
         </Box>
         <Box mb={7}>
           <FormControl>
-            <FormLabel>본문</FormLabel>
+            <FormLabel>내용</FormLabel>
             <Textarea
               defaultValue={diary.content}
               onChange={(e) => setDiary({ ...diary, content: e.target.value })}
@@ -196,7 +196,10 @@ export function DiaryBoardEdit() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input defaultValue={diary.nickname} readOnly />
+            <Input
+              defaultValue={diary.writer}
+              onChange={(e) => setDiary({ ...diary, writer: e.target.value })}
+            />
           </FormControl>
         </Box>
         <Box>

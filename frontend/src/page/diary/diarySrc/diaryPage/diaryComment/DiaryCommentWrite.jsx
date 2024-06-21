@@ -14,7 +14,6 @@ export function DiaryCommentWrite() {
     axios
       .post("/api/diaryComment/add", {
         comment,
-        username: account.username,
       })
       .then((res) => {
         setComment("");
@@ -46,7 +45,7 @@ export function DiaryCommentWrite() {
     <Flex gap={2}>
       <Box flex={1}>
         <Box>
-          <Input readOnly value={account.nickname} />
+          <Input readOnly value={account.username} />
           <Textarea
             isDisabled={!account.isLoggedIn()}
             placeholder={"방명록을 작성해보세요"}
