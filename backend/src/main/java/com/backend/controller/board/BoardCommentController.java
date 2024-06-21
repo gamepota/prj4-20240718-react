@@ -20,6 +20,7 @@ public class BoardCommentController {
     @PostMapping("add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity addComment(@RequestBody BoardComment comment, Authentication authentication) {
+        System.out.println("comment = " + comment);
         if (service.validate(comment)) {
             service.add(comment, authentication);
 

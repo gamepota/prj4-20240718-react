@@ -16,8 +16,6 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
   const [boardComment, setBoardComment] = useState("");
   const account = useContext(LoginContext);
 
-  console.log(account);
-
   function handleBoardCommentSubmitClick() {
     setIsProcessing(true);
     axios
@@ -30,6 +28,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
         setIsProcessing(false);
       });
   }
+  console.log(account);
 
   if (!account) {
     return <Spinner />;
