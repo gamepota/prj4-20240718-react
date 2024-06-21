@@ -16,10 +16,10 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import {LoginContext} from "../../component/place/LoginProvider.jsx";
+import { LoginContext } from "../../component/place/LoginProvider.jsx";
 
 export function BoardView() {
   const { id } = useParams();
@@ -108,6 +108,7 @@ export function BoardView() {
           <Input type={"datetime-local"} value={board.inserted} readOnly />
         </FormControl>
       </Box>
+
       <Box>
         <Button colorScheme={"purple"} onClick={() => navigate(`/edit/${id}`)}>
           수정
