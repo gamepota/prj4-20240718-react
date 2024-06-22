@@ -20,7 +20,6 @@ import { LoginContext } from "../../component/LoginProvider.jsx";
 export function MemberLogin(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -121,20 +120,7 @@ export function MemberLogin(props) {
               </InputGroup>
             </FormControl>
             <Flex justifyContent="space-between" mb={5}>
-              <FormControl display="flex" alignItems="center">
-                {/*<Checkbox*/}
-                {/*  isChecked={rememberMe}*/}
-                {/*  onChange={(e) => setRememberMe(e.target.checked)}*/}
-                {/*  colorScheme="purple"*/}
-                {/*  css={{*/}
-                {/*    "& .chakra-checkbox__label": {*/}
-                {/*      cursor: "default",*/}
-                {/*    },*/}
-                {/*  }}*/}
-                {/*>*/}
-                {/*  <Box fontSize="sm">로그인 유지</Box>*/}
-                {/*</Checkbox>*/}
-              </FormControl>
+              <FormControl display="flex" alignItems="center"></FormControl>
               <Flex
                 gap={5}
                 fontSize="sm"

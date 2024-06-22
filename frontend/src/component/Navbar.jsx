@@ -7,6 +7,7 @@ import axios from "axios";
 export function Navbar() {
   const navigate = useNavigate();
 
+  // LoginProvider
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const access = memberInfo?.access || null;
   const nickname = memberInfo?.nickname || null;
