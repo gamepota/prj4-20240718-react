@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box } from "@chakra-ui/react";
-import { CommentItem } from "../place/CommentItem.jsx";
+import { BoardCommentItem } from "./BoardCommentItem.jsx";
 
 export function BoardCommentList({ boardId, isProcessing, setIsProcessing }) {
   const [boardCommentList, setBoardCommentList] = useState([]);
@@ -25,7 +25,7 @@ export function BoardCommentList({ boardId, isProcessing, setIsProcessing }) {
   return (
     <Box>
       {boardCommentList.map((comment) => (
-        <CommentItem
+        <BoardCommentItem
           isProcessing={isProcessing}
           setIsProcessing={setIsProcessing}
           comment={comment}
