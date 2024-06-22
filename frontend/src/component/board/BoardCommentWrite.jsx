@@ -23,6 +23,9 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
         boardId,
         boardComment,
       })
+      .then(() => {
+        setBoardComment("");
+      })
       .catch(() => {})
       .finally(() => {
         setIsProcessing(false);
