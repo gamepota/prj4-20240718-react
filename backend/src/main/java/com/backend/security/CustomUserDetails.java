@@ -27,6 +27,11 @@ public class CustomUserDetails implements UserDetails {
         return member.getUsername();
     }
 
+    // ID 정보
+    public Integer getId() {
+        return member.getId();
+    }
+
     // 닉네임 정보
     public String getNickname() {
         return member.getNickname();

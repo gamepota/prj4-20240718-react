@@ -2,6 +2,7 @@ package com.backend.security;
 
 import com.backend.domain.member.RefreshEntity;
 import com.backend.mapper.member.RefreshMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -54,6 +57,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         // 유저 정보
         String username = authentication.getName();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        Integer id = customUserDetails.getId();
         String nickname = customUserDetails.getNickname();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -67,11 +71,27 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         // 토큰 저장
         addRefreshEntity(username, refresh, 86400000L);
-
-        // 응답 설정
-        response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
-        response.setHeader("nickname", nickname); // 닉네임 정보 포함
+        try {
+            if (request.getRequestURI().equals("/api/member/login")) {
+                Map<String, String> data = new HashMap<>();
+                data.put("id", id.toString());
+                data.put("nickname", nickname);
+                data.put("access", access);
+                String jsonData = new ObjectMapper().writeValueAsString(data);
+                // 응답 헤더 설정
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+
+                // 응답 본문에 JSON 문자열 작성
+                response.getWriter().write(jsonData);
+                response.getWriter().flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 응답 설정
+
         response.setStatus(HttpStatus.OK.value());
     }
 
