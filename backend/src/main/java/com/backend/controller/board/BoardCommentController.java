@@ -30,7 +30,7 @@ public class BoardCommentController {
 
     @GetMapping("list/{boardId}")
     public List<BoardComment> listComment(@PathVariable Integer boardId) {
-        System.out.println("이것은 comment의 get요청 boardId = " + boardId);
+//        System.out.println("이것은 comment의 get요청 boardId = " + boardId);
         return service.list(boardId);
     }
 
