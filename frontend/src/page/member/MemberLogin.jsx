@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Alert,
   AlertIcon,
   Box,
   Button,
   Center,
-  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -16,14 +15,16 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function MemberLogin(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  // const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { setMemberInfo } = useContext(LoginContext);
 
   async function handleLogin(event) {
     if (event) event.preventDefault(); // form submit 방지
@@ -57,12 +58,16 @@ export function MemberLogin(props) {
 
       if (response.status === 200) {
         // 로그인 성공 시 처리
-        console.log(response.data);
+        console.log(response);
+        console.log(response.data.nickname);
 
         // 토큰을 로컬 스토리지에 저장
-        localStorage.setItem("access", response.headers["access"]);
+        localStorage.setItem("access", response.data.access);
         // 닉네임을 로컬 스토리지에 저장
-        localStorage.setItem("nickname", response.headers["nickname"]);
+        localStorage.setItem("nickname", response.data.nickname);
+
+        const { access, id, nickname } = response.data;
+        setMemberInfo({ access, id, nickname });
         navigate("/");
       } else {
         setError("로그인에 실패했습니다.");
@@ -117,18 +122,18 @@ export function MemberLogin(props) {
             </FormControl>
             <Flex justifyContent="space-between" mb={5}>
               <FormControl display="flex" alignItems="center">
-                <Checkbox
-                  isChecked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  colorScheme="purple"
-                  css={{
-                    "& .chakra-checkbox__label": {
-                      cursor: "default",
-                    },
-                  }}
-                >
-                  <Box fontSize="sm">로그인 유지</Box>
-                </Checkbox>
+                {/*<Checkbox*/}
+                {/*  isChecked={rememberMe}*/}
+                {/*  onChange={(e) => setRememberMe(e.target.checked)}*/}
+                {/*  colorScheme="purple"*/}
+                {/*  css={{*/}
+                {/*    "& .chakra-checkbox__label": {*/}
+                {/*      cursor: "default",*/}
+                {/*    },*/}
+                {/*  }}*/}
+                {/*>*/}
+                {/*  <Box fontSize="sm">로그인 유지</Box>*/}
+                {/*</Checkbox>*/}
               </FormControl>
               <Flex
                 gap={5}

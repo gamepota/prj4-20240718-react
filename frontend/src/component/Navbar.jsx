@@ -1,26 +1,36 @@
 import { Box, Button, Flex, Input } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
+import { LoginContext } from "./LoginProvider.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export function Navbar() {
   const navigate = useNavigate();
 
-  const access = localStorage.getItem("access");
-  const nickname = localStorage.getItem("nickname");
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const access = memberInfo?.access || null;
+  const nickname = memberInfo?.nickname || null;
+  const isLoggedIn = Boolean(access);
 
   function handleLogout() {
     try {
-      axios.post(
-        "/api/member/logout",
-        {},
-        {
-          withCredentials: true,
-        },
-      );
-      localStorage.removeItem("access");
-      localStorage.removeItem("nickname");
-      navigate("/member/login");
+      axios
+        .post(
+          "/api/member/logout",
+          {},
+          {
+            withCredentials: true,
+          },
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            navigate("/member/login");
+          }
+        })
+        .finally(() => {
+          setMemberInfo(null);
+          localStorage.clear();
+        });
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -100,7 +110,7 @@ export function Navbar() {
         >
           새 글쓰기
         </Button>
-        {access ? (
+        {isLoggedIn ? (
           <>
             <Box>{nickname}님</Box>
             <Box
