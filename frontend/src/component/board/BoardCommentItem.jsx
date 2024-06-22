@@ -20,6 +20,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
+//asdf
 export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
