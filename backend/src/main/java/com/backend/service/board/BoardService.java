@@ -91,7 +91,7 @@ public class BoardService {
         session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
 
 
-        System.out.println("이것은 서비스의 boardType = " + boardType);
+//        System.out.println("이것은 서비스의 boardType = " + boardType);
         // 페이지 정보 계산
         Map<String, Object> pageInfo = new HashMap<>();
         if (offsetReset) {
@@ -140,7 +140,7 @@ public class BoardService {
         for (S3Object object : listResponse.contents()) {
             System.out.println("object.key() = " + object.key());
         }
-        System.out.println("이것은 get요청");
+//        System.out.println("이것은 get요청");
 
         Board board = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByBoardId(id);

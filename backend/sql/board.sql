@@ -101,7 +101,7 @@ CREATE TABLE board_comment
 DROP TABLE board_comment;
 
 
-# 댓글테이블 member_id없이 수정
+# 임시 댓글테이블 member_id없이 수정
 SHOW CREATE TABLE board;
 
 SELECT *

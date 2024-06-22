@@ -10,6 +10,7 @@ export function BoardCommentList({ boardId, isProcessing, setIsProcessing }) {
       axios
         .get(`/api/comment/list/${boardId}`)
         .then((res) => {
+          // console.log(res.data);
           setBoardCommentList(res.data);
         })
         .catch((err) => {

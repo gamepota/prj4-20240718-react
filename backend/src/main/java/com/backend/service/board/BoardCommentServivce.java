@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +35,9 @@ public class BoardCommentServivce {
 //        comment.setMemberId(comment.getMemberId());
 
         mapper.insert(comment);
+    }
+
+    public List<BoardComment> list(Integer boardId) {
+        return mapper.selectAllByBoardId(boardId);
     }
 }

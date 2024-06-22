@@ -4,10 +4,9 @@ import com.backend.domain.board.BoardComment;
 import com.backend.service.board.BoardCommentServivce;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,4 +27,11 @@ public class BoardCommentController {
         }
 
     }
+
+    @GetMapping("list/{boardId}")
+    public List<BoardComment> listComment(@PathVariable Integer boardId) {
+        System.out.println("이것은 comment의 get요청 boardId = " + boardId);
+        return service.list(boardId);
+    }
+
 }
