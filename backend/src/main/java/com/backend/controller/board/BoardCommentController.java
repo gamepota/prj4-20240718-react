@@ -4,8 +4,6 @@ import com.backend.domain.board.BoardComment;
 import com.backend.service.board.BoardCommentServivce;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +16,11 @@ public class BoardCommentController {
     final BoardCommentServivce service;
 
     @PostMapping("add")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity addComment(@RequestBody BoardComment comment, Authentication authentication) {
-        System.out.println("comment = " + comment);
+//    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity addComment(@RequestBody BoardComment comment /*Authentication authentication*/) {
         if (service.validate(comment)) {
-            service.add(comment, authentication);
+            System.out.println("이것은 validate 통과한 comment = " + comment);
+            service.add(comment /*authentication*/);
 
             return ResponseEntity.ok().build();
         } else {

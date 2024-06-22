@@ -37,12 +37,8 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
     <Flex gap={2}>
       <Box flex={1}>
         <Textarea
-          isDisabled={!account.isLoggedIn()}
-          placeholder={
-            account.isLoggedIn()
-              ? "댓글을 작성해 보세요."
-              : "댓글을 작성하시려면 로그인하세요."
-          }
+          // isDisabled={!account.isLoggedIn()}
+          placeholder={"댓글을 작성해 보세요"}
           value={boardComment}
           onChange={(e) => setBoardComment(e.target.value)}
         />
@@ -51,13 +47,13 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
         <Tooltip
           label="로그인 하세요"
           isDisabled={account.isLoggedIn()}
-          placement="top"
+          placement="bottom"
         >
           <Button
             h={"100%"}
-            isDisabled={
-              boardComment.trim().length === 0 || !account.isLoggedIn()
-            }
+            // isDisabled={
+            //   boardComment.trim().length === 0 || !account.isLoggedIn()
+            // }
             isLoading={isProcessing}
             onClick={handleBoardCommentSubmitClick}
             colorScheme={"blue"}

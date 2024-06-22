@@ -3,7 +3,6 @@ package com.backend.service.board;
 import com.backend.domain.board.BoardComment;
 import com.backend.mapper.board.BoardCommentMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,7 @@ public class BoardCommentServivce {
         if (comment == null) {
             return false;
         }
-        if (comment.getComment().isBlank()) {
+        if (comment.getBoardComment().isBlank()) {
             return false;
         }
 
@@ -30,8 +29,8 @@ public class BoardCommentServivce {
         return true;
     }
 
-    public void add(BoardComment comment, Authentication authentication) {
-        comment.setMemberId(Integer.valueOf(authentication.getName()));
+    public void add(BoardComment comment /*Authentication authentication*/) {
+//        comment.setMemberId(comment.getMemberId());
 
         mapper.insert(comment);
     }

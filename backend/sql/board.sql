@@ -90,9 +90,44 @@ CREATE TABLE board_comment
     comment   VARCHAR(500) NOT NULL,
     inserted  DATETIME     NOT NULL DEFAULT NOW()
 );
+#임시 댓글 테이블...
+CREATE TABLE board_comment
+(
+    id            INT PRIMARY KEY AUTO_INCREMENT,
+    board_id      INT          NOT NULL REFERENCES board (id),
+    board_comment VARCHAR(500) NOT NULL,
+    inserted      DATETIME     NOT NULL DEFAULT NOW()
+);
+DROP TABLE board_comment;
+
+
+# 댓글테이블 member_id없이 수정
+SHOW CREATE TABLE board;
 
 SELECT *
 FROM board_comment;
+
+SELECT *
+FROM board;
+
+ALTER TABLE board
+    DROP FOREIGN KEY board_ibfk_1;
+
+ALTER TABLE board_comment
+    DROP COLUMN comment,
+    ADD COLUMN board_comment VARCHAR(255);
+
+SHOW CREATE TABLE board_comment;
+
+ALTER TABLE board_comment
+    ADD COLUMN board_comment VARCHAR(255);
+
+
+ALTER TAbLE board_comment
+    DROP FOREIGN KEY board_comment_ibfk_2;
+
+ALTER TABLE board_comment
+    MODIFY COLUMN inserted DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 
 #id 컬럼 board_id로 변경

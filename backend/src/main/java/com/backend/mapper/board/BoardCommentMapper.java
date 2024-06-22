@@ -9,8 +9,8 @@ public interface BoardCommentMapper {
 
     @Insert("""
                         INSERT INTO board_comment
-            (board_id, member_id, comment) 
-            VALUES (#{boardId}, #{memberId}, #{comment})
+            (board_id, board_comment) 
+            VALUES (#{boardId}, #{boardComment})
                         """)
     int insert(BoardComment comment);
 }
