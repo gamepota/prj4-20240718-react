@@ -41,12 +41,6 @@ public class MemberController {
         return ResponseEntity.ok(nickname);
     }
 
-    // MemberList
-    @GetMapping("/list")
-    public List<Member> list() {
-        return service.list();
-    }
-
     // MemberEdit
     @GetMapping("/{id}")
     public ResponseEntity<Member> getById(@PathVariable Integer id) {
@@ -66,7 +60,7 @@ public class MemberController {
         }
     }
 
-    // 회원 탈퇴
+    // MemberDelete
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Integer id, @RequestParam String password) {
         if (service.validatePassword(id, password)) {
@@ -74,5 +68,11 @@ public class MemberController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    // MemberList
+    @GetMapping("/list")
+    public List<Member> list() {
+        return service.list();
     }
 }

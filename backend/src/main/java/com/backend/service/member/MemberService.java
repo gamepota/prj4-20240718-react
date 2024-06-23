@@ -3,6 +3,7 @@ package com.backend.service.member;
 import com.backend.domain.member.Member;
 import com.backend.domain.member.Role;
 import com.backend.mapper.member.MemberMapper;
+import com.backend.mapper.member.RefreshMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberMapper memberMapper;
+    private final RefreshMapper refreshMapper;
     private final BCryptPasswordEncoder passwordEncoder;
 
     //MemberSignup
@@ -28,11 +30,6 @@ public class MemberService {
 
     public Member getByNickname(String nickname) {
         return memberMapper.selectByNickname(nickname);
-    }
-
-    // MemberList
-    public List<Member> list() {
-        return memberMapper.selectAll();
     }
 
     // MemberEdit
@@ -51,6 +48,7 @@ public class MemberService {
 
     // MemberDelete
     public void delete(Integer id) {
+        refreshMapper.deleteByUsername(getById(id).getUsername());
         memberMapper.deleteById(id);
     }
 
@@ -60,5 +58,10 @@ public class MemberService {
             return false;
         }
         return passwordEncoder.matches(password, dbMember.getPassword());
+    }
+
+    // MemberList
+    public List<Member> list() {
+        return memberMapper.selectAll();
     }
 }
