@@ -3,6 +3,7 @@ package com.backend.controller.member;
 import com.backend.domain.member.Member;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,5 +64,15 @@ public class MemberController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // 회원 탈퇴
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Integer id, @RequestParam String password) {
+        if (service.validatePassword(id, password)) {
+            service.delete(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

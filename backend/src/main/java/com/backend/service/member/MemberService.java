@@ -48,4 +48,17 @@ public class MemberService {
         }
         return memberMapper.update(member) > 0;
     }
+
+    // MemberDelete
+    public void delete(Integer id) {
+        memberMapper.deleteById(id);
+    }
+
+    public boolean validatePassword(Integer id, String password) {
+        Member dbMember = memberMapper.selectByMemberId(id);
+        if (dbMember == null) {
+            return false;
+        }
+        return passwordEncoder.matches(password, dbMember.getPassword());
+    }
 }

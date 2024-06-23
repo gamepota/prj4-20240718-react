@@ -63,6 +63,13 @@ public interface MemberMapper {
             """)
     int update(Member member);
 
+    // MemberDelete
+    @Delete("""
+            DELETE FROM member
+            WHERE id = #{id}
+            """)
+    int deleteById(Integer id);
+
     // logged_in
     @Insert("""
             INSERT INTO logged_in(member_id, logged_in, logged_in_at)
