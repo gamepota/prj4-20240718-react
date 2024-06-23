@@ -73,39 +73,86 @@ export function UserPage() {
   }
 
   // 회원 탈퇴
-  function handleDeleteAccount() {
-    Swal.fire({
+  async function handleDeleteAccount() {
+    const confirmDeletion = await Swal.fire({
       title: "회원 탈퇴",
-      text: "정말로 탈퇴하시겠습니까?",
+      html: "모든 정보가 영구적으로 삭제됩니다.<br>정말 탈퇴하시겠습니까?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "탈퇴",
-      cancelButtonText: "취소",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`/api/member/${id}`)
-          .then(() => {
-            toast({
-              title: "탈퇴되었습니다.",
-              status: "success",
-              duration: 3000,
-              isClosable: true,
-            });
-            setMemberInfo(null);
-            localStorage.removeItem("memberInfo");
-            navigate("/member/login");
-          })
-          .catch((err) => {
+      confirmButtonText: "예",
+      cancelButtonText: "아니오",
+    });
+
+    if (confirmDeletion.isConfirmed) {
+      const { value: password } = await Swal.fire({
+        title: "회원 탈퇴",
+        text: "비밀번호를 입력해주세요.",
+        input: "password",
+        inputPlaceholder: "비밀번호",
+        showCancelButton: true,
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
+      });
+
+      if (password) {
+        try {
+          const res = await axios.post(
+            `/api/member/validate-password`,
+            { password },
+            {
+              withCredentials: true,
+            },
+          );
+
+          if (res.status === 200 && res.data.valid) {
             Swal.fire({
-              title: "탈퇴 실패",
-              text: "오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
+              title: "회원 탈퇴",
+              text: "정말로 탈퇴하시겠습니까?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "탈퇴",
+              cancelButtonText: "취소",
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                try {
+                  await axios.delete(`/api/member/${id}`);
+                  toast({
+                    title: "탈퇴되었습니다.",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                  });
+                  setMemberInfo(null);
+                  localStorage.removeItem("memberInfo");
+                  navigate("/member/login");
+                } catch (err) {
+                  Swal.fire({
+                    title: "탈퇴 실패",
+                    text: "오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
+                    icon: "error",
+                    confirmButtonText: "확인",
+                  });
+                }
+              }
+            });
+          } else {
+            Swal.fire({
+              title: "비밀번호 오류",
+              text: "비밀번호가 올바르지 않습니다.",
               icon: "error",
               confirmButtonText: "확인",
             });
+          }
+        } catch (err) {
+          Swal.fire({
+            title: "오류",
+            text: "오류가 발생하였습니다.",
+            icon: "error",
+            confirmButtonText: "확인",
           });
+        }
       }
-    });
+    }
   }
 
   // 프로필 이미지 저장
