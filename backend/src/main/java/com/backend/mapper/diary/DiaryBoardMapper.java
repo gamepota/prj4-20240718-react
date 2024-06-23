@@ -126,4 +126,10 @@ public interface DiaryBoardMapper {
                 FROM diary
             """)
     int countAll();
+
+    @Delete("""
+            DELETE FROM diary_file
+            WHERE diary_id = #{diaryId}
+            """)
+    int deleteFileBydiaryId(Integer diaryId);
 }

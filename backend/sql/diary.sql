@@ -99,7 +99,7 @@ SELECT *
 FROM diary
 WHERE id = 1;
 
-
+DESC diary;
 
 DROP TABLE diaryComment;
 
