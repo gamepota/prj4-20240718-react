@@ -81,14 +81,8 @@ export function MemberEdit(props) {
         setMainAddress(memberData.mainAddress);
         setDetailedAddress(memberData.detailedAddress);
 
-        // // 주소 정보 파싱
-        // const [parsedPostcode, parsedMainAddress, ...parsedDetailedAddress] =
-        //   memberData.address.split(" ");
-        // setPostcode(parsedPostcode);
-        // setMainAddress(parsedMainAddress);
-        // setDetailedAddress(parsedDetailedAddress.join(" "));
-
-        setIsNicknameValid(true); // 초기 로딩 시 유효성 검사 통과된 것으로 간주
+        // 유효성 검사 초기화
+        setIsNicknameValid(true);
         setIsNameValid(true);
         setIsBirthDateValid(true);
         setIsPhoneNumberValid(true);
@@ -215,7 +209,7 @@ export function MemberEdit(props) {
     };
 
     axios
-      .put(`/api/member/${id}`, updatedData)
+      .put(`/api/member/edit/${id}`, updatedData)
       .then((res) => {
         Swal.fire({
           title: "회원 정보가 업데이트되었습니다.",
