@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Center,
+  CloseButton,
   Flex,
   FormControl,
   Icon,
@@ -172,7 +173,7 @@ export function UserPage() {
           마이페이지
         </Box>
         <FormControl mb={4}>
-          <Box textAlign="center" mb={4}>
+          <Box textAlign="center" mb={4} position="relative">
             {profileImage ? (
               <>
                 <Image
@@ -183,15 +184,16 @@ export function UserPage() {
                   mx="auto"
                   mb={4}
                 />
-                <Button
-                  bg="red.500"
-                  color="white"
-                  _hover={{ bg: "red.600" }}
+                <CloseButton
+                  position="absolute"
+                  top="-10px"
+                  right="100px"
+                  size="lg"
+                  color="red.500"
+                  _hover={{ color: "red.700" }}
+                  boxSize="24px"
                   onClick={handleProfileImageDelete}
-                  mb={4}
-                >
-                  이미지 삭제
-                </Button>
+                />
               </>
             ) : (
               <Box
