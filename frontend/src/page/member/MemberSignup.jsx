@@ -557,6 +557,8 @@ export function MemberSignup(props) {
                   </Button>
                 </Box>
               </Flex>
+            </FormControl>
+            <FormControl>
               <Input
                 value={detailedAddress}
                 onChange={(e) => {

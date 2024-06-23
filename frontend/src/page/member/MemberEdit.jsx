@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   AlertIcon,
@@ -17,10 +17,13 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHammer } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function MemberEdit(props) {
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
+  const [isNicknameConfirmed, setIsNicknameConfirmed] = useState(true);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("male");
@@ -192,6 +195,38 @@ export function MemberEdit(props) {
     postcodePopup.open();
   }
 
+  function handleReenterNickname() {
+    setNickname(""); // 닉네임 입력란 초기화
+    setIsNicknameConfirmed(false); // 닉네임 확인 상태 초기화
+    setIsNicknameValid(false); // 닉네임 유효성 초기화
+  }
+
+  function handleCheckNickname() {
+    if (!isNicknameValid) return; // 닉네임 유효성 검사를 통과한 경우에만 요청
+    axios
+      .get(`/api/member/check?nickname=${nickname}`)
+      .then((res) => {
+        toast({
+          status: "warning",
+          description: "사용할 수 없는 닉네임입니다.",
+          position: "top",
+          duration: 3000,
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          toast({
+            status: "info",
+            description: "사용할 수 있는 닉네임입니다.",
+            position: "top",
+            duration: 3000,
+          });
+          setIsNicknameConfirmed(true); // 닉네임 확인 상태 업데이트
+        }
+      })
+      .finally();
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
 
@@ -205,12 +240,14 @@ export function MemberEdit(props) {
       phoneNumber: phoneNumber,
       postcode: postcode,
       mainAddress: mainAddress,
-      detailedAddress: detailedAddress,
+      detailedAddress: detailedAddress || "",
     };
 
     axios
       .put(`/api/member/edit/${id}`, updatedData)
       .then((res) => {
+        // Context와 LocalStorage 업데이트
+        setMemberInfo((prev) => ({ ...prev, nickname }));
         Swal.fire({
           title: "회원 정보가 업데이트되었습니다.",
           text: "마이페이지로 이동합니다.",
@@ -252,23 +289,38 @@ export function MemberEdit(props) {
               <Input
                 placeholder={"닉네임"}
                 value={nickname}
+                readOnly={isNicknameConfirmed} // 닉네임 확인 후 readOnly 설정
                 onChange={(e) => {
                   setNickname(e.target.value.trim());
                   validateNickname(e.target.value.trim());
                 }}
+                backgroundColor={isNicknameConfirmed ? "gray.200" : "white"}
               />
               <InputRightElement w={"100px"} mr={1}>
-                <Button
-                  size={"sm"}
-                  variant="ghost"
-                  onClick={() => {
-                    setNickname("");
-                    setIsNicknameValid(false);
-                  }}
-                  _hover={{ color: "red.500 " }}
-                >
-                  <FontAwesomeIcon icon={faHammer} />
-                </Button>
+                {isNicknameConfirmed ? (
+                  <Button
+                    size={"sm"}
+                    variant="ghost"
+                    onClick={handleReenterNickname}
+                    _hover={{ color: "red.500 " }}
+                  >
+                    <FontAwesomeIcon icon={faHammer} />
+                  </Button>
+                ) : (
+                  <Button
+                    size={"sm"}
+                    onClick={handleCheckNickname}
+                    isDisabled={!isNicknameValid}
+                    cursor={!isNicknameValid ? "not-allowed" : "pointer"}
+                    _hover={
+                      !isNicknameValid
+                        ? { bgColor: "gray.100" }
+                        : { bgColor: "purple.500 ", color: "white" }
+                    }
+                  >
+                    중복확인
+                  </Button>
+                )}
               </InputRightElement>
             </InputGroup>
             {!isNicknameValid && nickname && (
@@ -443,6 +495,8 @@ export function MemberEdit(props) {
                 </Button>
               </Box>
             </Flex>
+          </FormControl>
+          <FormControl>
             <Input
               value={detailedAddress}
               onChange={(e) => {
