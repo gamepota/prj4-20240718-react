@@ -36,6 +36,10 @@ public class MemberService {
     }
 
     // MemberEdit
+    public Member getById(Integer id) {
+        return memberMapper.selectByMemberId(id);
+    }
+
     public boolean update(Integer id, Member member) {
         member.setId(id);
         // 비밀번호가 변경된 경우만 암호화

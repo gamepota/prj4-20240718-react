@@ -30,7 +30,7 @@ public interface MemberMapper {
             WHERE nickname = #{nickname}
             """)
     Member selectByNickname(String nickname);
-    
+
     // MemberList
     @Select("""
             SELECT *
@@ -40,6 +40,13 @@ public interface MemberMapper {
     List<Member> selectAll();
 
     // MemberEdit
+    @Select("""
+            SELECT *
+            FROM member
+            WHERE id = #{id}
+            """)
+    Member selectByMemberId(Integer id);
+
     @Update("""
                 UPDATE member
                 SET nickname = #{nickname},
@@ -55,12 +62,6 @@ public interface MemberMapper {
                 WHERE id = #{id}
             """)
     int update(Member member);
-
-    @Select("""
-                    SELECT *
-            FROM member WHERE id = #{id}
-                """)
-    Member selectByMemberId(Integer id);
 
     // logged_in
     @Insert("""

@@ -47,7 +47,16 @@ public class MemberController {
     }
 
     // MemberEdit
-    @PutMapping("/{id}")
+    @GetMapping("/{id}")
+    public ResponseEntity<Member> getById(@PathVariable Integer id) {
+        Member member = service.getById(id);  // 서비스에서 회원 정보를 조회
+        if (member == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(member);
+    }
+
+    @PutMapping("/edit/{id}")
     public ResponseEntity update(@PathVariable Integer id, @RequestBody Member member) {
         if (service.update(id, member)) {
             return ResponseEntity.ok().build();
