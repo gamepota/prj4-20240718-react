@@ -6,6 +6,7 @@ import {
   CardBody,
   CardHeader,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -32,18 +33,11 @@ export function DiaryBoardWrite() {
   function handleSaveClick() {
     setLoading(true);
     axios
-      .postForm(
-        "/api/diaryBoard/add",
-        {
-          title,
-          content,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access")}`,
-          },
-        },
-      )
+      .postForm("/api/diaryBoard/add", {
+        title,
+        content,
+        files,
+      })
       .then(() => {
         toast({
           description: "새 글이 등록되었습니다.",
@@ -121,6 +115,7 @@ export function DiaryBoardWrite() {
               accept="image/*"
               onChange={(e) => setFiles(e.target.files)}
             />
+            <FormHelperText>즉당히 넣으십시오</FormHelperText>
           </FormControl>
         </Box>
         {fileNameList.length > 0 && (

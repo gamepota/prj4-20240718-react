@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Center,
@@ -19,6 +20,7 @@ import {
   faAngleRight,
   faAnglesLeft,
   faAnglesRight,
+  faImages,
   faMagnifyingGlass,
   faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
@@ -70,38 +72,52 @@ export function DiaryBoardList() {
     <Box>
       <Box>다이어리 목록</Box>
       <Box>
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>#</Th>
-              <Th>TITLE</Th>
-              <Th>
-                <FontAwesomeIcon icon={faUserPen} />
-              </Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {diaryBoardList.map((diary) => (
-              <Tr
-                _hover={{
-                  bgColor: "gray.200",
-                }}
-                cursor={"pointer"}
-                onClick={() => navigate(`/diaryBoard/${diary.id}`)}
-                key={diary.id}
-              >
-                <Td>{diary.id}</Td>
-                <Td>{diary.title}</Td>
-                <Td>{diary.writer}</Td>
+        {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
+        {diaryBoardList.length > 0 && (
+          <Table>
+            <Thead>
+              <Tr>
+                <Th>#</Th>
+                <Th>TITLE</Th>
+                <Th>
+                  <FontAwesomeIcon icon={faUserPen} />
+                </Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
+            </Thead>
+            <Tbody>
+              {diaryBoardList.map((diary) => (
+                <Tr
+                  _hover={{
+                    bgColor: "gray.200",
+                  }}
+                  cursor={"pointer"}
+                  onClick={() => navigate(`/diaryBoard/${diary.id}`)}
+                  key={diary.id}
+                >
+                  <Td>{diary.id}</Td>
+                  <Td>
+                    {diary.title}
+                    {diary.numberOfImages > 0 && (
+                      <Badge>
+                        <FontAwesomeIcon icon={faImages} />
+                        {diary.numberOfImages}
+                      </Badge>
+                    )}
+                  </Td>
+                  <Td>{diary.writer}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        )}
       </Box>
       <Box>
         <Flex>
           <Box>
-            <Select onChange={(e) => setSearchType(e.target.value)}>
+            <Select
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value)}
+            >
               <option value="all">전체</option>
               <option value="text">글</option>
               <option value="nickname">작성자</option>
@@ -109,6 +125,7 @@ export function DiaryBoardList() {
           </Box>
           <Box>
             <Input
+              value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="검색어"
             />
@@ -123,11 +140,11 @@ export function DiaryBoardList() {
       <Center>
         {pageInfo.prevPageNumber && (
           <>
-            <Button onClick={() => navigate(`/?page=1`)}>
+            <Button onClick={() => handlePageButtonClick(1)}>
               <FontAwesomeIcon icon={faAnglesLeft} />
             </Button>
             <Button
-              onClick={() => navigate(`/?page=${pageInfo.prevPageNumber}`)}
+              onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
             >
               <FontAwesomeIcon icon={faAngleLeft} />
             </Button>
@@ -135,8 +152,8 @@ export function DiaryBoardList() {
         )}
         {pageNumbers.map((pageNumber) => (
           <Button
-            onClick={() => navigate(`/?page=${pageNumbers}`)}
-            key={pageNumbers}
+            onClick={() => handlePageButtonClick(pageNumber)}
+            key={pageNumber}
             colorScheme={
               pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
             }
@@ -147,12 +164,12 @@ export function DiaryBoardList() {
         {pageInfo.nextPageNumber && (
           <>
             <Button
-              onClick={() => navigate(`/?page=${pageInfo.nextPageNumber}`)}
+              onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
             >
               <FontAwesomeIcon icon={faAngleRight} />
             </Button>
             <Button
-              onClick={() => navigate(`/?page=${pageInfo.lastPageNumber}`)}
+              onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
             >
               <FontAwesomeIcon icon={faAnglesRight} />
             </Button>

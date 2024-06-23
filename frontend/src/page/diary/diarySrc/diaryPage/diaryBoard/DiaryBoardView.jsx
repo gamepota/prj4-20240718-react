@@ -95,6 +95,14 @@ export function DiaryBoardView() {
             <Textarea value={diary.content} readOnly />
           </FormControl>
         </Box>
+        <Box>
+          {diary.imageSrcList &&
+            diary.imageSrcList.map((src) => (
+              <Box border={"2px solid black"} m={3} key={src}>
+                <Image src={src} />
+              </Box>
+            ))}
+        </Box>
         <Box mb={7}>
           {diary.fileList &&
             diary.fileList.map((file) => (
