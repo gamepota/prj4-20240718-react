@@ -42,3 +42,6 @@ ALTER TABLE member
 
 ALTER TABLE member
     CHANGE COLUMN email username VARCHAR(255) NOT NULL UNIQUE;
+
+ALTER TABLE member
+    ADD COLUMN profile_image VARCHAR(255) AFTER detailed_address;
