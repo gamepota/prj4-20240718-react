@@ -111,7 +111,24 @@ export function Navbar() {
         </Button>
         {isLoggedIn ? (
           <>
-            <Box>{nickname}님</Box>
+            <Box
+              _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+              p={2}
+              borderRadius="md"
+              onClick={() => navigate(`/member/userpage/${memberInfo.id}`)}
+            >
+              {nickname}님
+            </Box>
+            <Box
+              _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+              p={2}
+              borderRadius="md"
+              onClick={() => navigate("/diary/home")}
+            >
+              <Link to="diary/home" target="_blank">
+                다이어리
+              </Link>
+            </Box>
             <Button
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
@@ -133,16 +150,6 @@ export function Navbar() {
             </Button>
           </>
         )}
-        <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
-          p={2}
-          borderRadius="md"
-          onClick={() => navigate("/diary/home")}
-        >
-          <Link to="diary/home" target="_blank">
-            미니홈피
-          </Link>
-        </Box>
       </Flex>
     </Flex>
   );
