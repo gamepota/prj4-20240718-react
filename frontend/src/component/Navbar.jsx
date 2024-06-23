@@ -25,12 +25,10 @@ export function Navbar() {
         )
         .then((response) => {
           if (response.status === 200) {
+            setMemberInfo(null); // 상태 초기화
+            localStorage.removeItem("memberInfo"); // 로컬 스토리지 초기화
             navigate("/member/login");
           }
-        })
-        .finally(() => {
-          setMemberInfo(null);
-          localStorage.clear();
         });
     } catch (error) {
       console.error("Logout failed:", error);
@@ -114,25 +112,25 @@ export function Navbar() {
         {isLoggedIn ? (
           <>
             <Box>{nickname}님</Box>
-            <Box
+            <Button
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
               borderRadius="md"
               onClick={handleLogout}
             >
               로그아웃
-            </Box>
+            </Button>
           </>
         ) : (
           <>
-            <Box
+            <Button
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
               borderRadius="md"
               onClick={() => navigate("/member/login")}
             >
               로그인
-            </Box>
+            </Button>
           </>
         )}
         <Box

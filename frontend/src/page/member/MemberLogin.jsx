@@ -60,13 +60,13 @@ export function MemberLogin(props) {
         console.log(response);
         console.log(response.data.nickname);
 
-        // 토큰을 로컬 스토리지에 저장
-        localStorage.setItem("access", response.data.access);
-        // 닉네임을 로컬 스토리지에 저장
-        localStorage.setItem("nickname", response.data.nickname);
-
         const { access, id, nickname } = response.data;
-        setMemberInfo({ access, id, nickname });
+        const memberInfo = { access, id, nickname };
+        setMemberInfo(memberInfo);
+
+        // 토큰을 로컬 스토리지에 저장
+        localStorage.setItem("memberInfo", JSON.stringify(memberInfo));
+
         navigate("/");
       } else {
         setError("로그인에 실패했습니다.");
