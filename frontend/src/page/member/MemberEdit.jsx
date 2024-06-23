@@ -254,7 +254,7 @@ export function MemberEdit(props) {
           icon: "success",
           confirmButtonText: "확인",
         }).then(() => {
-          navigate(`/member/mypage/${id}`);
+          navigate(`/member/userpage/${id}`);
         });
       })
       .catch((err) => {

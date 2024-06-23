@@ -6,6 +6,7 @@ import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
+import { UserPage } from "./page/member/UserPage.jsx";
 import { BoardWrite } from "./page/board/BoardWrite.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: "member/login", element: <MemberLogin /> }, // 회원 로그인
       { path: "member/list", element: <MemberList /> }, // 회원 목록
       { path: "member/edit/:id", element: <MemberEdit /> }, // 회원 정보 수정 및 탈퇴
+      { path: "member/userpage/:id", element: <UserPage /> }, // 회원 마이페이지 추가
       { path: "board/write", element: <BoardWrite /> }, //게시판 글쓰기
       { path: "board/list", element: <BoardList /> }, //게시판 목록
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
