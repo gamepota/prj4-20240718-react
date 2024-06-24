@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Image,
@@ -12,6 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spacer,
   Spinner,
   useDisclosure,
   useToast,
@@ -76,7 +78,12 @@ export function BoardView() {
       borderRadius={"md"}
       mt={10}
     >
-      <Box>{board.id}번 게시물</Box>
+      <Flex>
+        <Box>{board.id}번 게시물</Box>
+        <Spacer />
+        <Box>조회수:{board.views}</Box>
+        <Spacer />
+      </Flex>
       <Box>
         <FormControl>
           <FormLabel>제목</FormLabel>

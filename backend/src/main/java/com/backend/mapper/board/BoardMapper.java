@@ -29,7 +29,8 @@ public interface BoardMapper {
             b.content,
             b.inserted,
             m.nickname writer,
-            b.member_id
+            b.member_id,
+            b.views
                         from board b JOIN member m ON b.member_id = m.id
                         WHERE b.id = #{id};
 
@@ -102,4 +103,17 @@ public interface BoardMapper {
     int deleteFileByBoardIdAndName(Integer boardId, String fileName);
 
 
+    @Select("""
+            SELECT views FROM board
+            WHERE id=#{id}
+
+                        """)
+    int selectCountById(Integer id);
+
+    @Update("""
+                        UPDATE board
+            SET views=#{views}+1
+            WHERE id=#{id}
+            """)
+    int incrementViewsById(Integer id, Integer views);
 }
