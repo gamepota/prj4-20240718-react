@@ -64,7 +64,7 @@ public interface BoardMapper {
 
     @Select("""
             <script>
-            SELECT b.id,b.title,m.nickname writer,b.board_type FROM board b JOIN member m ON b.member_id = m.id
+            SELECT b.id,b.title,m.nickname writer,b.board_type,b.views FROM board b JOIN member m ON b.member_id = m.id
                 <if test="boardType !='전체'">
             WHERE board_type = #{boardType}
                  </if>

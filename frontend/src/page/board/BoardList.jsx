@@ -236,6 +236,7 @@ export function BoardList() {
                     )}
                   </td>
                   <td>{board.writer}</td>
+                  <td style={{ textAlign: "center" }}>{board.views}</td>
                 </Tr>
               ))}
             </Tbody>
