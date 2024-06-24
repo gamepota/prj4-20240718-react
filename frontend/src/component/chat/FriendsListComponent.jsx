@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { LoginContext } from '../LoginProvider.jsx'; // LoginProvider의 경로를 맞춰서 수정하세요
+import { LoginContext } from '../LoginProvider.jsx';
 
 export const FriendsListComponent = ({ onSelectFriend }) => {
   const [friends, setFriends] = useState([]);
@@ -13,9 +13,9 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
   const navigate = useNavigate();
   const [isMinimized, setIsMinimized] = useState(false);
 
-  const loginContext = useContext(LoginContext);
-  console.log("LoginContext:", loginContext); // 로그 추가
-  const nickname = loginContext ? loginContext.nickname : null;
+  const { memberInfo } = useContext(LoginContext);
+  console.log("LoginContext:", memberInfo); // 로그 추가
+  const nickname = memberInfo ? memberInfo.nickname : null;
   console.log("Nickname:", nickname); // 로그 추가
 
   const toggleMinimize = () => {
