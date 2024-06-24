@@ -45,65 +45,65 @@ public class CustomLogoutFilter extends GenericFilterBean {
             filterChain.doFilter(request, response);
             return;
         }
-//
-//        // Get refresh token
-//        String refresh = null;
-//        Cookie[] cookies = request.getCookies();
-//        if (cookies != null) {
-//            for (Cookie cookie : cookies) {
-//                if ("refresh".equals(cookie.getName())) {
-//                    refresh = cookie.getValue();
-//                    break;
-//                }
-//            }
-//        }
-//
-//        // Refresh null check
-//        if (refresh == null) {
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            return;
-//        }
-//
-//        // Expired check
-//        try {
-//            jwtUtil.isExpired(refresh);
-//        } catch (ExpiredJwtException e) {
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            return;
-//        }
-//
-//        // Check if token is refresh
-//        String category = jwtUtil.getCategory(refresh);
-//        if (!"refresh".equals(category)) {
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            return;
-//        }
-//
-//        // DB에 저장되어 있는지 확인
-//        Boolean isExist = refreshMapper.existsByRefresh(refresh);
-//        if (!isExist) {
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            return;
-//        }
-//
-//
-//        System.out.println("refresh = " + refresh);
-//        // 로그아웃 진행
-//        // Refresh 토큰 DB에서 제거
-//        int result = refreshMapper.deleteByRefresh(refresh);
-//        System.out.println("result = " + result);
-//
-//        // Refresh 토큰 Cookie 값 0으로 설정하고 제거
-//        Cookie cookie = new Cookie("refresh", null);
-//        cookie.setMaxAge(0);
-//        cookie.setPath("/");
-//        cookie.setHttpOnly(true); // Optional, for security
-//        cookie.setSecure(true); // Optional, if using HTTPS
-//
-//        System.out.println("cookie.getMaxAge() = " + cookie.getMaxAge());
-//
-//        response.addCookie(cookie);
-//
+
+        // Get refresh token
+        String refresh = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refresh".equals(cookie.getName())) {
+                    refresh = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        // Refresh null check
+        if (refresh == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        // Expired check
+        try {
+            jwtUtil.isExpired(refresh);
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        // Check if token is refresh
+        String category = jwtUtil.getCategory(refresh);
+        if (!"refresh".equals(category)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        // DB에 저장되어 있는지 확인
+        Boolean isExist = refreshMapper.existsByRefresh(refresh);
+        if (!isExist) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+
+        System.out.println("refresh = " + refresh);
+        // 로그아웃 진행
+        // Refresh 토큰 DB에서 제거
+        int result = refreshMapper.deleteByRefresh(refresh);
+        System.out.println("result = " + result);
+
+        // Refresh 토큰 Cookie 값 0으로 설정하고 제거
+        Cookie cookie = new Cookie("refresh", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true); // Optional, for security
+        cookie.setSecure(true); // Optional, if using HTTPS
+
+        System.out.println("cookie.getMaxAge() = " + cookie.getMaxAge());
+
+        response.addCookie(cookie);
+
 
         // 설정 후 커밋
         response.setStatus(HttpServletResponse.SC_OK);

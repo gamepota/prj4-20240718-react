@@ -35,7 +35,7 @@ const router = createBrowserRouter([
       { path: "diary/home", element: <DiaryHome /> }, // 다이어리 홈
       { path: "diary/list", element: <DiaryBoardList /> }, // 다이어리 목록
       { path: "diary/edit:/id", element: <DiaryBoardEdit /> }, // 일기 수정
-      { path: "diary/view/:id", element: <DiaryBoardView /> }, //
+      { path: "diary/view/:id", element: <DiaryBoardView /> }, // 일기 보기
       { path: "diary/write/:id", element: <DiaryBoardWrite /> }, // 일기 쓰기
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
       { path: "member/login", element: <MemberLogin /> }, // 회원 로그인
@@ -44,10 +44,10 @@ const router = createBrowserRouter([
       { path: "member/userpage/:id", element: <UserPage /> }, // 회원 마이페이지 추가
       { path: "board/write", element: <BoardWrite /> }, //게시판 글쓰기
       { path: "board/list", element: <BoardList /> }, //게시판 목록
+      { path: "board/edit/:id", element: <BoardEdit /> }, //게시글 수정
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
       { path: "place/map", element: <PlaceMap /> }, // 지도 보기
       { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기
-      { path: "edit/:id", element: <BoardEdit /> }, //게시글 수정
       { path: "aichat", element: <AIChat /> }, // 챗봇 기능
     ],
   },

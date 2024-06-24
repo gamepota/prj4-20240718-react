@@ -112,7 +112,10 @@ export function BoardView() {
       <BoardCommentComponent boardId={board.id} />
 
       <Box>
-        <Button colorScheme={"purple"} onClick={() => navigate(`/edit/${id}`)}>
+        <Button
+          colorScheme={"purple"}
+          onClick={() => navigate(`/board/edit/${id}`)}
+        >
           수정
         </Button>
         <Button colorScheme={"red"} onClick={onOpen}>
