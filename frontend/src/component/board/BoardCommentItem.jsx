@@ -11,6 +11,8 @@ import {
   ModalOverlay,
   Spacer,
   Text,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,20 +21,32 @@ import {
   faTrashAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 //asdf
 export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const onOpen = () => setIsOpen(true);
-  const onClose = () => setIsOpen(false);
+  const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleRemoveClick = () => {
     setIsProcessing(true); // 삭제 처리 중임을 나타내는 상태 업데이트
     // 여기에 삭제 API 호출 또는 삭제 처리 로직 추가
-    onDeleteComment(comment.id); // 코멘트 삭제 함수 호출 (실제 삭제 로직은 필요에 따라 구현)
-    onClose(); // 모달 닫기
+    axios
+      .delete("/api/comment/remove", {
+        data: { id: comment.id },
+      })
+      .then((res) => {})
+      .catch((err) => {})
+      .finally(() => {
+        toast({
+          description: "댓글이 삭제되었습니다.",
+          status: "info",
+          position: "top",
+        });
+        onClose(); // 모달 닫기
+        setIsProcessing(false);
+      });
   };
 
   return (

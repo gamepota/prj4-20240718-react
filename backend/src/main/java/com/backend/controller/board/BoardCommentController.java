@@ -34,4 +34,12 @@ public class BoardCommentController {
         return service.list(boardId);
     }
 
+    @DeleteMapping("remove")
+    public ResponseEntity removeComment(@RequestBody BoardComment boardComment) {
+        System.out.println("컨트롤러의 comment = " + boardComment);
+        service.remove(boardComment);
+        return ResponseEntity.ok().build();
+
+    }
+
 }

@@ -40,4 +40,8 @@ public class BoardCommentServivce {
     public List<BoardComment> list(Integer boardId) {
         return mapper.selectAllByBoardId(boardId);
     }
+
+    public void remove(BoardComment comment) {
+        mapper.deleteById(comment.getId());
+    }
 }
