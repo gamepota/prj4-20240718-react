@@ -22,7 +22,8 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+
+// import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 export function DiaryBoardView() {
   const { id } = useParams();

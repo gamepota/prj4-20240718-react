@@ -32,7 +32,8 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+
+// import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 export function DiaryBoardEdit() {
   const { id } = useParams();

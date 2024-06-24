@@ -19,7 +19,8 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+
+// import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 export function DiaryBoardWrite() {
   const [title, setTitle] = useState("");

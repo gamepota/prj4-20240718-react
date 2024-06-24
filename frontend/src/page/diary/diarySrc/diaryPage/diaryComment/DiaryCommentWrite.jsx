@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Box, Button, Flex, Input, Textarea, useToast } from "@chakra-ui/react";
 import axios from "axios";
-import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+
+// import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 export function DiaryCommentWrite() {
   const [comment, setComment] = useState("");

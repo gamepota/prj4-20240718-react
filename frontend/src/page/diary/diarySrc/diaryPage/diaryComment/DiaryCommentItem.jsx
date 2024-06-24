@@ -22,17 +22,16 @@ import {
   faTrashCan,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { DiaryCommentEdit } from "./DiaryCommentEdit.jsx";
-import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 import { useParams } from "react-router-dom";
 
 export function DiaryCommentItem({}) {
   const [isEditing, setIsEditing] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const account = useContext(LoginContext);
+  // const account = useContext(LoginContext);
   const [isProcessing, setIsProcessing] = useState(false);
   const { diaryComment } = useParams();
 

@@ -50,8 +50,9 @@ export function Navbar() {
           p={2}
           borderRadius="md"
           onClick={() => navigate("/")}
+          fontSize={"1.5rem"}
         >
-          Home
+          Petmily
         </Box>
         <Box
           _hover={{ cursor: "pointer", bgColor: "gray.200" }}
