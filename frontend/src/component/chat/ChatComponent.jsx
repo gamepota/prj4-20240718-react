@@ -87,7 +87,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
       senderNickname: username,
       recipientNickname: selectedFriend.nickname,
       content: message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date.toLocaleString()
     };
     console.log("Sending message:", chatMessage);
 
