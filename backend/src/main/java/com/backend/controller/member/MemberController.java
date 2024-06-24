@@ -4,9 +4,14 @@ import com.backend.domain.member.Member;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +44,7 @@ public class MemberController {
         }
         return ResponseEntity.ok(nickname);
     }
-
+//
 //    // MemberLogin
 //    @PostMapping("/login")
 //    public String login() {

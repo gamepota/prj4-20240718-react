@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   Box,
   Input,
   Button,
   VStack,
-  HStack,
   Text,
   InputGroup,
   InputRightElement,
@@ -14,11 +13,11 @@ import {
 import { MinusIcon, ChatIcon } from "@chakra-ui/icons";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
-import axios from "axios"; // Axios를 사용하여 HTTP 요청을 보냄
+import axios from "axios";
+import { LoginContext } from '../../component/LoginProvider'; // LoginContext 가져오기
 
-export const ChatComponent = ({ onClose }) => {
-  const [senderId, setSenderId] = useState(""); // 발신자 ID
-  const [recipientId, setRecipientId] = useState(""); // 수신자 ID
+export const ChatComponent = ({ selectedFriend, onClose }) => {
+  const { nickname: username } = useContext(LoginContext) || {}; // 내 nickname 가져오기
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
@@ -27,20 +26,22 @@ export const ChatComponent = ({ onClose }) => {
   const messagesEndRef = useRef(null); // 메시지 스크롤 관리
 
   useEffect(() => {
-    if (senderId && recipientId) {
-      const socket = new SockJS(`http://localhost:8080/ws/${senderId}/${recipientId}`); // SockJS 서버 URL
-      const client = new Client({ // STOMP 클라이언트 생성
-        webSocketFactory: () => socket, // WebSocket 팩토리 설정
-        reconnectDelay: 5000, // 재연결 지연 시간 설정
-        onConnect: () => { // 연결 이벤트 핸들러
+    if (username && selectedFriend) {
+      const roomId = [username, selectedFriend.nickname].sort().join('-'); // 고유한 채팅방 ID 생성
+      console.log(roomId);
+      const socket = new SockJS(`http://localhost:8080/ws`); // SockJS 서버 URL
+      const client = new Client({
+        webSocketFactory: () => socket,
+        reconnectDelay: 5000,
+        onConnect: () => {
           console.log("Connected to WebSocket");
-          client.subscribe(`/topic/${senderId}/${recipientId}`, (message) => {
+          client.subscribe(`/topic/chatroom/${roomId}`, (message) => {
             const receivedMessage = JSON.parse(message.body);
             console.log("Received message:", receivedMessage);
             setMessages((prevMessages) => [...prevMessages, receivedMessage]);
           });
           setIsConnected(true);
-          setStompClient(client); // stompClient 상태 설정
+          setStompClient(client);
           console.log("STOMP Client Connected");
         },
         onStompError: (frame) => {
@@ -57,7 +58,6 @@ export const ChatComponent = ({ onClose }) => {
         }
       });
       client.activate();
-      setStompClient(client);
 
       return () => {
         if (client) {
@@ -65,38 +65,47 @@ export const ChatComponent = ({ onClose }) => {
         }
       };
     }
-  }, [senderId, recipientId]);
+  }, [username, selectedFriend]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   }, [messages]);
 
   const sendMessage = async () => {
-    if (isConnected && message && recipientId) {
-      const chatMessage = {
-        senderId: senderId,
-        recipientId: recipientId,
-        content: message,
-        timestamp: new Date().toISOString()
-      };
-      console.log("Sending message:", chatMessage);
-
-      // WebSocket을 통해 메시지 전송
-      stompClient.publish({
-        destination: `/app/chat/${senderId}/${recipientId}`,
-        body: JSON.stringify(chatMessage) });
-      // HTTP POST 요청을 통해 메시지 저장
-      try {
-        await axios.post('http://localhost:8080/chat', chatMessage);
-        console.log("Message saved to the server");
-      } catch (error) {
-        console.error("Error saving message to the server yeah:", error);
-      }
-
-      setMessage('');
-    } else {
-      console.error("Cannot send message: WebSocket is not connected, message or recipientId is empty.");
+    if (!isConnected) {
+      console.error("Cannot send message: WebSocket is not connected.");
+      return;
     }
+
+    if (!message.trim() || !selectedFriend) {
+      console.error("Cannot send message: message or selectedFriend is empty.");
+      return;
+    }
+
+    const roomId = [username, selectedFriend.nickname].sort().join('-'); // 고유한 채팅방 ID 생성
+    const chatMessage = {
+      senderNickname: username,
+      recipientNickname: selectedFriend.nickname,
+      content: message,
+      timestamp: new Date().toISOString()
+    };
+    console.log("Sending message:", chatMessage);
+
+    // WebSocket을 통해 메시지 전송
+    stompClient.publish({
+      destination: `/app/chat/${roomId}`,
+      body: JSON.stringify(chatMessage)
+    });
+
+    // HTTP POST 요청을 통해 메시지 저장
+    try {
+      await axios.post('http://localhost:8080/chat', chatMessage);
+      console.log("Message saved to the server");
+    } catch (error) {
+      console.error("Error saving message to the server:", error);
+    }
+
+    setMessage('');
   };
 
   const handleKeyDown = (e) => {
@@ -125,24 +134,10 @@ export const ChatComponent = ({ onClose }) => {
       </Box>
       {!isMinimized && (
         <VStack spacing={4} p={2}>
-          <HStack width="100%">
-            <Input
-              type="text"
-              value={senderId}
-              onChange={(e) => setSenderId(e.target.value)}
-              placeholder="발신자 ID를 입력하세요"
-            />
-            <Input
-              type="text"
-              value={recipientId}
-              onChange={(e) => setRecipientId(e.target.value)}
-              placeholder="수신자 ID를 입력하세요"
-            />
-          </HStack>
           <Box width="100%" h="300px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg">
             {messages.map((msg, index) => (
-              <Box key={index} bg={msg.senderId === senderId ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
-                <Text fontWeight="bold">{msg.senderId}</Text>
+              <Box key={index} bg={msg.senderNickname === username ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
+                <Text fontWeight="bold">{msg.senderNickname}</Text>
                 <Text>{msg.content}</Text>
                 <Text fontSize="xs" color="gray.500">{new Date(msg.timestamp).toLocaleTimeString()}</Text>
               </Box>
