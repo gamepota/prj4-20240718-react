@@ -24,6 +24,7 @@ export function UserPage() {
   const [imageFile, setImageFile] = useState(null);
   const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
+  const [hasProfileImage, setHasProfileImage] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -36,6 +37,7 @@ export function UserPage() {
         setUsername(memberData.username);
         setNickname(memberData.nickname);
         setProfileImage(memberData.profileImage);
+        setHasProfileImage(!!memberData.profileImage);
       } catch (err) {
         Swal.fire({
           title: "회원 정보를 불러오는 데 실패했습니다.",
@@ -66,6 +68,7 @@ export function UserPage() {
   function handleProfileImageDelete() {
     setProfileImage(null);
     setImageFile(null);
+    setHasProfileImage(false);
   }
 
   // 회원 정보 수정 페이지로 이동
@@ -154,6 +157,8 @@ export function UserPage() {
 
           // 프로필 이미지 업데이트
           setProfileImage(res.data.profileImage);
+          setHasProfileImage(true);
+          setImageFile(null);
         })
         .catch((err) => {
           Swal.fire({
@@ -189,8 +194,8 @@ export function UserPage() {
                   top="-10px"
                   right="100px"
                   size="lg"
-                  color="red.500"
-                  _hover={{ color: "red.700" }}
+                  color="red.200"
+                  _hover={{ color: "red.500" }}
                   boxSize="24px"
                   onClick={handleProfileImageDelete}
                 />
@@ -221,17 +226,18 @@ export function UserPage() {
               </Box>
             )}
           </Box>
-          <Button
-            width="100%"
-            bg="purple.500"
-            color="white"
-            _hover={{ bg: "purple.600" }}
-            mb={4}
-            onClick={handleSaveProfileImage}
-            isDisabled={!imageFile}
-          >
-            프로필 이미지 저장
-          </Button>
+          {!hasProfileImage && imageFile && (
+            <Button
+              width="100%"
+              bg="purple.500"
+              color="white"
+              _hover={{ bg: "purple.600" }}
+              mb={4}
+              onClick={handleSaveProfileImage}
+            >
+              프로필 이미지 저장
+            </Button>
+          )}
           <Box fontWeight="bold" mb={2}>
             이메일:
           </Box>
