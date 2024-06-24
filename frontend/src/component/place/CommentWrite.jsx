@@ -25,9 +25,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
       await axios.post("/api/hospitalComment/add", {
         hospitalId,
         comment,
-
-        username: memberInfo.username,
-        nickname: memberInfo.nickname,
+        memberInfo,
       });
 
       await axios.post("/api/hospitalComment/rating", {
