@@ -10,9 +10,11 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
   const [comment, setComment] = useState("");
   const [ratingIndex, setRatingIndex] = useState(1);
   const toast = useToast();
-  const account = useContext(LoginContext);
+  const memberInfo = useContext(LoginContext);
+  const access = memberInfo.access;
+  const isLoggedIn = Boolean(access);
 
-  if (!account) {
+  if (!memberInfo) {
     return null; // 또는 로딩 스피너를 표시할 수 있습니다.
   }
 
@@ -23,14 +25,15 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
       await axios.post("/api/hospitalComment/add", {
         hospitalId,
         comment,
-        username: account.username,
-        nickname: account.nickname,
+
+        username: memberInfo.username,
+        nickname: memberInfo.nickname,
       });
 
       await axios.post("/api/hospitalComment/rating", {
         hospitalId,
         rating: ratingIndex,
-        username: account.username,
+        username: memberInfo.username,
       });
 
       setComment("");
@@ -54,20 +57,16 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
     <Box>
       <StarRating ratingIndex={ratingIndex} setRatingIndex={setRatingIndex} />
       <Textarea
-        isDisabled={!account.isLoggedIn()}
+        isDisabled={isLoggedIn}
         placeholder={
-          account.isLoggedIn()
+          isLoggedIn
             ? "리뷰를 작성해 보세요."
             : "리뷰를 작성하시려면 로그인하세요."
         }
         value={comment}
         onChange={(e) => setComment(e.target.value)}
       />
-      <Tooltip
-        label="로그인 하세요"
-        isDisabled={account.isLoggedIn()}
-        placement="top"
-      >
+      <Tooltip label="로그인 하세요" isDisabled={isLoggedIn} placement="top">
         <Button
           isDisabled={comment.trim().length === 0}
           isLoading={isProcessing}
