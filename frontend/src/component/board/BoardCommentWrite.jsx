@@ -49,7 +49,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
       <Box>
         <Tooltip
           label="로그인 하세요"
-          isDisabled={account.isLoggedIn()}
+          // isDisabled={account.isLoggedIn()}
           placement="bottom"
         >
           <Button
