@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "./BoardLoginProvider.jsx";
+import { LoginContext } from "../LoginProvider.jsx";
 
 export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
   const [boardComment, setBoardComment] = useState("");
