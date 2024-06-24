@@ -127,7 +127,7 @@ export function Navbar() {
               onClick={() => navigate("/diary/home")}
             >
               <Link to="diary/home" target="_blank">
-                다이어리
+                펫 다이어리
               </Link>
             </Box>
             <Button

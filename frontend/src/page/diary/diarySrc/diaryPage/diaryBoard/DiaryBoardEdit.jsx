@@ -32,6 +32,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
@@ -43,7 +44,10 @@ export function DiaryBoardEdit() {
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const account = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const access = memberInfo.access;
+  const nickname = memberInfo.nickname;
+  const isLoggedIn = Boolean(access);
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/${id}`).then((res) => setDiary(res.data));

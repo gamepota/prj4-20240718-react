@@ -22,16 +22,20 @@ import {
   faTrashCan,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { DiaryCommentEdit } from "./DiaryCommentEdit.jsx";
 import { useParams } from "react-router-dom";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryCommentItem({}) {
   const [isEditing, setIsEditing] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  // const account = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const access = memberInfo.access;
+  const nickname = memberInfo.nickname;
+  const isLoggedIn = Boolean(access);
   const [isProcessing, setIsProcessing] = useState(false);
   const { diaryComment } = useParams();
 
@@ -61,7 +65,7 @@ export function DiaryCommentItem({}) {
           <Box mr={3}>
             <FontAwesomeIcon icon={faUser} />
           </Box>
-          <Text>{account.nickname}</Text>
+          <Text>{memberInfo.nickname}</Text>
         </Flex>
         <Spacer />
         <Flex gap={2}>
@@ -75,7 +79,7 @@ export function DiaryCommentItem({}) {
         <Flex>
           <Box whiteSpace="pre">{diaryComment.comment}</Box>
           <Spacer />
-          {account.hasAccess(diaryComment.memberId) && (
+          {memberInfo.hasAccess(memberInfo.isLoggedIn) && (
             <Stack>
               <Box>
                 <Button
@@ -109,7 +113,7 @@ export function DiaryCommentItem({}) {
           isProcessing={isProcessing}
         />
       )}
-      {account.hasAccess(diaryComment.memberId) && (
+      {memberInfo.hasAccess(diaryComment.memberId) && (
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>

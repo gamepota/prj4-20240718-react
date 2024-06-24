@@ -98,7 +98,7 @@ public class DiaryBoardService {
         pageInfo.put("lastPageNumber", lastPageNUmber);
         pageInfo.put("leftPageNumber", leftPageNumber);
         pageInfo.put("rightPageNumber", rightPageNumber);
-        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, searchType, keyword));
+        return Map.of("pageInfo", pageInfo, "diaryBoardList", mapper.selectAllPaging(offset, searchType, keyword));
 
     }
 

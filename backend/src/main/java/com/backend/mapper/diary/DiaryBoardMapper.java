@@ -80,7 +80,7 @@ public interface DiaryBoardMapper {
     @Select("""
                 <script>
                 SELECT COUNT(d.id)
-                FROM diary d JOIN member m ON d.memberId = m.id
+                FROM diary d JOIN member m ON d.member_id = m.id
                 <where>
                 <if test="searchType != null">
                     <bind name="pattern" value="'%' + keyword + '%'" />

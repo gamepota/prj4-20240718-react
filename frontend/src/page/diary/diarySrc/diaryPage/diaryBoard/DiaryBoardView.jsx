@@ -22,13 +22,15 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-
-// import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryBoardView() {
   const { id } = useParams();
   const [diary, setDiary] = useState(null);
-  const account = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const access = memberInfo?.access || null;
+  const nickname = memberInfo?.nickname || null;
+  const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();

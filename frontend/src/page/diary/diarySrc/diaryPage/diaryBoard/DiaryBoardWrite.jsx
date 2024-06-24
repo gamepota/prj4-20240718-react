@@ -19,15 +19,17 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-// import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryBoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const account = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const access = memberInfo?.access || null;
+  const nickname = memberInfo?.nickname || null;
+  const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -69,7 +71,7 @@ export function DiaryBoardWrite() {
     disableSaveButton = true;
   }
 
-  if (!account) {
+  if (!memberInfo) {
     return <Spinner />; // 또는 로딩 스피너를 표시할 수 있습니다.
   }
 
@@ -92,7 +94,7 @@ export function DiaryBoardWrite() {
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input value={account.nickname} readOnly />
+            <Input value={memberInfo.nickname} readOnly />
           </FormControl>
         </Box>
         <Box mb={7}>
