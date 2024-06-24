@@ -28,13 +28,13 @@ export function BoardCommentEdit({
   const [commentText, setCommentText] = useState(comment.boardComment);
   const { onClose, onOpen, isOpen } = useDisclosure();
   const toast = useToast();
-
+  console.log(comment);
   function handleCommentSubmit() {
     setIsProcessing(true);
     axios
       .put("/api/comment/edit", {
         id: comment.id,
-        comment: commentText,
+        boardComment: commentText,
       })
       .then(() => {
         toast({
