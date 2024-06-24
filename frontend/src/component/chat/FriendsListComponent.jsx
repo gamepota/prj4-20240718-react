@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Box, Button, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
-import { ChatIcon, MinusIcon, PlusSquareIcon } from "@chakra-ui/icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from "react-router-dom";
+import React, {useContext, useEffect, useState} from "react";
+import {Box, Button, HStack, IconButton, Text, VStack} from "@chakra-ui/react";
+import {ChatIcon, MinusIcon, PlusSquareIcon} from "@chakra-ui/icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faHouse, faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
+import {useNavigate} from "react-router-dom";
 import axios from 'axios';
-import { LoginContext } from '../LoginProvider.jsx';
+import {LoginContext} from '../LoginProvider.jsx';
 
-export const FriendsListComponent = ({ onSelectFriend }) => {
+export const FriendsListComponent = ({onSelectFriend}) => {
   const [friends, setFriends] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
 
-  const { memberInfo } = useContext(LoginContext);
+  const {memberInfo} = useContext(LoginContext);
   console.log("LoginContext:", memberInfo); // 로그 추가
   const nickname = memberInfo ? memberInfo.nickname : null;
   console.log("Nickname:", nickname); // 로그 추가
@@ -70,7 +70,7 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
         >
           <Text fontSize="xl" fontWeight="bold">친구 리스트</Text>
           <IconButton
-            icon={isMinimized ? <PlusSquareIcon /> : <MinusIcon />}
+            icon={isMinimized ? <PlusSquareIcon/> : <MinusIcon/>}
             size="sm"
             onClick={toggleMinimize}
             aria-label={isMinimized ? "Expand List" : "Minimize List"}
@@ -90,7 +90,8 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
                   friends.map((friend, index) => (
                     <HStack key={index} spacing={3} width="100%" justifyContent="space-between">
                       <HStack spacing={2}>
-                        <Box as="span" borderRadius="full" bg={friend.online ? "green.400" : "gray.400"} boxSize="10px" />
+                        <Box as="span" borderRadius="full" bg={friend.online ? "green.400" : "gray.400"}
+                             boxSize="10px"/>
                         <Text>{friend.nickname}</Text>
                       </HStack>
                       <HStack spacing={1}>
@@ -99,21 +100,21 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
                           variant="ghost"
                           onClick={() => navigate("diary/home")}
                         >
-                          <FontAwesomeIcon icon={faHouse} />
+                          <FontAwesomeIcon icon={faHouse}/>
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => onSelectFriend({ nickname: friend.nickname, id: friend.id })}
+                          onClick={() => onSelectFriend({nickname: friend.nickname, id: friend.id})}
                         >
-                          <ChatIcon />
+                          <ChatIcon/>
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => onSelectFriend({ nickname: friend.nickname, id: friend.id })}
+                          onClick={() => onSelectFriend({nickname: friend.nickname, id: friend.id})}
                         >
-                          <FontAwesomeIcon icon={faMagnifyingGlass} />
+                          <FontAwesomeIcon icon={faMagnifyingGlass}/>
                         </Button>
                       </HStack>
                     </HStack>

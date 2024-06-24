@@ -1,12 +1,11 @@
 package com.backend.controller.friends;
 
+import com.backend.domain.friends.FriendRequest;
 import com.backend.domain.member.Member;
 import com.backend.service.friends.FriendsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +25,11 @@ public class FriendsController {
 		List<Member> friends = friendsService.getFriendsWithNicknames(nickname);
 		logger.info("Returning friends for nickname {}: {}", nickname, friends);
 		return friends;
+	}
+
+	@PostMapping("/api/friends/add")
+	public void addFriend(@RequestBody FriendRequest friendRequest) {
+		logger.info("Received request to add friend: {}", friendRequest);
+		friendsService.addFriend(friendRequest);
 	}
 }

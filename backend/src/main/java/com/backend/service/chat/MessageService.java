@@ -18,7 +18,7 @@ public class MessageService {
 		messageMapper.insertMessage(message); // 메시지 저장
 	}
 
-	public List<ChatMessage> getMessagesForUser(String recipient) {
-		return messageMapper.findMessagesByRecipient(recipient); // 수신자에 대한 메시지 반환
+	public List<ChatMessage> getMessagesForUser(Integer recipientId) {
+		return messageMapper.findMessagesByRecipient(recipientId); // 수신자에 대한 메시지 반환
 	}
 }

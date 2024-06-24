@@ -64,3 +64,22 @@ CREATE TABLE friends
     FOREIGN KEY (friend_nickname) REFERENCES member (nickname) ON DELETE CASCADE
 );
 
+desc logged_in;
+
+CREATE TABLE logged_in (
+                           member_nickname varchar(255) NOT NULL PRIMARY KEY,
+                           logged_in tinyint(1),
+                           logged_in_at timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+DROP TABLE friends
+
+CREATE TABLE friends (
+                         friends_id INT AUTO_INCREMENT PRIMARY KEY,
+                         member_id INT NOT NULL,
+                         friend_id INT NOT NULL,
+                         member_nickname VARCHAR(255) NOT NULL,
+                         friend_nickname VARCHAR(255) NOT NULL,
+                         FOREIGN KEY (member_id) REFERENCES member(id),
+                         FOREIGN KEY (friend_id) REFERENCES member(id)
+);

@@ -8,7 +8,8 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
-  CloseButton
+  CloseButton,
+  HStack
 } from "@chakra-ui/react";
 import { MinusIcon, ChatIcon } from "@chakra-ui/icons";
 import SockJS from "sockjs-client";
@@ -24,7 +25,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false); // 기본값을 minimized로 설정
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -45,6 +46,9 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
           setIsConnected(true);
           setStompClient(client);
           console.log("STOMP Client Connected");
+
+          // Fetch previous messages
+          fetchMessagesForUser(userId);
         },
         onStompError: (frame) => {
           console.error("Broker error: ", frame.headers["message"], frame.body);
@@ -69,6 +73,15 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
     }
   }, [username, selectedFriend]);
 
+  const fetchMessagesForUser = async (userId) => {
+    try {
+      const response = await axios.get(`/api/chat/messages/${userId}`);
+      setMessages(response.data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   }, [messages]);
@@ -89,7 +102,8 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
       senderId: userId,
       recipientId: selectedFriend.id,
       content: message,
-      timestamp: new Date().toLocaleString()
+      senderNickName: username,
+      recipientNickName: selectedFriend.nickname
     };
     console.log("Sending message:", chatMessage);
 
@@ -123,7 +137,10 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
   return (
     <Box position="fixed" bottom={2} right={2} p={2} minW="400px" maxW="400px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white">
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
-        <Text fontWeight="bold">채팅</Text>
+        <HStack>
+          <Text fontWeight="bold">채팅</Text>
+          <Text color={"gray.400"}> with {selectedFriend.nickname}</Text>
+        </HStack>
         <Box display="flex" justifyContent="flex-end" alignItems="center">
           <IconButton
             icon={isMinimized ? <ChatIcon /> : <MinusIcon />}
@@ -134,17 +151,16 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
           <CloseButton onClick={onClose} />
         </Box>
       </Box>
-      <Box>
-        <Text>{selectedFriend.nickname}님과의 채팅</Text>
-      </Box>
       {!isMinimized && (
         <VStack spacing={4} p={2}>
           <Box width="100%" h="300px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg">
             {messages.map((msg, index) => (
               <Box key={index} bg={msg.senderId === userId ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
-                <Text fontWeight="bold">{msg.senderId}</Text>
+                <Text fontWeight="bold">{msg.senderNickName}</Text>
                 <Text>{msg.content}</Text>
-                <Text fontSize="xs" color="gray.500">{new Date(msg.timestamp).toLocaleTimeString()}</Text>
+                <Text fontSize="xs" color="gray.500">
+                  {new Date(msg.timestamp).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
+                </Text>
               </Box>
             ))}
             <div ref={messagesEndRef} />
