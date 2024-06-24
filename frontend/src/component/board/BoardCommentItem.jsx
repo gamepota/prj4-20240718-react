@@ -22,6 +22,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { BoardCommentEdit } from "./BoardCommentEdit.jsx";
 
 //asdf
 export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
@@ -64,31 +65,39 @@ export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
           <Text>{comment.inserted}</Text>
         </Flex>
       </Flex>
-
-      <Box whiteSpace="pre">{comment.boardComment}</Box>
-
-      <Flex mt={3} align="center">
-        <Spacer />
-        {/* 삭제 및 수정 버튼 항상 보이게 */}
-        <Button
-          variant="outline"
-          size="sm"
-          colorScheme="purple"
-          onClick={() => setIsEditing(true)}
-          mr={2}
-        >
-          <FontAwesomeIcon icon={faPenToSquare} /> 수정
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          isLoading={isProcessing}
-          colorScheme="red"
-          onClick={onOpen}
-        >
-          <FontAwesomeIcon icon={faTrashAlt} /> 삭제
-        </Button>
-      </Flex>
+      {isEditing || (
+        <Flex>
+          <Box whiteSpace={"pre"}>{comment.boardComment}</Box>
+          <Spacer />
+          {/* 삭제 및 수정 버튼 항상 보이게 */}
+          <Button
+            variant="outline"
+            size="sm"
+            colorScheme="purple"
+            onClick={() => setIsEditing(true)}
+            mr={2}
+          >
+            <FontAwesomeIcon icon={faPenToSquare} /> 수정
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            isLoading={isProcessing}
+            colorScheme="red"
+            onClick={onOpen}
+          >
+            <FontAwesomeIcon icon={faTrashAlt} /> 삭제
+          </Button>
+        </Flex>
+      )}
+      {isEditing && (
+        <BoardCommentEdit
+          comment={comment.boardComment}
+          setIsEditing={setIsEditing}
+          setIsProcessing={setIsProcessing}
+          isProcessing={isProcessing}
+        />
+      )}
 
       {/* 삭제 확인 모달 */}
       <Modal isOpen={isOpen} onClose={onClose}>

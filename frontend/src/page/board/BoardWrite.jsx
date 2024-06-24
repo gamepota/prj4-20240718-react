@@ -67,16 +67,12 @@ export function BoardWrite() {
   }
 
   React.useEffect(() => {
-    if (
-      title.trim().length === 0 ||
-      content.trim().length === 0 ||
-      writer.trim().length === 0
-    ) {
+    if (title.trim().length === 0 || content.trim().length === 0) {
       setDisableSaveButton(true);
     } else {
       setDisableSaveButton(false);
     }
-  }, [title, content, writer]);
+  }, [title, content]);
 
   const fileNameList = files.map((file, index) => (
     <li key={index}>{file.name}</li>
@@ -101,11 +97,7 @@ export function BoardWrite() {
       setFiles(selectedFiles);
       setInvisibledText(true);
 
-      if (
-        title.trim().length === 0 ||
-        content.trim().length === 0 ||
-        writer.trim().length === 0
-      ) {
+      if (title.trim().length === 0 || content.trim().length === 0) {
         setDisableSaveButton(true);
       } else {
         setDisableSaveButton(false);
