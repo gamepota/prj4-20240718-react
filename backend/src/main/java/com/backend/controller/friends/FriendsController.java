@@ -19,11 +19,11 @@ public class FriendsController {
 		this.friendsService = friendsService;
 	}
 
-	@GetMapping("/api/friends/{nickname}")
-	public List<Member> getFriends(@PathVariable String nickname) {
-		logger.info("Received request to fetch friends for nickname: {}", nickname);
-		List<Member> friends = friendsService.getFriendsWithNicknames(nickname);
-		logger.info("Returning friends for nickname {}: {}", nickname, friends);
+	@GetMapping("/api/friends/{memberId}")
+	public List<Member> getFriends(@PathVariable int memberId) {
+		logger.info("Received request to fetch friends for member ID: {}", memberId);
+		List<Member> friends = friendsService.getFriendsWithIds(memberId);
+		logger.info("Returning friends for member ID {}: {}", memberId, friends);
 		return friends;
 	}
 
@@ -32,4 +32,6 @@ public class FriendsController {
 		logger.info("Received request to add friend: {}", friendRequest);
 		friendsService.addFriend(friendRequest);
 	}
+
+	// getters and setters
 }

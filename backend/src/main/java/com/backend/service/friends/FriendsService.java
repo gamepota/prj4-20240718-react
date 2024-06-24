@@ -16,12 +16,12 @@ public class FriendsService {
 		this.friendsMapper = friendsMapper;
 	}
 
-	public List<Member> getFriendsWithNicknames(String nickname) {
-		return friendsMapper.selectFriendsByNickname(nickname);
+	public List<Member> getFriendsWithIds(int memberId) {
+		return friendsMapper.selectFriendsById(memberId);
 	}
 
 	public void addFriend(FriendRequest friendRequest) {
-		friendsMapper.insertFriend(friendRequest.getMemberNickname(), friendRequest.getFriendNickname());
-		friendsMapper.insertFriend(friendRequest.getFriendNickname(), friendRequest.getMemberNickname());
+		friendsMapper.insertFriend(friendRequest.getMemberId(), friendRequest.getFriendId());
+		friendsMapper.insertFriend(friendRequest.getFriendId(), friendRequest.getMemberId());
 	}
 }
