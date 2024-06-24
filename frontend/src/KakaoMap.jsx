@@ -19,6 +19,15 @@ const KakaoMap = () => {
             level: 4,
           };
           const map = new window.kakao.maps.Map(mapContainer, mapOptions);
+          const myPosition = new window.kakao.maps.LatLng(
+            position.coords.latitude,
+            position.coords.longitude,
+          );
+
+          const marker = new window.kakao.maps.Marker({
+            map: map,
+            position: myPosition,
+          });
           setMap(map);
         }
       });
