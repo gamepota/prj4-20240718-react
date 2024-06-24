@@ -7,14 +7,23 @@ const KakaoMap = () => {
   const [map, setMap] = useState(null);
 
   const getKakao = () => {
-    const mapContainer = document.getElementById("map");
-    if (!map) {
-      const mapOptions = {
-        center: new window.kakao.maps.LatLng(33.450701, 126.570667),
-        level: 4,
-      };
-      const map = new window.kakao.maps.Map(mapContainer, mapOptions);
-      setMap(map);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const mapContainer = document.getElementById("map");
+        if (!map) {
+          const mapOptions = {
+            center: new window.kakao.maps.LatLng(
+              position.coords.latitude,
+              position.coords.longitude,
+            ),
+            level: 4,
+          };
+          const map = new window.kakao.maps.Map(mapContainer, mapOptions);
+          setMap(map);
+        }
+      });
+    } else {
+      console.log("내 위치를 사용할 수 없어요.");
     }
   };
   useEffect(() => {
