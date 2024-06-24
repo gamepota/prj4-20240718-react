@@ -80,8 +80,7 @@ public interface DiaryBoardMapper {
     @Select("""
                 <script>
                 SELECT COUNT(d.id)
-                FROM diary d
-                JOIN member m ON d.memberId = m.id
+                FROM diary d JOIN member m ON d.memberId = m.id
                 <where>
                 <if test="searchType != null">
                     <bind name="pattern" value="'%' + keyword + '%'" />
@@ -131,5 +130,19 @@ public interface DiaryBoardMapper {
             DELETE FROM diary_file
             WHERE diary_id = #{diaryId}
             """)
-    int deleteFileBydiaryId(Integer diaryId);
+    int deleteFileByDiaryId(Integer diaryId);
+
+    @Select("""
+                SELECT id
+                FROM diary
+                WHERE member_id = #{memberId}
+            """)
+    List<DiaryBoard> selectByMemberId(Integer memberId);
+
+    @Delete("""
+            DELETE FROM diaryBoard_file
+            WHERE diary_id=#{diaryId}
+              AND name=#{fileName}
+            """)
+    int deleteFileByDiaryIdAndName(Integer diaryId, String fileName);
 }

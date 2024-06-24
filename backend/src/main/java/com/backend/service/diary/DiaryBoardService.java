@@ -1,6 +1,7 @@
 package com.backend.service.diary;
 
 import com.backend.domain.diary.DiaryBoard;
+import com.backend.domain.diary.DiaryBoardFile;
 import com.backend.domain.member.Member;
 import com.backend.mapper.diary.DiaryBoardMapper;
 import com.backend.mapper.member.MemberMapper;
@@ -115,12 +116,24 @@ public class DiaryBoardService {
             dirFile.delete();
         }
 
+        //diaryBoardFile
+        mapper.deleteFileByDiaryId(id);
 
+        // diaryBoard
         mapper.deleteById(id);
     }
 
-    public void edit(DiaryBoard diaryBoard) {
-
+    public void edit(DiaryBoard diaryBoard, List<String> removeFileList) {
+        if (removeFileList != null && removeFileList.size() > 0) {
+            for (String fileName : removeFileList) {
+                // disk의 파일 삭제
+                String path = STR."User:/parkjaewook/Temp/prj3/\{diaryBoard}/\{fileName}";
+                File file = new File(path);
+                file.delete();
+                // db records 삭제
+                mapper.deleteFileByDiaryIdAndName(diaryBoard.getId(), fileName);
+            }
+        }
         mapper.update(diaryBoard);
     }
 
@@ -142,11 +155,11 @@ public class DiaryBoardService {
 
         DiaryBoard diaryBoard = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByDiaryId(id);
-        List<String> imageSrcList = fileNames.stream()
-                .map(name -> STR."http://localhost:5173/\{id}/\{name}")
+        List<DiaryBoardFile> files = fileNames.stream()
+                .map(name -> new DiaryBoardFile(name, STR."http://localhost:5173/\{id}/\{name}"))
                 .toList();
 
-        diaryBoard.setImageSrcList(imageSrcList);
+        diaryBoard.setFileList(files);
 
         return diaryBoard;
     }
