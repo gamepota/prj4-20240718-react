@@ -5,6 +5,9 @@ import com.backend.service.board.BoardService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +19,7 @@ import java.util.Map;
 @RequestMapping("/api/board")
 public class BoardController {
     final BoardService service;
+    private final DefaultAuthenticationEventPublisher authenticationEventPublisher;
 
     @PostMapping("add")
     public ResponseEntity add(Board board,
@@ -74,5 +78,12 @@ public class BoardController {
         }
     }
 
+    @PutMapping("like")
+    @PreAuthorize("isAuthenticated()")
+    public Map<String, Object> like(@RequestBody Map<String, Object> req,
+                                    Authentication authentication) {
+        System.out.println("컨트롤러의 like메서드 req = " + req);
+        return service.like(req, authentication);
+    }
 }
 

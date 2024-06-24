@@ -7,6 +7,7 @@ import com.backend.mapper.board.BoardMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -198,5 +199,30 @@ public class BoardService {
             }
         }
         mapper.update(board);
+    }
+
+    public boolean hasAccess(Integer id, Authentication authentication) {
+        Board board = mapper.selectById(id);
+
+        return board.getMemberId()
+                .equals(Integer.valueOf(authentication.getName()));
+    }
+
+    public Map<String, Object> like(Map<String, Object> req, Authentication authentication) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("like", false);
+        Integer boardId = (Integer) req.get("boardId");
+        Integer memberId = Integer.valueOf(authentication.getName());
+
+        //이미 했으면
+        int count = mapper.deleteLikeByBoardIdAndMemberId(boardId, memberId);
+        //안했으면
+        if (count == 0) {
+            mapper.insertLikeByBoardIdAndMemberId(boardId, memberId);
+            result.put("like", true);
+        }
+        result.put("count", mapper.selectCountLikeByBoardId(boardId));
+
+        return result;
     }
 }

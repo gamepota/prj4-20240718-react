@@ -116,4 +116,25 @@ public interface BoardMapper {
             WHERE id=#{id}
             """)
     int incrementViewsById(Integer id, Integer views);
+
+
+    @Delete("""
+            DELETE FROM board_like
+            WHERE board_id=#{boardId}
+            AND member_id=#{memberId}
+            """)
+    int deleteLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
+
+    @Insert("""
+            INSERT INTO board_like (board_id, member_id)
+            VALUES (#{boardId}, #{memberId})
+            """)
+    void insertLikeByBoardIdAndMemberId(Integer boardId, Integer memberId);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM board_like
+            WHERE board_id=#{boardId}
+            """)
+    int selectCountLikeByBoardId(Integer boardId);
 }

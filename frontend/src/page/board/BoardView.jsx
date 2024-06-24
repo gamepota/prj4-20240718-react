@@ -15,6 +15,7 @@ import {
   ModalOverlay,
   Spacer,
   Spinner,
+  Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -23,15 +24,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
 import { LoginContext } from "../../component/LoginProvider.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
 
 export function BoardView() {
   const { id } = useParams();
-  console.log(id);
   const [board, setBoard] = useState(null);
+  const [like, setLike] = useState({
+    like: false,
+    count: 0,
+  });
+  const [isLikeProcessing, setIsLikeProcessing] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const navigate = useNavigate();
   const account = useContext(LoginContext);
   const toast = useToast();
+
   useEffect(() => {
     axios
       .get(`/api/board/${id}`)
@@ -69,6 +78,25 @@ export function BoardView() {
       .finally(() => onClose);
   }
 
+  function handleClickLike() {
+    if (!account.memberInfo) {
+      return;
+    }
+    setIsLikeProcessing(true);
+    axios
+      .put("api/board/like", { boardId: board.id })
+      .then((res) => {
+        setLike(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLikeProcessing(false);
+      });
+  }
+
+  console.log(account);
   return (
     <Box
       // maxW={"500px"}
@@ -82,6 +110,7 @@ export function BoardView() {
         <Box>{board.id}번 게시물</Box>
         <Spacer />
         <Box>조회수:{board.views}</Box>
+        <Box ml={5}>추천수:0</Box>
         <Spacer />
       </Flex>
       <Box>
@@ -116,6 +145,32 @@ export function BoardView() {
           <Input type={"datetime-local"} value={board.inserted} readOnly />
         </FormControl>
       </Box>
+
+      {isLikeProcessing || (
+        <Flex>
+          <Tooltip
+            isDisabled={account.memberInfo}
+            hasArrow
+            label="로그인 해주세요."
+          >
+            <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
+              {like.like && <FontAwesomeIcon icon={fullHeart} />}
+              {like.like || <FontAwesomeIcon icon={emptyHeart} />}
+            </Box>
+          </Tooltip>
+          {like.count > 0 && (
+            <Box mx={3} fontSize="3xl">
+              {like.count}
+            </Box>
+          )}
+        </Flex>
+      )}
+      {isLikeProcessing && (
+        <Box pr={3}>
+          <Spinner />
+        </Box>
+      )}
+
       <BoardCommentComponent boardId={board.id} />
 
       <Box>

@@ -10,6 +10,7 @@ import {
   MenuList,
   Table,
   Tbody,
+  Td,
   Th,
   Thead,
   Tr,
@@ -42,15 +43,13 @@ export function BoardList() {
         console.error("Error fetching data:", error);
       });
   }, [searchParams]);
-  console.log("searchParam=", searchParams.toString());
-  console.log("pageInfo=", pageInfo);
 
   function handlePageSizeChange(number) {
     setPageAmount(number);
     // setOffsetReset(true);
     searchParams.set("pageAmount", number);
     searchParams.set("offsetReset", true);
-    console.log("searchParams=" + searchParams.toString());
+    // console.log("searchParams=" + searchParams.toString());
     navigate(`?${searchParams}`);
   }
 
@@ -211,6 +210,7 @@ export function BoardList() {
                   제목
                 </Th>
                 <Th>작성자</Th>
+                <Th>추천수</Th>
                 <Th>조회수</Th>
               </Tr>
             </Thead>
@@ -224,8 +224,8 @@ export function BoardList() {
                   onClick={() => navigate(`/board/${board.id}`)}
                   key={board.id}
                 >
-                  <td>{board.boardType}</td>
-                  <td>{board.id}</td>
+                  <td style={{ textAlign: "center" }}>{board.boardType}</td>
+                  <td style={{ textAlign: "center" }}>{board.id}</td>
                   <td>
                     {board.title}
                     {board.numberOfImages && (
@@ -236,6 +236,7 @@ export function BoardList() {
                     )}
                   </td>
                   <td>{board.writer}</td>
+                  <Td textAlign={"center"}>0</Td>
                   <td style={{ textAlign: "center" }}>{board.views}</td>
                 </Tr>
               ))}

@@ -31,7 +31,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
         setIsProcessing(false);
       });
   }
-  console.log(account);
+  // console.log(account);
 
   if (!account) {
     return <Spinner />;
