@@ -9,8 +9,8 @@ import java.util.List;
 public interface HospitalCommentMapper {
     @Insert("""
             INSERT INTO hospital_comment 
-            (hospital_id, member_id, comment, username)
-            VALUES (#{hospitalId}, #{memberId}, #{comment}, #{username})
+            (hospital_id, member_id, comment, nickname)
+            VALUES (#{hospitalId}, #{memberId}, #{comment}, #{nickname})
             """)
     int insert(HospitalComment hospitalComment);
 

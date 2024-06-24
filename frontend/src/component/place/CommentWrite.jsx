@@ -10,7 +10,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
   const [comment, setComment] = useState("");
   const [ratingIndex, setRatingIndex] = useState(1);
   const toast = useToast();
-  const memberInfo = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const access = memberInfo.access;
   const isLoggedIn = Boolean(access);
 
@@ -25,7 +25,8 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
       await axios.post("/api/hospitalComment/add", {
         hospitalId,
         comment,
-        memberInfo,
+        memberId: memberInfo.id,
+        nickname: memberInfo.nickname,
       });
 
       await axios.post("/api/hospitalComment/rating", {
@@ -55,7 +56,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
     <Box>
       <StarRating ratingIndex={ratingIndex} setRatingIndex={setRatingIndex} />
       <Textarea
-        isDisabled={isLoggedIn}
+        isDisabled={!isLoggedIn}
         placeholder={
           isLoggedIn
             ? "리뷰를 작성해 보세요."
