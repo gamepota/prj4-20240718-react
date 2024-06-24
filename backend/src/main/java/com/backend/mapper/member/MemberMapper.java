@@ -69,6 +69,14 @@ public interface MemberMapper {
             """)
     int deleteById(Integer id);
 
+    // HospitalCommentWrite
+    @Select("""
+            SELECT id, username
+            FROM member
+            WHERE username = #{username}
+            """)
+    Member detectByUsername(String username);
+
 //    // logged_in
 //    @Insert("""
 //            INSERT INTO logged_in(member_id, logged_in, logged_in_at)
