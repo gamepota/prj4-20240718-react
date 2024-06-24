@@ -8,8 +8,7 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
-  CloseButton,
-  HStack
+  CloseButton
 } from "@chakra-ui/react";
 import { MinusIcon, ChatIcon } from "@chakra-ui/icons";
 import SockJS from "sockjs-client";
@@ -32,7 +31,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
     if (username && selectedFriend) {
       const roomId = [userId, selectedFriend.id].sort().join('-'); // 고유한 채팅방 ID 생성
       console.log(roomId);
-      const socket = new SockJS(`http://localhost:8080/ws`);
+      const socket = new SockJS(`/ws`);
       const client = new Client({
         webSocketFactory: () => socket,
         reconnectDelay: 5000,
@@ -102,7 +101,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
 
     // HTTP POST 요청을 통해 메시지 저장
     try {
-      await axios.post('http://localhost:8080/chat', chatMessage);
+      await axios.post('/api/chat', chatMessage); // axios 요청 경로 수정
       console.log("Message saved to the server");
     } catch (error) {
       console.error("Error saving message to the server:", error);
@@ -124,10 +123,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
   return (
     <Box position="fixed" bottom={2} right={2} p={2} minW="400px" maxW="400px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white">
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
-        <HStack>
-          <Text fontWeight="bold">채팅</Text>
-          <Text fontSize="sm" color="gray.500">with {selectedFriend.nickname}</Text>
-        </HStack>
+        <Text fontWeight="bold">채팅</Text>
         <Box display="flex" justifyContent="flex-end" alignItems="center">
           <IconButton
             icon={isMinimized ? <ChatIcon /> : <MinusIcon />}
@@ -137,6 +133,9 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
           />
           <CloseButton onClick={onClose} />
         </Box>
+      </Box>
+      <Box>
+        <Text>{selectedFriend.nickname}님과의 채팅</Text>
       </Box>
       {!isMinimized && (
         <VStack spacing={4} p={2}>

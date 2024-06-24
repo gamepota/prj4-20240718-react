@@ -12,4 +12,6 @@ public class ChatMessage {
 	private Integer recipientId;
 	private String content;
 	private LocalDateTime timestamp;
+	private String senderName;
+	private String recipientName;
 }
