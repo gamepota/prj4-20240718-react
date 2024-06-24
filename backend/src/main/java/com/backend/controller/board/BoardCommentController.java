@@ -18,7 +18,7 @@ public class BoardCommentController {
 //    @PreAuthorize("isAuthenticated()")
     public ResponseEntity addComment(@RequestBody BoardComment comment /*Authentication authentication*/) {
         if (service.validate(comment)) {
-            System.out.println("이것은 validate 통과한 comment = " + comment);
+//            System.out.println("이것은 validate 통과한 comment = " + comment);
             service.add(comment /*authentication*/);
 
             return ResponseEntity.ok().build();
@@ -36,15 +36,15 @@ public class BoardCommentController {
 
     @DeleteMapping("remove")
     public ResponseEntity removeComment(@RequestBody BoardComment boardComment) {
-        System.out.println("컨트롤러의 comment = " + boardComment);
+//        System.out.println("컨트롤러의 comment = " + boardComment);
         service.remove(boardComment);
         return ResponseEntity.ok().build();
 
     }
 
     @PutMapping("edit")
-    public ResponseEntity editComment(@RequestBody BoardComment comment) {
-        service.update(comment);
+    public ResponseEntity editComment(@RequestBody BoardComment boardComment) {
+        service.update(boardComment);
         return ResponseEntity.ok().build();
     }
 
