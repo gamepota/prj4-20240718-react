@@ -20,7 +20,7 @@ public interface FriendsMapper {
 	List<Member> selectFriendsById(@Param("memberId") int memberId);
 
 	@Insert("""
-        INSERT INTO friends (member_id, friend_id, member_nickname, friend_nickname) 
+        INSERT INTO friends (member_id, friend_id, member_nickname, friend_nickname)
         VALUES (
             #{memberId},
             #{friendId},
