@@ -39,6 +39,8 @@ public class BoardService {
     private String srcPrefix;
 
     public void add(Board board, MultipartFile[] files) throws Exception {
+
+
         mapper.insert(board);
 
         if (files != null && files.length > 0) {
@@ -141,6 +143,9 @@ public class BoardService {
             System.out.println("object.key() = " + object.key());
         }
 //        System.out.println("이것은 get요청");
+
+        int views = mapper.selectCountById(id);
+        mapper.incrementViewsById(id, views);
 
         Board board = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByBoardId(id);
