@@ -24,6 +24,7 @@ public class ChatController {
 
 	@PostMapping("/chat")
 	public void saveMessage(@RequestBody ChatMessage message) {
+		System.out.println(message);
 		service.saveMessage(message);
 	}
 }

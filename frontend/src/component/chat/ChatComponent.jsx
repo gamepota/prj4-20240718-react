@@ -8,28 +8,31 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
-  CloseButton
+  CloseButton,
+  HStack
 } from "@chakra-ui/react";
 import { MinusIcon, ChatIcon } from "@chakra-ui/icons";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import axios from "axios";
-import { LoginContext } from '../../component/LoginProvider'; // LoginContext 가져오기
+import { LoginContext } from '../LoginProvider'; // LoginContext 가져오기
 
 export const ChatComponent = ({ selectedFriend, onClose }) => {
-  const { nickname: username } = useContext(LoginContext) || {}; // 내 nickname 가져오기
+  const { memberInfo } = useContext(LoginContext) || {};
+  const username = memberInfo?.nickname;
+  const userId = memberInfo?.id;
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false); // 최소화 상태 관리
-  const messagesEndRef = useRef(null); // 메시지 스크롤 관리
+  const [isMinimized, setIsMinimized] = useState(false);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (username && selectedFriend) {
-      const roomId = [username, selectedFriend.nickname].sort().join('-'); // 고유한 채팅방 ID 생성
+      const roomId = [userId, selectedFriend.id].sort().join('-'); // 고유한 채팅방 ID 생성
       console.log(roomId);
-      const socket = new SockJS(`http://localhost:8080/ws`); // SockJS 서버 URL
+      const socket = new SockJS(`http://localhost:8080/ws`);
       const client = new Client({
         webSocketFactory: () => socket,
         reconnectDelay: 5000,
@@ -82,12 +85,12 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
       return;
     }
 
-    const roomId = [username, selectedFriend.nickname].sort().join('-'); // 고유한 채팅방 ID 생성
+    const roomId = [userId, selectedFriend.id].sort().join('-'); // 고유한 채팅방 ID 생성
     const chatMessage = {
-      senderNickname: username,
-      recipientNickname: selectedFriend.nickname,
+      senderId: userId,
+      recipientId: selectedFriend.id,
       content: message,
-      timestamp: new Date.toLocaleString()
+      timestamp: new Date().toLocaleString()
     };
     console.log("Sending message:", chatMessage);
 
@@ -121,7 +124,10 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
   return (
     <Box position="fixed" bottom={2} right={2} p={2} minW="400px" maxW="400px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white">
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
-        <Text fontWeight="bold">채팅</Text>
+        <HStack>
+          <Text fontWeight="bold">채팅</Text>
+          <Text fontSize="sm" color="gray.500">with {selectedFriend.nickname}</Text>
+        </HStack>
         <Box display="flex" justifyContent="flex-end" alignItems="center">
           <IconButton
             icon={isMinimized ? <ChatIcon /> : <MinusIcon />}
@@ -136,8 +142,8 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
         <VStack spacing={4} p={2}>
           <Box width="100%" h="300px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg">
             {messages.map((msg, index) => (
-              <Box key={index} bg={msg.senderNickname === username ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
-                <Text fontWeight="bold">{msg.senderNickname}</Text>
+              <Box key={index} bg={msg.senderId === userId ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
+                <Text fontWeight="bold">{msg.senderId}</Text>
                 <Text>{msg.content}</Text>
                 <Text fontSize="xs" color="gray.500">{new Date(msg.timestamp).toLocaleTimeString()}</Text>
               </Box>
