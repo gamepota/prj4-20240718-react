@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
@@ -206,7 +206,7 @@ export function BoardList() {
               <Tr>
                 <Th>게시판 종류</Th>
                 <Th>게시글ID</Th>
-                <Th w={500} textAlign={"center"}>
+                <Th w={500} textAlign="center">
                   제목
                 </Th>
                 <Th>작성자</Th>
@@ -216,32 +216,38 @@ export function BoardList() {
             </Thead>
             <Tbody>
               {boardList.map((board) => (
-                <Tr
-                  _hover={{
-                    bgColor: "gray.200",
-                  }}
-                  cursor={"pointer"}
-                  onClick={() => navigate(`/board/${board.id}`)}
-                  key={board.id}
-                >
-                  <td style={{ textAlign: "center" }}>{board.boardType}</td>
-                  <td style={{ textAlign: "center" }}>{board.id}</td>
-                  <td>
+                <Tr key={board.id}>
+                  <Td textAlign="center">{board.boardType}</Td>
+                  <Td textAlign="center">{board.id}</Td>
+                  <Td
+                    onClick={() => navigate(`/board/${board.id}`)}
+                    cursor="pointer"
+                    _hover={{
+                      bgColor: "gray.200",
+                    }}
+                  >
                     {board.title}
                     {board.numberOfImages && (
-                      <Badge>
+                      <Badge ml={2}>
                         <FontAwesomeIcon icon={faImage} />
-                        {board.numbefOfImages}
+                        {board.numberOfImages}
                       </Badge>
                     )}
-                  </td>
-                  <td>
-                    <Link to={`/diary/view/${board.writerId}`}>
+                  </Td>
+                  <Td>
+                    <span
+                      onClick={() => navigate(`/user/${board.writerId}/diary`)}
+                      style={{
+                        cursor: "pointer",
+                        color: "blue",
+                        textDecoration: "underline",
+                      }}
+                    >
                       {board.writer}
-                    </Link>
-                  </td>
-                  <Td textAlign={"center"}>0</Td>
-                  <td style={{ textAlign: "center" }}>{board.views}</td>
+                    </span>
+                  </Td>
+                  <Td textAlign="center">0</Td>
+                  <Td textAlign="center">{board.views}</Td>
                 </Tr>
               ))}
             </Tbody>
