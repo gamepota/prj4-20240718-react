@@ -49,6 +49,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
       });
     } finally {
       setIsProcessing(false);
+      setComment("");
     }
   }
 
