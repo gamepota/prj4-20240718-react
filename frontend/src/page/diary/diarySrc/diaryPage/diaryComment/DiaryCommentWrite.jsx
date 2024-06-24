@@ -5,16 +5,15 @@ import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 export function DiaryCommentWrite() {
   const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
   const account = useContext(LoginContext);
-  const [loading, setLoading] = useState(false);
 
   const handleDiaryCommentSubmitClick = () => {
     setLoading(true);
     axios
       .post("/api/diaryComment/add", {
         comment,
-        username: account.id,
       })
       .then((res) => {
         setComment("");
@@ -38,11 +37,15 @@ export function DiaryCommentWrite() {
       .finally(() => setLoading(false));
   };
 
+  if (!account) {
+    return null; // 또는 로딩 스피너를 표시할 수 있습니다.
+  }
+
   return (
     <Flex gap={2}>
       <Box flex={1}>
         <Box>
-          <Input value={account.id} readOnly />
+          <Input readOnly value={account.username} />
           <Textarea
             isDisabled={!account.isLoggedIn()}
             placeholder={"방명록을 작성해보세요"}

@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { DiaryCommentItem } from "./DiaryCommentItem.jsx";
 import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
+import { useParams } from "react-router-dom";
 
-export function DiaryCommentList({ diaryId, isProcessing, setIsProcessing }) {
+export function DiaryCommentList() {
   const [commentList, setCommentList] = useState([]);
-  console.log(isProcessing);
-  console.log(setIsProcessing);
+  const { id } = useParams();
+  const [isProcessing, setIsProcessing] = useState(false);
+
   useEffect(() => {
-    if (diaryId && !isProcessing) {
+    if (id && !isProcessing) {
       axios
-        .get(`/api/diaryComment/list/${diaryId}`)
+        .get(`/api/diaryComment/list/${id}`)
         .then((res) => {
           setCommentList(res.data);
         })
@@ -19,7 +21,7 @@ export function DiaryCommentList({ diaryId, isProcessing, setIsProcessing }) {
           console.error("Error fetching comments:", error);
         });
     }
-  }, [diaryId, isProcessing]);
+  }, [id, isProcessing]);
 
   return (
     <Card>
@@ -36,7 +38,7 @@ export function DiaryCommentList({ diaryId, isProcessing, setIsProcessing }) {
           <DiaryCommentWrite
             isProcessing={isProcessing}
             setIsProcessing={setIsProcessing}
-            diaryId={diaryId}
+            id={id}
           />
         </Stack>
       </CardBody>

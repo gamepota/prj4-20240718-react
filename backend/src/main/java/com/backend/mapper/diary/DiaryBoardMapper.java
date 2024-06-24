@@ -9,45 +9,40 @@ import java.util.List;
 public interface DiaryBoardMapper {
 
     @Insert("""
-                INSERT INTO diary(title, content, member_id, nick_name)
-                VALUES (#{title}, #{content}, #{memberId}, #{nickname})
+                INSERT INTO diary(title, content, member_id)
+                VALUES (#{title}, #{content},  #{memberId})
             """)
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(DiaryBoard diaryBoard);
 
     @Select("""
                 SELECT
                 d.id,
                 d.title,
-                m.nickname
-                FROM diary d
-                JOIN member m ON d.member_id = m.id
+                m.nickname writer
+                FROM diary d JOIN member m ON d.member_id = m.id
                 ORDER BY d.id DESC
             """)
     List<DiaryBoard> selectAll();
 
     @Select("""
-                SELECT d.id,
-                       d.title,
-                       d.content,
-                       d.inserted,
-                       m.nickname,
-                       d.member_id
-                FROM diary d
-                JOIN member m ON d.member_id = m.id
+                SELECT d.id, d.title, d.content, d.inserted,m.nickname writer,d.member_id
+                FROM diary d JOIN member m ON d.member_id = m.id
                 WHERE d.id = #{id}
             """)
     DiaryBoard selectById(Integer id);
 
     @Delete("""
-            DELETE FROM diary
-            WHERE id = #{id}
+                DELETE FROM diary
+                WHERE id = #{id}
             """)
     int deleteById(Integer id);
 
     @Update("""
                 UPDATE diary
                 SET title = #{title},
-                    content = #{content}
+                    content = #{content},
+                    member_id = #{memberId}
                 WHERE id = #{id}
             """)
     int update(DiaryBoard diaryBoard);
@@ -57,12 +52,10 @@ public interface DiaryBoardMapper {
                 SELECT d.id,
                        d.title,
                        m.nickname,
-                       COUNT(DISTINCT f.name) AS number_of_images,
-                       COUNT(DISTINCT c.id) AS number_of_comments
+                       COUNT(DISTINCT f.name) AS number_of_images
                 FROM diary d
                 JOIN member m ON d.member_id = m.id
                 LEFT JOIN diary_file f ON d.id = f.diary_id
-                LEFT JOIN diaryComment c ON d.id = c.diary_id
                 <where>
                 <if test="searchType != null">
                 <bind name="pattern" value="'%' + keyword + '%'"/>
@@ -72,7 +65,7 @@ public interface DiaryBoardMapper {
                 <if test="searchType == 'text'">
                     (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
                 </if>
-                <if test="searchType == 'nickName'">
+                <if test="searchType == 'nickname'">
                     m.nickname LIKE #{pattern}
                 </if>
                 </if>
@@ -85,25 +78,24 @@ public interface DiaryBoardMapper {
     List<DiaryBoard> selectAllPaging(@Param("offset") Integer offset, @Param("searchType") String searchType, @Param("keyword") String keyword);
 
     @Select("""
-            <script>
-            SELECT COUNT(d.id)
-            FROM diary d
-            JOIN member m ON d.member_id = m.id
-            <where>
-            <if test="searchType != null">
-                <bind name="pattern" value="'%' + keyword + '%'" />
-                <if test="searchType == 'all'">
-                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                <script>
+                SELECT COUNT(d.id)
+                FROM diary d JOIN member m ON d.memberId = m.id
+                <where>
+                <if test="searchType != null">
+                    <bind name="pattern" value="'%' + keyword + '%'" />
+                    <if test="searchType == 'all'">
+                        (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                    </if>
+                    <if test="searchType == 'text'">
+                        (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
+                    </if>
+                    <if test="searchType == 'nickname'">
+                        m.nickname LIKE #{pattern}
+                    </if>
                 </if>
-                <if test="searchType == 'text'">
-                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
-                </if>
-                <if test="searchType == 'nickname'">
-                    m.nickname LIKE #{pattern}
-                </if>
-            </if>
-            </where>
-            </script>
+                </where>
+                </script>
             """)
     Integer countAllWithSearch(@Param("searchType") String searchType, @Param("keyword") String keyword);
 
@@ -119,4 +111,38 @@ public interface DiaryBoardMapper {
                 WHERE diary_id = #{diaryId}
             """)
     List<String> selectFileNameByDiaryId(Integer diaryId);
+
+
+    @Delete("""
+                DELETE FROM diary
+                WHERE member_id = #{memberId}
+            """)
+    int deleteByMemberId(Integer memberId);
+
+
+    @Select("""
+                SELECT COUNT(*)
+                FROM diary
+            """)
+    int countAll();
+
+    @Delete("""
+            DELETE FROM diary_file
+            WHERE diary_id = #{diaryId}
+            """)
+    int deleteFileByDiaryId(Integer diaryId);
+
+    @Select("""
+                SELECT id
+                FROM diary
+                WHERE member_id = #{memberId}
+            """)
+    List<DiaryBoard> selectByMemberId(Integer memberId);
+
+    @Delete("""
+            DELETE FROM diaryBoard_file
+            WHERE diary_id=#{diaryId}
+              AND name=#{fileName}
+            """)
+    int deleteFileByDiaryIdAndName(Integer diaryId, String fileName);
 }

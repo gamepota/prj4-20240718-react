@@ -6,9 +6,11 @@ import {
   CardBody,
   CardHeader,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
+  Spinner,
   Stack,
   StackDivider,
   Text,
@@ -31,11 +33,10 @@ export function DiaryBoardWrite() {
   function handleSaveClick() {
     setLoading(true);
     axios
-      .post("/api/diaryBoard/add", {
+      .postForm("/api/diaryBoard/add", {
         title,
         content,
         files,
-        username: account.id,
       })
       .then(() => {
         toast({
@@ -43,7 +44,7 @@ export function DiaryBoardWrite() {
           status: "success",
           position: "top",
         });
-        navigate("/");
+        navigate("diary/list");
       })
       .catch((e) => {
         const code = e.response.status;
@@ -67,6 +68,10 @@ export function DiaryBoardWrite() {
     disableSaveButton = true;
   }
 
+  if (!account) {
+    return <Spinner />; // 또는 로딩 스피너를 표시할 수 있습니다.
+  }
+
   // file 목록 작성
   const fileNameList = [];
   for (let i = 0; i < files.length; i++) {
@@ -83,10 +88,16 @@ export function DiaryBoardWrite() {
         <Heading>글 작성</Heading>
       </Box>
       <Box>
+        <Box>
+          <FormControl>
+            <FormLabel>작성자</FormLabel>
+            <Input value={account.nickname} readOnly />
+          </FormControl>
+        </Box>
         <Box mb={7}>
           <FormControl>
             <FormLabel>제목</FormLabel>
-            <Input onChange={(e) => setTitle(e.target.value)} />
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
           </FormControl>
         </Box>
         <Box mb={7}>
@@ -104,6 +115,7 @@ export function DiaryBoardWrite() {
               accept="image/*"
               onChange={(e) => setFiles(e.target.files)}
             />
+            <FormHelperText>즉당히 넣으십시오</FormHelperText>
           </FormControl>
         </Box>
         {fileNameList.length > 0 && (
@@ -120,12 +132,6 @@ export function DiaryBoardWrite() {
             </Card>
           </Box>
         )}
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>작성자</FormLabel>
-            <Input readOnly value={account.nickName} />
-          </FormControl>
-        </Box>
         <Box mb={7}>
           <Button
             isLoading={loading}

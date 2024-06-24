@@ -3,6 +3,7 @@ package com.backend.controller.diary;
 import com.backend.domain.diary.DiaryBoard;
 import com.backend.service.diary.DiaryBoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -22,61 +23,68 @@ public class DiaryBoardController {
 
     @PostMapping("add")
     @PreAuthorize("isAuthenticated()")
-    public void add(DiaryBoard diaryBoard,
-                    @RequestParam(value = "files[]", required = false) MultipartFile[] files,
-                    Authentication authentication) {
-        service.add(diaryBoard, files);
+    public ResponseEntity add(DiaryBoard diaryBoard,
+                              @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+                              Authentication authentication) throws IOException {
+        if (service.validate(diaryBoard)) {
+            service.add(diaryBoard, files, authentication);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
     @GetMapping("list")
-    public Map<String, Object> list(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(value = "type", required = false) String searchType,
-            @RequestParam(value = "keyword", defaultValue = "") String keyword) {
-
+    public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
+                                    @RequestParam(value = "type", required = false) String searchType,
+                                    @RequestParam(value = "keyword", defaultValue = "") String keyword) {
         return service.list(page, searchType, keyword);
+
     }
 
     @GetMapping("{id}")
     public ResponseEntity get(@PathVariable Integer id) {
-        DiaryBoard diaryBoard = service.get(id);
 
+        DiaryBoard diaryBoard = service.get(id);
         if (diaryBoard == null) {
             return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().body(diaryBoard);
         }
 
-        return ResponseEntity.ok().body(diaryBoard);
     }
 
     @DeleteMapping("{id}")
-//    @PreAuthorize("isAuthenticated()")
-    public void delete(@PathVariable Integer id
-    ) {
-//        if (service.hasAccess(id, authentication)) {
-        service.remove(id);
-//            return ResponseEntity.ok().build();
-//        }
-//        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity delete(@PathVariable Integer id, Authentication authentication) {
+        if (service.hasAccess(id, authentication)) {
+            service.remove(id);
+            return ResponseEntity.ok().build();
+
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
     }
 
     @PutMapping("edit")
-//    @PreAuthorize("isAuthenticated()")
-    public void edit(DiaryBoard diaryBoard,
-                     @RequestParam(value = "removeFileList[]", required = false)
-                     List<String> removeFileList,
-                     @RequestParam(value = "addFileList[]", required = false)
-                     MultipartFile[] addFileList
-    ) throws IOException {
-//        if (service.hasAccess(diaryBoard.getId(), authentication)) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//        }
-//
-//        if (service.validate(diaryBoard)) {
-        service.edit(diaryBoard);
-//            return ResponseEntity.ok().build();
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity edit(DiaryBoard diaryBoard,
+                               @RequestParam(value = "removeFileList[]", required = false)
+                               List<String> removeFileList,
+                               Authentication authentication) {
 
+        if (!service.hasAccess(diaryBoard.getId(), authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        if (service.validate(diaryBoard)) {
+            service.edit(diaryBoard, removeFileList);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
+

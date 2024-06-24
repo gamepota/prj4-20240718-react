@@ -35,7 +35,7 @@ export function DiaryBoardView() {
   useEffect(() => {
     axios
       .get(`/api/diaryBoard/${id}`)
-      .then((res) => setDiary(res.data.diary))
+      .then((res) => setDiary(res.data))
       .catch((err) => {
         if (err.response.status === 404) {
           toast({
@@ -43,7 +43,7 @@ export function DiaryBoardView() {
             description: "해당 게시물이 존재하지 않습니다.",
             position: "top",
           });
-          navigate("/");
+          navigate("/diary/home");
         }
       });
   }, [id, navigate, toast]);
@@ -52,13 +52,13 @@ export function DiaryBoardView() {
     axios
       .delete(`/api/diaryBoard/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
         },
       })
       .then(() => {
         toast({
           status: "success",
-          description: `${id} 게시물이 삭제되었습니다.`,
+          description: `$게시물이 삭제되었습니다.`,
           position: "top",
         });
         navigate("/");
@@ -86,7 +86,7 @@ export function DiaryBoardView() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>제목</FormLabel>
-            <Textarea value={diary.title} readOnly />
+            <Input value={diary.title} readOnly />
           </FormControl>
         </Box>
         <Box mb={7}>
@@ -94,6 +94,14 @@ export function DiaryBoardView() {
             <FormLabel>본문</FormLabel>
             <Textarea value={diary.content} readOnly />
           </FormControl>
+        </Box>
+        <Box>
+          {diary.imageSrcList &&
+            diary.imageSrcList.map((src) => (
+              <Box border={"2px solid black"} m={3} key={src}>
+                <Image src={src} />
+              </Box>
+            ))}
         </Box>
         <Box mb={7}>
           {diary.fileList &&
@@ -108,14 +116,12 @@ export function DiaryBoardView() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input value={diary.nickname} readOnly />
+            <Input value={diary.writer} readOnly />
           </FormControl>
         </Box>
         <Box mb={7}>
-          <FormControl>
-            <FormLabel>작성일시</FormLabel>
-            <Input type="datetime-local" value={diary.inserted} readOnly />
-          </FormControl>
+          <FormControl>작성일시</FormControl>
+          <Input type="datetime-local" value={diary.inserted} readOnly />
         </Box>
         <Flex mb={7} gap={2}>
           <Button

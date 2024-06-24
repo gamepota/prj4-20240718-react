@@ -11,6 +11,7 @@ import {
   ModalOverlay,
   Spacer,
   Stack,
+  Text,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -25,16 +26,15 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { DiaryCommentEdit } from "./DiaryCommentEdit.jsx";
 import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+import { useParams } from "react-router-dom";
 
-export function DiaryCommentItem({
-  diaryComment,
-  isProcessing,
-  setIsProcessing,
-}) {
+export function DiaryCommentItem({}) {
   const [isEditing, setIsEditing] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const account = useContext(LoginContext);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { diaryComment } = useParams();
 
   function handleRemoveClick() {
     setIsProcessing(true);
