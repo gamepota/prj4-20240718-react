@@ -11,8 +11,10 @@ public class Board {
     private String title;
     private String content;
     private String writer;
+    private Integer memberId;
     private LocalDateTime inserted;
-    
+    private String boardType;
+
     private Integer numberOfImages;
     private List<BoardFile> fileList;
 

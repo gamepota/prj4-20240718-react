@@ -56,11 +56,10 @@ public class BoardService {
 
     public boolean validate(Board board) throws Exception {
         return board.getTitle() != null && !board.getTitle().isBlank() &&
-                board.getContent() != null && !board.getContent().isBlank() &&
-                board.getWriter() != null && !board.getWriter().isBlank();
+                board.getContent() != null && !board.getContent().isBlank();
     }
 
-    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session)
+    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType)
             throws Exception {
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
@@ -91,6 +90,8 @@ public class BoardService {
         // 세션에 새로운 offset 저장
         session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
 
+
+//        System.out.println("이것은 서비스의 boardType = " + boardType);
         // 페이지 정보 계산
         Map<String, Object> pageInfo = new HashMap<>();
         if (offsetReset) {
@@ -102,8 +103,15 @@ public class BoardService {
             pageInfo.put("currentPageNumber", page);
         }
 
-        Integer countAll = mapper.selectAllCount();
-        Integer lastPageNumber = (countAll - 1) / pageAmount + 1;
+        Integer countByBoardType;
+        if (boardType.equals("전체")) {
+
+            countByBoardType = mapper.selectAllCount();
+        } else {
+            countByBoardType = mapper.selectByBoardType(boardType);
+        }
+
+        Integer lastPageNumber = (countByBoardType - 1) / pageAmount + 1;
         Integer leftPageNumber = (page - 1) / 10 * 10 + 1;
         Integer rightPageNumber = Math.min(leftPageNumber + 9, lastPageNumber);
         Integer prevPageNumber = (leftPageNumber > 1) ? leftPageNumber - 1 : null;
@@ -121,7 +129,7 @@ public class BoardService {
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
 
-        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount));
+        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount, boardType));
     }
 
     public Board get(Integer id) {
@@ -132,7 +140,7 @@ public class BoardService {
         for (S3Object object : listResponse.contents()) {
             System.out.println("object.key() = " + object.key());
         }
-        System.out.println("이것은 get요청");
+//        System.out.println("이것은 get요청");
 
         Board board = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByBoardId(id);

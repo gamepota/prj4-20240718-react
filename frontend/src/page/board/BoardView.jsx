@@ -16,9 +16,11 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
+import { LoginContext } from "../../component/board/BoardLoginProvider.jsx";
 
 export function BoardView() {
   const { id } = useParams();
@@ -26,6 +28,7 @@ export function BoardView() {
   const [board, setBoard] = useState(null);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const navigate = useNavigate();
+  const account = useContext(LoginContext);
   const toast = useToast();
   useEffect(() => {
     axios
@@ -106,6 +109,8 @@ export function BoardView() {
           <Input type={"datetime-local"} value={board.inserted} readOnly />
         </FormControl>
       </Box>
+      <BoardCommentComponent boardId={board.id} />
+
       <Box>
         <Button colorScheme={"purple"} onClick={() => navigate(`/edit/${id}`)}>
           수정

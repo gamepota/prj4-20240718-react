@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../component/board/BoardLoginProvider.jsx";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
@@ -20,6 +21,7 @@ export function BoardWrite() {
   const [invisibledText, setInvisibledText] = useState(true);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const navigate = useNavigate();
+  const account = useContext(LoginContext);
 
   // const onDrop = useCallback(
   //   (acceptedFiles) => {
@@ -65,16 +67,12 @@ export function BoardWrite() {
   }
 
   React.useEffect(() => {
-    if (
-      title.trim().length === 0 ||
-      content.trim().length === 0 ||
-      writer.trim().length === 0
-    ) {
+    if (title.trim().length === 0 || content.trim().length === 0) {
       setDisableSaveButton(true);
     } else {
       setDisableSaveButton(false);
     }
-  }, [title, content, writer]);
+  }, [title, content]);
 
   const fileNameList = files.map((file, index) => (
     <li key={index}>{file.name}</li>
@@ -99,11 +97,7 @@ export function BoardWrite() {
       setFiles(selectedFiles);
       setInvisibledText(true);
 
-      if (
-        title.trim().length === 0 ||
-        content.trim().length === 0 ||
-        writer.trim().length === 0
-      ) {
+      if (title.trim().length === 0 || content.trim().length === 0) {
         setDisableSaveButton(true);
       } else {
         setDisableSaveButton(false);
@@ -160,10 +154,7 @@ export function BoardWrite() {
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input
-              value={writer}
-              onChange={(e) => setWriter(e.target.value)}
-            ></Input>
+            <Input readOnly value={writer} />
           </FormControl>
         </Box>
         <Box>

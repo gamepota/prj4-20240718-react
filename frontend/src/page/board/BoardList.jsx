@@ -25,7 +25,7 @@ export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [pageAmount, setPageAmount] = useState(30);
   const [pageInfo, setPageInfo] = useState({});
-  const [boardType, setBoardType] = useState("전체 게시판");
+  const [boardType, setBoardType] = useState("전체");
   // const [offsetReset, setOffsetReset] = useState(false);
   const [searchParams] = useSearchParams();
 
@@ -66,7 +66,10 @@ export function BoardList() {
   }
 
   function handleClickBoardTypeButton(boardType) {
+    searchParams.set("offsetReset", true);
     setBoardType(boardType);
+    searchParams.set("boardType", boardType);
+    navigate(`?${searchParams}`);
   }
 
   return (
@@ -202,6 +205,7 @@ export function BoardList() {
           <Table boxShadow="lg" borderRadius="10">
             <Thead>
               <Tr>
+                <Th>게시판 종류</Th>
                 <Th>게시글ID</Th>
                 <Th w={500} textAlign={"center"}>
                   제목
@@ -220,6 +224,7 @@ export function BoardList() {
                   onClick={() => navigate(`/board/${board.id}`)}
                   key={board.id}
                 >
+                  <td>{board.boardType}</td>
                   <td>{board.id}</td>
                   <td>
                     {board.title}
