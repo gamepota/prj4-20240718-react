@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "../../component/board/BoardLoginProvider.jsx";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");

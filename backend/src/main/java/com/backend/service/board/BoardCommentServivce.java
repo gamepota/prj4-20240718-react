@@ -44,4 +44,9 @@ public class BoardCommentServivce {
     public void remove(BoardComment comment) {
         mapper.deleteById(comment.getId());
     }
+
+    public void update(BoardComment boardComment) {
+        System.out.println("서비스의 boardComment = " + boardComment);
+        mapper.update(boardComment);
+    }
 }

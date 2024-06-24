@@ -42,4 +42,10 @@ public class BoardCommentController {
 
     }
 
+    @PutMapping("edit")
+    public ResponseEntity editComment(@RequestBody BoardComment comment) {
+        service.update(comment);
+        return ResponseEntity.ok().build();
+    }
+
 }

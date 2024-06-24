@@ -20,7 +20,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
-import { LoginContext } from "../../component/board/BoardLoginProvider.jsx";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardView() {
   const { id } = useParams();
