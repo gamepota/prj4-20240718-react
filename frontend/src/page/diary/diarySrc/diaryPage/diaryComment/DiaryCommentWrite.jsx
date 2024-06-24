@@ -1,14 +1,16 @@
 import React, { useContext, useState } from "react";
 import { Box, Button, Flex, Input, Textarea, useToast } from "@chakra-ui/react";
 import axios from "axios";
-
-// import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryCommentWrite() {
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const account = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const access = memberInfo?.access || null;
+  const nickname = memberInfo?.nickname || null;
+  const isLoggedIn = Boolean(access);
 
   const handleDiaryCommentSubmitClick = () => {
     setLoading(true);
@@ -38,7 +40,7 @@ export function DiaryCommentWrite() {
       .finally(() => setLoading(false));
   };
 
-  if (!account) {
+  if (!memberInfo) {
     return null; // 또는 로딩 스피너를 표시할 수 있습니다.
   }
 
@@ -46,9 +48,9 @@ export function DiaryCommentWrite() {
     <Flex gap={2}>
       <Box flex={1}>
         <Box>
-          <Input readOnly value={account.username} />
+          <Input readOnly value={memberInfo.nickname} />
           <Textarea
-            isDisabled={!account.isLoggedIn()}
+            isDisabled={memberInfo.isLoggedIn}
             placeholder={"방명록을 작성해보세요"}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -59,7 +61,7 @@ export function DiaryCommentWrite() {
             isLoading={loading}
             onClick={handleDiaryCommentSubmitClick}
             colorScheme={"blue"}
-            isDisabled={!account.isLoggedIn() || !comment.trim()}
+            isDisabled={memberInfo.isLoggedIn || !comment.trim()}
           >
             등록
           </Button>

@@ -6,8 +6,12 @@ import { DiaryNavbar } from "../diaryComponent/DiaryNavbar.jsx";
 export function DiaryHome() {
   return (
     <Box mb={30}>
-      <DiaryNavbar />
-      <Outlet />
+      <Box>
+        <DiaryNavbar />
+      </Box>
+      <Box>
+        <Outlet />
+      </Box>
     </Box>
   );
 }

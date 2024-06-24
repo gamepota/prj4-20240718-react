@@ -37,7 +37,7 @@ export function DiaryBoardList() {
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
-      setDiaryBoardList(res.data.boardList);
+      setDiaryBoardList(res.data.diaryBoardList);
       setPageInfo(res.data.pageInfo);
     });
 
@@ -71,6 +71,7 @@ export function DiaryBoardList() {
   return (
     <Box>
       <Box>다이어리 목록</Box>
+      <Button onClick={() => navigate("/diary/write/id")}>글쓰기</Button>
       <Box>
         {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
         {diaryBoardList.length > 0 && (
