@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
@@ -235,7 +235,11 @@ export function BoardList() {
                       </Badge>
                     )}
                   </td>
-                  <td>{board.writer}</td>
+                  <td>
+                    <Link to={`/diary/view/${board.writerId}`}>
+                      {board.writer}
+                    </Link>
+                  </td>
                   <Td textAlign={"center"}>0</Td>
                   <td style={{ textAlign: "center" }}>{board.views}</td>
                 </Tr>
