@@ -32,13 +32,13 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx"; // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 export function DiaryBoardEdit() {
   const { id } = useParams();
-  const [diary, setDiary] = useState(null);
+  const [diaryBoard, setDiaryBoard] = useState(null);
   const [removeFileList, setRemoveFileList] = useState([]);
   const [addFileList, setAddFileList] = useState([]);
   const toast = useToast();
@@ -50,32 +50,31 @@ export function DiaryBoardEdit() {
   const isLoggedIn = Boolean(access);
 
   useEffect(() => {
-    axios.get(`/api/diaryBoard/${id}`).then((res) => setDiary(res.data));
+    axios.get(`/api/diaryBoard/${id}`).then((res) => setDiaryBoard(res.data));
   }, []);
 
   function handleClickSave() {
     axios
       .putForm("/api/diaryBoard/edit", {
-        id: diary.id,
-        title: diary.title,
-        content: diary.content,
+        id: diaryBoard.id,
+        title: diaryBoard.title,
+        content: diaryBoard.content,
         removeFileList,
         addFileList,
       })
       .then(() => {
         toast({
           status: "success",
-          description: "수정이 완료되었습니다.",
+          description: `${diaryBoard.id}수정이 완료되었습니다.`,
           position: "top",
         });
-        navigate(`/diaryBoard/${diary.id}`);
+        navigate(`/diary/view/${id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
           toast({
             status: "error",
-            description:
-              "게시물이 수정되지 않았습니다. 작성한 내용을 확인해주세요.",
+            description: `${diaryBoard.id}게시물이 수정되지 않았습니다. 작성한 내용을 확인해주세요.`,
             position: "top",
           });
         }
@@ -85,14 +84,14 @@ export function DiaryBoardEdit() {
       });
   }
 
-  if (diary === null) {
+  if (diaryBoard === null) {
     return <Spinner />;
   }
 
   const fileNameList = [];
   for (let addFile of addFileList) {
     let duplicate = false;
-    for (let file of diary.fileList) {
+    for (let file of diaryBoard.fileList) {
       if (file.name === addFile.name) {
         duplicate = true;
         break;
@@ -124,8 +123,10 @@ export function DiaryBoardEdit() {
           <FormControl>
             <FormLabel>제목</FormLabel>
             <Input
-              defaultValue={diary.title}
-              onChange={(e) => setDiary({ ...diary, title: e.target.value })}
+              defaultValue={diaryBoard.title}
+              onChange={(e) =>
+                setDiaryBoard({ ...diaryBoard, title: e.target.value })
+              }
             />
           </FormControl>
         </Box>
@@ -133,14 +134,16 @@ export function DiaryBoardEdit() {
           <FormControl>
             <FormLabel>내용</FormLabel>
             <Textarea
-              defaultValue={diary.content}
-              onChange={(e) => setDiary({ ...diary, content: e.target.value })}
+              defaultValue={diaryBoard.content}
+              onChange={(e) =>
+                setDiaryBoard({ ...diaryBoard, content: e.target.value })
+              }
             ></Textarea>
           </FormControl>
         </Box>
         <Box mb={7}>
-          {diary.fileList &&
-            diary.fileList.map((file) => (
+          {diaryBoard.fileList &&
+            diaryBoard.fileList.map((file) => (
               <Card m={3} key={file.name}>
                 <CardFooter>
                   <Flex gap={3}>
@@ -202,8 +205,10 @@ export function DiaryBoardEdit() {
           <FormControl>
             <FormLabel>작성자</FormLabel>
             <Input
-              defaultValue={diary.writer}
-              onChange={(e) => setDiary({ ...diary, writer: e.target.value })}
+              defaultValue={diaryBoard.writer}
+              onChange={(e) =>
+                setDiaryBoard({ ...diaryBoard, writer: e.target.value })
+              }
             />
           </FormControl>
         </Box>

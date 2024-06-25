@@ -4,6 +4,7 @@ import {
   Button,
   Center,
   Flex,
+  Heading,
   Input,
   Select,
   Table,
@@ -13,7 +14,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
@@ -25,9 +26,12 @@ import {
   faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryBoardList() {
+  const { id } = useParams();
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const [diaryBoardList, setDiaryBoardList] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
   const [searchType, setSearchType] = useState("all");
@@ -70,8 +74,13 @@ export function DiaryBoardList() {
 
   return (
     <Box>
-      <Box>다이어리 목록</Box>
-      <Button onClick={() => navigate("/diary/write/id")}>글쓰기</Button>
+      <Box mb={5}></Box>
+      <Center>
+        <Heading>다이어리 목록</Heading>
+      </Center>
+      <Button onClick={() => navigate(`/diary/write/${memberInfo.id}`)}>
+        글쓰기
+      </Button>
       <Box>
         {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
         {diaryBoardList.length > 0 && (
@@ -92,7 +101,7 @@ export function DiaryBoardList() {
                     bgColor: "gray.200",
                   }}
                   cursor={"pointer"}
-                  onClick={() => navigate(`/diaryBoard/${diary.id}`)}
+                  onClick={() => navigate(`/diary/view/${diary.id}`)}
                   key={diary.id}
                 >
                   <Td>{diary.id}</Td>
@@ -105,7 +114,7 @@ export function DiaryBoardList() {
                       </Badge>
                     )}
                   </Td>
-                  <Td>{diary.writer}</Td>
+                  <Td>{memberInfo.nickname}</Td>
                 </Tr>
               ))}
             </Tbody>

@@ -8,14 +8,15 @@ export function DiaryCommentWrite() {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  const access = memberInfo?.access || null;
-  const nickname = memberInfo?.nickname || null;
+  const access = memberInfo.access;
+  const nickname = memberInfo.nickname;
   const isLoggedIn = Boolean(access);
 
   const handleDiaryCommentSubmitClick = () => {
     setLoading(true);
     axios
       .post("/api/diaryComment/add", {
+        memberInfo: memberInfo.nickname,
         comment,
       })
       .then((res) => {
@@ -48,9 +49,9 @@ export function DiaryCommentWrite() {
     <Flex gap={2}>
       <Box flex={1}>
         <Box>
-          <Input readOnly value={memberInfo.nickname} />
+          <Input readOnly value={nickname} />
           <Textarea
-            isDisabled={memberInfo.isLoggedIn}
+            isDisabled={!nickname}
             placeholder={"방명록을 작성해보세요"}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -61,7 +62,7 @@ export function DiaryCommentWrite() {
             isLoading={loading}
             onClick={handleDiaryCommentSubmitClick}
             colorScheme={"blue"}
-            isDisabled={memberInfo.isLoggedIn || !comment.trim()}
+            isDisabled={!isLoggedIn || !comment.trim()}
           >
             등록
           </Button>

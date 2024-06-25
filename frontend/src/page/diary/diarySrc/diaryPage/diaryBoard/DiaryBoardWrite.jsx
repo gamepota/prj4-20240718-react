@@ -27,8 +27,7 @@ export function DiaryBoardWrite() {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  const access = memberInfo?.access || null;
-  const nickname = memberInfo?.nickname || null;
+  const access = memberInfo.access;
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
@@ -40,6 +39,7 @@ export function DiaryBoardWrite() {
         title,
         content,
         files,
+        nickname: memberInfo.nickname,
       })
       .then(() => {
         toast({
@@ -47,7 +47,7 @@ export function DiaryBoardWrite() {
           status: "success",
           position: "top",
         });
-        navigate("diary/list");
+        navigate(`/diary/list`);
       })
       .catch((e) => {
         const code = e.response.status;
@@ -118,7 +118,7 @@ export function DiaryBoardWrite() {
               accept="image/*"
               onChange={(e) => setFiles(e.target.files)}
             />
-            <FormHelperText>즉당히 넣으십시오</FormHelperText>
+            <FormHelperText>쬐끔만 넣어주시길 바랍니다</FormHelperText>
           </FormControl>
         </Box>
         {fileNameList.length > 0 && (
