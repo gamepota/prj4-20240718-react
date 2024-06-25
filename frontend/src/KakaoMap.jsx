@@ -8,9 +8,8 @@ const KakaoMap = () => {
   useEffect(() => {
     const fetchGeojson = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/boundary-set",
-        ); // Spring Boot API 호출
+        const response = await axios.get("/api/boundarySet"); // Spring Boot API 호출
+        console.log("GeoJSON data:", response.data); // 데이터 확인용 로그
         setGeojson(response.data);
       } catch (error) {
         console.error("Error fetching geojson:", error);
@@ -114,5 +113,3 @@ const KakaoMap = () => {
 };
 
 export default KakaoMap;
-
-`//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing`;
