@@ -68,7 +68,7 @@ export function DiaryBoardEdit() {
           description: `${diaryBoard.id}수정이 완료되었습니다.`,
           position: "top",
         });
-        navigate(`/diary/view/${id}`);
+        navigate(`/diary/view/${diaryBoard.id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
@@ -117,7 +117,9 @@ export function DiaryBoardEdit() {
 
   return (
     <Box>
-      <Box>다이어리 수정</Box>
+      <Box mb={10}>
+        <Heading>{diaryBoard.id}다이어리 수정</Heading>
+      </Box>
       <Box>
         <Box mb={7}>
           <FormControl>
@@ -148,7 +150,7 @@ export function DiaryBoardEdit() {
                 <CardFooter>
                   <Flex gap={3}>
                     <Box>
-                      <FontAwesomeIcon icon={faTrashCan} />
+                      <FontAwesomeIcon color="black" icon={faTrashCan} />
                     </Box>
                     <Box>
                       <Switch
@@ -204,15 +206,10 @@ export function DiaryBoardEdit() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input
-              defaultValue={diaryBoard.writer}
-              onChange={(e) =>
-                setDiaryBoard({ ...diaryBoard, writer: e.target.value })
-              }
-            />
+            <Input defaultValue={diaryBoard.writer} readOnly />
           </FormControl>
         </Box>
-        <Box>
+        <Box mb={7}>
           <Button onClick={onOpen} colorScheme={"blue"}>
             저장
           </Button>
