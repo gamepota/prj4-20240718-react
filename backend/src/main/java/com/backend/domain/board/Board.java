@@ -18,6 +18,8 @@ public class Board {
     private String boardType;
 
     private Integer numberOfImages;
+    private Integer numberOfComments;
+    private Integer numberOfLikes;
     private List<BoardFile> fileList;
 
 }
