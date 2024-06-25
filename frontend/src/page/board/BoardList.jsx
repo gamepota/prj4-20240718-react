@@ -4,10 +4,12 @@ import {
   Button,
   Center,
   Flex,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Select,
   Table,
   Tbody,
   Td,
@@ -20,13 +22,15 @@ import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [pageAmount, setPageAmount] = useState(30);
   const [pageInfo, setPageInfo] = useState({});
   const [boardType, setBoardType] = useState("전체");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchType, setSearchType] = useState("all");
   // const [offsetReset, setOffsetReset] = useState(false);
   const [searchParams] = useSearchParams();
 
@@ -70,6 +74,8 @@ export function BoardList() {
     searchParams.set("boardType", boardType);
     navigate(`?${searchParams}`);
   }
+
+  function handleSearchClick() {}
 
   return (
     <>
@@ -292,6 +298,32 @@ export function BoardList() {
               </Button>
             </>
           )}
+        </Flex>
+      </Center>
+      <Center mb={10}>
+        <Flex gap={1}>
+          <Box>
+            <Select
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value)}
+            >
+              <option value="all">전체</option>
+              <option value="text">글</option>
+              <option value="nickName">작성자</option>
+            </Select>
+          </Box>
+          <Box>
+            <Input
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              placeholder="검색어"
+            />
+          </Box>
+          <Box>
+            <Button onClick={handleSearchClick}>
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </Button>
+          </Box>
         </Flex>
       </Center>
     </>
