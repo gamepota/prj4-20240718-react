@@ -68,7 +68,6 @@ export function BoardView() {
   if (board === null) {
     return <Spinner />;
   }
-
   function handleClickRemove() {
     axios
       .delete("/api/board/" + board.id)
@@ -83,14 +82,10 @@ export function BoardView() {
       })
       .finally(() => onClose);
   }
-
   function handleClickLike() {
-    console.log("이것은 좋아요버튼클릭의 memberInfo", memberInfo);
-
-    if (!memberInfo.id) {
+    if (!memberInfo) {
       return;
     }
-
     setIsLikeProcessing(true);
     axios
       .put("/api/board/like", { boardId: board.id, memberId: userId })
@@ -104,7 +99,6 @@ export function BoardView() {
         setIsLikeProcessing(false);
       });
   }
-
   return (
     <Box
       // maxW={"500px"}
@@ -153,10 +147,9 @@ export function BoardView() {
           <Input type={"datetime-local"} value={board.inserted} readOnly />
         </FormControl>
       </Box>
-
       {isLikeProcessing || (
         <Flex>
-          <Tooltip isDisabled={memberInfo.id} hasArrow label="로그인 해주세요.">
+          <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
             <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
               {like.like && <FontAwesomeIcon icon={fullHeart} />}
               {like.like || <FontAwesomeIcon icon={emptyHeart} />}
@@ -174,9 +167,7 @@ export function BoardView() {
           <Spinner />
         </Box>
       )}
-
       <BoardCommentComponent boardId={board.id} />
-
       <Box>
         <Button
           colorScheme={"purple"}
