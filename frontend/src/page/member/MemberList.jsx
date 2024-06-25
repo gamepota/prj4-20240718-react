@@ -29,7 +29,6 @@ export function MemberList() {
 
   useEffect(() => {
     if (memberInfo?.id === 1) {
-      console.log(memberInfo.id);
       fetchMembers();
     } else {
       setIsLoading(false);
@@ -96,7 +95,7 @@ export function MemberList() {
     );
   }
 
-  if (!memberInfo || memberInfo.id !== 1) {
+  if (memberInfo === null || memberInfo?.id !== "1") {
     return (
       <Center mt={10}>
         <Text fontSize="xl" fontWeight="bold" color="red.500">
