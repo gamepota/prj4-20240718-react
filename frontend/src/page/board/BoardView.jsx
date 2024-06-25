@@ -41,12 +41,12 @@ export function BoardView() {
   const toast = useToast();
   // LoginProvider
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  if (memberInfo != null) {
-    const access = memberInfo.access;
-    const userId = memberInfo.id;
-    const nickname = memberInfo.nickname;
-    const isLoggedIn = Boolean(access);
-  }
+  // if (memberInfo != null) {
+  //   const access = memberInfo.access;
+  //   const userId = memberInfo.id;
+  //   const nickname = memberInfo.nickname;
+  //   const isLoggedIn = Boolean(access);
+  // }
   useEffect(() => {
     axios
       .get(`/api/board/${id}`)

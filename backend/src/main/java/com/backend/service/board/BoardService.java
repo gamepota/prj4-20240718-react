@@ -211,12 +211,26 @@ public class BoardService {
     public Map<String, Object> like(Map<String, Object> req) {
         Map<String, Object> result = new HashMap<>();
         result.put("like", false);
-        Integer boardId = (Integer) req.get("boardId");
-        Integer memberId = (Integer) req.get("memberId");
 
-        //이미 했으면
+        Integer boardId;
+        Integer memberId;
+
+        try {
+            boardId = req.get("boardId") instanceof String
+                    ? Integer.parseInt((String) req.get("boardId"))
+                    : (Integer) req.get("boardId");
+            memberId = req.get("memberId") instanceof String
+                    ? Integer.parseInt((String) req.get("memberId"))
+                    : (Integer) req.get("memberId");
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid boardId or memberId format");
+        }
+
+        System.out.println("이것은 서비스의 req = " + req);
+
+        // 이미 했으면
         int count = mapper.deleteLikeByBoardIdAndMemberId(boardId, memberId);
-        //안했으면 (삭제된 행이 없으면)
+        // 안 했으면 (삭제된 행이 없으면)
         if (count == 0) {
             mapper.insertLikeByBoardIdAndMemberId(boardId, memberId);
             result.put("like", true);
@@ -225,4 +239,6 @@ public class BoardService {
 
         return result;
     }
+
+
 }

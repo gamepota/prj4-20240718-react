@@ -76,7 +76,7 @@ public class BoardController {
         }
     }
 
-    @PostMapping("/like")
+    @PutMapping("/like")
     public ResponseEntity<Map<String, Object>> like(@RequestBody Map<String, Object> req) {
         System.out.println("컨트롤러의 like 메서드 req = " + req);
 
@@ -85,10 +85,10 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         }
 
-        // memberId가 Integer가 아닌 경우 처리
-        if (!(req.get("memberId") instanceof Integer)) {
-            return ResponseEntity.badRequest().build();
-        }
+//         memberId가 Integer가 아닌 경우 처리
+//        if (!(req.get("memberId") instanceof Integer)) {
+//            return ResponseEntity.badRequest().build();
+//        }
 
         return ResponseEntity.ok(service.like(req));
     }
