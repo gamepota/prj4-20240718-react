@@ -65,7 +65,12 @@ export function MemberList() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`/api/member/${id}`)
+          .delete(`/api/member/${id}`, {
+            headers: {
+              memberInfoId: memberInfo.id,
+            },
+            withCredentials: true,
+          })
           .then(() => {
             toast({
               status: "success",
@@ -116,7 +121,7 @@ export function MemberList() {
         bg="white"
       >
         <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
-          회원 관리
+          회원 목록
         </Box>
         <Table variant="simple">
           <Thead>
