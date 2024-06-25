@@ -1,6 +1,6 @@
 import React from "react";
 import KakaoMap from "../../KakaoMap.jsx";
-import geojson from "../../../public/data/json/TL_SCCO_CTPRVN";
+import geojson from "../../../public/data/json/geojson.json";
 
 export function PlaceMap() {
   return (
