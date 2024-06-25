@@ -57,7 +57,7 @@ export function DiaryBoardView() {
       .then(() => {
         toast({
           status: "success",
-          description: `게시물이 삭제되었습니다.`,
+          description: `${id}게시물이 삭제되었습니다.`,
           position: "top",
         });
         navigate("/diary/home");
@@ -80,7 +80,7 @@ export function DiaryBoardView() {
 
   return (
     <Box>
-      <Box>게시물</Box>
+      <Box>{diaryBoard.id}번째 일기</Box>
       <Box>
         <Box mb={7}>
           <FormControl>
@@ -93,14 +93,6 @@ export function DiaryBoardView() {
             <FormLabel>본문</FormLabel>
             <Textarea value={diaryBoard.content} readOnly />
           </FormControl>
-        </Box>
-        <Box>
-          {diaryBoard.imageSrcList &&
-            diaryBoard.imageSrcList.map((src) => (
-              <Box border={"2px solid black"} m={3} key={src}>
-                <Image src={src} />
-              </Box>
-            ))}
         </Box>
         <Box mb={7}>
           {diaryBoard.fileList &&

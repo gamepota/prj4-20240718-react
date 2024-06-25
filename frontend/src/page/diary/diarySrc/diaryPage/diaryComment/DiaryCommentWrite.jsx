@@ -1,9 +1,20 @@
 import React, { useContext, useState } from "react";
-import { Box, Button, Flex, Input, Textarea, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  useToast,
+} from "@chakra-ui/react";
 import axios from "axios";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export function DiaryCommentWrite() {
+  const { id } = useParams();
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -15,12 +26,11 @@ export function DiaryCommentWrite() {
   const handleDiaryCommentSubmitClick = () => {
     setLoading(true);
     axios
-      .post("/api/diaryComment/add", {
-        memberInfo: memberInfo.nickname,
+      .postForm("/api/diaryComment/add", {
+        memberInfo: nickname,
         comment,
       })
       .then((res) => {
-        setComment("");
         toast({
           status: "success",
           position: "top",
@@ -34,40 +44,44 @@ export function DiaryCommentWrite() {
           toast({
             status: "error",
             position: "top",
-            description: "댓글 등록 중 오류가 발생했습니다.",
+            description: "방명록 등록 중 오류가 발생했습니다.",
           });
         }
       })
       .finally(() => setLoading(false));
   };
+  let disableSaveButton = false;
 
+  if (comment.trim().length === 0) {
+    disableSaveButton = true;
+  }
   if (!memberInfo) {
     return null; // 또는 로딩 스피너를 표시할 수 있습니다.
   }
 
   return (
-    <Flex gap={2}>
-      <Box flex={1}>
-        <Box>
-          <Input readOnly value={nickname} />
-          <Textarea
-            isDisabled={!nickname}
-            placeholder={"방명록을 작성해보세요"}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-        </Box>
-        <Box>
-          <Button
-            isLoading={loading}
-            onClick={handleDiaryCommentSubmitClick}
-            colorScheme={"blue"}
-            isDisabled={!isLoggedIn || !comment.trim()}
-          >
-            등록
-          </Button>
-        </Box>
+    <Box>
+      <Box mb={10}>방명록 작성</Box>
+      <Box>
+        <FormControl>
+          <FormLabel>작성자</FormLabel>
+          <Input value={memberInfo.nickname} readOnly />
+        </FormControl>
       </Box>
-    </Flex>
+      <Box mb={7}>
+        <FormControl>
+          <FormLabel>내용</FormLabel>
+          <Input value={comment} onChange={(e) => setComment(e.target.value)} />
+        </FormControl>
+      </Box>
+      <Button
+        isLoading={loading}
+        isDisabled={disableSaveButton}
+        colorScheme={"blue"}
+        onClick={handleDiaryCommentSubmitClick}
+      >
+        <FontAwesomeIcon icon={faPaperPlane} />
+      </Button>
+    </Box>
   );
 }
