@@ -12,6 +12,7 @@ import {
   InputGroup,
   Link,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -136,14 +137,6 @@ export function MemberLogin(props) {
                 >
                   비밀번호 찾기
                 </Link>
-                <Link
-                  as={RouterLink}
-                  to="/member/signup"
-                  whiteSpace="nowrap"
-                  _hover={{ fontWeight: "bold" }}
-                >
-                  회원가입
-                </Link>
               </Flex>
             </Flex>
             <Box mt={5}>
@@ -156,6 +149,18 @@ export function MemberLogin(props) {
                 {isLoading ? <Spinner size="sm" /> : "로그인"}
               </Button>
             </Box>
+            <Text mt={5} textAlign="center">
+              아직 펫밀리의 회원이 아니신가요?{" "}
+              <Link
+                as={RouterLink}
+                to="/member/signup"
+                color="blue.500"
+                fontWeight="bold"
+                _hover={{ textDecoration: "underline" }}
+              >
+                가입하기
+              </Link>
+            </Text>
           </Box>
         </Box>
       </Center>
