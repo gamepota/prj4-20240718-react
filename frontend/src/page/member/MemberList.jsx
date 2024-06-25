@@ -28,7 +28,7 @@ export function MemberList() {
   const { memberInfo } = useContext(LoginContext);
 
   useEffect(() => {
-    if (memberInfo?.id === 1) {
+    if (memberInfo?.id === "1") {
       fetchMembers();
     } else {
       setIsLoading(false);
