@@ -10,22 +10,21 @@ public interface DiaryCommentMapper {
 
     @Insert("""
             INSERT INTO diaryComment
-            (member_id,nickname,comment,inserted)
-            VALUES (#{memberId},#{nickname},#{comment},#{inserted})
+            (id,member_id,comment,nickname)
+            VALUES (#{id},#{memberId},#{comment},#{nickname})
             """)
     int diaryCommentInsert(DiaryComment diaryComment);
 
     @Select("""
-            SELECT c.id,
-                   c.comment,
-                   c.inserted,
-                   c.member_id,
-                   m.nickname
-            FROM diaryComment c JOIN member m ON c.member_id=m.id
-            WHERE c.id=#{id}
-            ORDER BY c.id
+            SELECT
+                c.id,
+                c.comment,
+                c.inserted
+                m.nickname
+                FROM diaryComment c JOIN member m ON c.member_id = m.id
+                ORDER BY c.id DESC
             """)
-    List<DiaryComment> selectAllByBoardId(Integer id);
+    List<DiaryComment> selectByDiaryId(Integer diaryId);
 
 
     @Delete("""
