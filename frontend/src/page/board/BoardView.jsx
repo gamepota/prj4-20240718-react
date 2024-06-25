@@ -83,12 +83,13 @@ export function BoardView() {
       .finally(() => onClose);
   }
   function handleClickLike() {
+    console.log("좋아요버튼 눌렀을 때 memberInfo=", memberInfo);
     if (!memberInfo) {
       return;
     }
     setIsLikeProcessing(true);
     axios
-      .put("/api/board/like", { boardId: board.id, memberId: userId })
+      .put("/api/board/like", { boardId: board.id, memberId: memberInfo.id })
       .then((res) => {
         setLike(res.data);
       })
