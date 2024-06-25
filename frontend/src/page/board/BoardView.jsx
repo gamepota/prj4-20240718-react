@@ -40,14 +40,7 @@ export function BoardView() {
   const navigate = useNavigate();
   const toast = useToast();
   // LoginProvider
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  if (memberInfo != null) {
-    const access = memberInfo.access;
-    const userId = memberInfo.id;
-    const nickname = memberInfo.nickname;
-
-    const isLoggedIn = Boolean(access);
-  }
+  const memberInfo = useContext(LoginContext);
 
   useEffect(() => {
     axios
