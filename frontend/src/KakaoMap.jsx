@@ -8,7 +8,9 @@ const KakaoMap = () => {
   useEffect(() => {
     const fetchGeojson = async () => {
       try {
-        const response = await axios.get("/data/json/geojson.json");
+        const response = await axios.get(
+          "http://localhost:8080/api/boundary-set",
+        ); // Spring Boot API 호출
         setGeojson(response.data);
       } catch (error) {
         console.error("Error fetching geojson:", error);
@@ -28,7 +30,7 @@ const KakaoMap = () => {
 
     script.onload = () => {
       const kakao = window.kakao;
-      const data = geojson.features;
+      const data = JSON.parse(geojson).features; // JSON 문자열을 객체로 변환
       const polygons = [];
 
       const mapContainer = document.getElementById("pollution-map");
@@ -96,7 +98,11 @@ const KakaoMap = () => {
 
       data.forEach((val) => {
         const coordinates = val.geometry.coordinates;
-        const name = val.properties.SIG_KOR_NM;
+        const name = val.properties.CTP_KOR_NM; // 속성 이름 수정
+
+        console.log("Coordinates:", coordinates);
+        console.log("Name:", name);
+
         displayArea(coordinates, name);
       });
     };
@@ -108,3 +114,5 @@ const KakaoMap = () => {
 };
 
 export default KakaoMap;
+
+`//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing`;
