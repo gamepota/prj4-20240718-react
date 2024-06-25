@@ -121,28 +121,28 @@ export function MemberList() {
         bg="white"
       >
         <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
-          회원 목록
+          관리자 모드
         </Box>
         <Table variant="simple">
           <Thead>
             <Tr>
+              <Th>ID</Th>
               <Th>이메일</Th>
               <Th>닉네임</Th>
               <Th>성별</Th>
               <Th>생년월일</Th>
-              <Th>회원등급</Th>
               <Th>가입일시</Th>
-              <Th>관리</Th>
+              <Th>회원 관리</Th>
             </Tr>
           </Thead>
           <Tbody>
             {members.map((member) => (
               <Tr key={member.id}>
+                <Td>{member.id}</Td>
                 <Td>{member.username}</Td>
                 <Td>{member.nickname}</Td>
-                <Td>{member.gender === "male" ? "남" : "여"}</Td>
+                <Td>{member.gender === "male" ? "남성" : "여성"}</Td>
                 <Td>{member.birthDate}</Td>
-                <Td>{member.role}</Td>
                 <Td>{member.inserted}</Td>
                 <Td display={"flex"}>
                   <Button
