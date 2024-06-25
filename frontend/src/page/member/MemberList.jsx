@@ -54,6 +54,29 @@ export function MemberList() {
       });
   }
 
+  // 가입일시 포맷
+  function formatDate(dateString) {
+    const optionsDate = { year: "numeric", month: "2-digit", day: "2-digit" };
+    const optionsTime = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+
+    const date = new Date(dateString);
+    const formattedDate = new Intl.DateTimeFormat("ko-KR", optionsDate)
+      .format(date)
+      .replace(/\./g, "-")
+      .replace(/ /g, "")
+      .replace(/-$/, "");
+    const formattedTime = new Intl.DateTimeFormat("ko-KR", optionsTime)
+      .format(date)
+      .replace(/ /g, "");
+
+    return `${formattedDate} / ${formattedTime}`;
+  }
+
   function handleDeleteMember(id) {
     Swal.fire({
       title: "정말 삭제하시겠습니까?",
@@ -143,7 +166,7 @@ export function MemberList() {
                 <Td>{member.nickname}</Td>
                 <Td>{member.gender === "male" ? "남성" : "여성"}</Td>
                 <Td>{member.birthDate}</Td>
-                <Td>{member.inserted}</Td>
+                <Td>{formatDate(member.inserted)}</Td>
                 <Td display={"flex"}>
                   <Button
                     size="sm"
