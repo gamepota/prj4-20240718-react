@@ -252,7 +252,7 @@ export function BoardList() {
                       {board.writer}
                     </span>
                   </Td>
-                  <Td textAlign="center">0</Td>
+                  <Td textAlign="center">{board.numberOfLikes}</Td>
                   <Td textAlign="center">{board.views}</Td>
                 </Tr>
               ))}

@@ -14,7 +14,6 @@ public class Board {
     private Integer memberId;
     private LocalDateTime inserted;
     private Integer views;
-    private Integer likes;
     private String boardType;
 
     private Integer numberOfImages;
