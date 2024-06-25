@@ -77,7 +77,7 @@ export function UserPage() {
   }
 
   // 회원 탈퇴
-  async function handleDeleteAccount() {
+  async function handleDeleteMember() {
     const confirmDeletion = await Swal.fire({
       title: "회원 탈퇴",
       html: "모든 정보가 영구적으로 삭제됩니다.<br>정말 탈퇴하시겠습니까?",
@@ -259,7 +259,7 @@ export function UserPage() {
               bg="red.500"
               color="white"
               _hover={{ bg: "red.600" }}
-              onClick={handleDeleteAccount}
+              onClick={handleDeleteMember}
             >
               회원 탈퇴
             </Button>

@@ -116,7 +116,7 @@ export function MemberList() {
         bg="white"
       >
         <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
-          회원 목록
+          회원 관리
         </Box>
         <Table variant="simple">
           <Thead>
