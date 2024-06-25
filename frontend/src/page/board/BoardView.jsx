@@ -19,11 +19,10 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
-import { LoginContext } from "../../component/LoginProvider.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
@@ -38,7 +37,6 @@ export function BoardView() {
   const [isLikeProcessing, setIsLikeProcessing] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const navigate = useNavigate();
-  const account = useContext(LoginContext);
   const toast = useToast();
 
   useEffect(() => {
