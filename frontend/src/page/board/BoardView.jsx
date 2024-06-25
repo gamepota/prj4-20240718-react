@@ -19,7 +19,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
@@ -40,7 +40,13 @@ export function BoardView() {
   const navigate = useNavigate();
   const toast = useToast();
   // LoginProvider
-  const [memberInfo, setMemberInfo] = useState(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  if (memberInfo != null) {
+    const access = memberInfo.access;
+    const userId = memberInfo.id;
+    const nickname = memberInfo.nickname;
+    const isLoggedIn = Boolean(access);
+  }
   useEffect(() => {
     axios
       .get(`/api/board/${id}`)
