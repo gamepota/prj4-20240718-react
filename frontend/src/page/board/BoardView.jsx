@@ -19,7 +19,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
@@ -40,8 +40,7 @@ export function BoardView() {
   const navigate = useNavigate();
   const toast = useToast();
   // LoginProvider
-  const memberInfo = useContext(LoginContext);
-
+  const [memberInfo, setMemberInfo] = useState(LoginContext);
   useEffect(() => {
     axios
       .get(`/api/board/${id}`)
@@ -80,7 +79,9 @@ export function BoardView() {
   }
 
   function handleClickLike() {
-    if (!memberInfo) {
+    console.log("이것은 좋아요버튼클릭의 memberInfo", memberInfo);
+
+    if (!memberInfo.id) {
       return;
     }
 
@@ -149,7 +150,7 @@ export function BoardView() {
 
       {isLikeProcessing || (
         <Flex>
-          <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
+          <Tooltip isDisabled={memberInfo.id} hasArrow label="로그인 해주세요.">
             <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
               {like.like && <FontAwesomeIcon icon={fullHeart} />}
               {like.like || <FontAwesomeIcon icon={emptyHeart} />}
