@@ -1,7 +1,9 @@
 package com.backend.service.member;
 
+import com.backend.domain.diary.DiaryBoard;
 import com.backend.domain.member.Member;
 import com.backend.domain.member.Role;
+import com.backend.mapper.diary.DiaryBoardMapper;
 import com.backend.mapper.member.MemberMapper;
 import com.backend.mapper.member.RefreshMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,8 @@ public class MemberService {
     private final MemberMapper memberMapper;
     private final RefreshMapper refreshMapper;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final DiaryBoardMapper diaryBoardMapper;
+
 
     //MemberSignup
     public void signup(Member member) {
@@ -48,6 +52,8 @@ public class MemberService {
 
     // MemberDelete
     public void delete(Integer id) {
+        List<DiaryBoard> diaryBoardList = diaryBoardMapper.selectByMemberId(id);
+
         refreshMapper.deleteByUsername(getById(id).getUsername());
         memberMapper.deleteById(id);
     }

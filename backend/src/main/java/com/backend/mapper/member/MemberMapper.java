@@ -90,9 +90,9 @@ public interface MemberMapper {
 
     // DiaryBoard
     @Select("""
-            SELECT id,nickName
+            SELECT id,nickname,
             FROM member
-            WHERE userName = #{username}
+            WHERE nickname = #{nickname}
             """)
-    Member selectByDiaryName(String userName);
+    Member selectByDiaryName(String nickname);
 }
