@@ -19,13 +19,14 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardView() {
   const { id } = useParams();
@@ -38,6 +39,15 @@ export function BoardView() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const navigate = useNavigate();
   const toast = useToast();
+  // LoginProvider
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  if (memberInfo != null) {
+    const access = memberInfo.access;
+    const userId = memberInfo.id;
+    const nickname = memberInfo.nickname;
+
+    const isLoggedIn = Boolean(access);
+  }
 
   useEffect(() => {
     axios
@@ -76,26 +86,14 @@ export function BoardView() {
       .finally(() => onClose);
   }
 
-  const memberInfostring = localStorage.getItem("memberInfo");
-  const memberInfo = JSON.parse(memberInfostring);
-  const accessToken = memberInfo.access;
   function handleClickLike() {
-    if (!account.memberInfo) {
+    if (!memberInfo) {
       return;
     }
-    console.log("memberInfo토큰은", accessToken);
 
     setIsLikeProcessing(true);
     axios
-      .put(
-        "/api/board/like",
-        { boardId: board.id },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 토큰을 담음
-          },
-        },
-      )
+      .put("/api/board/like", { boardId: board.id, memberId: userId })
       .then((res) => {
         setLike(res.data);
       })
@@ -107,7 +105,6 @@ export function BoardView() {
       });
   }
 
-  console.log(account);
   return (
     <Box
       // maxW={"500px"}
@@ -159,11 +156,7 @@ export function BoardView() {
 
       {isLikeProcessing || (
         <Flex>
-          <Tooltip
-            isDisabled={account.memberInfo}
-            hasArrow
-            label="로그인 해주세요."
-          >
+          <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
             <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
               {like.like && <FontAwesomeIcon icon={fullHeart} />}
               {like.like || <FontAwesomeIcon icon={emptyHeart} />}
