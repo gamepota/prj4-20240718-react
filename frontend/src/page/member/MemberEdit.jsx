@@ -67,6 +67,10 @@ export function MemberEdit(props) {
 
   useEffect(() => {
     console.log(id);
+    if (!memberInfo || memberInfo.id !== id) {
+      navigate("/unauthorized"); // 접근 권한이 없을 때 리디렉션할 페이지
+      return;
+    }
 
     async function fetchMemberData() {
       try {

@@ -28,8 +28,12 @@ export function UserPage() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  // 회원 정보 가져오기
   useEffect(() => {
+    if (!memberInfo || memberInfo.id !== id) {
+      navigate("/unauthorized"); // 접근 권한이 없을 때 리디렉션할 페이지
+      return;
+    }
+
     async function fetchMemberData() {
       try {
         const res = await axios.get(`/api/member/${id}`);
@@ -49,7 +53,7 @@ export function UserPage() {
     }
 
     fetchMemberData();
-  }, [id]);
+  }, [id, memberInfo, navigate]);
 
   // 프로필 이미지 업로드
   function handleProfileImageUpload(event) {
