@@ -76,12 +76,21 @@ public class BoardController {
         }
     }
 
-    @PutMapping("like")
-    public Map<String, Object> like(@RequestBody Map<String, Object> req) {
-        System.out.println("컨트롤러의 like메서드 req = " + req);
+    @PostMapping("/like")
+    public ResponseEntity<Map<String, Object>> like(@RequestBody Map<String, Object> req) {
+        System.out.println("컨트롤러의 like 메서드 req = " + req);
 
+        // memberId가 null이거나 비어있는 경우
+        if (!req.containsKey("memberId") || req.get("memberId") == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        return service.like(req);
+        // memberId가 Integer가 아닌 경우 처리
+        if (!(req.get("memberId") instanceof Integer)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(service.like(req));
     }
 }
 
