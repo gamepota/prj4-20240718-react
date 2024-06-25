@@ -9,6 +9,7 @@ import com.backend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +35,18 @@ public class DiaryBoardService {
     String srcPrefix;
 
     public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) throws IOException {
-        diaryBoard.setMemberId(Integer.valueOf(authentication.getName()));
+        String nickname = diaryBoard.getNickname();
+        Member member = memberMapper.selectByDiaryName(diaryBoard.getNickname());
+
+        if (member != null) {
+            // 회원 ID를 설정
+            diaryBoard.setMemberId(member.getId());
+
+            // 코멘트를 diary 테이블에 삽입
+            mapper.insert(diaryBoard);
+        } else {
+            throw new UsernameNotFoundException("Username not found: " + nickname);
+        }
         // 게시물 저장
         mapper.insert(diaryBoard);
 
@@ -44,7 +56,7 @@ public class DiaryBoardService {
                 mapper.insertFileName(diaryBoard.getId(), file.getOriginalFilename());
                 //실제 파일 저장
                 // 부모 디렉토리만들기
-                String dir = STR."User:/parjaewook/Temp/prj3/\{diaryBoard.getId()}";
+                String dir = STR."User:/parjaewook/temp/prj3/\{diaryBoard.getId()}";
                 File dirFile = new File(dir);
                 if (!dirFile.exists()) {
                     dirFile.mkdirs();
@@ -105,7 +117,7 @@ public class DiaryBoardService {
     public void remove(Integer id) {
         List<String> fileNames = mapper.selectFileNameByDiaryId(id);
 
-        String dir = STR."User:/parkjaewook/Temp/prj3/\{id}";
+        String dir = STR."User:/parkjaewook/temp/prj3/\{id}";
         for (String fileName : fileNames) {
             File file = new File(dir + fileName);
             file.delete();
@@ -123,17 +135,35 @@ public class DiaryBoardService {
         mapper.deleteById(id);
     }
 
-    public void edit(DiaryBoard diaryBoard, List<String> removeFileList) {
+    public void edit(DiaryBoard diaryBoard, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
         if (removeFileList != null && removeFileList.size() > 0) {
             for (String fileName : removeFileList) {
                 // disk의 파일 삭제
-                String path = STR."User:/parkjaewook/Temp/prj3/\{diaryBoard}/\{fileName}";
+                String path = STR."User:/parkjaewook/temp/prj3/\{diaryBoard.getId()}/\{fileName}";
                 File file = new File(path);
                 file.delete();
                 // db records 삭제
                 mapper.deleteFileByDiaryIdAndName(diaryBoard.getId(), fileName);
             }
         }
+        if (addFileList != null && addFileList.length > 0) {
+            List<String> fileNameList = mapper.selectFileNameByDiaryId(diaryBoard.getId());
+            for (MultipartFile file : addFileList) {
+                String fileName = file.getOriginalFilename();
+                if (fileNameList.contains(fileName)) {
+                    mapper.insertFileName(diaryBoard.getId(), fileName);
+                }
+                //disk 에 쓰기
+                File dir = new File(STR."User:/parkjaewook/\{diaryBoard.getId()}");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                String path = STR."User:/parkjaewook/temp/prj3/\{diaryBoard.getId()}/\{fileName}";
+                File destination = new File(path);
+                file.transferTo(destination);
+            }
+        }
+
         mapper.update(diaryBoard);
     }
 
@@ -141,10 +171,12 @@ public class DiaryBoardService {
         if (authentication == null) {
             return false;
         }
+
+
         DiaryBoard diaryBoard = mapper.selectById(id);
         Object principal = authentication.getPrincipal();
-        if (principal instanceof CustomUserDetails username) {
-            Member member = username.getMember();
+        if (principal instanceof CustomUserDetails nickname) {
+            Member member = nickname.getMember();
 
             return diaryBoard.getMemberId().equals(member.getId());
         }

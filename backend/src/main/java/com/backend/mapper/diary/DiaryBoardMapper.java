@@ -42,7 +42,7 @@ public interface DiaryBoardMapper {
                 UPDATE diary
                 SET title = #{title},
                     content = #{content},
-                    member_id = #{memberId}
+                        
                 WHERE id = #{id}
             """)
     int update(DiaryBoard diaryBoard);
@@ -140,7 +140,7 @@ public interface DiaryBoardMapper {
     List<DiaryBoard> selectByMemberId(Integer memberId);
 
     @Delete("""
-            DELETE FROM diaryBoard_file
+            DELETE FROM diary_file
             WHERE diary_id=#{diaryId}
               AND name=#{fileName}
             """)

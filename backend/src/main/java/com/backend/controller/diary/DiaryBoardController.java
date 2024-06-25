@@ -33,6 +33,7 @@ public class DiaryBoardController {
             return ResponseEntity.badRequest().build();
         }
 
+
     }
 
     @GetMapping("list")
@@ -73,14 +74,19 @@ public class DiaryBoardController {
     public ResponseEntity edit(DiaryBoard diaryBoard,
                                @RequestParam(value = "removeFileList[]", required = false)
                                List<String> removeFileList,
-                               Authentication authentication) {
+                               @RequestParam(value = "addFileList[]", required = false)
+                               MultipartFile[] addFileList,
+                               Authentication authentication) throws IOException {
 
         if (!service.hasAccess(diaryBoard.getId(), authentication)) {
+
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
         }
 
+
         if (service.validate(diaryBoard)) {
-            service.edit(diaryBoard, removeFileList);
+            service.edit(diaryBoard, removeFileList, addFileList);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();

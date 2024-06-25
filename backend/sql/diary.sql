@@ -35,7 +35,7 @@ SET member_id = (SELECT id FROM member ORDER BY id DESC LIMIT 1)
 WHERE id > 0;
 
 SELECT *
-FROM diary;
+FROM diaryComment;
 
 -- 외부 키 제약 조건 다시 추가 (새로운 이름으로)
 ALTER TABLE diaryComment
