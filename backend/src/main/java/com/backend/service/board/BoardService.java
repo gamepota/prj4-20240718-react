@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -135,25 +137,52 @@ public class BoardService {
         return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount, boardType));
     }
 
-    public Board get(Integer id) {
-        String keyPrefix = String.format("prj3/%d/", id);
-        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
-                .prefix(keyPrefix).build();
-        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
-        for (S3Object object : listResponse.contents()) {
-            System.out.println("object.key() = " + object.key());
-        }
+//    public Map<String, Object> get(Integer id) {
+//        String keyPrefix = String.format("prj3/%d/", id);
+//        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
+//                .prefix(keyPrefix).build();
+//        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
+//        for (S3Object object : listResponse.contents()) {
+//            System.out.println("object.key() = " + object.key());
+//        }
 //        System.out.println("이것은 get요청");
+//
+//        Map<String, Object> result = new HashMap<>();
+//        int views = mapper.selectCountById(id);
+//        mapper.incrementViewsById(id, views);
+//
+//        Board board = mapper.selectById(id);
+//        List<String> fileNames = mapper.selectFileNameByBoardId(id);
+//        List<BoardFile> files = fileNames.stream()
+//                .map(name -> new BoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
+//        board.setFileList(files);
+//        result.put("board", board);
+//        return result;
+//    }
 
+    public Map<String, Object> getByBoardIdAndMemberId(Integer id, Integer memberId) {
         int views = mapper.selectCountById(id);
         mapper.incrementViewsById(id, views);
 
+        Map<String, Object> result = new HashMap<>();
         Board board = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByBoardId(id);
         List<BoardFile> files = fileNames.stream()
                 .map(name -> new BoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
         board.setFileList(files);
-        return board;
+        Map<String, Object> like = new HashMap<>();
+        if (memberId == null) {
+            like.put("like", false);
+        } else {
+            int c = mapper.selectLikeByBoardIdAndMemberId(id, memberId);
+            like.put("like", c == 1);
+        }
+        like.put("count", mapper.selectCountLikeByBoardId(id));
+        result.put("board", board);
+        result.put("like", like);
+
+
+        return result;
     }
 
     public void delete(Integer id) {

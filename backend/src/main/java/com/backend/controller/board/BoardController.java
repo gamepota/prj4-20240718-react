@@ -49,8 +49,10 @@ public class BoardController {
     }
 
     @GetMapping("{id}")
-    public Board get(@PathVariable Integer id) {
-        return service.get(id);
+    public Map<String, Object> get(@PathVariable Integer id, @RequestParam(required = false) Integer memberId) {
+
+        return service.getByBoardIdAndMemberId(id, memberId);
+
     }
 
     @DeleteMapping("{id}")

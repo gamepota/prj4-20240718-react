@@ -52,8 +52,8 @@ export function BoardView() {
       .get(`/api/board/${id}`)
       .then((res) => {
         console.log(res.data);
-        setBoard(res.data);
-        setLike(res.data);
+        setBoard(res.data.board);
+        setLike(res.data.like);
       })
       .catch((err) => {
         if (err.response.status === 404) {

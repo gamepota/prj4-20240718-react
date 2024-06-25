@@ -17,12 +17,13 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -33,6 +34,7 @@ export function BoardList() {
   const [searchType, setSearchType] = useState("all");
   // const [offsetReset, setOffsetReset] = useState(false);
   const [searchParams] = useSearchParams();
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
 
   const navigate = useNavigate();
 
@@ -75,6 +77,14 @@ export function BoardList() {
     navigate(`?${searchParams}`);
   }
 
+  function handleBoardClick(boardId) {
+    axios
+      .get(`/api/board/${boardId}`, {
+        params: { memberId: memberInfo.id },
+      })
+      .then(() => {})
+      .finally(navigate(`/board/${boardId}`));
+  }
   function handleSearchClick() {}
 
   return (
@@ -226,7 +236,7 @@ export function BoardList() {
                   <Td textAlign="center">{board.boardType}</Td>
                   <Td textAlign="center">{board.id}</Td>
                   <Td
-                    onClick={() => navigate(`/board/${board.id}`)}
+                    onClick={() => handleBoardClick(board.id)}
                     cursor="pointer"
                     _hover={{
                       bgColor: "gray.200",

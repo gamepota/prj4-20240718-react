@@ -145,4 +145,11 @@ public interface BoardMapper {
             WHERE board_id=#{boardId}
             """)
     int selectCountLikeByBoardId(Integer boardId);
+
+    @Select("""
+            SELECT COUNT(*)FROM board_like
+            WHERE board_id=#{id}
+            AND member_id=#{memberId}
+            """)
+    int selectLikeByBoardIdAndMemberId(Integer id, Integer memberId);
 }
