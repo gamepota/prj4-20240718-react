@@ -62,8 +62,8 @@ public class MemberController {
 
     // MemberDelete
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Integer id, @RequestParam String password) {
-        if (service.validatePassword(id, password)) {
+    public ResponseEntity delete(@PathVariable Integer id, @RequestParam(required = false) String password, @RequestHeader(value = "memberInfoId") Integer memberInfoId) {
+        if (memberInfoId == 1 || (password != null && service.validatePassword(id, password))) {
             service.delete(id);
             return ResponseEntity.ok().build();
         }
