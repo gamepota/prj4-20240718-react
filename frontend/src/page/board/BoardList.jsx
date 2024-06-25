@@ -239,6 +239,9 @@ export function BoardList() {
                         {board.numberOfImages}
                       </Badge>
                     )}
+                    {board.numberOfComments && (
+                      <span> [{board.numberOfComments}]</span>
+                    )}
                   </Td>
                   <Td>
                     <span

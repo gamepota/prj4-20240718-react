@@ -83,7 +83,7 @@ export function BoardView() {
       .finally(() => onClose);
   }
   function handleClickLike() {
-    // console.log("좋아요버튼 눌렀을 때 memberInfo=", memberInfo);
+    console.log("좋아요버튼 눌렀을 때 memberInfo=", memberInfo);
     if (!memberInfo) {
       return;
     }

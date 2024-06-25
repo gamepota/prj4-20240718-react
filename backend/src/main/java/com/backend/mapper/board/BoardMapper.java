@@ -64,15 +64,23 @@ public interface BoardMapper {
     Integer selectByBoardType(String boardType);
 
     @Select("""
-            <script>
-            SELECT b.id,b.title,m.nickname writer,b.board_type,b.views FROM board b JOIN member m ON b.member_id = m.id
-                <if test="boardType !='전체'">
-            WHERE board_type = #{boardType}
-                 </if>
-            ORDER BY id DESC
-            LIMIT #{offset},#{pageAmount}
-            </script>
-            """)
+                 <script>
+                 SELECT b.id,b.title,m.nickname writer,b.board_type,b.views,
+            COUNT(DISTINCT f.name)number_of_images,
+            COUNT(DISTINCT  l.member_id)number_of_likes,
+            COUNT(DISTINCT  c.id)number_of_comments
+                 FROM board b JOIN member m ON b.member_id = m.id
+                                            LEFT JOIN board_file f ON b.id=f.board_id
+                                            LEFT JOIN board_like l ON b.id=l.board_id
+                                            LEFT JOIN board_comment c ON b.id=c.board_id
+                     <if test="boardType !='전체'">
+                 WHERE board_type = #{boardType}
+                      </if>
+                GROUP BY b.id
+                 ORDER BY id DESC
+                 LIMIT #{offset},#{pageAmount}
+                 </script>
+                 """)
     List<Board> selectAllPaging(Integer offset, Integer pageAmount, String boardType);
 
 
