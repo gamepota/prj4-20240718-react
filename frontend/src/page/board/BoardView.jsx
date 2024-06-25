@@ -83,7 +83,7 @@ export function BoardView() {
       .finally(() => onClose);
   }
   function handleClickLike() {
-    console.log("좋아요버튼 눌렀을 때 memberInfo=", memberInfo);
+    // console.log("좋아요버튼 눌렀을 때 memberInfo=", memberInfo);
     if (!memberInfo) {
       return;
     }
@@ -113,7 +113,7 @@ export function BoardView() {
         <Box>{board.id}번 게시물</Box>
         <Spacer />
         <Box>조회수:{board.views}</Box>
-        <Box ml={5}>추천수:0</Box>
+        <Box ml={5}>추천수:{like.count}</Box>
         <Spacer />
       </Flex>
       <Box>
