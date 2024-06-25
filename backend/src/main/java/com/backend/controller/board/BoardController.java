@@ -84,6 +84,8 @@ public class BoardController {
                                     Authentication authentication) {
         System.out.println("컨트롤러의 like메서드 req = " + req);
         System.out.println("컨트롤러의 like메세ㅓ드 authentication = " + authentication);
+        if (authentication == null) {
+        }
         return service.like(req, authentication);
     }
 }

@@ -216,7 +216,7 @@ public class BoardService {
 
         //이미 했으면
         int count = mapper.deleteLikeByBoardIdAndMemberId(boardId, memberId);
-        //안했으면
+        //안했으면 (삭제된 행이 없으면)
         if (count == 0) {
             mapper.insertLikeByBoardIdAndMemberId(boardId, memberId);
             result.put("like", true);

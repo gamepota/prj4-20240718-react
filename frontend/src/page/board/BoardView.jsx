@@ -78,13 +78,26 @@ export function BoardView() {
       .finally(() => onClose);
   }
 
+  const memberInfostring = localStorage.getItem("memberInfo");
+  const memberInfo = JSON.parse(memberInfostring);
+  const accessToken = memberInfo.access;
   function handleClickLike() {
     if (!account.memberInfo) {
       return;
     }
+    console.log("memberInfo토큰은", accessToken);
+
     setIsLikeProcessing(true);
     axios
-      .put("/api/board/like", { boardId: board.id })
+      .put(
+        "/api/board/like",
+        { boardId: board.id },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 토큰을 담음
+          },
+        },
+      )
       .then((res) => {
         setLike(res.data);
       })
