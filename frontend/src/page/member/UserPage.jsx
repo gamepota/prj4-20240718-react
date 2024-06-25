@@ -29,7 +29,7 @@ export function UserPage() {
   const toast = useToast();
 
   useEffect(() => {
-    if (!memberInfo || memberInfo.id !== id) {
+    if (!memberInfo || (memberInfo.id !== id && memberInfo.id !== "1")) {
       navigate("/unauthorized"); // 접근 권한이 없을 때 리디렉션할 페이지
       return;
     }
@@ -252,14 +252,16 @@ export function UserPage() {
           <Box mb={4}>{nickname}</Box>
           <Flex justifyContent="space-between">
             <Button
+              width="50%"
               bg="blue.500"
               color="white"
               _hover={{ bg: "blue.600" }}
               onClick={handleEdit}
             >
-              회원 정보 수정
+              정보 수정
             </Button>
             <Button
+              width="50%"
               bg="red.500"
               color="white"
               _hover={{ bg: "red.600" }}
@@ -268,6 +270,19 @@ export function UserPage() {
               회원 탈퇴
             </Button>
           </Flex>
+          {memberInfo && memberInfo.id === "1" && (
+            // 관리자 전용
+            <Button
+              width="100%"
+              bg="green.500"
+              color="white"
+              _hover={{ bg: "green.600" }}
+              mt={4}
+              onClick={() => navigate("/member/list")}
+            >
+              관리자 모드
+            </Button>
+          )}
         </FormControl>
       </Box>
     </Center>
