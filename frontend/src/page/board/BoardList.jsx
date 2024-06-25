@@ -235,11 +235,11 @@ export function BoardList() {
                     {board.title}
                     {board.numberOfImages && (
                       <Badge ml={2}>
-                        <FontAwesomeIcon icon={faImage} />
                         {board.numberOfImages}
+                        <FontAwesomeIcon icon={faImage} />
                       </Badge>
                     )}
-                    {board.numberOfComments && (
+                    {board.numberOfComments > 0 && (
                       <span> [{board.numberOfComments}]</span>
                     )}
                   </Td>

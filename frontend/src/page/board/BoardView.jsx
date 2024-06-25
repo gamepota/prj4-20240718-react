@@ -53,6 +53,7 @@ export function BoardView() {
       .then((res) => {
         console.log(res.data);
         setBoard(res.data);
+        setLike(res.data);
       })
       .catch((err) => {
         if (err.response.status === 404) {
