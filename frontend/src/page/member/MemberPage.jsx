@@ -250,39 +250,40 @@ export function MemberPage() {
             닉네임:
           </Box>
           <Box mb={4}>{nickname}</Box>
-          <Flex justifyContent="space-between">
+          <Flex flexDirection="column" alignItems="center">
             <Button
-              width="50%"
+              width="100%"
               bg="blue.500"
               color="white"
               _hover={{ bg: "blue.600" }}
+              mb={2}
               onClick={handleEdit}
             >
               정보 수정
             </Button>
             <Button
-              width="50%"
+              width="100%"
               bg="red.500"
               color="white"
               _hover={{ bg: "red.600" }}
+              mb={2}
               onClick={handleDeleteMember}
             >
               회원 탈퇴
             </Button>
+            {memberInfo && memberInfo.id === "1" && (
+              // 관리자 전용
+              <Button
+                width="100%"
+                bg="green.500"
+                color="white"
+                _hover={{ bg: "green.600" }}
+                onClick={() => navigate("/member/list")}
+              >
+                관리자 모드
+              </Button>
+            )}
           </Flex>
-          {memberInfo && memberInfo.id === "1" && (
-            // 관리자 전용
-            <Button
-              width="100%"
-              bg="green.500"
-              color="white"
-              _hover={{ bg: "green.600" }}
-              mt={4}
-              onClick={() => navigate("/member/list")}
-            >
-              관리자 모드
-            </Button>
-          )}
         </FormControl>
       </Box>
     </Center>
