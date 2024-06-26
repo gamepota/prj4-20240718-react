@@ -41,6 +41,8 @@ export function BoardView() {
   const toast = useToast();
   // LoginProvider
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
   // if (memberInfo != null) {
   //   const access = memberInfo.access;
   //   const userId = memberInfo.id;
@@ -48,9 +50,6 @@ export function BoardView() {
   //   const isLoggedIn = Boolean(access);
   // }
   useEffect(() => {
-    const memberId =
-      memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
-    const params = memberId ? { memberId } : {};
     axios
       .get(`/api/board/${id}`, {
         params,
@@ -76,7 +75,9 @@ export function BoardView() {
   }
   function handleClickRemove() {
     axios
-      .delete("/api/board/" + board.id)
+      .delete("/api/board/" + board.id, {
+        params,
+      })
       .then(() => {
         toast({
           status: "success",
