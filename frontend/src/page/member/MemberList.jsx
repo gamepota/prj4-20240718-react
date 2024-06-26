@@ -176,13 +176,15 @@ export function MemberList() {
                   >
                     <FontAwesomeIcon icon={faEdit} />
                   </Button>
-                  <Button
-                    size="sm"
-                    colorScheme="red"
-                    onClick={() => handleDeleteMember(member.id)}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
+                  {member.id !== 1 && (
+                    <Button
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => handleDeleteMember(member.id)}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  )}
                 </Td>
               </Tr>
             ))}

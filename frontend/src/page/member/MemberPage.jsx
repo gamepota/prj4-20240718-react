@@ -261,16 +261,18 @@ export function MemberPage() {
             >
               정보 수정
             </Button>
-            <Button
-              width="100%"
-              bg="red.500"
-              color="white"
-              _hover={{ bg: "red.600" }}
-              mb={2}
-              onClick={handleDeleteMember}
-            >
-              회원 탈퇴
-            </Button>
+            {memberInfo && memberInfo.id !== "1" && (
+              <Button
+                width="100%"
+                bg="red.500"
+                color="white"
+                _hover={{ bg: "red.600" }}
+                mb={2}
+                onClick={handleDeleteMember}
+              >
+                회원 탈퇴
+              </Button>
+            )}
             {memberInfo && memberInfo.id === "1" && (
               // 관리자 전용
               <Button
