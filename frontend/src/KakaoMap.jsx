@@ -47,13 +47,34 @@ const KakaoMap = () => {
     const mapOption = {
       center: new kakao.maps.LatLng(36.2, 128.02025),
       level: 13,
-      draggable: false, // 지도 이동 비활성화
+      draggable: true, // 드래그를 기본적으로 활성화
       scrollwheel: false, // 확대/축소 비활성화
     };
 
     const map = new kakao.maps.Map(mapContainer, mapOption);
     const customOverlay = new kakao.maps.CustomOverlay({});
     const infowindow = new kakao.maps.InfoWindow({ removable: true });
+
+    const minLat = 35;
+    const maxLat = 36.4;
+    const fixedLng = 128.02025; // 고정된 경도 값
+
+    // 지도 이동 이벤트 리스너 등록
+    kakao.maps.event.addListener(map, "center_changed", () => {
+      const center = map.getCenter();
+      const lat = center.getLat();
+      const lng = center.getLng();
+
+      // 위도 범위를 벗어나면 제한된 범위 내로 다시 설정
+      if (lat < minLat) {
+        map.setCenter(new kakao.maps.LatLng(minLat, fixedLng));
+      } else if (lat > maxLat) {
+        map.setCenter(new kakao.maps.LatLng(maxLat, fixedLng));
+      } else {
+        // 위도 범위 내에 있으면 경도는 고정
+        map.setCenter(new kakao.maps.LatLng(lat, fixedLng));
+      }
+    });
 
     const displayArea = (coordinates, name) => {
       const path = [];
