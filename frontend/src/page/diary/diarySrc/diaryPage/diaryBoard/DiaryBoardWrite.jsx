@@ -18,7 +18,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryBoardWrite() {
@@ -31,15 +31,18 @@ export function DiaryBoardWrite() {
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const username = memberInfo.nickname;
 
   function handleSaveClick() {
     setLoading(true);
     axios
       .postForm("/api/diaryBoard/add", {
+        id,
         title,
         content,
         files,
-        nickname: memberInfo.nickname,
+        username,
       })
       .then(() => {
         toast({

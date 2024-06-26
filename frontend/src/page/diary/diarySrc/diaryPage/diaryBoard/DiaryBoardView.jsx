@@ -38,7 +38,10 @@ export function DiaryBoardView() {
   useEffect(() => {
     axios
       .get(`/api/diaryBoard/${id}`)
-      .then((res) => setDiaryBoard(res.data))
+      .then((res) => {
+        console.log(res.data);
+        setDiaryBoard(res.data);
+      })
       .catch((err) => {
         if (err.response.status === 404) {
           toast({
@@ -53,7 +56,7 @@ export function DiaryBoardView() {
 
   function handleClickRemove() {
     axios
-      .delete(`/api/diaryBoard/${id}`)
+      .delete("/api/diaryBoard/" + diaryBoard.id)
       .then(() => {
         toast({
           status: "success",
@@ -72,6 +75,7 @@ export function DiaryBoardView() {
       .finally(() => {
         onClose();
       });
+    console.log(diaryBoard.id);
   }
 
   if (diaryBoard === null) {
