@@ -9,15 +9,19 @@ import com.backend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -25,18 +29,29 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DiaryBoardService {
     private final DiaryBoardMapper mapper;
+    private final S3Client s3Client;
     private final MemberMapper memberMapper;
 
     @Value("${aws.s3.bucket.name}")
-    String bucketName;
+    private String bucketName;
 
     @Value("${image.src.prefix}")
-    String srcPrefix;
+    private String srcPrefix;
 
     public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) throws IOException {
-        diaryBoard.setMemberId(Integer.valueOf(authentication.getName()));
-        // 게시물 저장
-        mapper.insert(diaryBoard);
+        String username = diaryBoard.getUsername();
+
+        Member member = memberMapper.selectByDiaryName((username));
+
+        if (member != null) {
+            // 회원 ID를 설정
+            diaryBoard.setMemberId(member.getId());
+
+            // 코멘트를 diary 테이블에 삽입
+            mapper.insert(diaryBoard);
+        } else {
+            throw new UsernameNotFoundException("Username not found: " + username);
+        }
 
         // db에 해당 게시물의 파일 목록 저장
         if (files != null) {
@@ -44,18 +59,19 @@ public class DiaryBoardService {
                 mapper.insertFileName(diaryBoard.getId(), file.getOriginalFilename());
                 //실제 파일 저장
                 // 부모 디렉토리만들기
-                String dir = STR."User:/parjaewook/Temp/prj3/\{diaryBoard.getId()}";
-                File dirFile = new File(dir);
-                if (!dirFile.exists()) {
-                    dirFile.mkdirs();
-                }
+                String fileName = STR."\{diaryBoard.getId()}_\{file.getOriginalFilename()}";
+                String key = STR."prj3/diary/\{diaryBoard.getId()}/\{fileName}";
+                PutObjectRequest objectRequest = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
 
-                // 파일 경로
+                s3Client.putObject(objectRequest,
+                        RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-                String path = STR."/" + file.getOriginalFilename();
-                File destination = new File(path);
-                file.transferTo(destination);
             }
+
         }
 
 
@@ -78,10 +94,10 @@ public class DiaryBoardService {
         Integer countAll = mapper.countAllWithSearch(searchType, keyword);
 
         Integer offset = (page - 1) * 10;
-        Integer lastPageNUmber = (countAll - 1) / 10 + 1;
+        Integer lastPageNumber = (countAll - 1) / 10 + 1;
         Integer leftPageNumber = (page - 1) * 10 * 10 + 1;
         Integer rightPageNumber = leftPageNumber + 9;
-        rightPageNumber = Math.min(rightPageNumber, lastPageNUmber);
+        rightPageNumber = Math.min(rightPageNumber, lastPageNumber);
         leftPageNumber = rightPageNumber - 9;
         leftPageNumber = Math.max(leftPageNumber, 1);
         Integer prevPageNumber = leftPageNumber - 1;
@@ -90,12 +106,12 @@ public class DiaryBoardService {
         if (prevPageNumber > 0) {
             pageInfo.put("prevPageNumber", prevPageNumber);
         }
-        if (nextPageNumber <= lastPageNUmber) {
+        if (nextPageNumber <= lastPageNumber) {
             pageInfo.put("nextPageNumber", nextPageNumber);
         }
 
         pageInfo.put("currentPage", page);
-        pageInfo.put("lastPageNumber", lastPageNUmber);
+        pageInfo.put("lastPageNumber", lastPageNumber);
         pageInfo.put("leftPageNumber", leftPageNumber);
         pageInfo.put("rightPageNumber", rightPageNumber);
         return Map.of("pageInfo", pageInfo, "diaryBoardList", mapper.selectAllPaging(offset, searchType, keyword));
@@ -105,15 +121,13 @@ public class DiaryBoardService {
     public void remove(Integer id) {
         List<String> fileNames = mapper.selectFileNameByDiaryId(id);
 
-        String dir = STR."User:/parkjaewook/Temp/prj3/\{id}";
         for (String fileName : fileNames) {
-            File file = new File(dir + fileName);
-            file.delete();
-        }
-
-        File dirFile = new File(dir);
-        if (dirFile.exists()) {
-            dirFile.delete();
+            String key = STR."prj3/diary/\{id}/\{fileName}";
+            DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+            s3Client.deleteObject(objectRequest);
         }
 
         //diaryBoardFile
@@ -123,15 +137,34 @@ public class DiaryBoardService {
         mapper.deleteById(id);
     }
 
-    public void edit(DiaryBoard diaryBoard, List<String> removeFileList) {
+    public void edit(DiaryBoard diaryBoard, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
         if (removeFileList != null && removeFileList.size() > 0) {
             for (String fileName : removeFileList) {
-                // disk의 파일 삭제
-                String path = STR."User:/parkjaewook/Temp/prj3/\{diaryBoard}/\{fileName}";
-                File file = new File(path);
-                file.delete();
+                String key = STR."prj3/diary/\{diaryBoard.getId()}/\{fileName}";
+                DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build();
+                s3Client.deleteObject(objectRequest);
+
                 // db records 삭제
                 mapper.deleteFileByDiaryIdAndName(diaryBoard.getId(), fileName);
+            }
+        }
+        if (addFileList != null && addFileList.length > 0) {
+            List<String> fileNameList = mapper.selectFileNameByDiaryId(diaryBoard.getId());
+            for (MultipartFile file : addFileList) {
+                String fileName = file.getOriginalFilename();
+
+                if (!fileNameList.contains(fileName)) {
+
+                    mapper.insertFileName(diaryBoard.getId(), fileName);
+                }
+                //disk 에 쓰기
+                String key = STR."prj3/diary/\{diaryBoard.getId()}/\{fileName}";
+                PutObjectRequest objectRequest = PutObjectRequest.builder().bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ).build();
+
+                s3Client.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
             }
         }
         mapper.update(diaryBoard);
@@ -141,23 +174,32 @@ public class DiaryBoardService {
         if (authentication == null) {
             return false;
         }
+
+
         DiaryBoard diaryBoard = mapper.selectById(id);
         Object principal = authentication.getPrincipal();
         if (principal instanceof CustomUserDetails username) {
             Member member = username.getMember();
-
             return diaryBoard.getMemberId().equals(member.getId());
         }
+
         return diaryBoard.getMemberId().equals(Integer.valueOf(authentication.getName()));
     }
 
     public DiaryBoard get(Integer id) {
+        String keyPrefix = String.format("prj3/%d/", id);
+        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
+                .prefix(keyPrefix).build();
+        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
+        for (S3Object object : listResponse.contents()) {
+            System.out.println("object.key() = " + object.key());
+        }
+
 
         DiaryBoard diaryBoard = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByDiaryId(id);
         List<DiaryBoardFile> files = fileNames.stream()
-                .map(name -> new DiaryBoardFile(name, STR."http://localhost:5173/\{id}/\{name}"))
-                .toList();
+                .map(name -> new DiaryBoardFile(name, srcPrefix + "diary/" + id + "/" + name)).collect(Collectors.toList());
 
         diaryBoard.setFileList(files);
 

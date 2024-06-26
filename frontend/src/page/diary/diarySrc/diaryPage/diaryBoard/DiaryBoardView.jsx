@@ -26,10 +26,10 @@ import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryBoardView() {
   const { id } = useParams();
-  const [diary, setDiary] = useState(null);
+  const [diaryBoard, setDiaryBoard] = useState(null);
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  const access = memberInfo?.access || null;
   const nickname = memberInfo?.nickname || null;
+  const access = memberInfo?.access || null;
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
@@ -38,7 +38,10 @@ export function DiaryBoardView() {
   useEffect(() => {
     axios
       .get(`/api/diaryBoard/${id}`)
-      .then((res) => setDiary(res.data))
+      .then((res) => {
+        console.log(res.data);
+        setDiaryBoard(res.data);
+      })
       .catch((err) => {
         if (err.response.status === 404) {
           toast({
@@ -49,22 +52,18 @@ export function DiaryBoardView() {
           navigate("/diary/home");
         }
       });
-  }, [id, navigate, toast]);
+  }, [id]);
 
   function handleClickRemove() {
     axios
-      .delete(`/api/diaryBoard/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access")}`,
-        },
-      })
+      .delete("/api/diaryBoard/" + diaryBoard.id)
       .then(() => {
         toast({
           status: "success",
-          description: `$게시물이 삭제되었습니다.`,
+          description: `${id}게시물이 삭제되었습니다.`,
           position: "top",
         });
-        navigate("/");
+        navigate("/diary/home");
       })
       .catch(() => {
         toast({
@@ -76,39 +75,32 @@ export function DiaryBoardView() {
       .finally(() => {
         onClose();
       });
+    console.log(diaryBoard.id);
   }
 
-  if (diary === null) {
+  if (diaryBoard === null) {
     return <Spinner />;
   }
 
   return (
     <Box>
-      <Box>게시물</Box>
+      <Box>{diaryBoard.id}번째 일기</Box>
       <Box>
         <Box mb={7}>
           <FormControl>
             <FormLabel>제목</FormLabel>
-            <Input value={diary.title} readOnly />
+            <Input value={diaryBoard.title} readOnly />
           </FormControl>
         </Box>
         <Box mb={7}>
           <FormControl>
             <FormLabel>본문</FormLabel>
-            <Textarea value={diary.content} readOnly />
+            <Textarea value={diaryBoard.content} readOnly />
           </FormControl>
         </Box>
-        <Box>
-          {diary.imageSrcList &&
-            diary.imageSrcList.map((src) => (
-              <Box border={"2px solid black"} m={3} key={src}>
-                <Image src={src} />
-              </Box>
-            ))}
-        </Box>
         <Box mb={7}>
-          {diary.fileList &&
-            diary.fileList.map((file) => (
+          {diaryBoard.fileList &&
+            diaryBoard.fileList.map((file) => (
               <Card m={3} key={file.name}>
                 <CardBody>
                   <Image w={"100%"} src={file.src} />
@@ -119,16 +111,16 @@ export function DiaryBoardView() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input value={diary.writer} readOnly />
+            <Input value={diaryBoard.writer} readOnly />
           </FormControl>
         </Box>
         <Box mb={7}>
           <FormControl>작성일시</FormControl>
-          <Input type="datetime-local" value={diary.inserted} readOnly />
+          <Input type="datetime-local" value={diaryBoard.inserted} readOnly />
         </Box>
         <Flex mb={7} gap={2}>
           <Button
-            onClick={() => navigate(`/diary/edit/${diary.id}`)}
+            onClick={() => navigate(`/diary/edit/${diaryBoard.id}`)}
             colorScheme="purple"
           >
             수정

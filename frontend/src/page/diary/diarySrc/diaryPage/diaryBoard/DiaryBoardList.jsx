@@ -4,6 +4,7 @@ import {
   Button,
   Center,
   Flex,
+  Heading,
   Input,
   Select,
   Table,
@@ -13,7 +14,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
@@ -22,12 +23,13 @@ import {
   faAnglesRight,
   faImages,
   faMagnifyingGlass,
-  faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryBoardList() {
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const [diaryBoardList, setDiaryBoardList] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
   const [searchType, setSearchType] = useState("all");
@@ -54,6 +56,8 @@ export function DiaryBoardList() {
     }
   }, [searchParams]);
 
+  console.log("boardList" + diaryBoardList);
+  console.log("pageInfo" + pageInfo);
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
     pageNumbers.push(i);
@@ -70,50 +74,59 @@ export function DiaryBoardList() {
 
   return (
     <Box>
-      <Box>다이어리 목록</Box>
-      <Button onClick={() => navigate("/diary/write/id")}>글쓰기</Button>
+      <Box mb={5}></Box>
+      <Center>
+        <Heading>다이어리 목록</Heading>
+      </Center>
+      <Box>
+        <Button onClick={() => navigate(`/diary/write/${memberInfo.id}`)}>
+          글쓰기
+        </Button>
+      </Box>
       <Box>
         {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
         {diaryBoardList.length > 0 && (
           <Table>
             <Thead>
               <Tr>
-                <Th>#</Th>
-                <Th>TITLE</Th>
-                <Th>
-                  <FontAwesomeIcon icon={faUserPen} />
-                </Th>
+                <Th>N번째 일기</Th>
+                <Th>내용</Th>
+                <Th>who?</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {diaryBoardList.map((diary) => (
+              {diaryBoardList.map((diaryBoard) => (
                 <Tr
                   _hover={{
                     bgColor: "gray.200",
                   }}
                   cursor={"pointer"}
-                  onClick={() => navigate(`/diaryBoard/${diary.id}`)}
-                  key={diary.id}
+                  onClick={() => navigate(`/diary/view/${diaryBoard.id}`)}
+                  key={diaryBoard.id}
                 >
-                  <Td>{diary.id}</Td>
+                  <Td>{diaryBoard.id}</Td>
                   <Td>
-                    {diary.title}
-                    {diary.numberOfImages > 0 && (
-                      <Badge>
-                        <FontAwesomeIcon icon={faImages} />
-                        {diary.numberOfImages}
+                    {diaryBoard.title}
+                    {diaryBoard.numberOfImages > 0 && (
+                      <Badge ml={2}>
+                        <Flex gap={1}>
+                          <Box>
+                            <FontAwesomeIcon icon={faImages} />
+                          </Box>
+                          <Box>{diaryBoard.numberOfImages}</Box>
+                        </Flex>
                       </Badge>
                     )}
                   </Td>
-                  <Td>{diary.writer}</Td>
+                  <Td>{memberInfo.nickname}</Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
         )}
       </Box>
-      <Box>
-        <Flex>
+      <Center mb={10}>
+        <Flex gap={1}>
           <Box>
             <Select
               value={searchType}
@@ -137,45 +150,47 @@ export function DiaryBoardList() {
             </Button>
           </Box>
         </Flex>
-      </Box>
+      </Center>
       <Center>
-        {pageInfo.prevPageNumber && (
-          <>
-            <Button onClick={() => handlePageButtonClick(1)}>
-              <FontAwesomeIcon icon={faAnglesLeft} />
-            </Button>
+        <Flex gap={1}>
+          {pageInfo.prevPageNumber && (
+            <>
+              <Button onClick={() => handlePageButtonClick(1)}>
+                <FontAwesomeIcon icon={faAnglesLeft} />
+              </Button>
+              <Button
+                onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
+              >
+                <FontAwesomeIcon icon={faAngleLeft} />
+              </Button>
+            </>
+          )}
+          {pageNumbers.map((pageNumber) => (
             <Button
-              onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
+              onClick={() => handlePageButtonClick(pageNumber)}
+              key={pageNumber}
+              colorScheme={
+                pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
+              }
             >
-              <FontAwesomeIcon icon={faAngleLeft} />
+              {pageNumbers}
             </Button>
-          </>
-        )}
-        {pageNumbers.map((pageNumber) => (
-          <Button
-            onClick={() => handlePageButtonClick(pageNumber)}
-            key={pageNumber}
-            colorScheme={
-              pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
-            }
-          >
-            {pageNumbers}
-          </Button>
-        ))}
-        {pageInfo.nextPageNumber && (
-          <>
-            <Button
-              onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
-            >
-              <FontAwesomeIcon icon={faAngleRight} />
-            </Button>
-            <Button
-              onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
-            >
-              <FontAwesomeIcon icon={faAnglesRight} />
-            </Button>
-          </>
-        )}
+          ))}
+          {pageInfo.nextPageNumber && (
+            <>
+              <Button
+                onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
+              >
+                <FontAwesomeIcon icon={faAngleRight} />
+              </Button>
+              <Button
+                onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
+              >
+                <FontAwesomeIcon icon={faAnglesRight} />
+              </Button>
+            </>
+          )}
+        </Flex>
       </Center>
     </Box>
   );

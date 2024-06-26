@@ -4,6 +4,9 @@ package com.backend.controller.diary;
 import com.backend.domain.diary.DiaryComment;
 import com.backend.service.diary.DiaryCommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +19,14 @@ public class DiaryCommentController {
     private final DiaryCommentService service;
 
     @PostMapping("add")
-    public void addComment(@RequestBody DiaryComment diaryComment) {
-        service.addComment(diaryComment);
+    public ResponseEntity addComment(@RequestBody DiaryComment diaryComment,
+                                     Authentication authentication) {
+        if (service.validate(diaryComment)) {
+            service.addComment(diaryComment, authentication);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("list/{id}")
@@ -26,13 +35,25 @@ public class DiaryCommentController {
     }
 
     @DeleteMapping("diaryDelete")
-    public void diaryDelete(@RequestBody DiaryComment diaryComment) {
-        service.diaryDelete(diaryComment);
+    public ResponseEntity diaryDelete(@RequestBody DiaryComment diaryComment,
+                                      Authentication authentication) {
+        if (service.hasAccess(diaryComment, authentication)) {
+            service.diaryDelete(diaryComment);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
     @PutMapping("diaryUpdate")
-    public void diaryUpdate(@RequestBody DiaryComment diaryComment) {
-        service.diaryUpdate(diaryComment);
+    public ResponseEntity diaryUpdate(@RequestBody DiaryComment diaryComment
+            , Authentication authentication) {
+        if (service.validate(diaryComment)) {
+            service.diaryUpdate(diaryComment);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("{id}")

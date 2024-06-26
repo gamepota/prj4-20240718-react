@@ -18,7 +18,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryBoardWrite() {
@@ -27,19 +27,22 @@ export function DiaryBoardWrite() {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  const access = memberInfo?.access || null;
-  const nickname = memberInfo?.nickname || null;
+  const access = memberInfo.access;
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const username = memberInfo.nickname;
 
   function handleSaveClick() {
     setLoading(true);
     axios
       .postForm("/api/diaryBoard/add", {
+        id,
         title,
         content,
         files,
+        username,
       })
       .then(() => {
         toast({
@@ -47,7 +50,7 @@ export function DiaryBoardWrite() {
           status: "success",
           position: "top",
         });
-        navigate("diary/list");
+        navigate(`/diary/list`);
       })
       .catch((e) => {
         const code = e.response.status;
@@ -79,7 +82,7 @@ export function DiaryBoardWrite() {
   const fileNameList = [];
   for (let i = 0; i < files.length; i++) {
     fileNameList.push(
-      <Box>
+      <Box key={i}>
         <Text fontSize={"md"}>{files[i].name}</Text>
       </Box>,
     );
@@ -118,7 +121,7 @@ export function DiaryBoardWrite() {
               accept="image/*"
               onChange={(e) => setFiles(e.target.files)}
             />
-            <FormHelperText>즉당히 넣으십시오</FormHelperText>
+            <FormHelperText>쬐끔만 넣어주시길 바랍니다</FormHelperText>
           </FormControl>
         </Box>
         {fileNameList.length > 0 && (

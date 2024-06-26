@@ -1,47 +1,77 @@
-import { Card, CardBody, Stack, StackDivider } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { DiaryCommentItem } from "./DiaryCommentItem.jsx";
-import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryCommentList() {
-  const [commentList, setCommentList] = useState([]);
+  const [diaryCommentList, setDiaryCommentList] = useState([]);
   const { id } = useParams();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (id && !isProcessing) {
-      axios
-        .get(`/api/diaryComment/list/${id}`)
-        .then((res) => {
-          setCommentList(res.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching comments:", error);
-        });
-    }
-  }, [id, isProcessing]);
+    axios
+      .get(`/api/diaryComment/list?${id}`)
+      .then((res) => {
+        setDiaryCommentList(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching comments:", err);
+      })
+      .finally(() => {});
+  }, [id]);
 
   return (
-    <Card>
-      <CardBody>
-        <Stack divider={<StackDivider />} spacing={4}>
-          {commentList.map((diaryComment) => (
-            <DiaryCommentItem
-              isProcessing={isProcessing}
-              setIsProcessing={setIsProcessing}
-              diaryComment={diaryComment}
-              key={diaryComment.id}
-            />
-          ))}
-          <DiaryCommentWrite
-            isProcessing={isProcessing}
-            setIsProcessing={setIsProcessing}
-            id={id}
-          />
-        </Stack>
-      </CardBody>
-    </Card>
+    <Box>
+      <Box mb={5}></Box>
+      <Center>
+        <Heading>방명록 목록</Heading>
+      </Center>
+      <Box>
+        <Button
+          onClick={() => navigate(`/diary/comment/write/${memberInfo.id}`)}
+        >
+          작성
+        </Button>
+      </Box>
+      <Box>
+        {diaryCommentList.length === 0 && <Center>방명록이 없습니다.</Center>}
+        {diaryCommentList.length > 0 && (
+          <Table>
+            <Thead>
+              <Tr>
+                <Th>작성자</Th>
+                <Th>방명록</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {diaryCommentList.map((diaryComment) => (
+                <Tr
+                  onClick={() =>
+                    navigate(`/diary/comment/view/${diaryComment.id}`)
+                  }
+                  key={diaryComment.id}
+                >
+                  <Td>diaryComment.id</Td>
+                  <Td>{memberInfo.nickname}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        )}
+      </Box>
+    </Box>
   );
 }

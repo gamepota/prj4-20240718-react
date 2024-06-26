@@ -9,11 +9,11 @@ import java.util.List;
 public interface DiaryBoardMapper {
 
     @Insert("""
-                INSERT INTO diary(title, content, member_id)
-                VALUES (#{title}, #{content},  #{memberId})
+                INSERT INTO diary(title, content, member_id,username)
+                VALUES (#{title}, #{content},  #{memberId},#{username})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insert(DiaryBoard diaryBoard);
+    public int insert(DiaryBoard diaryBoard);
 
     @Select("""
                 SELECT
@@ -26,7 +26,13 @@ public interface DiaryBoardMapper {
     List<DiaryBoard> selectAll();
 
     @Select("""
-                SELECT d.id, d.title, d.content, d.inserted,m.nickname writer,d.member_id
+                SELECT d.id,
+                       d.title,
+                       d.content,
+                       d.inserted,
+                       m.nickname writer,
+                       d.member_id,
+                       d.username
                 FROM diary d JOIN member m ON d.member_id = m.id
                 WHERE d.id = #{id}
             """)
@@ -42,7 +48,8 @@ public interface DiaryBoardMapper {
                 UPDATE diary
                 SET title = #{title},
                     content = #{content},
-                    member_id = #{memberId}
+                    username = #{username},
+                    nickname = #{nickname}
                 WHERE id = #{id}
             """)
     int update(DiaryBoard diaryBoard);
@@ -51,7 +58,7 @@ public interface DiaryBoardMapper {
                 <script>
                 SELECT d.id,
                        d.title,
-                       m.nickname,
+                       m.nickname writer,
                        COUNT(DISTINCT f.name) AS number_of_images
                 FROM diary d
                 JOIN member m ON d.member_id = m.id
@@ -103,7 +110,7 @@ public interface DiaryBoardMapper {
                 INSERT INTO diary_file(diary_id, name)
                 VALUES (#{diaryId}, #{name})
             """)
-    int insertFileName(@Param("diaryId") Integer diaryId, @Param("name") String name);
+    int insertFileName(Integer diaryId, String name);
 
     @Select("""
                 SELECT name
@@ -140,7 +147,7 @@ public interface DiaryBoardMapper {
     List<DiaryBoard> selectByMemberId(Integer memberId);
 
     @Delete("""
-            DELETE FROM diaryBoard_file
+            DELETE FROM diary_file
             WHERE diary_id=#{diaryId}
               AND name=#{fileName}
             """)
