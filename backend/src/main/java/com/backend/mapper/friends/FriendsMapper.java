@@ -12,11 +12,21 @@ import java.util.List;
 public interface FriendsMapper {
 
 	@Select("""
-            SELECT m.id, m.nickname
-            FROM friends f
-            JOIN member m ON f.friend_nickname = m.nickname
-            WHERE f.member_nickname = #{nickname}
-            """)
-	List<Member> selectFriendsByNickname(@Param("nickname") String nickname);
-}
+        SELECT m.id, m.nickname
+        FROM friends f
+        JOIN member m ON f.friend_id = m.id
+        WHERE f.member_id = #{memberId}
+    """)
+	List<Member> selectFriendsById(@Param("memberId") int memberId);
 
+	@Insert("""
+        INSERT INTO friends (member_id, friend_id, member_nickname, friend_nickname)
+        VALUES (
+            #{memberId},
+            #{friendId},
+            (SELECT nickname FROM member WHERE id = #{memberId}),
+            (SELECT nickname FROM member WHERE id = #{friendId})
+        )
+    """)
+	void insertFriend(@Param("memberId") int memberId, @Param("friendId") int friendId);
+}

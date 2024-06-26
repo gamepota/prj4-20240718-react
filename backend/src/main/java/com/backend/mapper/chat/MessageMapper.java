@@ -11,15 +11,15 @@ import java.util.List;
 public interface MessageMapper {
 	@Insert("""
 					INSERT INTO chat_message
-					    (sender_id, recipient_id, content, timestamp)
-					VALUES (#{sender}, #{recipient}, #{content}, #{timestamp})
+					    (sender_id, recipient_id, content, sender_nick_name, recipient_nick_name)
+					VALUES (#{senderId}, #{recipientId}, #{content}, #{senderNickName}, #{recipientNickName})
 					""")
 	void insertMessage(ChatMessage message);
 
 	@Select("""
 					SELECT *
 					FROM chat_message
-					WHERE recipient_id = #{recipient}
+					WHERE recipient_id = #{recipientId}
 					""")
-	List<ChatMessage> findMessagesByRecipient(String recipient);
+	List<ChatMessage> findMessagesByRecipient(Integer recipientId);
 }

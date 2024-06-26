@@ -25,14 +25,14 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false); // 기본값을 minimized로 설정
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (username && selectedFriend) {
       const roomId = [userId, selectedFriend.id].sort().join('-'); // 고유한 채팅방 ID 생성
       console.log(roomId);
-      const socket = new SockJS(`http://localhost:8080/ws`);
+      const socket = new SockJS(`/ws`);
       const client = new Client({
         webSocketFactory: () => socket,
         reconnectDelay: 5000,
@@ -46,6 +46,9 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
           setIsConnected(true);
           setStompClient(client);
           console.log("STOMP Client Connected");
+
+          // Fetch previous messages
+          fetchMessagesForUser(userId);
         },
         onStompError: (frame) => {
           console.error("Broker error: ", frame.headers["message"], frame.body);
@@ -70,6 +73,15 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
     }
   }, [username, selectedFriend]);
 
+  const fetchMessagesForUser = async (userId) => {
+    try {
+      const response = await axios.get(`/api/chat/messages/${userId}`);
+      setMessages(response.data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   }, [messages]);
@@ -90,7 +102,8 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
       senderId: userId,
       recipientId: selectedFriend.id,
       content: message,
-      timestamp: new Date().toLocaleString()
+      senderNickName: username,
+      recipientNickName: selectedFriend.nickname
     };
     console.log("Sending message:", chatMessage);
 
@@ -102,7 +115,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
 
     // HTTP POST 요청을 통해 메시지 저장
     try {
-      await axios.post('http://localhost:8080/chat', chatMessage);
+      await axios.post('/api/chat', chatMessage); // axios 요청 경로 수정
       console.log("Message saved to the server");
     } catch (error) {
       console.error("Error saving message to the server:", error);
@@ -126,7 +139,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
         <HStack>
           <Text fontWeight="bold">채팅</Text>
-          <Text fontSize="sm" color="gray.500">with {selectedFriend.nickname}</Text>
+          <Text color={"gray.400"}> with {selectedFriend.nickname}</Text>
         </HStack>
         <Box display="flex" justifyContent="flex-end" alignItems="center">
           <IconButton
@@ -143,9 +156,11 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
           <Box width="100%" h="300px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg">
             {messages.map((msg, index) => (
               <Box key={index} bg={msg.senderId === userId ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
-                <Text fontWeight="bold">{msg.senderId}</Text>
+                <Text fontWeight="bold">{msg.senderNickName}</Text>
                 <Text>{msg.content}</Text>
-                <Text fontSize="xs" color="gray.500">{new Date(msg.timestamp).toLocaleTimeString()}</Text>
+                <Text fontSize="xs" color="gray.500">
+                  {new Date(msg.timestamp).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
+                </Text>
               </Box>
             ))}
             <div ref={messagesEndRef} />

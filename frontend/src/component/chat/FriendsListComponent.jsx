@@ -11,21 +11,21 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
   const [friends, setFriends] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
 
   const { memberInfo } = useContext(LoginContext);
+  const memberId = memberInfo ? memberInfo.id : null; // ID 사용
   console.log("LoginContext:", memberInfo); // 로그 추가
-  const nickname = memberInfo ? memberInfo.nickname : null;
-  console.log("Nickname:", nickname); // 로그 추가
+  console.log("Member ID:", memberId); // 로그 추가
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
   };
 
   useEffect(() => {
-    if (nickname) {
-      console.log(`Fetching friends for nickname: ${nickname}`);
-      axios.get(`/api/friends/${nickname}`)
+    if (memberId) {
+      console.log(`Fetching friends for member ID: ${memberId}`);
+      axios.get(`/api/friends/${memberId}`)
         .then(response => {
           console.log('Fetched friends:', response.data);
           setFriends(response.data);
@@ -37,9 +37,9 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
           setIsLoading(false); // 로딩 상태를 false로 설정
         });
     } else {
-      setIsLoading(true); // nickname이 null일 때 로딩 상태로 설정
+      setIsLoading(true); // memberId가 null일 때 로딩 상태로 설정
     }
-  }, [nickname]);
+  }, [memberId]);
 
   return (
     <VStack>

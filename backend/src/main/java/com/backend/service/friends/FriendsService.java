@@ -1,5 +1,6 @@
 package com.backend.service.friends;
 
+import com.backend.domain.friends.FriendRequest;
 import com.backend.domain.member.Member;
 import com.backend.mapper.friends.FriendsMapper;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,12 @@ public class FriendsService {
 		this.friendsMapper = friendsMapper;
 	}
 
-	public List<Member> getFriendsWithNicknames(String nickname) {
-		return friendsMapper.selectFriendsByNickname(nickname);
+	public List<Member> getFriendsWithIds(int memberId) {
+		return friendsMapper.selectFriendsById(memberId);
+	}
+
+	public void addFriend(FriendRequest friendRequest) {
+		friendsMapper.insertFriend(friendRequest.getMemberId(), friendRequest.getFriendId());
+		friendsMapper.insertFriend(friendRequest.getFriendId(), friendRequest.getMemberId());
 	}
 }
