@@ -56,7 +56,8 @@ export function DiaryBoardEdit() {
   function handleClickSave() {
     axios
       .putForm("/api/diaryBoard/edit", {
-        id: diaryBoard.id,
+        // id: diaryBoard.id,
+        id: memberInfo.id,
         title: diaryBoard.title,
         content: diaryBoard.content,
         removeFileList,
@@ -84,6 +85,7 @@ export function DiaryBoardEdit() {
       });
   }
 
+  console.log(memberInfo.id);
   if (diaryBoard === null) {
     return <Spinner />;
   }

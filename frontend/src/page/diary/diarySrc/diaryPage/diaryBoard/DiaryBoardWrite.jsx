@@ -82,7 +82,7 @@ export function DiaryBoardWrite() {
   const fileNameList = [];
   for (let i = 0; i < files.length; i++) {
     fileNameList.push(
-      <Box>
+      <Box key={i}>
         <Text fontSize={"md"}>{files[i].name}</Text>
       </Box>,
     );
