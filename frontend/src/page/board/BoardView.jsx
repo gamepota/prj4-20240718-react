@@ -48,9 +48,11 @@ export function BoardView() {
   //   const isLoggedIn = Boolean(access);
   // }
   useEffect(() => {
+    const params =
+      memberInfo && memberInfo.id ? { memberId: memberInfo.id } : {};
     axios
       .get(`/api/board/${id}`, {
-        params: { memberId: memberInfo.id },
+        params: { params },
       })
       .then((res) => {
         console.log(res.data);
