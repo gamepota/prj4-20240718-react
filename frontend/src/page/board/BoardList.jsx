@@ -4,30 +4,37 @@ import {
   Button,
   Center,
   Flex,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Select,
   Table,
   Tbody,
+  Td,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [pageAmount, setPageAmount] = useState(30);
   const [pageInfo, setPageInfo] = useState({});
   const [boardType, setBoardType] = useState("전체");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchType, setSearchType] = useState("all");
   // const [offsetReset, setOffsetReset] = useState(false);
   const [searchParams] = useSearchParams();
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
 
   const navigate = useNavigate();
 
@@ -42,15 +49,13 @@ export function BoardList() {
         console.error("Error fetching data:", error);
       });
   }, [searchParams]);
-  console.log("searchParam=", searchParams.toString());
-  console.log("pageInfo=", pageInfo);
 
   function handlePageSizeChange(number) {
     setPageAmount(number);
     // setOffsetReset(true);
     searchParams.set("pageAmount", number);
     searchParams.set("offsetReset", true);
-    console.log("searchParams=" + searchParams.toString());
+    // console.log("searchParams=" + searchParams.toString());
     navigate(`?${searchParams}`);
   }
 
@@ -71,6 +76,14 @@ export function BoardList() {
     searchParams.set("boardType", boardType);
     navigate(`?${searchParams}`);
   }
+
+  function handleBoardClick(boardId) {
+    axios
+      .get(`/api/board/${boardId}`)
+      .then(() => {})
+      .finally(navigate(`/board/${boardId}`));
+  }
+  function handleSearchClick() {}
 
   return (
     <>
@@ -205,37 +218,64 @@ export function BoardList() {
           <Table boxShadow="lg" borderRadius="10">
             <Thead>
               <Tr>
-                <Th>게시판 종류</Th>
+                <Th textAlign={"center"}>게시판 종류</Th>
                 <Th>게시글ID</Th>
-                <Th w={500} textAlign={"center"}>
+                <Th w={500} textAlign="center">
                   제목
                 </Th>
                 <Th>작성자</Th>
+                <Th>추천수</Th>
                 <Th>조회수</Th>
               </Tr>
             </Thead>
             <Tbody>
               {boardList.map((board) => (
-                <Tr
-                  _hover={{
-                    bgColor: "gray.200",
-                  }}
-                  cursor={"pointer"}
-                  onClick={() => navigate(`/board/${board.id}`)}
-                  key={board.id}
-                >
-                  <td>{board.boardType}</td>
-                  <td>{board.id}</td>
-                  <td>
+                <Tr key={board.id}>
+                  <Td textAlign="center">
+                    <span
+                      onClick={() =>
+                        handleClickBoardTypeButton(board.boardType)
+                      }
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    >
+                      {board.boardType}
+                    </span>
+                  </Td>
+                  <Td textAlign="center">{board.id}</Td>
+                  <Td
+                    onClick={() => handleBoardClick(board.id)}
+                    cursor="pointer"
+                    _hover={{
+                      bgColor: "gray.200",
+                    }}
+                  >
                     {board.title}
-                    {board.numberOfImages && (
-                      <Badge>
+                    {board.numberOfImages > 0 && (
+                      <Badge ml={2}>
+                        {board.numberOfImages}
                         <FontAwesomeIcon icon={faImage} />
-                        {board.numbefOfImages}
                       </Badge>
                     )}
-                  </td>
-                  <td>{board.writer}</td>
+                    {board.numberOfComments > 0 && (
+                      <span> [{board.numberOfComments}]</span>
+                    )}
+                  </Td>
+                  <Td>
+                    <span
+                      onClick={() => navigate(`/diary/view/${board.memberId}`)}
+                      style={{
+                        cursor: "pointer",
+                        color: "blue",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      {board.writer}
+                    </span>
+                  </Td>
+                  <Td textAlign="center">{board.numberOfLikes}</Td>
+                  <Td textAlign="center">{board.views}</Td>
                 </Tr>
               ))}
             </Tbody>
@@ -280,6 +320,32 @@ export function BoardList() {
               </Button>
             </>
           )}
+        </Flex>
+      </Center>
+      <Center mb={10}>
+        <Flex gap={1}>
+          <Box>
+            <Select
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value)}
+            >
+              <option value="all">전체</option>
+              <option value="text">글</option>
+              <option value="nickName">작성자</option>
+            </Select>
+          </Box>
+          <Box>
+            <Input
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              placeholder="검색어"
+            />
+          </Box>
+          <Box>
+            <Button onClick={handleSearchClick}>
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </Button>
+          </Box>
         </Flex>
       </Center>
     </>

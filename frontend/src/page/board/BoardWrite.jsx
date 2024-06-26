@@ -7,11 +7,16 @@ import {
   FormHelperText,
   FormLabel,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Textarea,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
@@ -20,8 +25,9 @@ export function BoardWrite() {
   const [files, setFiles] = useState([]);
   const [invisibledText, setInvisibledText] = useState(true);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const [boardType, setBoardType] = useState("자유");
   const navigate = useNavigate();
-  const account = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
 
   // const onDrop = useCallback(
   //   (acceptedFiles) => {
@@ -55,7 +61,8 @@ export function BoardWrite() {
       .postForm("/api/board/add", {
         title,
         content,
-        writer,
+        boardType,
+        memberId: memberInfo.id,
         files,
       })
       .then(() => {
@@ -104,6 +111,7 @@ export function BoardWrite() {
       }
     }
   }
+
   return (
     <Center>
       <Box
@@ -115,6 +123,12 @@ export function BoardWrite() {
         mt={10}
       >
         <Box>
+          <Box>
+            <FormControl>
+              <FormLabel>작성자</FormLabel>
+              <Input readOnly value={memberInfo.nickname} />
+            </FormControl>
+          </Box>
           <FormControl>
             <FormLabel>제목</FormLabel>
             <Input
@@ -122,6 +136,52 @@ export function BoardWrite() {
               onChange={(e) => setTitle(e.target.value)}
             ></Input>
           </FormControl>
+        </Box>
+        <Box>
+          <Box>카테고리 선택</Box>
+          <Menu>
+            {({ isOpen }) => (
+              <>
+                <MenuButton
+                  as={Button}
+                  rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                  bg="teal.500"
+                  color="white"
+                  fontWeight="bold"
+                  _hover={{ bg: "teal.600" }}
+                  _active={{ bg: "teal.700" }}
+                  size="lg"
+                  p={4}
+                  width="300"
+                >
+                  {`${boardType} 게시판`}
+                </MenuButton>
+                <MenuList overflowY="auto">
+                  <MenuItem onClick={() => setBoardType("자유")}>
+                    자유 게시판
+                  </MenuItem>
+                  <MenuItem onClick={() => setBoardType("사진 공유")}>
+                    사진 공유 게시판
+                  </MenuItem>
+                  <MenuItem onClick={() => setBoardType("질문/답변")}>
+                    질문/답변 게시판
+                  </MenuItem>
+                  <MenuItem onClick={() => setBoardType("반려동물 건강")}>
+                    반려동물 건강 게시판
+                  </MenuItem>
+                  <MenuItem onClick={() => setBoardType("훈련/교육")}>
+                    훈련/교육 게시판
+                  </MenuItem>
+                  <MenuItem onClick={() => setBoardType("리뷰")}>
+                    리뷰 게시판
+                  </MenuItem>
+                  <MenuItem onClick={() => setBoardType("이벤트/모임")}>
+                    이벤트/모임 게시판
+                  </MenuItem>
+                </MenuList>
+              </>
+            )}
+          </Menu>
         </Box>
         <Box>
           <FormControl>
@@ -151,12 +211,7 @@ export function BoardWrite() {
         <Box>
           <ul>{fileNameList}</ul>
         </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>작성자</FormLabel>
-            <Input readOnly value={writer} />
-          </FormControl>
-        </Box>
+
         <Box>
           <Button
             colorScheme={"blue"}

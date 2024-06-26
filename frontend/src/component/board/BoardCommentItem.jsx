@@ -92,7 +92,7 @@ export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
       )}
       {isEditing && (
         <BoardCommentEdit
-          comment={comment.boardComment}
+          comment={comment}
           setIsEditing={setIsEditing}
           setIsProcessing={setIsProcessing}
           isProcessing={isProcessing}

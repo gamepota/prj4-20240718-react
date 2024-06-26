@@ -4,7 +4,9 @@ import com.backend.domain.board.Board;
 import com.backend.service.board.BoardService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,7 @@ import java.util.Map;
 @RequestMapping("/api/board")
 public class BoardController {
     final BoardService service;
+    private final DefaultAuthenticationEventPublisher authenticationEventPublisher;
 
     @PostMapping("add")
     public ResponseEntity add(Board board,
@@ -23,10 +26,10 @@ public class BoardController {
                               MultipartFile[] files
 
     ) throws Exception {
-        System.out.println("이것은 Post요청 board = " + board);
+//        System.out.println("이것은 Post요청 board = " + board);
 
 
-        System.out.println("files = " + files);
+//        System.out.println("files = " + files);
         if (service.validate(board)) {
 
             service.add(board, files);
@@ -47,14 +50,24 @@ public class BoardController {
     }
 
     @GetMapping("{id}")
-    public Board get(@PathVariable Integer id) {
-        return service.get(id);
+    public Map<String, Object> get(@PathVariable Integer id, @RequestParam(required = false) Integer memberId) {
+
+        System.out.println("컨트롤러의 get요청 memberId = " + memberId);
+        return service.getByBoardIdAndMemberId(id, memberId);
+
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Integer id) {
+    public ResponseEntity delete(@PathVariable Integer id, @RequestParam Integer memberId) {
 
-        service.delete(id);
+        //서버에서 이중 교차검증
+        if (service.hasAccess(id, memberId)) {
+
+            service.delete(id);
+            return ResponseEntity.ok().build();
+
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @PutMapping("edit")
@@ -74,5 +87,21 @@ public class BoardController {
         }
     }
 
+    @PutMapping("/like")
+    public ResponseEntity<Map<String, Object>> like(@RequestBody Map<String, Object> req) {
+        System.out.println("컨트롤러의 like 메서드 req = " + req);
+
+        // memberId가 null이거나 비어있는 경우
+        if (!req.containsKey("memberId") || req.get("memberId") == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+//         memberId가 Integer가 아닌 경우 처리
+//        if (!(req.get("memberId") instanceof Integer)) {
+//            return ResponseEntity.badRequest().build();
+//        }
+
+        return ResponseEntity.ok(service.like(req));
+    }
 }
 

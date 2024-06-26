@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,6 +41,8 @@ public class BoardService {
     private String srcPrefix;
 
     public void add(Board board, MultipartFile[] files) throws Exception {
+
+
         mapper.insert(board);
 
         if (files != null && files.length > 0) {
@@ -47,7 +51,7 @@ public class BoardService {
 
                 // 실제 파일 저장 (s3)
                 // 부모 디렉토리 만들기
-                String key = String.format("prj3/%d/%s", board.getId(), file.getOriginalFilename());
+                String key = String.format("prj3/board/%d/%s", board.getId(), file.getOriginalFilename());
                 s3Client.putObject(builder -> builder.bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ),
                         RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
             }
@@ -132,22 +136,52 @@ public class BoardService {
         return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount, boardType));
     }
 
-    public Board get(Integer id) {
-        String keyPrefix = String.format("prj3/%d/", id);
-        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
-                .prefix(keyPrefix).build();
-        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
-        for (S3Object object : listResponse.contents()) {
-            System.out.println("object.key() = " + object.key());
-        }
+//    public Map<String, Object> get(Integer id) {
+//        String keyPrefix = String.format("prj3/%d/", id);
+//        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
+//                .prefix(keyPrefix).build();
+//        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
+//        for (S3Object object : listResponse.contents()) {
+//            System.out.println("object.key() = " + object.key());
+//        }
 //        System.out.println("이것은 get요청");
+//
+//        Map<String, Object> result = new HashMap<>();
+//        int views = mapper.selectCountById(id);
+//        mapper.incrementViewsById(id, views);
+//
+//        Board board = mapper.selectById(id);
+//        List<String> fileNames = mapper.selectFileNameByBoardId(id);
+//        List<BoardFile> files = fileNames.stream()
+//                .map(name -> new BoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
+//        board.setFileList(files);
+//        result.put("board", board);
+//        return result;
+//    }
 
+    public Map<String, Object> getByBoardIdAndMemberId(Integer id, Integer memberId) {
+        int views = mapper.selectCountById(id);
+        mapper.incrementViewsById(id, views);
+
+        Map<String, Object> result = new HashMap<>();
         Board board = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByBoardId(id);
         List<BoardFile> files = fileNames.stream()
-                .map(name -> new BoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
+                .map(name -> new BoardFile(name, srcPrefix + "board/" + +id + "/" + name)).collect(Collectors.toList());
         board.setFileList(files);
-        return board;
+        Map<String, Object> like = new HashMap<>();
+        if (memberId == null) {
+            like.put("like", false);
+        } else {
+            int c = mapper.selectLikeByBoardIdAndMemberId(id, memberId);
+            like.put("like", c == 1);
+        }
+        like.put("count", mapper.selectCountLikeByBoardId(id));
+        result.put("board", board);
+        result.put("like", like);
+
+
+        return result;
     }
 
     public void delete(Integer id) {
@@ -155,7 +189,7 @@ public class BoardService {
         List<String> fileNames = mapper.selectFileNameByBoardId(id);
         //s3에 있는 file
         for (String fileName : fileNames) {
-            String key = STR."prj3/\{id}/\{fileName}";
+            String key = STR."prj3/board/\{id}/\{fileName}";
             DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
             s3Client.deleteObject(objectRequest);
         }
@@ -169,7 +203,7 @@ public class BoardService {
         if (removeFileList != null && removeFileList.size() > 0) {
             for (String fileName : removeFileList) {
                 //s3파일 삭제
-                String key = STR."prj3/\{board.getId()}/\{fileName}";
+                String key = STR."prj3/board/\{board.getId()}/\{fileName}";
                 DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
                 s3Client.deleteObject(objectRequest);
 
@@ -186,7 +220,7 @@ public class BoardService {
                     mapper.insertFileName(board.getId(), fileName);
                 }
                 //s3에 쓰기
-                String key = STR."prj3/\{board.getId()}/\{fileName}";
+                String key = STR."prj3/board/\{board.getId()}/\{fileName}";
                 PutObjectRequest objectRequest = PutObjectRequest.builder().bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ).build();
 
                 s3Client.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
@@ -194,4 +228,45 @@ public class BoardService {
         }
         mapper.update(board);
     }
+
+    public boolean hasAccess(Integer id, Integer memberId) {
+        Board board = mapper.selectById(id);
+
+        return board.getMemberId()
+                .equals(memberId);
+    }
+
+    public Map<String, Object> like(Map<String, Object> req) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("like", false);
+
+        Integer boardId;
+        Integer memberId;
+
+        try {
+            boardId = req.get("boardId") instanceof String
+                    ? Integer.parseInt((String) req.get("boardId"))
+                    : (Integer) req.get("boardId");
+            memberId = req.get("memberId") instanceof String
+                    ? Integer.parseInt((String) req.get("memberId"))
+                    : (Integer) req.get("memberId");
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid boardId or memberId format");
+        }
+
+        System.out.println("이것은 서비스의 req = " + req);
+
+        // 이미 했으면
+        int count = mapper.deleteLikeByBoardIdAndMemberId(boardId, memberId);
+        // 안 했으면 (삭제된 행이 없으면)
+        if (count == 0) {
+            mapper.insertLikeByBoardIdAndMemberId(boardId, memberId);
+            result.put("like", true);
+        }
+        result.put("count", mapper.selectCountLikeByBoardId(boardId));
+
+        return result;
+    }
+
+
 }

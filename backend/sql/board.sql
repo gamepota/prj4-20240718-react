@@ -51,6 +51,11 @@ ALTER TABLE board
 UPDATE board
 SET views=0;
 
+UPDATE board
+SET board_type='사진 공유'
+WHERE id = 551
+   OR id = 550;
+
 
 
 UPDATE board
@@ -99,6 +104,15 @@ CREATE TABLE board_comment
     inserted      DATETIME     NOT NULL DEFAULT NOW()
 );
 DROP TABLE board_comment;
+#좋아요 테이블...
+CREATE TABLE board_like
+(
+    board_id  INT NOT NULL REFERENCES board (id),
+    member_id INT NOT NULL REFERENCES member (id),
+    PRIMARY KEY (board_id, member_id)
+);
+UPDATE board
+SET views=1;
 
 
 # 임시 댓글테이블 member_id없이 수정
@@ -109,6 +123,11 @@ FROM board_comment;
 
 SELECT *
 FROM board;
+
+SELECT *
+FROM board_like;
+
+
 
 ALTER TABLE board
     DROP FOREIGN KEY board_ibfk_1;

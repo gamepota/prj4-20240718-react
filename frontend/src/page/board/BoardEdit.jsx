@@ -22,10 +22,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardEdit() {
   const { id } = useParams();
@@ -37,6 +38,10 @@ export function BoardEdit() {
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
+
   useEffect(() => {
     axios.get(`/api/board/${id}`).then((res) => {
       setBoard(res.data);
