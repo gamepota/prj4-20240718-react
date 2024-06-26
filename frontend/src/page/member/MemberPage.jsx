@@ -17,7 +17,7 @@ import Swal from "sweetalert2";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import { AddIcon } from "@chakra-ui/icons";
 
-export function UserPage() {
+export function MemberPage() {
   const { id } = useParams();
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const [profileImage, setProfileImage] = useState(null);
@@ -29,7 +29,7 @@ export function UserPage() {
   const toast = useToast();
 
   useEffect(() => {
-    if (!memberInfo || (memberInfo.id !== id && memberInfo.id !== "1")) {
+    if (!memberInfo || memberInfo.id !== id) {
       navigate("/unauthorized"); // 접근 권한이 없을 때 리디렉션할 페이지
       return;
     }

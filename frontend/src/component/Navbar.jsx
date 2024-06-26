@@ -116,7 +116,7 @@ export function Navbar() {
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
               borderRadius="md"
-              onClick={() => navigate(`/member/userpage/${memberInfo.id}`)}
+              onClick={() => navigate(`/member/page/${memberInfo.id}`)}
             >
               {nickname}님
             </Box>
