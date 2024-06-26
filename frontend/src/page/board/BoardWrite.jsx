@@ -21,7 +21,7 @@ export function BoardWrite() {
   const [invisibledText, setInvisibledText] = useState(true);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const navigate = useNavigate();
-  const account = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
 
   // const onDrop = useCallback(
   //   (acceptedFiles) => {
@@ -55,7 +55,7 @@ export function BoardWrite() {
       .postForm("/api/board/add", {
         title,
         content,
-        writer,
+        memberId: memberInfo.id,
         files,
       })
       .then(() => {
@@ -154,7 +154,7 @@ export function BoardWrite() {
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input readOnly value={writer} />
+            <Input readOnly value={memberInfo.nickname} />
           </FormControl>
         </Box>
         <Box>
