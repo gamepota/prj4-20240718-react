@@ -65,7 +65,7 @@ public interface BoardMapper {
 
     @Select("""
                  <script>
-                 SELECT b.id,b.title,m.nickname writer,b.board_type,b.views,
+                 SELECT b.id,b.title,m.nickname writer,b.board_type,b.views,b.member_id,
             COUNT(DISTINCT f.name)number_of_images,
             COUNT(DISTINCT  l.member_id)number_of_likes,
             COUNT(DISTINCT  c.id)number_of_comments
@@ -173,5 +173,5 @@ public interface BoardMapper {
             """)
     int deleteLikeByBoardId(Integer id);
 
-  
+
 }

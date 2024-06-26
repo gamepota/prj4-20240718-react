@@ -264,7 +264,7 @@ export function BoardList() {
                   </Td>
                   <Td>
                     <span
-                      onClick={() => navigate(`/diary/view/${board.memberId}`)}
+                      onClick={() => navigate(`/diary/home/${board.memberId}`)}
                       style={{
                         cursor: "pointer",
                         color: "blue",
