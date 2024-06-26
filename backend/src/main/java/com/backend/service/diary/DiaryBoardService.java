@@ -40,7 +40,8 @@ public class DiaryBoardService {
 
     public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) throws IOException {
         String username = diaryBoard.getUsername();
-        Member member = memberMapper.selectByDiaryName(username);
+
+        Member member = memberMapper.selectByDiaryName((username));
 
         if (member != null) {
             // 회원 ID를 설정
@@ -58,8 +59,8 @@ public class DiaryBoardService {
                 mapper.insertFileName(diaryBoard.getId(), file.getOriginalFilename());
                 //실제 파일 저장
                 // 부모 디렉토리만들기
-                String fileName = STR."\{diaryBoard.getMemberId()}_\{file.getOriginalFilename()}";
-                String key = STR."prj3/diary/\{diaryBoard.getMemberId()}/\{fileName}";
+                String fileName = STR."\{diaryBoard.getId()}_\{file.getOriginalFilename()}";
+                String key = STR."prj3/diary/\{diaryBoard.getId()}/\{fileName}";
                 PutObjectRequest objectRequest = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -122,7 +123,10 @@ public class DiaryBoardService {
 
         for (String fileName : fileNames) {
             String key = STR."prj3/diary/\{id}/\{fileName}";
-            DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
+            DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
             s3Client.deleteObject(objectRequest);
         }
 
@@ -136,7 +140,7 @@ public class DiaryBoardService {
     public void edit(DiaryBoard diaryBoard, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
         if (removeFileList != null && removeFileList.size() > 0) {
             for (String fileName : removeFileList) {
-                String key = STR."prj3/diary/\{diaryBoard.getMemberId()}/\{fileName}";
+                String key = STR."prj3/diary/\{diaryBoard.getId()}/\{fileName}";
                 DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -144,7 +148,7 @@ public class DiaryBoardService {
                 s3Client.deleteObject(objectRequest);
 
                 // db records 삭제
-                mapper.deleteFileByDiaryIdAndName(diaryBoard.getMemberId(), fileName);
+                mapper.deleteFileByDiaryIdAndName(diaryBoard.getId(), fileName);
             }
         }
         if (addFileList != null && addFileList.length > 0) {
@@ -157,7 +161,7 @@ public class DiaryBoardService {
                     mapper.insertFileName(diaryBoard.getId(), fileName);
                 }
                 //disk 에 쓰기
-                String key = STR."prj3/diary/\{diaryBoard.getMemberId()}/\{fileName}";
+                String key = STR."prj3/diary/\{diaryBoard.getId()}/\{fileName}";
                 PutObjectRequest objectRequest = PutObjectRequest.builder().bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ).build();
 
                 s3Client.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
@@ -176,9 +180,9 @@ public class DiaryBoardService {
         Object principal = authentication.getPrincipal();
         if (principal instanceof CustomUserDetails username) {
             Member member = username.getMember();
-
             return diaryBoard.getMemberId().equals(member.getId());
         }
+
         return diaryBoard.getMemberId().equals(Integer.valueOf(authentication.getName()));
     }
 
@@ -195,7 +199,7 @@ public class DiaryBoardService {
         DiaryBoard diaryBoard = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByDiaryId(id);
         List<DiaryBoardFile> files = fileNames.stream()
-                .map(name -> new DiaryBoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
+                .map(name -> new DiaryBoardFile(name, srcPrefix + "diary/" + id + "/" + name)).collect(Collectors.toList());
 
         diaryBoard.setFileList(files);
 

@@ -48,7 +48,8 @@ public interface DiaryBoardMapper {
                 UPDATE diary
                 SET title = #{title},
                     content = #{content},
-                    username = #{username}
+                    username = #{username},
+                    nickname = #{nickname}
                 WHERE id = #{id}
             """)
     int update(DiaryBoard diaryBoard);
