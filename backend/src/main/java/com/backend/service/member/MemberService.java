@@ -49,7 +49,7 @@ public class MemberService {
 
     public void saveProfileImage(Integer memberId, MultipartFile file) throws IOException {
         String fileName = memberId + "_" + file.getOriginalFilename();
-        String key = "profile/" + memberId + "/" + fileName;
+        String key = "prj3/" + "profile/" + memberId + "/" + fileName;
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
