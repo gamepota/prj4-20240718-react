@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Input } from "@chakra-ui/react";
+import { Box, Button, Flex, Img, Input } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { Link, useNavigate } from "react-router-dom";
@@ -50,9 +50,10 @@ export function Navbar() {
           p={2}
           borderRadius="md"
           onClick={() => navigate("/")}
-          fontSize={"1.5rem"}
+          w="100px" // Box 크기 고정
+          h="auto" // 높이를 자동으로 조정
         >
-          Petmily
+          <Img src={"public/img/Petmily.png"} w="100%" h="auto" />
         </Box>
         <Box
           _hover={{ cursor: "pointer", bgColor: "gray.200" }}
