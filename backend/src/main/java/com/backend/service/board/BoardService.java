@@ -3,6 +3,7 @@ package com.backend.service.board;
 
 import com.backend.domain.board.Board;
 import com.backend.domain.board.BoardFile;
+import com.backend.mapper.board.BoardCommentMapper;
 import com.backend.mapper.board.BoardMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class BoardService {
     private final BoardMapper mapper;
     private final S3Client s3Client;
+    private final BoardCommentMapper boardCommentMapper;
 
     // session의
     private static String PAGE_INFO_SESSION_KEY = "pageInfo";
@@ -195,6 +197,10 @@ public class BoardService {
         }
         //board_file
         mapper.deleteFileByBoardId(id);
+        //board_like
+        mapper.deleteLikeByBoardId(id);
+        //board_comment
+        boardCommentMapper.deleteByBoardId(id);
         //board
         mapper.deleteById(id);
     }
