@@ -218,7 +218,7 @@ export function BoardList() {
           <Table boxShadow="lg" borderRadius="10">
             <Thead>
               <Tr>
-                <Th>게시판 종류</Th>
+                <Th textAlign={"center"}>게시판 종류</Th>
                 <Th>게시글ID</Th>
                 <Th w={500} textAlign="center">
                   제목
@@ -231,7 +231,18 @@ export function BoardList() {
             <Tbody>
               {boardList.map((board) => (
                 <Tr key={board.id}>
-                  <Td textAlign="center">{board.boardType}</Td>
+                  <Td textAlign="center">
+                    <span
+                      onClick={() =>
+                        handleClickBoardTypeButton(board.boardType)
+                      }
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    >
+                      {board.boardType}
+                    </span>
+                  </Td>
                   <Td textAlign="center">{board.id}</Td>
                   <Td
                     onClick={() => handleBoardClick(board.id)}

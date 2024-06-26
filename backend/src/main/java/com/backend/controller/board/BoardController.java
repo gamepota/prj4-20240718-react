@@ -4,6 +4,7 @@ import com.backend.domain.board.Board;
 import com.backend.service.board.BoardService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.web.bind.annotation.*;
@@ -57,9 +58,16 @@ public class BoardController {
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Integer id) {
+    public ResponseEntity delete(@PathVariable Integer id, @RequestParam Integer memberId) {
 
-        service.delete(id);
+        //서버에서 이중 교차검증
+        if (service.hasAccess(id, memberId)) {
+
+            service.delete(id);
+            return ResponseEntity.ok().build();
+
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @PutMapping("edit")

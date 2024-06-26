@@ -7,7 +7,6 @@ import com.backend.mapper.board.BoardMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -230,11 +229,11 @@ public class BoardService {
         mapper.update(board);
     }
 
-    public boolean hasAccess(Integer id, Authentication authentication) {
+    public boolean hasAccess(Integer id, Integer memberId) {
         Board board = mapper.selectById(id);
 
         return board.getMemberId()
-                .equals(Integer.valueOf(authentication.getName()));
+                .equals(memberId);
     }
 
     public Map<String, Object> like(Map<String, Object> req) {

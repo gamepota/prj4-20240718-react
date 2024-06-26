@@ -83,10 +83,19 @@ export function BoardView() {
           status: "success",
           description: `${id}번 게시물이 삭제되었습니다`,
           position: "top",
-          duration: "100",
+          duration: "10",
         });
         navigate(`/`);
       })
+      .catch(() => {
+        toast({
+          status: "error",
+          description: `잘못된 삭제 명령입니다`,
+          position: "top",
+          duration: "10",
+        });
+      })
+
       .finally(() => onClose);
   }
   function handleClickLike() {
