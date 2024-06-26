@@ -87,8 +87,9 @@ export const MainPage = () => {
           근처 동물 병원 보기
         </Text>
       </Flex>
+
       <Flex justify="center">
-        <Box w={"40%"} h={"40%"}>
+        <Box mx={"auto"} w={"500px"} h={"300px"}>
           <KakaoMap2 />
         </Box>
       </Flex>
