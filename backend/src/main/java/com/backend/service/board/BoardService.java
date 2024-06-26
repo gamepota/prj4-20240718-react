@@ -52,7 +52,7 @@ public class BoardService {
 
                 // 실제 파일 저장 (s3)
                 // 부모 디렉토리 만들기
-                String key = String.format("prj3/board/%d/%s", board.getId(), file.getOriginalFilename());
+                String key = String.format("board/%d/%s", board.getId(), file.getOriginalFilename());
                 s3Client.putObject(builder -> builder.bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ),
                         RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
             }
