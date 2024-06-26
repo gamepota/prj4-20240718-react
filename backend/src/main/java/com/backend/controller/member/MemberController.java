@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,6 +40,27 @@ public class MemberController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(nickname);
+    }
+
+    // MemberPage
+    @PostMapping("/profile/{id}")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Integer id, @RequestParam("profileImage") MultipartFile file) {
+        try {
+            service.saveProfileImage(id, file);
+            return ResponseEntity.ok("프로필 이미지가 저장되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("프로필 이미지 저장 실패");
+        }
+    }
+
+    @DeleteMapping("/profile/{id}")
+    public ResponseEntity<String> deleteProfileImage(@PathVariable Integer id) {
+        try {
+            service.deleteProfileByMemberId(id);
+            return ResponseEntity.ok("프로필 이미지 삭제 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("프로필 이미지 삭제 실패");
+        }
     }
 
     // MemberEdit
