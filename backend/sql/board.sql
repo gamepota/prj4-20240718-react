@@ -51,6 +51,11 @@ ALTER TABLE board
 UPDATE board
 SET views=0;
 
+UPDATE board
+SET board_type='사진 공유'
+WHERE id = 551
+   OR id = 550;
+
 
 
 UPDATE board
@@ -121,6 +126,7 @@ FROM board;
 
 SELECT *
 FROM board_like;
+
 
 
 ALTER TABLE board

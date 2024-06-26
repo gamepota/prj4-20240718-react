@@ -25,10 +25,10 @@ public class BoardController {
                               MultipartFile[] files
 
     ) throws Exception {
-        System.out.println("이것은 Post요청 board = " + board);
+//        System.out.println("이것은 Post요청 board = " + board);
 
 
-        System.out.println("files = " + files);
+//        System.out.println("files = " + files);
         if (service.validate(board)) {
 
             service.add(board, files);

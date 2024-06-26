@@ -10,8 +10,8 @@ public interface BoardMapper {
 
 
     @Insert("""
-            INSERT INTO board(title,content,member_id)
-            VALUES (#{title},#{content},#{memberId})
+            INSERT INTO board(title,content,member_id,views)
+            VALUES (#{title},#{content},#{memberId},0)
                         """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Board board);
