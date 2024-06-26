@@ -147,7 +147,7 @@ export function BoardView() {
       <Box>
         {board.fileList &&
           board.fileList.map((file) => (
-            <Box border={"2px solid black"} m={3} key={file.name}>
+            <Box m={3} key={file.name}>
               <Image src={file.src} />
             </Box>
           ))}
