@@ -90,7 +90,7 @@ public interface MemberMapper {
 
     // DiaryBoard
     @Select("""
-            SELECT id,nickname,
+            SELECT id,nickname
             FROM member
             WHERE nickname = #{nickname}
             """)

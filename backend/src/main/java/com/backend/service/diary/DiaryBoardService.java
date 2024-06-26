@@ -39,8 +39,8 @@ public class DiaryBoardService {
     private String srcPrefix;
 
     public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) throws IOException {
-        String nickname = diaryBoard.getNickname();
-        Member member = memberMapper.selectByDiaryName(diaryBoard.getNickname());
+        String username = diaryBoard.getUsername();
+        Member member = memberMapper.selectByDiaryName(diaryBoard.getUsername());
 
         if (member != null) {
             // 회원 ID를 설정
@@ -49,7 +49,7 @@ public class DiaryBoardService {
             // 코멘트를 diary 테이블에 삽입
             mapper.insert(diaryBoard);
         } else {
-            throw new UsernameNotFoundException("Username not found: " + nickname);
+            throw new UsernameNotFoundException("Username not found: " + username);
         }
         // 게시물 저장
         mapper.insert(diaryBoard);
@@ -175,8 +175,8 @@ public class DiaryBoardService {
 
         DiaryBoard diaryBoard = mapper.selectById(id);
         Object principal = authentication.getPrincipal();
-        if (principal instanceof CustomUserDetails nickname) {
-            Member member = nickname.getMember();
+        if (principal instanceof CustomUserDetails username) {
+            Member member = username.getMember();
 
             return diaryBoard.getMemberId().equals(member.getId());
         }

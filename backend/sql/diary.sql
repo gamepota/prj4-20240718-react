@@ -5,12 +5,13 @@ CREATE TABLE diary
     content   VARCHAR(1000) NOT NULL,
     inserted  DATETIME      NOT NULL DEFAULT NOW(),
     member_id INT           NOT NULL REFERENCES member (id),
-    nickname  VARCHAR(255)  NOT NULL REFERENCES member (nickname)
+    nickname  VARCHAR(255)  NOT NULL REFERENCES member (nickname),
+    username  VARCHAR(255)  NOT NULL
 );
-INSERT INTO diary
-    (title, content, member_id)
-SELECT title, content, member_id
-FROM diary;
+
+ALTER TABLE diary
+    ADD username VARCHAR(255) NOT NULL;
+
 
 SELECT COUNT(*)
 FROM diary;
