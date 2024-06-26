@@ -56,10 +56,10 @@ export function DiaryBoardEdit() {
   function handleClickSave() {
     axios
       .putForm("/api/diaryBoard/edit", {
-        // id: diaryBoard.id,
-        id: memberInfo.id,
+        id: diaryBoard.id,
         title: diaryBoard.title,
         content: diaryBoard.content,
+        memberInfo,
         removeFileList,
         addFileList,
       })
