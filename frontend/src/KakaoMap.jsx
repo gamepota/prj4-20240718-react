@@ -47,6 +47,8 @@ const KakaoMap = () => {
     const mapOption = {
       center: new kakao.maps.LatLng(36.2, 128.02025),
       level: 13,
+      draggable: false, // 지도 이동 비활성화
+      scrollwheel: false, // 확대/축소 비활성화
     };
 
     const map = new kakao.maps.Map(mapContainer, mapOption);
