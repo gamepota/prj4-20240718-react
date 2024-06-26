@@ -45,8 +45,8 @@ const KakaoMap = () => {
 
     const mapContainer = document.getElementById("pollution-map");
     const mapOption = {
-      center: new kakao.maps.LatLng(37.566826, 126.9786567),
-      level: 9,
+      center: new kakao.maps.LatLng(36.2, 128.02025),
+      level: 13,
     };
 
     const map = new kakao.maps.Map(mapContainer, mapOption);
