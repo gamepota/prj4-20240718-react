@@ -43,18 +43,9 @@ export function BoardEdit() {
   const params = memberId ? { memberId } : {};
 
   useEffect(() => {
-    axios
-      .get(`/api/board/${id}`)
-      .then((res) => {
-        setBoard(res.data);
-      })
-      .catch(
-        toast({
-          description: "권한이 없답니다",
-          duration: "10",
-          position: "top",
-        }),
-      );
+    axios.get(`/api/board/${id}`, { params }).then((res) => {
+      setBoard(res.data.board);
+    });
   }, []);
 
   useEffect(() => {
@@ -88,7 +79,14 @@ export function BoardEdit() {
           position: "top",
         });
         navigate(`/board/${id}`);
-      });
+      })
+      .catch(
+        toast({
+          description: "권한이 없답니다",
+          duration: "10",
+          position: "top",
+        }),
+      );
   }
 
   //useEffect가 실행될때까지 스피너 돌아감..
