@@ -241,7 +241,7 @@ export function BoardList() {
                     }}
                   >
                     {board.title}
-                    {board.numberOfImages && (
+                    {board.numberOfImages > 0 && (
                       <Badge ml={2}>
                         {board.numberOfImages}
                         <FontAwesomeIcon icon={faImage} />

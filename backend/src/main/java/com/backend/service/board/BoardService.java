@@ -168,7 +168,7 @@ public class BoardService {
         Board board = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByBoardId(id);
         List<BoardFile> files = fileNames.stream()
-                .map(name -> new BoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
+                .map(name -> new BoardFile(name, srcPrefix + "board/" + +id + "/" + name)).collect(Collectors.toList());
         board.setFileList(files);
         Map<String, Object> like = new HashMap<>();
         if (memberId == null) {
