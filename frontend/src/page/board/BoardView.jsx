@@ -48,11 +48,12 @@ export function BoardView() {
   //   const isLoggedIn = Boolean(access);
   // }
   useEffect(() => {
-    const params =
-      memberInfo && memberInfo.id ? { memberId: memberInfo.id } : {};
+    const memberId =
+      memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+    const params = memberId ? { memberId } : {};
     axios
       .get(`/api/board/${id}`, {
-        params: { params },
+        params,
       })
       .then((res) => {
         console.log(res.data);

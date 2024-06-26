@@ -51,6 +51,7 @@ public class BoardController {
     @GetMapping("{id}")
     public Map<String, Object> get(@PathVariable Integer id, @RequestParam(required = false) Integer memberId) {
 
+        System.out.println("컨트롤러의 get요청 memberId = " + memberId);
         return service.getByBoardIdAndMemberId(id, memberId);
 
     }
