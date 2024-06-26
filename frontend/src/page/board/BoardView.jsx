@@ -49,7 +49,9 @@ export function BoardView() {
   // }
   useEffect(() => {
     axios
-      .get(`/api/board/${id}`)
+      .get(`/api/board/${id}`, {
+        params: { memberId: memberInfo.id },
+      })
       .then((res) => {
         console.log(res.data);
         setBoard(res.data.board);

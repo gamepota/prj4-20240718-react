@@ -79,9 +79,7 @@ export function BoardList() {
 
   function handleBoardClick(boardId) {
     axios
-      .get(`/api/board/${boardId}`, {
-        params: { memberId: memberInfo.id },
-      })
+      .get(`/api/board/${boardId}`)
       .then(() => {})
       .finally(navigate(`/board/${boardId}`));
   }
