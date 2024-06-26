@@ -50,6 +50,7 @@ export function BoardView() {
   //   const isLoggedIn = Boolean(access);
   // }
   useEffect(() => {
+    // console.log("params=", params);
     axios
       .get(`/api/board/${id}`, {
         params,
@@ -134,6 +135,12 @@ export function BoardView() {
       </Flex>
       <Box>
         <FormControl>
+          <FormLabel>작성자</FormLabel>
+          <Input value={board.writer} readOnly />
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl>
           <FormLabel>제목</FormLabel>
           <Input value={board.title} readOnly />
         </FormControl>
@@ -152,12 +159,7 @@ export function BoardView() {
             </Box>
           ))}
       </Box>
-      <Box>
-        <FormControl>
-          <FormLabel>작성자</FormLabel>
-          <Input value={board.writer} readOnly />
-        </FormControl>
-      </Box>
+
       <Box>
         <FormControl>
           <FormLabel>작성 일자</FormLabel>

@@ -43,17 +43,25 @@ export function BoardEdit() {
   const params = memberId ? { memberId } : {};
 
   useEffect(() => {
-    axios.get(`/api/board/${id}`).then((res) => {
-      setBoard(res.data);
-    });
+    axios
+      .get(`/api/board/${id}`)
+      .then((res) => {
+        setBoard(res.data);
+      })
+      .catch(
+        toast({
+          description: "권한이 없답니다",
+          duration: "10",
+          position: "top",
+        }),
+      );
   }, []);
 
   useEffect(() => {
     if (board) {
       if (
         board.title.trim().length === 0 ||
-        board.content.trim().length === 0 ||
-        board.writer.trim().length === 0
+        board.content.trim().length === 0
       ) {
         setDisableSaveButton(true);
       } else {
@@ -133,11 +141,7 @@ export function BoardEdit() {
       setInvisibledText(true);
       setAddFileList(selectedFiles);
     }
-    if (
-      board.title.trim().length === 0 ||
-      board.content.trim().length === 0 ||
-      board.writer.trim().length === 0
-    ) {
+    if (board.title.trim().length === 0 || board.content.trim().length === 0) {
       setDisableSaveButton(true);
     } else {
       setDisableSaveButton(false);

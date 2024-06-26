@@ -80,7 +80,7 @@ public class BoardController {
     ) throws Exception {
 //        System.out.println("이것은 PUT요청 board= " + board);
 
-        if (service.validate(board) || service.hasAccess(board.getId(), memberId)) {
+        if (service.validate(board) && service.hasAccess(board.getId(), memberId)) {
             service.edit(board, removeFileList, addFileList);
             return ResponseEntity.ok().build();
         } else {
