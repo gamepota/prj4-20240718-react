@@ -190,7 +190,7 @@ public class BoardService {
         List<String> fileNames = mapper.selectFileNameByBoardId(id);
         //s3에 있는 file
         for (String fileName : fileNames) {
-            String key = STR."prj3/\{id}/\{fileName}";
+            String key = STR."prj3/board/\{id}/\{fileName}";
             DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
             s3Client.deleteObject(objectRequest);
         }
@@ -204,7 +204,7 @@ public class BoardService {
         if (removeFileList != null && removeFileList.size() > 0) {
             for (String fileName : removeFileList) {
                 //s3파일 삭제
-                String key = STR."prj3/\{board.getId()}/\{fileName}";
+                String key = STR."prj3/board/\{board.getId()}/\{fileName}";
                 DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
                 s3Client.deleteObject(objectRequest);
 
@@ -221,7 +221,7 @@ public class BoardService {
                     mapper.insertFileName(board.getId(), fileName);
                 }
                 //s3에 쓰기
-                String key = STR."prj3/\{board.getId()}/\{fileName}";
+                String key = STR."prj3/board/\{board.getId()}/\{fileName}";
                 PutObjectRequest objectRequest = PutObjectRequest.builder().bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ).build();
 
                 s3Client.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
