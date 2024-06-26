@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DiaryBoardService {
     private final DiaryBoardMapper mapper;
-    final S3Client s3Client;
+    private final S3Client s3Client;
     private final MemberMapper memberMapper;
 
     @Value("${aws.s3.bucket.name}")
@@ -40,7 +40,7 @@ public class DiaryBoardService {
 
     public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) throws IOException {
         String username = diaryBoard.getUsername();
-        Member member = memberMapper.selectByDiaryName(diaryBoard.getUsername());
+        Member member = memberMapper.selectByDiaryName(username);
 
         if (member != null) {
             // 회원 ID를 설정
@@ -51,8 +51,6 @@ public class DiaryBoardService {
         } else {
             throw new UsernameNotFoundException("Username not found: " + username);
         }
-        // 게시물 저장
-        mapper.insert(diaryBoard);
 
         // db에 해당 게시물의 파일 목록 저장
         if (files != null) {
@@ -60,7 +58,8 @@ public class DiaryBoardService {
                 mapper.insertFileName(diaryBoard.getId(), file.getOriginalFilename());
                 //실제 파일 저장
                 // 부모 디렉토리만들기
-                String key = String.format("prj3/%d/%s", diaryBoard.getId(), file.getOriginalFilename());
+                String fileName = STR."\{diaryBoard.getMemberId()}_\{file.getOriginalFilename()}";
+                String key = STR."prj3/diary/\{diaryBoard.getMemberId()}/\{fileName}";
                 PutObjectRequest objectRequest = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -94,10 +93,10 @@ public class DiaryBoardService {
         Integer countAll = mapper.countAllWithSearch(searchType, keyword);
 
         Integer offset = (page - 1) * 10;
-        Integer lastPageNUmber = (countAll - 1) / 10 + 1;
+        Integer lastPageNumber = (countAll - 1) / 10 + 1;
         Integer leftPageNumber = (page - 1) * 10 * 10 + 1;
         Integer rightPageNumber = leftPageNumber + 9;
-        rightPageNumber = Math.min(rightPageNumber, lastPageNUmber);
+        rightPageNumber = Math.min(rightPageNumber, lastPageNumber);
         leftPageNumber = rightPageNumber - 9;
         leftPageNumber = Math.max(leftPageNumber, 1);
         Integer prevPageNumber = leftPageNumber - 1;
@@ -106,12 +105,12 @@ public class DiaryBoardService {
         if (prevPageNumber > 0) {
             pageInfo.put("prevPageNumber", prevPageNumber);
         }
-        if (nextPageNumber <= lastPageNUmber) {
+        if (nextPageNumber <= lastPageNumber) {
             pageInfo.put("nextPageNumber", nextPageNumber);
         }
 
         pageInfo.put("currentPage", page);
-        pageInfo.put("lastPageNumber", lastPageNUmber);
+        pageInfo.put("lastPageNumber", lastPageNumber);
         pageInfo.put("leftPageNumber", leftPageNumber);
         pageInfo.put("rightPageNumber", rightPageNumber);
         return Map.of("pageInfo", pageInfo, "diaryBoardList", mapper.selectAllPaging(offset, searchType, keyword));
@@ -122,7 +121,7 @@ public class DiaryBoardService {
         List<String> fileNames = mapper.selectFileNameByDiaryId(id);
 
         for (String fileName : fileNames) {
-            String key = STR."prj3/\{id}/\{fileName}";
+            String key = STR."prj3/diary/\{id}/\{fileName}";
             DeleteObjectRequest objectRequest = DeleteObjectRequest.builder().bucket(bucketName).key(key).build();
             s3Client.deleteObject(objectRequest);
         }
@@ -137,7 +136,7 @@ public class DiaryBoardService {
     public void edit(DiaryBoard diaryBoard, List<String> removeFileList, MultipartFile[] addFileList) throws IOException {
         if (removeFileList != null && removeFileList.size() > 0) {
             for (String fileName : removeFileList) {
-                String key = STR."prj3/\{diaryBoard.getId()}/\{fileName}";
+                String key = STR."prj3/diary/\{diaryBoard.getMemberId()}/\{fileName}";
                 DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -145,7 +144,7 @@ public class DiaryBoardService {
                 s3Client.deleteObject(objectRequest);
 
                 // db records 삭제
-                mapper.deleteFileByDiaryIdAndName(diaryBoard.getId(), fileName);
+                mapper.deleteFileByDiaryIdAndName(diaryBoard.getMemberId(), fileName);
             }
         }
         if (addFileList != null && addFileList.length > 0) {
@@ -153,12 +152,12 @@ public class DiaryBoardService {
             for (MultipartFile file : addFileList) {
                 String fileName = file.getOriginalFilename();
 
-                if (fileNameList.contains(fileName)) {
+                if (!fileNameList.contains(fileName)) {
 
                     mapper.insertFileName(diaryBoard.getId(), fileName);
                 }
                 //disk 에 쓰기
-                String key = STR."prj3/\{diaryBoard.getId()}/\{fileName}";
+                String key = STR."prj3/diary/\{diaryBoard.getMemberId()}/\{fileName}";
                 PutObjectRequest objectRequest = PutObjectRequest.builder().bucket(bucketName).key(key).acl(ObjectCannedACL.PUBLIC_READ).build();
 
                 s3Client.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
