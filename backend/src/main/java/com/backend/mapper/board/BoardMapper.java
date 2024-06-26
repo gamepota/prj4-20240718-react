@@ -152,4 +152,17 @@ public interface BoardMapper {
             AND member_id=#{memberId}
             """)
     int selectLikeByBoardIdAndMemberId(Integer id, Integer memberId);
+
+    @Select("""
+                        SELECT id
+                        FROM board
+                        WHERE member_id=#{id}
+            """)
+    List<Board> selectByMemberId(Integer id);
+
+    @Delete("""
+            DELETE FROM board_like
+            WHERE member_id=#{memberId}
+            """)
+    int deleteLikeByMemberId(Integer memberId);
 }
