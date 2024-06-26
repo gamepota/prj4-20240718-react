@@ -16,6 +16,7 @@ import { DiaryBoardView } from "./page/diary/diarySrc/diaryPage/diaryBoard/Diary
 import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardEdit.jsx";
 import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
+import { PlaceLocal } from "./page/place/PlaceLocal.jsx";
 import { AIChat } from "./component/chat/AIChat.jsx";
 import { MainPage } from "./page/MainPage.jsx";
 import { LoginProvider } from "./component/LoginProvider.jsx";
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
       { path: "place/map", element: <PlaceMap /> }, // 지도 보기
       { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기
+      { path: "place/local", element: <PlaceLocal /> }, // 로컬 보기
       { path: "aichat", element: <AIChat /> }, // 챗봇 기능
     ],
   },
