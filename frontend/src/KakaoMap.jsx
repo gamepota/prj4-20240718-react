@@ -22,36 +22,49 @@ const KakaoMap = () => {
   useEffect(() => {
     if (!geojson) return;
 
-    const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing`;
-    script.async = true;
-    document.head.appendChild(script);
+    // Check if Kakao Maps API is already loaded
+    if (window.kakao && window.kakao.maps) {
+      initializeMap();
+    } else {
+      // Load the Kakao Maps API script dynamically
+      const script = document.createElement("script");
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing`;
+      script.async = true;
+      document.head.appendChild(script);
 
-    script.onload = () => {
-      const kakao = window.kakao;
-      const data = JSON.parse(geojson).features; // JSON 문자열을 객체로 변환
-      const polygons = [];
-
-      const mapContainer = document.getElementById("pollution-map");
-      const mapOption = {
-        center: new kakao.maps.LatLng(37.566826, 126.9786567),
-        level: 9,
+      script.onload = () => {
+        initializeMap();
       };
+    }
+  }, [geojson]);
 
-      const map = new kakao.maps.Map(mapContainer, mapOption);
-      const customOverlay = new kakao.maps.CustomOverlay({});
-      const infowindow = new kakao.maps.InfoWindow({ removable: true });
+  const initializeMap = () => {
+    const kakao = window.kakao;
+    const data = geojson.features; // 이미 파싱된 객체 사용
+    const polygons = [];
 
-      const displayArea = (coordinates, name) => {
-        const path = [];
+    const mapContainer = document.getElementById("pollution-map");
+    const mapOption = {
+      center: new kakao.maps.LatLng(37.566826, 126.9786567),
+      level: 9,
+    };
 
-        coordinates[0].forEach((coordinate) => {
-          path.push(new kakao.maps.LatLng(coordinate[1], coordinate[0]));
+    const map = new kakao.maps.Map(mapContainer, mapOption);
+    const customOverlay = new kakao.maps.CustomOverlay({});
+    const infowindow = new kakao.maps.InfoWindow({ removable: true });
+
+    const displayArea = (coordinates, name) => {
+      const path = [];
+
+      coordinates.forEach((polygonCoordinates) => {
+        const polygonPath = [];
+        polygonCoordinates.forEach((coordinate) => {
+          polygonPath.push(new kakao.maps.LatLng(coordinate[1], coordinate[0]));
         });
 
         const polygon = new kakao.maps.Polygon({
           map: map,
-          path: path,
+          path: polygonPath,
           strokeWeight: 2,
           strokeColor: "#004c80",
           strokeOpacity: 0.8,
@@ -93,22 +106,29 @@ const KakaoMap = () => {
           infowindow.setPosition(mouseEvent.latLng);
           infowindow.setMap(map);
         });
-      };
-
-      data.forEach((val) => {
-        const coordinates = val.geometry.coordinates;
-        const name = val.properties.CTP_KOR_NM; // 속성 이름 수정
-
-        console.log("Coordinates:", coordinates);
-        console.log("Name:", name);
-
-        displayArea(coordinates, name);
       });
     };
-  }, [geojson]);
+
+    data.forEach((val) => {
+      const coordinates = val.geometry.coordinates;
+      const name = val.properties.CTP_KOR_NM; // 속성 이름 수정
+
+      console.log("Coordinates for:", name, coordinates);
+
+      displayArea(coordinates, name);
+    });
+  };
 
   return (
-    <Box id="pollution-map" style={{ width: "100%", height: "500px" }}></Box>
+    <Box
+      id="pollution-map"
+      style={{
+        width: "100%",
+        height: "500px",
+        border: "1px solid #ccc",
+        borderRadius: "10px",
+      }}
+    ></Box>
   );
 };
 
