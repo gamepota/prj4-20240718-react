@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import axios from "axios";
+import PlaceMap2 from "./page/place/PlaceMap2.jsx";
 
 const KakaoMap = () => {
   const [geojson, setGeojson] = useState(null);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [center, setCenter] = useState([128.02025, 36.2]);
+  const [level, setLevel] = useState(13);
+  const [polygonName, setPolygonName] = useState("");
 
   const calculateCenter = (coordinates) => {
     let latSum = 0;
@@ -145,9 +150,11 @@ const KakaoMap = () => {
           infowindow.setPosition(mouseEvent.latLng);
           infowindow.setMap(map);
 
-          // 지도 중심 좌표를 클릭한 폴리곤의 중심으로 이동하고 확대
-          map.setCenter(new kakao.maps.LatLng(center[1], center[0]));
-          map.setLevel(8); // 원하는 확대 수준으로 설정
+          // 폴리곤 클릭 시 중심 좌표와 확대 수준을 설정하고 PlaceMap2를 렌더링
+          setCenter([center[0], center[1]]);
+          setLevel(8); // 원하는 확대 수준으로 설정
+          setPolygonName(name);
+          setSelectedPlace(name);
         });
       });
     };
@@ -163,15 +170,20 @@ const KakaoMap = () => {
   };
 
   return (
-    <Box
-      id="pollution-map"
-      style={{
-        width: "100%",
-        height: "500px",
-        border: "1px solid #ccc",
-        borderRadius: "10px",
-      }}
-    ></Box>
+    <Box>
+      <Box
+        id="pollution-map"
+        style={{
+          width: "100%",
+          height: "500px",
+          border: "1px solid #ccc",
+          borderRadius: "10px",
+        }}
+      ></Box>
+      {selectedPlace && (
+        <PlaceMap2 center={center} level={level} name={polygonName} />
+      )}
+    </Box>
   );
 };
 

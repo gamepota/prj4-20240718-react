@@ -24,6 +24,7 @@ import { DiaryHome } from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
 import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentWrite.jsx";
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
+import KakaoMap from "./KakaoMap.jsx";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
       { path: "place/map", element: <PlaceMap /> }, // 지도 보기
       { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기
       { path: "place/local", element: <PlaceLocal /> }, // 로컬 보기
+      { path: "kakao-map", element: <KakaoMap /> }, // KakaoMap 경로 설정
       { path: "aichat", element: <AIChat /> }, // 챗봇 기능
     ],
   },
