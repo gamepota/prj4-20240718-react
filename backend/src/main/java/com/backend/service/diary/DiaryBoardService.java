@@ -36,6 +36,7 @@ public class DiaryBoardService {
 
     @Value("${image.src.prefix}")
     private String srcPrefix;
+    //d
 
     public void add(DiaryBoard diaryBoard, MultipartFile[] files, Authentication authentication) throws IOException {
         String username = diaryBoard.getUsername();
