@@ -68,7 +68,7 @@ export function BoardEdit() {
         id: board.id,
         title: board.title,
         content: board.content,
-        memberId: board.memberId,
+        memberId: params.memberId,
         removeFileList,
         addFileList,
       })
@@ -76,17 +76,29 @@ export function BoardEdit() {
         toast({
           status: "success",
           description: `${board.id}번 게시글이 수정되었습니다`,
+          duration: 500,
           position: "top",
         });
         navigate(`/board/${id}`);
       })
-      .catch(
-        toast({
-          description: "권한이 없답니다",
-          duration: "10",
-          position: "top",
-        }),
-      );
+      .catch((err) => {
+        if (err.response.status === 403) {
+          toast({
+            status: "error",
+            description: "권한이 없답니다",
+            duration: 500,
+            position: "top",
+          });
+        } else {
+          toast({
+            status: "error",
+            description: "다른 오류가 발생했습니다",
+            duration: 500,
+            position: "top",
+          });
+        }
+      })
+      .finally(() => onClose());
   }
 
   //useEffect가 실행될때까지 스피너 돌아감..

@@ -53,7 +53,7 @@ public class BoardController {
     public Map<String, Object> get(@PathVariable Integer id, @RequestParam(required = false) Integer memberId) {
 
         System.out.println("컨트롤러의 get요청 memberId = " + memberId);
-     
+
         return service.getByBoardIdAndMemberId(id, memberId);
 
     }
@@ -77,7 +77,7 @@ public class BoardController {
                                List<String> removeFileList,
                                @RequestParam(value = "addFileList[]", required = false)
                                MultipartFile[] addFileList,
-                               @RequestParam Integer memberId
+                               @RequestParam(required = false) Integer memberId
     ) throws Exception {
 //        System.out.println("이것은 PUT요청 board= " + board);
 
@@ -85,7 +85,7 @@ public class BoardController {
             service.edit(board, removeFileList, addFileList);
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
