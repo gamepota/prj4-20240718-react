@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -90,6 +92,22 @@ public class MemberController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    // 다이어리 ID 검증
+    @GetMapping("/validateDiaryId/{diaryId}")
+    public ResponseEntity<Map<String, Object>> validateDiaryId(@PathVariable String diaryId) {
+        Map<String, Object> response = new HashMap<>();
+        Member member = service.getMemberByDiaryId(diaryId);
+
+        if (member != null) {
+            response.put("isValid", true);
+            response.put("nickname", member.getNickname());
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("isValid", false);
+            return ResponseEntity.ok(response);
+        }
     }
 
     // MemberList

@@ -1,3 +1,4 @@
+import React, {useContext, useEffect, useState} from "react";
 import {
   Badge,
   Box,
@@ -9,6 +10,13 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverArrow,
+  PopoverCloseButton,
   Select,
   Table,
   Tbody,
@@ -17,13 +25,13 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {ChevronDownIcon, ChevronUpIcon} from "@chakra-ui/icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faImage, faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
+import {LoginContext} from "../../component/LoginProvider.jsx";
+import {generateDiaryId} from "../../util/util.jsx";
 import axios from "axios";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -32,11 +40,13 @@ export function BoardList() {
   const [boardType, setBoardType] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchType, setSearchType] = useState("all");
-  // const [offsetReset, setOffsetReset] = useState(false);
   const [searchParams] = useSearchParams();
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const {memberInfo} = useContext(LoginContext);
 
   const navigate = useNavigate();
+
+  const [selectedWriter, setSelectedWriter] = useState(null);
+  const [selectedWriterId, setSelectedWriterId] = useState(null);
 
   useEffect(() => {
     axios
@@ -52,10 +62,8 @@ export function BoardList() {
 
   function handlePageSizeChange(number) {
     setPageAmount(number);
-    // setOffsetReset(true);
     searchParams.set("pageAmount", number);
     searchParams.set("offsetReset", true);
-    // console.log("searchParams=" + searchParams.toString());
     navigate(`?${searchParams}`);
   }
 
@@ -80,10 +88,28 @@ export function BoardList() {
   function handleBoardClick(boardId) {
     axios
       .get(`/api/board/${boardId}`)
-      .then(() => {})
+      .then(() => {
+      })
       .finally(navigate(`/board/${boardId}`));
   }
-  function handleSearchClick() {}
+
+  function handleSearchClick() {
+  }
+
+  async function handleWriterClick(writer) {
+    try {
+      const response = await axios.get(`/api/member/username/${writer}`);
+      setSelectedWriter(writer);
+      setSelectedWriterId(response.data.id); // Assuming the response contains the user's ID
+    } catch (error) {
+      console.error("Error fetching writer ID:", error);
+    }
+  }
+
+  function handleDiaryView() {
+    const diaryId = generateDiaryId(selectedWriterId);
+    navigate(`/diary/${diaryId}`);
+  }
 
   return (
     <>
@@ -96,25 +122,25 @@ export function BoardList() {
         >
           <Box>
             <Menu textAlign={"center"} m={"auto"} fontSize={"2xl"}>
-              {({ isOpen }) => (
+              {({isOpen}) => (
                 <>
                   <MenuButton
                     as={Button}
                     rightIcon={
                       isOpen ? (
                         <span>
-                          <ChevronDownIcon />
+                          <ChevronDownIcon/>
                         </span>
                       ) : (
                         <span>
-                          <ChevronUpIcon />
+                          <ChevronUpIcon/>
                         </span>
                       )
                     }
                     bg={"gray.700"}
                     color={"white"}
                     fontWeight={"bold"}
-                    _hover={{ bg: "gray.800" }}
+                    _hover={{bg: "gray.800"}}
                     size={"lg"}
                     p={6}
                   >
@@ -171,18 +197,18 @@ export function BoardList() {
 
           <Box>
             <Menu textAlign={"center"} fontSize={"lg"}>
-              {({ isOpen }) => (
+              {({isOpen}) => (
                 <>
                   <MenuButton
                     as={Button}
                     rightIcon={
                       isOpen ? (
                         <span>
-                          <ChevronDownIcon />
+                          <ChevronDownIcon/>
                         </span>
                       ) : (
                         <span>
-                          <ChevronUpIcon />
+                          <ChevronUpIcon/>
                         </span>
                       )
                     }
@@ -255,7 +281,7 @@ export function BoardList() {
                     {board.numberOfImages > 0 && (
                       <Badge ml={2}>
                         {board.numberOfImages}
-                        <FontAwesomeIcon icon={faImage} />
+                        <FontAwesomeIcon icon={faImage}/>
                       </Badge>
                     )}
                     {board.numberOfComments > 0 && (
@@ -263,16 +289,33 @@ export function BoardList() {
                     )}
                   </Td>
                   <Td>
-                    <span
-                      onClick={() => navigate(`/diary/view/${board.writer}`)}
-                      style={{
-                        cursor: "pointer",
-                        color: "blue",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      {board.writer}
-                    </span>
+                    <Popover>
+                      <PopoverTrigger>
+                        <span
+                          onClick={() => handleWriterClick(board.writer)}
+                          style={{
+                            cursor: "pointer",
+                            color: "blue",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          {board.writer}
+                        </span>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <PopoverArrow/>
+                        <PopoverCloseButton/>
+                        <PopoverHeader>작성자</PopoverHeader>
+                        <PopoverBody>
+                          <Button
+                            colorScheme="blue"
+                            onClick={handleDiaryView}
+                          >
+                            작성자 다이어리 보기
+                          </Button>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
                   </Td>
                   <Td textAlign="center">{board.numberOfLikes}</Td>
                   <Td textAlign="center">{board.views}</Td>
@@ -343,7 +386,7 @@ export function BoardList() {
           </Box>
           <Box>
             <Button onClick={handleSearchClick}>
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
+              <FontAwesomeIcon icon={faMagnifyingGlass}/>
             </Button>
           </Box>
         </Flex>

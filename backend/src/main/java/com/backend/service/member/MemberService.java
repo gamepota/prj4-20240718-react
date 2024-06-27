@@ -113,4 +113,14 @@ public class MemberService {
     public List<Member> list() {
         return memberMapper.selectAll();
     }
+
+    // diary ID 유효성 검증
+    public Member getMemberByDiaryId(String diaryId) {
+        try {
+            int userId = Integer.parseInt(diaryId.split("-")[1]) / 17;
+            return memberMapper.selectByMemberId(userId);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

@@ -3,10 +3,8 @@ import React, { useContext } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import {generateDiaryId} from "../util/util.jsx";
 
-function generateDiaryId(userId) {
-  return `DIARY-${userId * 17}-ID`; // 간단한 문자열 변환
-}
 
 export function Navbar() {
   const navigate = useNavigate();
