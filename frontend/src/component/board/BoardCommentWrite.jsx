@@ -1,12 +1,5 @@
 import { useContext, useState } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Spinner,
-  Textarea,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Textarea, Tooltip } from "@chakra-ui/react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
@@ -37,7 +30,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
   // console.log(account);
 
   if (!memberInfo) {
-    return <Spinner />;
+    return;
   }
   return (
     <Flex gap={2}>
