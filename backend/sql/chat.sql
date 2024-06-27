@@ -86,8 +86,8 @@ CREATE TABLE friends (
 
 INSERT INTO prj3.friends
 (member_id, friend_id, member_nickname, friend_nickname)
-VALUES (1, 28, '관리자', 'testerkjh')
+VALUES (34, 28, 'testkjh', 'testerkjh');
 
 INSERT INTO prj3.friends
 (member_id, friend_id, member_nickname, friend_nickname)
-VALUES (28, 1, 'testerkjh', '관리자')
+VALUES (28, 34, 'testerkjh', 'testkjh');

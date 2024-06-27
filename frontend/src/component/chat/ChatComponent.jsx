@@ -30,7 +30,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
 
   useEffect(() => {
     if (username && selectedFriend) {
-      const roomId = [userId, selectedFriend.id].sort().join('-'); // 고유한 채팅방 ID 생성
+      const roomId = [userId, selectedFriend.id].sort((a, b) => a - b).join('-'); // 고유한 채팅방 ID 생성
       console.log(roomId);
       const socket = new SockJS(`/ws`);
       const client = new Client({
@@ -48,7 +48,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
           console.log("STOMP Client Connected");
 
           // Fetch previous messages
-          fetchMessagesForUser(userId);
+          fetchMessagesForRoom(roomId);
         },
         onStompError: (frame) => {
           console.error("Broker error: ", frame.headers["message"], frame.body);
@@ -73,9 +73,9 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
     }
   }, [username, selectedFriend]);
 
-  const fetchMessagesForUser = async (userId) => {
+  const fetchMessagesForRoom = async (roomId) => {
     try {
-      const response = await axios.get(`/api/chat/messages/${userId}`);
+      const response = await axios.get(`/api/chat/messages/${roomId}`);
       setMessages(response.data);
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -97,7 +97,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
       return;
     }
 
-    const roomId = [userId, selectedFriend.id].sort().join('-'); // 고유한 채팅방 ID 생성
+    const roomId = [userId, selectedFriend.id].sort((a, b) => a - b).join('-'); // 고유한 채팅방 ID 생성
     const chatMessage = {
       senderId: userId,
       recipientId: selectedFriend.id,
