@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Box, Button, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
 import { ChatIcon, MinusIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import {faHouse, faMagnifyingGlass, faPlus} from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { LoginContext } from '../LoginProvider.jsx';
@@ -70,7 +70,7 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
         >
           <Text fontSize="xl" fontWeight="bold">친구 리스트</Text>
           <IconButton
-            icon={isMinimized ? <PlusSquareIcon /> : <MinusIcon />}
+            icon={isMinimized ? <FontAwesomeIcon icon={faPlus} />: <MinusIcon />}
             size="sm"
             onClick={toggleMinimize}
             aria-label={isMinimized ? "Expand List" : "Minimize List"}
