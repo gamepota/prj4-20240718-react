@@ -117,6 +117,7 @@ export function BoardView() {
         setIsLikeProcessing(false);
       });
   }
+
   return (
     <Box
       // maxW={"500px"}
@@ -187,17 +188,19 @@ export function BoardView() {
         </Box>
       )}
       <BoardCommentComponent boardId={board.id} />
-      <Box>
-        <Button
-          colorScheme={"purple"}
-          onClick={() => navigate(`/board/edit/${id}`)}
-        >
-          수정
-        </Button>
-        <Button colorScheme={"red"} onClick={onOpen}>
-          삭제
-        </Button>
-      </Box>
+      {memberId == board.memberId && (
+        <Box>
+          <Button
+            colorScheme={"purple"}
+            onClick={() => navigate(`/board/edit/${id}`)}
+          >
+            수정
+          </Button>
+          <Button colorScheme={"red"} onClick={onOpen}>
+            삭제
+          </Button>
+        </Box>
+      )}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
