@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Outlet, useParams} from "react-router-dom";
-import { Box, Center } from "@chakra-ui/react";
+import {Box, Center, Spinner, Text} from "@chakra-ui/react";
 import { DiaryNavbar } from "../diaryComponent/DiaryNavbar.jsx";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
