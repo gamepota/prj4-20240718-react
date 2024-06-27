@@ -24,4 +24,4 @@ export function DiaryComment() {
     </Box>
   );
 }
-//테스트용
+//테스트 완료
