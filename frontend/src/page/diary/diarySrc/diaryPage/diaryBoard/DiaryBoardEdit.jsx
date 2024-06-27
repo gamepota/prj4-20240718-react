@@ -55,13 +55,14 @@ export function DiaryBoardEdit() {
 
   function handleClickSave() {
     axios
-      .putForm("/api/diaryBoard/edit", {
+      .putForm(`/api/diaryBoard/edit`, {
         id: diaryBoard.id,
         title: diaryBoard.title,
         content: diaryBoard.content,
-        memberInfo,
+        nickname: memberInfo.nickname,
         removeFileList,
         addFileList,
+        memberId: memberInfo.id,
       })
       .then(() => {
         toast({
@@ -85,7 +86,6 @@ export function DiaryBoardEdit() {
       });
   }
 
-  console.log(memberInfo.id);
   if (diaryBoard === null) {
     return <Spinner />;
   }
@@ -120,7 +120,7 @@ export function DiaryBoardEdit() {
   return (
     <Box>
       <Box mb={10}>
-        <Heading>{diaryBoard.id}다이어리 수정</Heading>
+        <Heading>{diaryBoard.id}번 일기 수정</Heading>
       </Box>
       <Box>
         <Box mb={7}>

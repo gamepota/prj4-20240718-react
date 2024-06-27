@@ -5,16 +5,18 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Textarea,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export function DiaryCommentWrite() {
   const { id } = useParams();
+  const [diaryComment, setDiaryComment] = useState(null);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -22,12 +24,15 @@ export function DiaryCommentWrite() {
   const access = memberInfo.access;
   const nickname = memberInfo.nickname;
   const isLoggedIn = Boolean(access);
+  const navigate = useNavigate();
 
   const handleDiaryCommentSubmitClick = () => {
     setLoading(true);
     axios
-      .postForm("/api/diaryComment/add", {
-        memberInfo: nickname,
+      .post("/api/diaryComment/add", {
+        id,
+        nickname,
+        memberId: memberInfo.id,
         comment,
       })
       .then((res) => {
@@ -36,6 +41,7 @@ export function DiaryCommentWrite() {
           position: "top",
           description: "방명록이 등록되었습니다.",
         });
+        navigate(`/diaryComment/list`);
       })
       .catch((e) => {
         const code = e.response.status;
@@ -51,7 +57,6 @@ export function DiaryCommentWrite() {
       .finally(() => setLoading(false));
   };
   let disableSaveButton = false;
-
   if (comment.trim().length === 0) {
     disableSaveButton = true;
   }
@@ -71,7 +76,7 @@ export function DiaryCommentWrite() {
       <Box mb={7}>
         <FormControl>
           <FormLabel>내용</FormLabel>
-          <Input value={comment} onChange={(e) => setComment(e.target.value)} />
+          <Textarea onChange={(e) => setComment(e.target.value)} />
         </FormControl>
       </Box>
       <Button

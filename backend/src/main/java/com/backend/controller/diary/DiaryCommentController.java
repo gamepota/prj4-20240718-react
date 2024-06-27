@@ -6,6 +6,7 @@ import com.backend.service.diary.DiaryCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,37 +20,39 @@ public class DiaryCommentController {
     private final DiaryCommentService service;
 
     @PostMapping("add")
-    public ResponseEntity addComment(@RequestBody DiaryComment diaryComment,
-                                     Authentication authentication) {
+    public ResponseEntity add(@RequestBody DiaryComment diaryComment,
+                              Authentication authentication) {
         if (service.validate(diaryComment)) {
-            service.addComment(diaryComment, authentication);
+            service.add(diaryComment, authentication);
+            System.out.println("diaryComment = " + diaryComment);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @GetMapping("list/{id}")
-    public List<DiaryComment> listComment(@PathVariable Integer id) {
-        return service.listComment(id);
+    @GetMapping("list")
+    public List<DiaryComment> list() {
+        return service.list();
     }
 
-    @DeleteMapping("diaryDelete")
-    public ResponseEntity diaryDelete(@RequestBody DiaryComment diaryComment,
+    @DeleteMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity diaryDelete(@PathVariable Integer id, @RequestParam(required = false) Integer memberId,
                                       Authentication authentication) {
-        if (service.hasAccess(diaryComment, authentication)) {
-            service.diaryDelete(diaryComment);
+        if (service.hasAccess(id, authentication, memberId)) {
+            service.diaryDelete(id);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
-    @PutMapping("diaryUpdate")
-    public ResponseEntity diaryUpdate(@RequestBody DiaryComment diaryComment
+    @PutMapping("edit")
+    public ResponseEntity edit(@RequestBody DiaryComment diaryComment
             , Authentication authentication) {
         if (service.validate(diaryComment)) {
-            service.diaryUpdate(diaryComment);
+            service.edit(diaryComment);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
@@ -57,7 +60,12 @@ public class DiaryCommentController {
     }
 
     @GetMapping("{id}")
-    public DiaryComment getDiaryCommentById(@PathVariable Integer id) {
-        return service.getById(id); // 반환 타입 추가
+    public ResponseEntity get(@PathVariable Integer id) {
+        DiaryComment diaryComment = service.get(id);
+
+        if (diaryComment == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(diaryComment); // 반환 타입 추가
     }
 }

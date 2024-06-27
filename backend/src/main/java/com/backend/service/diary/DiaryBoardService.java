@@ -5,7 +5,6 @@ import com.backend.domain.diary.DiaryBoardFile;
 import com.backend.domain.member.Member;
 import com.backend.mapper.diary.DiaryBoardMapper;
 import com.backend.mapper.member.MemberMapper;
-import com.backend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -170,20 +169,11 @@ public class DiaryBoardService {
         mapper.update(diaryBoard);
     }
 
-    public boolean hasAccess(Integer id, Authentication authentication) {
-        if (authentication == null) {
-            return false;
-        }
-
-
+    public boolean hasAccess(Integer id, Authentication authentication, Integer memberId) {
         DiaryBoard diaryBoard = mapper.selectById(id);
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof CustomUserDetails username) {
-            Member member = username.getMember();
-            return diaryBoard.getMemberId().equals(member.getId());
-        }
 
-        return diaryBoard.getMemberId().equals(Integer.valueOf(authentication.getName()));
+        return diaryBoard.getMemberId()
+                .equals(memberId);
     }
 
     public DiaryBoard get(Integer id) {

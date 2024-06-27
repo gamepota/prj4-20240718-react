@@ -94,4 +94,11 @@ public interface MemberMapper {
             WHERE nickname = #{nickname}
             """)
     Member selectByDiaryName(String nickname);
+
+    @Select("""
+                SELECT id,nickname
+                FROM member
+                WHERE nickname = #{nickname}
+            """)
+    Member selectByDiaryCommentName(String nickname);
 }

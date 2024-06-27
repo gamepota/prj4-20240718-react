@@ -56,8 +56,6 @@ export function DiaryBoardList() {
     }
   }, [searchParams]);
 
-  console.log("boardList" + diaryBoardList);
-  console.log("pageInfo" + pageInfo);
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
     pageNumbers.push(i);

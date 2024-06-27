@@ -34,6 +34,8 @@ export function DiaryBoardView() {
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
 
   useEffect(() => {
     axios
@@ -49,21 +51,21 @@ export function DiaryBoardView() {
             description: "해당 게시물이 존재하지 않습니다.",
             position: "top",
           });
-          navigate("/diary/home");
+          navigate(`/diary/list`);
         }
       });
   }, [id]);
 
   function handleClickRemove() {
     axios
-      .delete("/api/diaryBoard/" + diaryBoard.id)
+      .delete("/api/diaryBoard/" + diaryBoard.id, { params })
       .then(() => {
         toast({
           status: "success",
           description: `${id}게시물이 삭제되었습니다.`,
           position: "top",
         });
-        navigate("/diary/home");
+        navigate(`/diary/list`);
       })
       .catch(() => {
         toast({

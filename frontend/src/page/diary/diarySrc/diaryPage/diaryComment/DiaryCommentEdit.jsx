@@ -15,7 +15,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
@@ -30,12 +30,19 @@ export function DiaryCommentEdit() {
   const nickname = memberInfo.nickname;
   const isLoggedIn = Boolean(access);
 
+  useEffect(() => {
+    axios
+      .get(`/api/diaryComment/${id}`)
+      .then((res) => setDiaryComment(res.data));
+  }, []);
+
   function handleCommentSubmit() {
     axios
-      .put(`/api/diaryComment/diaryUpdate`, {
+      .put(`/api/diaryComment/edit`, {
         id: diaryComment.id,
         nickname: memberInfo.nickname,
         comment: diaryComment.comment,
+        memberId: memberInfo.id,
       })
       .then(() => {
         toast({

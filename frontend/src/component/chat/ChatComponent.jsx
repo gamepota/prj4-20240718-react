@@ -164,8 +164,8 @@ export const ChatComponent = ({selectedFriend, onClose}) => {
                   textAlign={Number(msg.senderId) === Number(userId) ? "left" : "right"}
                   maxWidth="70%"
                 >
-                  <Text fontSize="s" fontWeight="bold">{msg.senderNickName}</Text>
-                  <Text fontSize="s">{msg.content}</Text>
+                  <Text fontSize="xs" fontWeight="bold">{msg.senderNickName}</Text>
+                  <Text fontSize="xs">{msg.content}</Text>
                   <Text fontSize="xs" color="gray.500">
                     {new Date(msg.timestamp).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
                   </Text>

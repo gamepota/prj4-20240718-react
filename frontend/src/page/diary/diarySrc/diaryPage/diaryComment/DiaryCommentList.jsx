@@ -23,7 +23,7 @@ export function DiaryCommentList() {
 
   useEffect(() => {
     axios
-      .get(`/api/diaryComment/list?${id}`)
+      .get(`/api/diaryComment/list`)
       .then((res) => {
         setDiaryCommentList(res.data);
       })
@@ -41,7 +41,7 @@ export function DiaryCommentList() {
       </Center>
       <Box>
         <Button
-          onClick={() => navigate(`/diary/comment/write/${memberInfo.id}`)}
+          onClick={() => navigate(`/diaryComment/write/${memberInfo.id}`)}
         >
           작성
         </Button>
@@ -60,12 +60,12 @@ export function DiaryCommentList() {
               {diaryCommentList.map((diaryComment) => (
                 <Tr
                   onClick={() =>
-                    navigate(`/diary/comment/view/${diaryComment.id}`)
+                    navigate(`/diaryComment/view/${diaryComment.id}`)
                   }
                   key={diaryComment.id}
                 >
-                  <Td>diaryComment.id</Td>
                   <Td>{memberInfo.nickname}</Td>
+                  <Td>{diaryComment.comment}</Td>
                 </Tr>
               ))}
             </Tbody>
