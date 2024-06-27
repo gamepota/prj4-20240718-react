@@ -21,7 +21,9 @@ export function DiaryHome() {
     const validateDiaryId = async () => {
       try {
         const response = await axios.get(`/api/member/validateDiaryId/${diaryId}`);
+        console.log(diaryId)
         setIsValidDiaryId(response.data.isValid);
+        console.log(response.data)
         if (response.data.isValid) {
           setOwnerNickname(response.data.nickname);
         }

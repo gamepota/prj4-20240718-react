@@ -9,6 +9,7 @@ import com.backend.mapper.member.MemberMapper;
 import com.backend.mapper.member.ProfileMapper;
 import com.backend.mapper.member.RefreshMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.Mergeable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -118,7 +119,10 @@ public class MemberService {
     public Member getMemberByDiaryId(String diaryId) {
         try {
             int userId = Integer.parseInt(diaryId.split("-")[1]) / 17;
-            return memberMapper.selectByMemberId(userId);
+            System.out.println("Extracted userId: " + userId);  // 로그 추가
+            Member member= memberMapper.selectByMemberId(userId);
+            System.out.println("Found member: " + (member != null));  // 로그 추가
+            return member;
         } catch (Exception e) {
             return null;
         }

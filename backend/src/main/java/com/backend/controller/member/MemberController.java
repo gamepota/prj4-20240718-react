@@ -100,6 +100,9 @@ public class MemberController {
         Map<String, Object> response = new HashMap<>();
         Member member = service.getMemberByDiaryId(diaryId);
 
+        System.out.println("Diary ID: " + diaryId);  // 로그 추가
+        System.out.println("Member found: " + (member != null));  // 로그 추가
+
         if (member != null) {
             response.put("isValid", true);
             response.put("nickname", member.getNickname());

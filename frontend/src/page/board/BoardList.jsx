@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Badge,
   Box,
@@ -25,12 +25,12 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import {useNavigate, useSearchParams} from "react-router-dom";
-import {ChevronDownIcon, ChevronUpIcon} from "@chakra-ui/icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faImage, faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
-import {LoginContext} from "../../component/LoginProvider.jsx";
-import {generateDiaryId} from "../../util/util.jsx";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../util/util.jsx";
 import axios from "axios";
 
 export function BoardList() {
@@ -41,7 +41,7 @@ export function BoardList() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchType, setSearchType] = useState("all");
   const [searchParams] = useSearchParams();
-  const {memberInfo} = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
 
   const navigate = useNavigate();
 
@@ -88,22 +88,15 @@ export function BoardList() {
   function handleBoardClick(boardId) {
     axios
       .get(`/api/board/${boardId}`)
-      .then(() => {
-      })
+      .then(() => {})
       .finally(navigate(`/board/${boardId}`));
   }
 
-  function handleSearchClick() {
-  }
+  function handleSearchClick() {}
 
-  async function handleWriterClick(writer) {
-    try {
-      const response = await axios.get(`/api/member/username/${writer}`);
-      setSelectedWriter(writer);
-      setSelectedWriterId(response.data.id); // Assuming the response contains the user's ID
-    } catch (error) {
-      console.error("Error fetching writer ID:", error);
-    }
+  function handleWriterClick(writer, writerId) {
+    setSelectedWriter(writer);
+    setSelectedWriterId(writerId);
   }
 
   function handleDiaryView() {
@@ -122,25 +115,25 @@ export function BoardList() {
         >
           <Box>
             <Menu textAlign={"center"} m={"auto"} fontSize={"2xl"}>
-              {({isOpen}) => (
+              {({ isOpen }) => (
                 <>
                   <MenuButton
                     as={Button}
                     rightIcon={
                       isOpen ? (
                         <span>
-                          <ChevronDownIcon/>
+                          <ChevronDownIcon />
                         </span>
                       ) : (
                         <span>
-                          <ChevronUpIcon/>
+                          <ChevronUpIcon />
                         </span>
                       )
                     }
                     bg={"gray.700"}
                     color={"white"}
                     fontWeight={"bold"}
-                    _hover={{bg: "gray.800"}}
+                    _hover={{ bg: "gray.800" }}
                     size={"lg"}
                     p={6}
                   >
@@ -197,18 +190,18 @@ export function BoardList() {
 
           <Box>
             <Menu textAlign={"center"} fontSize={"lg"}>
-              {({isOpen}) => (
+              {({ isOpen }) => (
                 <>
                   <MenuButton
                     as={Button}
                     rightIcon={
                       isOpen ? (
                         <span>
-                          <ChevronDownIcon/>
+                          <ChevronDownIcon />
                         </span>
                       ) : (
                         <span>
-                          <ChevronUpIcon/>
+                          <ChevronUpIcon />
                         </span>
                       )
                     }
@@ -281,7 +274,7 @@ export function BoardList() {
                     {board.numberOfImages > 0 && (
                       <Badge ml={2}>
                         {board.numberOfImages}
-                        <FontAwesomeIcon icon={faImage}/>
+                        <FontAwesomeIcon icon={faImage} />
                       </Badge>
                     )}
                     {board.numberOfComments > 0 && (
@@ -292,7 +285,7 @@ export function BoardList() {
                     <Popover>
                       <PopoverTrigger>
                         <span
-                          onClick={() => handleWriterClick(board.writer)}
+                          onClick={() => handleWriterClick(board.writer, board.memberId)}
                           style={{
                             cursor: "pointer",
                             color: "blue",
@@ -303,14 +296,11 @@ export function BoardList() {
                         </span>
                       </PopoverTrigger>
                       <PopoverContent>
-                        <PopoverArrow/>
-                        <PopoverCloseButton/>
+                        <PopoverArrow />
+                        <PopoverCloseButton />
                         <PopoverHeader>작성자</PopoverHeader>
                         <PopoverBody>
-                          <Button
-                            colorScheme="blue"
-                            onClick={handleDiaryView}
-                          >
+                          <Button colorScheme="blue" onClick={handleDiaryView}>
                             작성자 다이어리 보기
                           </Button>
                         </PopoverBody>
@@ -351,14 +341,10 @@ export function BoardList() {
           ))}
           {pageInfo.nextPageNumber && (
             <>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
-              >
+              <Button onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}>
                 다음
               </Button>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
-              >
+              <Button onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}>
                 맨뒤
               </Button>
             </>
@@ -386,7 +372,7 @@ export function BoardList() {
           </Box>
           <Box>
             <Button onClick={handleSearchClick}>
-              <FontAwesomeIcon icon={faMagnifyingGlass}/>
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
             </Button>
           </Box>
         </Flex>

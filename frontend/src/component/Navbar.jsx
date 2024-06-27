@@ -130,7 +130,8 @@ export function Navbar() {
               p={2}
               borderRadius="md"
             >
-              <Link to={`/diary/${diaryId}`} target="_blank" rel="noopener noreferrer">
+              <Link to={`/diary/${diaryId}`} >
+                {/*target="_blank" rel="noopener noreferrer">*/}
                 내 펫 다이어리
               </Link>
             </Box>
