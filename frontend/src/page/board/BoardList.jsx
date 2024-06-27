@@ -9,6 +9,13 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
   Select,
   Table,
   Tbody,
@@ -25,6 +32,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import Pagination from "../../component/Pagination.jsx";
+import { generateDiaryId } from "../../util/util.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -38,6 +46,9 @@ export function BoardList() {
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
 
   const navigate = useNavigate();
+
+  const [selectedWriter, setSelectedWriter] = useState(null);
+  const [selectedWriterId, setSelectedWriterId] = useState(null);
 
   useEffect(() => {
     axios
@@ -85,6 +96,16 @@ export function BoardList() {
       .finally(navigate(`/board/${boardId}`));
   }
   function handleSearchClick() {}
+
+  function handleWriterClick(writer, writerId) {
+    setSelectedWriter(writer);
+    setSelectedWriterId(writerId);
+  }
+
+  function handleDiaryView() {
+    const diaryId = generateDiaryId(selectedWriterId);
+    navigate(`/diary/${diaryId}`);
+  }
 
   return (
     <>
@@ -264,16 +285,32 @@ export function BoardList() {
                     )}
                   </Td>
                   <Td>
-                    <span
-                      onClick={() => navigate(`/diary/home/${board.memberId}`)}
-                      style={{
-                        cursor: "pointer",
-                        color: "blue",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      {board.writer}
-                    </span>
+                    <Popover>
+                      <PopoverTrigger>
+                        <span
+                          onClick={() =>
+                            handleWriterClick(board.writer, board.memberId)
+                          }
+                          style={{
+                            cursor: "pointer",
+                            color: "blue",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          {board.writer}
+                        </span>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <PopoverArrow />
+                        <PopoverCloseButton />
+                        <PopoverHeader>작성자</PopoverHeader>
+                        <PopoverBody>
+                          <Button colorScheme="blue" onClick={handleDiaryView}>
+                            작성자 다이어리 보기
+                          </Button>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
                   </Td>
                   <Td textAlign="center">{board.numberOfLikes}</Td>
                   <Td textAlign="center">{board.views}</Td>
