@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Center, Flex } from "@chakra-ui/react";
 
-export function Pagination({ pageInfo, pageNumbers, handlePageButtonClick }) {
+const Pagination = ({ pageInfo, pageNumbers, handlePageButtonClick }) => {
   return (
     <Center>
       <Flex>
@@ -17,9 +17,9 @@ export function Pagination({ pageInfo, pageNumbers, handlePageButtonClick }) {
         )}
         {pageNumbers.map((pageNumber) => (
           <Button
+            key={pageNumber}
             w="10"
             onClick={() => handlePageButtonClick(pageNumber)}
-            key={pageNumber}
             colorScheme={
               pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
             }
@@ -44,4 +44,6 @@ export function Pagination({ pageInfo, pageNumbers, handlePageButtonClick }) {
       </Flex>
     </Center>
   );
-}
+};
+
+export default Pagination;

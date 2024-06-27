@@ -24,6 +24,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../component/LoginProvider.jsx";
+import Pagination from "../../component/Pagination.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -282,46 +283,11 @@ export function BoardList() {
           </Table>
         </Box>
       </Center>
-      <Center>
-        <Flex>
-          {pageInfo.prevPageNumber && (
-            <>
-              <Button onClick={() => handlePageButtonClick(1)}>맨앞</Button>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
-              >
-                이전
-              </Button>
-            </>
-          )}
-          {pageNumbers.map((pageNumber) => (
-            <Button
-              w={"10"}
-              onClick={() => handlePageButtonClick(pageNumber)}
-              key={pageNumber}
-              colorScheme={
-                pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
-              }
-            >
-              {pageNumber}
-            </Button>
-          ))}
-          {pageInfo.nextPageNumber && (
-            <>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
-              >
-                다음
-              </Button>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
-              >
-                맨뒤
-              </Button>
-            </>
-          )}
-        </Flex>
-      </Center>
+      <Pagination
+        pageInfo={pageInfo}
+        pageNumbers={pageNumbers}
+        handlePageButtonClick={handlePageButtonClick}
+      />
       <Center mb={10}>
         <Flex gap={1}>
           <Box>
