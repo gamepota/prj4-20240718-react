@@ -5,6 +5,22 @@ import axios from "axios";
 const KakaoMap = () => {
   const [geojson, setGeojson] = useState(null);
 
+  const calculateCenter = (coordinates) => {
+    let latSum = 0;
+    let lngSum = 0;
+    let numPoints = 0;
+
+    coordinates.forEach((polygonCoordinates) => {
+      polygonCoordinates.forEach((coordinate) => {
+        lngSum += coordinate[0];
+        latSum += coordinate[1];
+        numPoints++;
+      });
+    });
+
+    return [lngSum / numPoints, latSum / numPoints];
+  };
+
   useEffect(() => {
     const fetchGeojson = async () => {
       try {
@@ -78,6 +94,7 @@ const KakaoMap = () => {
 
     const displayArea = (coordinates, name) => {
       const path = [];
+      const center = calculateCenter(coordinates);
 
       coordinates.forEach((polygonCoordinates) => {
         const polygonPath = [];
@@ -123,11 +140,14 @@ const KakaoMap = () => {
         });
 
         kakao.maps.event.addListener(polygon, "click", function (mouseEvent) {
-          const content =
-            '<div style="padding:2px;"><p><b>' + name + "</b></p></div>";
+          const content = `<div style="padding:2px;"><p><b>${name}</b></p></div>`;
           infowindow.setContent(content);
           infowindow.setPosition(mouseEvent.latLng);
           infowindow.setMap(map);
+
+          // 지도 중심 좌표를 클릭한 폴리곤의 중심으로 이동하고 확대
+          map.setCenter(new kakao.maps.LatLng(center[1], center[0]));
+          map.setLevel(8); // 원하는 확대 수준으로 설정
         });
       });
     };
