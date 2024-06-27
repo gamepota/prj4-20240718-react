@@ -11,6 +11,8 @@ export function DiaryHome() {
   const [isValidDiaryId, setIsValidDiaryId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [ownerNickname, setOwnerNickname] = useState("");
+  const [ownerId, setOwnerId] = useState(null); // 다이어리 주인의 ID 상태 추가
+
 
   useEffect(() => {
     const validateDiaryId = async () => {
@@ -61,6 +63,12 @@ export function DiaryHome() {
       </Box>
       <Box>
         <Outlet />
+      </Box>
+      <Box>
+        {/* FriendAddButton에 friendId로 ownerId 전달 */}
+        {ownerId && memberInfo && memberInfo.id !== ownerId && (
+          <FriendAddButton friendId={ownerId} />
+        )}
       </Box>
     </Box>
   );

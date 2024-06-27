@@ -16,7 +16,7 @@ public class FriendsService {
 		this.friendsMapper = friendsMapper;
 	}
 
-	public List<Member> getFriendsWithIds(int memberId) {
+	public List<Member> getFriendsWithIds(Integer memberId) {
 		return friendsMapper.selectFriendsById(memberId);
 	}
 
@@ -28,7 +28,7 @@ public class FriendsService {
 		friendsMapper.insertFriend(friendRequest.getFriendId(), friendRequest.getMemberId(), friend.getNickname(), member.getNickname());
 	}
 
-	public boolean checkFriendship(int memberId, int friendId) {
+	public boolean checkFriendship(Integer memberId, Integer friendId) {
 		return friendsMapper.checkFriendship(memberId, friendId) > 0;
 	}
 }

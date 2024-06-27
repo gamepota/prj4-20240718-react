@@ -22,7 +22,7 @@ public class FriendsController {
 	}
 
 	@GetMapping("/{memberId}")
-	public List<Member> getFriends(@PathVariable int memberId) {
+	public List<Member> getFriends(@PathVariable Integer memberId) {
 		logger.info("Received request to fetch friends for member ID: {}", memberId);
 		List<Member> friends = friendsService.getFriendsWithIds(memberId);
 		logger.info("Returning friends for member ID {}: {}", memberId, friends);
@@ -44,8 +44,8 @@ public class FriendsController {
 
 	@GetMapping("/check")
 	public ResponseEntity<Boolean> checkFriendship(
-					@RequestParam int memberId,
-					@RequestParam int friendId) {
+					@RequestParam Integer memberId,
+					@RequestParam Integer friendId) {
 		boolean isFriend = friendsService.checkFriendship(memberId, friendId);
 		return ResponseEntity.ok(isFriend);
 	}

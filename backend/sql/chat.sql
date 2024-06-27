@@ -1,6 +1,6 @@
 USE prj3;
 
-TRUNCATE TABLE chat_message;
+TRUNCATE TABLE friends;
 
 ALTER TABLE chat_message
     CHANGE COLUMN sender sender_id INT,

@@ -27,6 +27,7 @@ import {
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import {generateDiaryId} from "../../../../../util/util.jsx";
 
 export function DiaryBoardList() {
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
@@ -36,6 +37,7 @@ export function DiaryBoardList() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
@@ -75,6 +77,11 @@ export function DiaryBoardList() {
     disableSaveButton = true;
   }
 
+  function handleSelectedDiaryBoard(id) {
+    const diaryId = generateDiaryId(memberInfo.id);
+    return () => navigate(`/diary/${diaryId}/view`);
+  }
+
   return (
     <Box>
       <Box mb={5}></Box>
@@ -84,7 +91,7 @@ export function DiaryBoardList() {
       <Box>
         <Button
           isDisabled={disableSaveButton}
-          onClick={() => navigate(`/diary/write/${memberInfo.id}`)}
+          onClick={() => navigate(`/diary/${diaryId}/write`)}
         >
           글쓰기
         </Button>
@@ -107,7 +114,7 @@ export function DiaryBoardList() {
                     bgColor: "gray.200",
                   }}
                   cursor={"pointer"}
-                  onClick={() => navigate(`/diary/view/${diaryBoard.id}`)}
+                  onClick={handleSelectedDiaryBoard(diaryBoard.id)}
                   key={diaryBoard.id}
                 >
                   <Td>{diaryBoard.id}</Td>

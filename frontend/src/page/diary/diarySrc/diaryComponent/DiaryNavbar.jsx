@@ -3,21 +3,23 @@ import { Box, Button, Flex } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
+import { extractUserIdFromDiaryId } from "../../../../util/util";
 
 export function DiaryNavbar() {
   const navigate = useNavigate();
   const { memberInfo } = useContext(LoginContext);
   const { diaryId } = useParams();
   const [isFriend, setIsFriend] = useState(false);
+  const friendId = extractUserIdFromDiaryId(diaryId);
 
   useEffect(() => {
     const checkFriendship = async () => {
-      if (memberInfo && diaryId) {
+      if (memberInfo && friendId && memberInfo.id !== friendId) {
         try {
           const response = await axios.get("/api/friends/check", {
             params: {
-              memberNickname: memberInfo.nickname,
-              friendNickname: diaryId.split('-')[1]
+              memberId: memberInfo.id,
+              friendId: friendId
             }
           });
           setIsFriend(response.data);
@@ -28,14 +30,15 @@ export function DiaryNavbar() {
     };
 
     checkFriendship();
-  }, [memberInfo, diaryId]);
+  }, [memberInfo, friendId]);
 
   const addFriend = async () => {
-    if (memberInfo) {
-      const friendNickname = diaryId.split('-')[1];
+    if (memberInfo && memberInfo.id !== friendId) {
+      console.log('Adding friend:', friendId)
+      console.log('Member ID:', memberInfo.id)
       const data = {
-        memberNickname: memberInfo.nickname,
-        friendNickname
+        memberId: memberInfo.id,
+        friendId: friendId
       };
 
       try {
@@ -95,7 +98,7 @@ export function DiaryNavbar() {
         </Button>
       </Box>
       <Box>
-        {!isFriend && (
+        {!isFriend && memberInfo && Number(memberInfo.id) !== Number(friendId) && (
           <Button size="sm" onClick={addFriend}>
             친구 추가
           </Button>

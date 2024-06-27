@@ -17,7 +17,7 @@ public interface FriendsMapper {
         JOIN member m ON f.friend_id = m.id
         WHERE f.member_id = #{memberId}
     """)
-	List<Member> selectFriendsById(@Param("memberId") int memberId);
+	List<Member> selectFriendsById(@Param("memberId") Integer memberId);
 
 	@Insert("""
         INSERT INTO friends (member_id, friend_id, member_nickname, friend_nickname)
@@ -28,19 +28,19 @@ public interface FriendsMapper {
             #{friendNickname}
         )
     """)
-	void insertFriend(@Param("memberId") int memberId, @Param("friendId") int friendId, @Param("memberNickname") String memberNickname, @Param("friendNickname") String friendNickname);
+	void insertFriend(@Param("memberId") Integer memberId, @Param("friendId") Integer friendId, @Param("memberNickname") String memberNickname, @Param("friendNickname") String friendNickname);
 
 	@Select("""
         SELECT COUNT(*)
         FROM friends
         WHERE member_id = #{memberId} AND friend_id = #{friendId}
     """)
-	int checkFriendship(@Param("memberId") int memberId, @Param("friendId") int friendId);
+	int checkFriendship(@Param("memberId") Integer memberId, @Param("friendId") Integer friendId);
 
 	@Select("""
         SELECT id, nickname
         FROM member
         WHERE id = #{id}
     """)
-	Member selectMemberById(@Param("id") int id);
+	Member selectMemberById(@Param("id") Integer id);
 }
