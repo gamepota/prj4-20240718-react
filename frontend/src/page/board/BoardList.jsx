@@ -11,12 +11,12 @@ import {
   MenuItem,
   MenuList,
   Popover,
-  PopoverTrigger,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
   PopoverContent,
   PopoverHeader,
-  PopoverBody,
-  PopoverArrow,
-  PopoverCloseButton,
+  PopoverTrigger,
   Select,
   Table,
   Tbody,
@@ -285,7 +285,9 @@ export function BoardList() {
                     <Popover>
                       <PopoverTrigger>
                         <span
-                          onClick={() => handleWriterClick(board.writer, board.memberId)}
+                          onClick={() =>
+                            handleWriterClick(board.writer, board.memberId)
+                          }
                           style={{
                             cursor: "pointer",
                             color: "blue",
@@ -341,10 +343,14 @@ export function BoardList() {
           ))}
           {pageInfo.nextPageNumber && (
             <>
-              <Button onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}>
+              <Button
+                onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
+              >
                 다음
               </Button>
-              <Button onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}>
+              <Button
+                onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
+              >
                 맨뒤
               </Button>
             </>
@@ -380,3 +386,4 @@ export function BoardList() {
     </>
   );
 }
+//
