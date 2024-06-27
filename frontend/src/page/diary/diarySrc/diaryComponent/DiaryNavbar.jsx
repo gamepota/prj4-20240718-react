@@ -11,7 +11,7 @@ export function DiaryNavbar() {
     <Flex boxSize={"100%"} h={"50px"} alignContent={"space-between"} gap={5}>
       <Box>
         <Button
-          onClick={() => navigate(`/diary/home/${memberInfo.id}`)}
+          onClick={() => navigate(`/diary`)}
           cursor={"pointer"}
           _hover={{
             bgColor: "blue.200",
@@ -22,7 +22,7 @@ export function DiaryNavbar() {
       </Box>
       <Box>
         <Button
-          onClick={() => navigate("/diaryComment/list")}
+          onClick={() => navigate("/diary/comment/list")}
           cursor={"pointer"}
           _hover={{
             bg: "blue.200",
@@ -33,7 +33,7 @@ export function DiaryNavbar() {
       </Box>
       <Box>
         <Button
-          onClick={() => navigate("/diary/list")}
+          onClick={() => navigate(`/diary/list`)}
           cursor={"pointer"}
           _hover={{
             bgColor: "blue.200",

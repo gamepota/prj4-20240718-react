@@ -23,14 +23,13 @@ export function DiaryCommentList() {
 
   useEffect(() => {
     axios
-      .get(`/api/diaryComment/list`)
+      .get(`/api/diaryComment/list`, { params: { diaryId: id } })
       .then((res) => {
         setDiaryCommentList(res.data);
       })
       .catch((err) => {
         console.error("Error fetching comments:", err);
-      })
-      .finally(() => {});
+      });
   }, [id]);
 
   return (
@@ -39,33 +38,36 @@ export function DiaryCommentList() {
       <Center>
         <Heading>방명록 목록</Heading>
       </Center>
-      <Box>
+      <Box mb={5}>
         <Button
-          onClick={() => navigate(`/diaryComment/write/${memberInfo.id}`)}
+          onClick={() => navigate(`/diary/comment/write/${memberInfo.id}`)}
         >
           작성
         </Button>
       </Box>
+
       <Box>
         {diaryCommentList.length === 0 && <Center>방명록이 없습니다.</Center>}
         {diaryCommentList.length > 0 && (
           <Table>
             <Thead>
               <Tr>
-                <Th>작성자</Th>
+                <Th>No.</Th>
                 <Th>방명록</Th>
+                <Th>작성자</Th>
               </Tr>
             </Thead>
             <Tbody>
               {diaryCommentList.map((diaryComment) => (
                 <Tr
                   onClick={() =>
-                    navigate(`/diaryComment/view/${diaryComment.id}`)
+                    navigate(`/diary/comment/view/${diaryComment.id}`)
                   }
                   key={diaryComment.id}
                 >
-                  <Td>{memberInfo.nickname}</Td>
+                  <Td>{diaryComment.id}</Td>
                   <Td>{diaryComment.comment}</Td>
+                  <Td>{memberInfo.nickname}</Td>
                 </Tr>
               ))}
             </Tbody>

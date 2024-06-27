@@ -1,4 +1,4 @@
-import {Box, Button, Flex, Img, Input} from "@chakra-ui/react";
+import { Box, Button, Flex, Img, Input } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { Link, useNavigate } from "react-router-dom";
@@ -52,7 +52,7 @@ export function Navbar() {
     >
       <Flex gap={5}>
         <Box
-          _hover={{ cursor: "pointer"}}
+          _hover={{ cursor: "pointer" }}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/")}
@@ -132,7 +132,7 @@ export function Navbar() {
               p={2}
               borderRadius="md"
             >
-              <Link to={`/diary/${diaryId}`} target="_blank" rel="noopener noreferrer">
+              <Link to={`/diary`} target="_blank" rel="noopener noreferrer">
                 내 펫 다이어리
               </Link>
             </Box>

@@ -41,7 +41,7 @@ export function DiaryCommentWrite() {
           position: "top",
           description: "방명록이 등록되었습니다.",
         });
-        navigate(`/diaryComment/list`);
+        navigate(`/diary/comment/list`);
       })
       .catch((e) => {
         const code = e.response.status;
