@@ -43,6 +43,9 @@ export function BoardView() {
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
   const params = memberId ? { memberId } : {};
+
+  const [selectedWriter, setSelectedWriter] = useState(null);
+  const [selectedWriterId, setSelectedWriterId] = useState(null);
   // if (memberInfo != null) {
   //   const access = memberInfo.access;
   //   const userId = memberInfo.id;
@@ -118,15 +121,19 @@ export function BoardView() {
       });
   }
 
+  function handleWriterClick(writer, writerId) {
+    setSelectedWriter(writer);
+    setSelectedWriterId(writerId);
+  }
+  function handleDiaryView() {
+    const diaryId = generateDiaryId(selectedWriterId);
+    const url = `/diary/${diaryId}`;
+    const windowFeatures = "width=1400,height=800"; // 원하는 크기로 설정
+    window.open(url, "_blank", windowFeatures);
+  }
+
   return (
-    <Box
-      // maxW={"500px"}
-      m={"auto"}
-      p={4}
-      boxShadow={"md"}
-      borderRadius={"md"}
-      mt={10}
-    >
+    <Box maxW="800px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10}>
       <Flex>
         <Box>{board.id}번 게시물</Box>
         <Spacer />
