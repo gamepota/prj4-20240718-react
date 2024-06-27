@@ -70,6 +70,11 @@ export function DiaryBoardList() {
     navigate(`/?${searchParams}`);
   }
 
+  let disableSaveButton = false;
+  if (!memberInfo) {
+    disableSaveButton = true;
+  }
+
   return (
     <Box>
       <Box mb={5}></Box>
@@ -77,7 +82,10 @@ export function DiaryBoardList() {
         <Heading>다이어리 목록</Heading>
       </Center>
       <Box>
-        <Button onClick={() => navigate(`/diary/write/${memberInfo.id}`)}>
+        <Button
+          isDisabled={disableSaveButton}
+          onClick={() => navigate(`/diary/write/${memberInfo.id}`)}
+        >
           글쓰기
         </Button>
       </Box>
@@ -116,7 +124,7 @@ export function DiaryBoardList() {
                       </Badge>
                     )}
                   </Td>
-                  <Td>{memberInfo.nickname}</Td>
+                  <Td>{diaryBoard.writer}</Td>
                 </Tr>
               ))}
             </Tbody>

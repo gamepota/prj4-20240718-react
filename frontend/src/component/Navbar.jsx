@@ -5,6 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {generateDiaryId} from "../util/util.jsx";
 
+function generateDiaryId(userId) {
+  return `DIARY-${userId * 17}-ID`; // 간단한 문자열 변환
+}
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -50,7 +53,7 @@ export function Navbar() {
     >
       <Flex gap={5}>
         <Box
-          _hover={{ cursor: "pointer"}}
+          _hover={{ cursor: "pointer" }}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/")}

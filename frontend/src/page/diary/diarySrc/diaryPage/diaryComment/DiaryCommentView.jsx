@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import {
@@ -84,6 +84,7 @@ export function DiaryCommentView() {
           <Textarea value={diaryComment.comment} readOnly />
         </FormControl>
       </Box>
+      <DiaryCommentComponent diaryCommentId={diaryComment.id} />
       <Box mb={7}>
         <FormControl>작성일시</FormControl>
         <Input type="datetime-local" value={diaryComment.inserted} readOnly />

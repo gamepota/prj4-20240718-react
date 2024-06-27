@@ -1,17 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  Box,
-  Center,
-  Spinner,
-  Text,
-} from "@chakra-ui/react";
-import { Outlet, useParams } from "react-router-dom";
+import React, { useContext } from "react";
+import {Outlet, useParams} from "react-router-dom";
+import { Box, Center } from "@chakra-ui/react";
 import { DiaryNavbar } from "../diaryComponent/DiaryNavbar.jsx";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
 
 export function DiaryHome() {
-  const { memberInfo } = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const { diaryId } = useParams();
   const [isValidDiaryId, setIsValidDiaryId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
