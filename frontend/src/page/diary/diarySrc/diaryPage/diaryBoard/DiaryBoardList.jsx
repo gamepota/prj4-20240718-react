@@ -206,5 +206,6 @@ export function DiaryBoardList() {
         </Flex>
       </Center>
     </Box>
+    //ㄴㄴㄴㄴ
   );
 }
