@@ -24,3 +24,5 @@ export function DiaryCommentComponent({ diaryCommentId }) {
     </Box>
   );
 }
+
+// 테스트 용
