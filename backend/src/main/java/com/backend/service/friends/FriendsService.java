@@ -21,7 +21,14 @@ public class FriendsService {
 	}
 
 	public void addFriend(FriendRequest friendRequest) {
-		friendsMapper.insertFriend(friendRequest.getMemberId(), friendRequest.getFriendId());
-		friendsMapper.insertFriend(friendRequest.getFriendId(), friendRequest.getMemberId());
+		Member member = friendsMapper.selectMemberById(friendRequest.getMemberId());
+		Member friend = friendsMapper.selectMemberById(friendRequest.getFriendId());
+
+		friendsMapper.insertFriend(friendRequest.getMemberId(), friendRequest.getFriendId(), member.getNickname(), friend.getNickname());
+		friendsMapper.insertFriend(friendRequest.getFriendId(), friendRequest.getMemberId(), friend.getNickname(), member.getNickname());
+	}
+
+	public boolean checkFriendship(int memberId, int friendId) {
+		return friendsMapper.checkFriendship(memberId, friendId) > 0;
 	}
 }

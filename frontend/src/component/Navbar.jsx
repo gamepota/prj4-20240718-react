@@ -38,6 +38,12 @@ export function Navbar() {
     }
   }
 
+  const handleOpenDiary = () => {
+    const url = `/diary/${diaryId}`;
+    const windowFeatures = "width=1400,height=800,max-width=800,max-height=600"; // 원하는 크기로 설정
+    window.open(url, "_blank", windowFeatures);
+  };
+
   return (
     <Flex
       h="50px"
@@ -49,7 +55,7 @@ export function Navbar() {
     >
       <Flex gap={5}>
         <Box
-          _hover={{ cursor: "pointer" }}
+          _hover={{ cursor: "pointer"}}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/")}
@@ -128,11 +134,9 @@ export function Navbar() {
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
               borderRadius="md"
+              onClick={handleOpenDiary}
             >
-              <Link to={`/diary/${diaryId}`} >
-                {/*target="_blank" rel="noopener noreferrer">*/}
-                내 펫 다이어리
-              </Link>
+              내 펫 다이어리
             </Box>
             <Button
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}

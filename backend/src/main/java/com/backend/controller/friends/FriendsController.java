@@ -5,11 +5,13 @@ import com.backend.domain.member.Member;
 import com.backend.service.friends.FriendsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/friends")
 public class FriendsController {
 
 	private final FriendsService friendsService;
@@ -19,7 +21,7 @@ public class FriendsController {
 		this.friendsService = friendsService;
 	}
 
-	@GetMapping("/api/friends/{memberId}")
+	@GetMapping("/{memberId}")
 	public List<Member> getFriends(@PathVariable int memberId) {
 		logger.info("Received request to fetch friends for member ID: {}", memberId);
 		List<Member> friends = friendsService.getFriendsWithIds(memberId);
@@ -27,11 +29,24 @@ public class FriendsController {
 		return friends;
 	}
 
-	@PostMapping("/api/friends/add")
-	public void addFriend(@RequestBody FriendRequest friendRequest) {
+	@PostMapping("/add")
+	public ResponseEntity<String> addFriend(@RequestBody FriendRequest friendRequest) {
 		logger.info("Received request to add friend: {}", friendRequest);
-		friendsService.addFriend(friendRequest);
+
+		try {
+			friendsService.addFriend(friendRequest);
+			return ResponseEntity.ok("Friend added successfully");
+		} catch (Exception e) {
+			logger.error("Error adding friend", e);
+			return ResponseEntity.status(500).body("Error adding friend");
+		}
 	}
 
-	// getters and setters
+	@GetMapping("/check")
+	public ResponseEntity<Boolean> checkFriendship(
+					@RequestParam int memberId,
+					@RequestParam int friendId) {
+		boolean isFriend = friendsService.checkFriendship(memberId, friendId);
+		return ResponseEntity.ok(isFriend);
+	}
 }

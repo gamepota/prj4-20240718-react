@@ -24,9 +24,23 @@ public interface FriendsMapper {
         VALUES (
             #{memberId},
             #{friendId},
-            (SELECT nickname FROM member WHERE id = #{memberId}),
-            (SELECT nickname FROM member WHERE id = #{friendId})
+            #{memberNickname},
+            #{friendNickname}
         )
     """)
-	void insertFriend(@Param("memberId") int memberId, @Param("friendId") int friendId);
+	void insertFriend(@Param("memberId") int memberId, @Param("friendId") int friendId, @Param("memberNickname") String memberNickname, @Param("friendNickname") String friendNickname);
+
+	@Select("""
+        SELECT COUNT(*)
+        FROM friends
+        WHERE member_id = #{memberId} AND friend_id = #{friendId}
+    """)
+	int checkFriendship(@Param("memberId") int memberId, @Param("friendId") int friendId);
+
+	@Select("""
+        SELECT id, nickname
+        FROM member
+        WHERE id = #{id}
+    """)
+	Member selectMemberById(@Param("id") int id);
 }

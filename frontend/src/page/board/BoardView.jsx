@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Flex,
@@ -12,7 +13,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
+  ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger,
   Spacer,
   Spinner,
   Tooltip,
@@ -27,6 +28,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
 import { LoginContext } from "../../component/LoginProvider.jsx";
+import {generateDiaryId} from "../../util/util.jsx";
 
 export function BoardView() {
   const { id } = useParams();
@@ -43,6 +45,10 @@ export function BoardView() {
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
   const params = memberId ? { memberId } : {};
+
+  const [selectedWriter, setSelectedWriter] = useState(null);
+  const [selectedWriterId, setSelectedWriterId] = useState(null);
+
   // if (memberInfo != null) {
   //   const access = memberInfo.access;
   //   const userId = memberInfo.id;
@@ -116,95 +122,105 @@ export function BoardView() {
         setIsLikeProcessing(false);
       });
   }
+
+  function handleWriterClick(writer, writerId) {
+    setSelectedWriter(writer);
+    setSelectedWriterId(writerId);
+  }
+
+  function handleDiaryView() {
+    const diaryId = generateDiaryId(selectedWriterId);
+    const url = `/diary/${diaryId}`;
+    const windowFeatures = "width=1400,height=800"; // 원하는 크기로 설정
+    window.open(url, "_blank", windowFeatures);
+  }
+
   return (
-    <Box
-      // maxW={"500px"}
-      m={"auto"}
-      p={4}
-      boxShadow={"md"}
-      borderRadius={"md"}
-      mt={10}
-    >
-      <Flex>
-        <Box>{board.id}번 게시물</Box>
-        <Spacer />
-        <Box>조회수:{board.views}</Box>
-        <Box ml={5}>추천수:{like.count}</Box>
-        <Spacer />
-      </Flex>
-      <Box>
-        <FormControl>
-          <FormLabel>제목</FormLabel>
-          <Input value={board.title} readOnly />
-        </FormControl>
-      </Box>
-      <Box>
-        <FormControl>
-          <FormLabel>내용</FormLabel>
-          <Input value={board.content} readOnly />
-        </FormControl>
-      </Box>
-      <Box>
-        {board.fileList &&
-          board.fileList.map((file) => (
-            <Box m={3} key={file.name}>
-              <Image src={file.src} />
+    <Box maxW="800px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10}>
+      <Box p={4} bg="gray.100" borderRadius="md" boxShadow="md" mb={4}>
+        <Flex justify="space-between" align="center" mb={2}>
+          <Box fontWeight="bold" fontSize="xl">
+            {board.title}
+          </Box>
+          <Flex align="center">
+            <Box fontSize="sm" color="gray.600" mr={2}>
+              {new Date(board.inserted).toLocaleString()}
             </Box>
-          ))}
-      </Box>
-      <Box>
-        <FormControl>
-          <FormLabel>작성자</FormLabel>
-          <Input value={board.writer} readOnly />
-        </FormControl>
-      </Box>
-      <Box>
-        <FormControl>
-          <FormLabel>작성 일자</FormLabel>
-          <Input type={"datetime-local"} value={board.inserted} readOnly />
-        </FormControl>
-      </Box>
-      {isLikeProcessing || (
-        <Flex>
-          <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
-            <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
-              {like.like && <FontAwesomeIcon icon={fullHeart} />}
-              {like.like || <FontAwesomeIcon icon={emptyHeart} />}
-            </Box>
-          </Tooltip>
-          {like.count > 0 && (
-            <Box mx={3} fontSize="3xl">
-              {like.count}
-            </Box>
-          )}
+            <Popover>
+              <PopoverTrigger>
+                <Badge
+                  cursor="pointer"
+                  color="blue.600"
+                  onClick={() => handleWriterClick(board.writer, board.memberId)}
+                >
+                  {board.writer}
+                </Badge>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverBody>
+                  <Button lorScheme="blue" onClick={handleDiaryView}>
+                    작성자 다이어리 보기
+                  </Button>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          </Flex>
         </Flex>
-      )}
-      {isLikeProcessing && (
-        <Box pr={3}>
-          <Spinner />
+        <Flex justify="space-between" align="center">
+          <Box>조회수: {board.views}</Box>
+          <Box>추천수: {like.count}</Box>
+        </Flex>
+      </Box>
+        <Box p={4} bg="white" borderRadius="md" boxShadow="md">
+          {board.fileList &&
+            board.fileList.map((file) => (
+              <Box key={file.name} mb={3}>
+                <Image src={file.src} alt={file.name} borderRadius="md" />
+              </Box>
+            ))}
+          {board.content}
         </Box>
-      )}
+      <Flex mb={4} align="center">
+        <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
+          <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
+            {like.like ? (
+              <FontAwesomeIcon icon={fullHeart} />
+            ) : (
+              <FontAwesomeIcon icon={emptyHeart} />
+            )}
+          </Box>
+        </Tooltip>
+        {like.count > 0 && (
+          <Box mx={3} fontSize="3xl">
+            {like.count}
+          </Box>
+        )}
+        {isLikeProcessing && (
+          <Box ml={2}>
+            <Spinner size="sm" />
+          </Box>
+        )}
+      </Flex>
       <BoardCommentComponent boardId={board.id} />
-      <Box>
-        <Button
-          colorScheme={"purple"}
-          onClick={() => navigate(`/board/edit/${id}`)}
-        >
+      <Flex mt={4} justify="space-between">
+        <Button colorScheme="purple" onClick={() => navigate(`/board/edit/${id}`)}>
           수정
         </Button>
-        <Button colorScheme={"red"} onClick={onOpen}>
+        <Button colorScheme="red" onClick={onOpen}>
           삭제
         </Button>
-      </Box>
+      </Flex>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader></ModalHeader>
+          <ModalHeader>게시물 삭제</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>삭제하시곘습니까?</ModalBody>
+          <ModalBody>정말로 삭제하시겠습니까?</ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>취소</Button>
-            <Button colorScheme={"red"} onClick={handleClickRemove}>
+            <Button colorScheme="red" onClick={handleClickRemove} ml={3}>
               확인
             </Button>
           </ModalFooter>

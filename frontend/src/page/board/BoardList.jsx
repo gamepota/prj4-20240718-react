@@ -45,9 +45,6 @@ export function BoardList() {
 
   const navigate = useNavigate();
 
-  const [selectedWriter, setSelectedWriter] = useState(null);
-  const [selectedWriterId, setSelectedWriterId] = useState(null);
-
   useEffect(() => {
     axios
       .get(`/api/board/list?${searchParams}`)
@@ -89,22 +86,12 @@ export function BoardList() {
     axios
       .get(`/api/board/${boardId}`)
       .then(() => {})
-      .finally(navigate(`/board/${boardId}`));
+      .finally(() => navigate(`/board/${boardId}`));
   }
 
   function handleSearchClick() {}
 
-  function handleWriterClick(writer, writerId) {
-    setSelectedWriter(writer);
-    setSelectedWriterId(writerId);
-  }
-
-  function handleDiaryView() {
-    const diaryId = generateDiaryId(selectedWriterId);
-    navigate(`/diary/${diaryId}`);
-  }
-
-  return (
+   return (
     <>
       <Center>
         <Flex
@@ -281,32 +268,7 @@ export function BoardList() {
                       <span> [{board.numberOfComments}]</span>
                     )}
                   </Td>
-                  <Td>
-                    <Popover>
-                      <PopoverTrigger>
-                        <span
-                          onClick={() => handleWriterClick(board.writer, board.memberId)}
-                          style={{
-                            cursor: "pointer",
-                            color: "blue",
-                            textDecoration: "underline",
-                          }}
-                        >
-                          {board.writer}
-                        </span>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <PopoverArrow />
-                        <PopoverCloseButton />
-                        <PopoverHeader>작성자</PopoverHeader>
-                        <PopoverBody>
-                          <Button colorScheme="blue" onClick={handleDiaryView}>
-                            작성자 다이어리 보기
-                          </Button>
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Popover>
-                  </Td>
+                  <Td>{board.writer}</Td>
                   <Td textAlign="center">{board.numberOfLikes}</Td>
                   <Td textAlign="center">{board.views}</Td>
                 </Tr>
