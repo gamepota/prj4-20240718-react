@@ -85,6 +85,7 @@ public class DiaryBoardController {
 
         }
 
+        // 테스트
 
         if (service.validate(diaryBoard)) {
             service.edit(diaryBoard, removeFileList, addFileList);
