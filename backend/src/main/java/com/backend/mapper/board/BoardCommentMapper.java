@@ -10,14 +10,14 @@ public interface BoardCommentMapper {
 
     @Insert("""
                         INSERT INTO board_comment
-            (board_id, board_comment) 
-            VALUES (#{boardId}, #{boardComment})
+            (board_id, board_comment,member_id) 
+            VALUES (#{boardId}, #{boardComment},#{memberId})
                         """)
-    int insert(BoardComment comment);
+    int insert(BoardComment comment, Integer memberId);
 
     @Select("""
-                        SELECT id, board_comment,inserted
-            FROM board_comment
+                        SELECT c.id, c.board_comment,c.inserted,m.nickname writer
+            FROM board_comment c JOIN member m ON c.member_id=m.id
                                     WHERE board_id=#{boardId}
                         ORDER BY id;
 

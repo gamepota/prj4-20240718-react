@@ -56,7 +56,7 @@ export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
         <Box mr={3}>
           <FontAwesomeIcon icon={faUser} />
         </Box>
-        <Text fontWeight="bold">{comment.id}</Text>
+        <Text fontWeight="bold">{comment.writer}</Text>
         <Spacer />
         <Flex align="center">
           <Box mr={2}>

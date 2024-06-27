@@ -9,6 +9,7 @@ public class BoardComment {
     private Integer id;
     private Integer boardId;
     private Integer memberId;
+    private String writer;
     private String boardComment;
     private LocalDateTime inserted;
 //

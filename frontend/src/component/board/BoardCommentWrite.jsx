@@ -14,7 +14,9 @@ import { LoginContext } from "../LoginProvider.jsx";
 
 export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
   const [boardComment, setBoardComment] = useState("");
-  const account = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
 
   function handleBoardCommentSubmitClick() {
     setIsProcessing(true);
@@ -22,6 +24,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
       .post("/api/comment/add", {
         boardId,
         boardComment,
+        memberId: params.memberId,
       })
       .then(() => {
         setBoardComment("");
@@ -33,7 +36,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
   }
   // console.log(account);
 
-  if (!account) {
+  if (!memberInfo) {
     return <Spinner />;
   }
   return (

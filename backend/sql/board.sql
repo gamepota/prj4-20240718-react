@@ -121,6 +121,10 @@ SHOW CREATE TABLE board;
 #댓글테이블 삭제 후 member_id다시 설정...
 DROP TABLE board_comment;
 
+#댓글테이블 board_comment속성 추가 및 데이터 백업...
+ALTER TABLE board_comment
+    CHANGE COLUMN comment board_comment VARCHAR(255);
+
 CREATE TABLE board_comment
 (
     id        INT PRIMARY KEY AUTO_INCREMENT,

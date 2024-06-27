@@ -31,10 +31,8 @@ public class BoardCommentServivce {
         return true;
     }
 
-    public void add(BoardComment comment /*Authentication authentication*/) {
-//        comment.setMemberId(comment.getMemberId());
-
-        mapper.insert(comment);
+    public void add(BoardComment comment, Integer memberId) {
+        mapper.insert(comment, memberId);
     }
 
     public List<BoardComment> list(Integer boardId) {
