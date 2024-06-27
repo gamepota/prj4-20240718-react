@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./page/Home.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
+import { MemberFind } from "./page/member/MemberFind.jsx";
 import { MemberPage } from "./page/member/MemberPage.jsx";
 import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
@@ -39,7 +40,8 @@ const router = createBrowserRouter([
       { path: "diary/view/:id", element: <DiaryBoardView /> }, // 일기 보기
       { path: "diary/write/:id", element: <DiaryBoardWrite /> }, // 일기 쓰기
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
-      { path: "member/login", element: <MemberLogin /> }, // 회원 로그인
+      { path: "member/login", element: <MemberLogin /> }, // 로그인
+      { path: "member/find", element: <MemberFind /> }, // 비밀번호 찾기
       { path: "member/page/:id", element: <MemberPage /> }, // 회원 페이지
       { path: "member/list", element: <MemberList /> }, // 회원 목록
       { path: "member/edit/:id", element: <MemberEdit /> }, // 회원 정보 수정 및 탈퇴
