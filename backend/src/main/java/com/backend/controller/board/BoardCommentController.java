@@ -15,11 +15,11 @@ public class BoardCommentController {
     final BoardCommentServivce service;
 
     @PostMapping("add")
-    public ResponseEntity addComment(@RequestBody BoardComment comment, @RequestParam Integer memberId) {
-        System.out.println("이것은 커멘트컨트롤러의 add요청 memberId = " + memberId);
+    public ResponseEntity addComment(BoardComment comment) {
+//        System.out.println("이것은 커멘트컨트롤러의 add요청 comment = " + comment);
         if (service.validate(comment)) {
-//            System.out.println("이것은 validate 통과한 comment = " + comment);
-            service.add(comment, memberId);
+            System.out.println("이것은 validate 통과한 comment = " + comment);
+            service.add(comment);
 
             return ResponseEntity.ok().build();
         } else {

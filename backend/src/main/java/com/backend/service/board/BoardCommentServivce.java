@@ -31,8 +31,8 @@ public class BoardCommentServivce {
         return true;
     }
 
-    public void add(BoardComment comment, Integer memberId) {
-        mapper.insert(comment, memberId);
+    public void add(BoardComment comment) {
+        mapper.insert(comment);
     }
 
     public List<BoardComment> list(Integer boardId) {

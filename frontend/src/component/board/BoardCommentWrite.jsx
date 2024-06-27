@@ -21,7 +21,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
   function handleBoardCommentSubmitClick() {
     setIsProcessing(true);
     axios
-      .post("/api/comment/add", {
+      .postForm("/api/comment/add", {
         boardId,
         boardComment,
         memberId: params.memberId,

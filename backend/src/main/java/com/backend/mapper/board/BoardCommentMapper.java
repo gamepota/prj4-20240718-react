@@ -13,7 +13,7 @@ public interface BoardCommentMapper {
             (board_id, board_comment,member_id) 
             VALUES (#{boardId}, #{boardComment},#{memberId})
                         """)
-    int insert(BoardComment comment, Integer memberId);
+    int insert(BoardComment comment);
 
     @Select("""
                         SELECT c.id, c.board_comment,c.inserted,m.nickname writer
