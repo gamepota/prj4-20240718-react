@@ -27,7 +27,7 @@ import {
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import {generateDiaryId} from "../../../../../util/util.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryBoardList() {
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
@@ -37,7 +37,6 @@ export function DiaryBoardList() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
@@ -79,7 +78,7 @@ export function DiaryBoardList() {
 
   function handleSelectedDiaryBoard(id) {
     const diaryId = generateDiaryId(memberInfo.id);
-    return () => navigate(`/diary/${diaryId}/view`);
+    return () => navigate(`/diary/${diaryId}/view/${id}`);
   }
 
   return (
@@ -206,6 +205,5 @@ export function DiaryBoardList() {
         </Flex>
       </Center>
     </Box>
-    //ㄴㄴㄴㄴ
   );
 }

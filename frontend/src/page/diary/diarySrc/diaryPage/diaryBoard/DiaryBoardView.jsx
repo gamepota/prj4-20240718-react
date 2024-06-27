@@ -23,11 +23,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryBoardView() {
   const { id } = useParams();
   const [diaryBoard, setDiaryBoard] = useState(null);
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const nickname = memberInfo?.nickname || null;
   const access = memberInfo?.access || null;
   const isLoggedIn = Boolean(access);
@@ -62,7 +63,7 @@ export function DiaryBoardView() {
       .then(() => {
         toast({
           status: "success",
-          description: `${id}게시물이 삭제되었습니다.`,
+          description: `${id} 게시물이 삭제되었습니다.`,
           position: "top",
         });
         navigate(`/diary/list`);
@@ -82,6 +83,11 @@ export function DiaryBoardView() {
 
   if (diaryBoard === null) {
     return <Spinner />;
+  }
+
+  function handleDiaryEdit() {
+    const diaryId = generateDiaryId(memberInfo.id);
+    navigate(`/diary/${diaryId}/edit/${id}`);
   }
 
   return (
@@ -122,7 +128,7 @@ export function DiaryBoardView() {
         </Box>
         <Flex mb={7} gap={2}>
           <Button
-            onClick={() => navigate(`/diary/edit/${diaryBoard.id}`)}
+            onClick={handleDiaryEdit}
             colorScheme="purple"
           >
             수정

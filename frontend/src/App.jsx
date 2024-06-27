@@ -36,8 +36,8 @@ const router = createBrowserRouter([
           { path: "comment/list", element: <DiaryCommentList /> }, // 방명록 목록
           { path: "comment/write", element: <DiaryCommentWrite /> }, // 방명록 쓰기
           { path: "list", element: <DiaryBoardList /> }, // 다이어리 목록
-          { path: "edit", element: <DiaryBoardEdit /> }, // 일기 수정
-          { path: "view", element: <DiaryBoardView /> }, // 일기 보기
+          { path: "edit/:id", element: <DiaryBoardEdit /> }, // 일기 수정
+          { path: "view/:id", element: <DiaryBoardView /> }, // 일기 보기
           { path: "write", element: <DiaryBoardWrite /> }, // 일기 쓰기
         ] },
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
