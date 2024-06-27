@@ -4,6 +4,10 @@ import { LoginContext } from "./LoginProvider.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+function generateDiaryId(userId) {
+  return `DIARY-${userId * 17}-ID`; // 간단한 문자열 변환
+}
+
 export function Navbar() {
   const navigate = useNavigate();
 
@@ -12,6 +16,8 @@ export function Navbar() {
   const access = memberInfo?.access || null;
   const nickname = memberInfo?.nickname || null;
   const isLoggedIn = Boolean(access);
+
+  const diaryId = isLoggedIn ? generateDiaryId(memberInfo.id) : null;
 
   function handleLogout() {
     try {
@@ -125,9 +131,8 @@ export function Navbar() {
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
               borderRadius="md"
-              onClick={() => navigate("/diary/home")}
             >
-              <Link to="diary/home" target="_blank">
+              <Link to={`/diary/${diaryId}`} target="_blank" rel="noopener noreferrer">
                 내 펫 다이어리
               </Link>
             </Box>

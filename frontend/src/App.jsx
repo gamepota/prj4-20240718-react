@@ -31,13 +31,16 @@ const router = createBrowserRouter([
     element: <Home />,
     children: [
       { index: true, element: <MainPage /> }, // 메인페이지 렌더링
-      { path: "diary/comment/list", element: <DiaryCommentList /> }, // 방명록 목록
-      { path: "diary/comment/write", element: <DiaryCommentWrite /> }, // 방명록 쓰기
-      { path: "diary/home", element: <DiaryHome /> }, // 다이어리 홈
-      { path: "diary/list", element: <DiaryBoardList /> }, // 다이어리 목록
-      { path: "diary/edit/:id", element: <DiaryBoardEdit /> }, // 일기 수정
-      { path: "diary/view/:id", element: <DiaryBoardView /> }, // 일기 보기
-      { path: "diary/write/:id", element: <DiaryBoardWrite /> }, // 일기 쓰기
+      { path: "diary/:diaryId",
+        element: <DiaryHome />,
+        children: [ // 다이어리 하위 경로 설정
+          { path: "comment/list", element: <DiaryCommentList /> }, // 방명록 목록
+          { path: "comment/write", element: <DiaryCommentWrite /> }, // 방명록 쓰기
+          { path: "list", element: <DiaryBoardList /> }, // 다이어리 목록
+          { path: "edit/:id", element: <DiaryBoardEdit /> }, // 일기 수정
+          { path: "view/:id", element: <DiaryBoardView /> }, // 일기 보기
+          { path: "write/:id", element: <DiaryBoardWrite /> }, // 일기 쓰기
+        ] },
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
       { path: "member/login", element: <MemberLogin /> }, // 회원 로그인
       { path: "member/page/:id", element: <MemberPage /> }, // 회원 페이지
