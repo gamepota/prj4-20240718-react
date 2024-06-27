@@ -104,7 +104,9 @@ export function BoardList() {
 
   function handleDiaryView() {
     const diaryId = generateDiaryId(selectedWriterId);
-    navigate(`/diary/${diaryId}`);
+    const url = `/diary/${diaryId}`;
+    const windowFeatures = "width=1400,height=800"; // 원하는 크기로 설정
+    window.open(url, "_blank", windowFeatures);
   }
 
   return (
