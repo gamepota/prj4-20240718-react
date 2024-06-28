@@ -23,7 +23,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { BoardCommentEdit } from "./BoardCommentEdit.jsx";
-import { LoginContext } from "../LoginProvider.jsx";
+import { LoginContext } from "../LoginProvider.jsx"; //asdf
 
 //asdf
 export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
@@ -66,7 +66,9 @@ export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
           <Box mr={2}>
             <FontAwesomeIcon icon={faCalendarDays} />
           </Box>
-          <Text>{comment.inserted}</Text>
+          <Box fontSize="sm" color="gray.600" mr={2}>
+            {new Date(comment.inserted).toLocaleString()}
+          </Box>
         </Flex>
       </Flex>
       {isEditing || (
