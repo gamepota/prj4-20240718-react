@@ -20,9 +20,9 @@ public class DiaryCommentService {
     final DiaryCommentMapper mapper;
     private final MemberMapper memberMapper;
 
-    public void addComment(DiaryComment diaryComment, Authentication authentication) {
+    public void add(DiaryComment diaryComment, Authentication authentication) {
         String nickname = diaryComment.getNickname();
-        Member member = memberMapper.selectByNickname(nickname);
+        Member member = memberMapper.selectByDiaryCommentName(nickname);
 
         if (member != null) {
             diaryComment.setMemberId(member.getId());
@@ -34,41 +34,34 @@ public class DiaryCommentService {
 
     }
 
-    public List<DiaryComment> listComment(Integer id) {
-        return mapper.selectByDiaryId(id);
+    public List<DiaryComment> list() {
+        return mapper.selectAll();
     }
 
-    public void diaryDelete(DiaryComment diaryComment) {
-        mapper.deleteById(diaryComment.getId());
+    public void diaryDelete(Integer id) {
+        mapper.deleteById(id);
     }
 
-    public void diaryUpdate(DiaryComment diaryComment) {
+    public void edit(DiaryComment diaryComment) {
         mapper.diaryUpdate(diaryComment);
     }
 
-    public DiaryComment getById(Integer id) { // 반환 타입 수정
+    public DiaryComment get(Integer id) { // 반환 타입 수정
         return mapper.selectById(id);
     }
 
     public boolean validate(DiaryComment diaryComment) {
-        if (diaryComment == null) {
-            return false;
-        }
-        if (diaryComment.getComment().isBlank()) {
+        if (diaryComment.getComment() == null || diaryComment.getComment().isBlank()) {
             return false;
         }
         return true;
     }
 
-    public boolean hasAccess(DiaryComment diaryComment, Authentication authentication) {
-        DiaryComment db = mapper.selectById(diaryComment.getId());
+    public boolean hasAccess(Integer id, Authentication authentication, Integer memberId) {
+        DiaryComment diaryComment = mapper.selectById(id);
 
-        if (db == null) {
-            return false;
-        }
-        if (authentication.getName().equals(db.getMemberId().toString())) {
-            return false;
-        }
-        return true;
+
+        return diaryComment.getMemberId().equals(memberId);
+
     }
 }

@@ -1,8 +1,9 @@
-import { Box, Button, Flex, Img, Input } from "@chakra-ui/react";
+import {Box, Button, Flex, Img, Input} from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import {generateDiaryId} from "../util/util.jsx";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export function Navbar() {
   const access = memberInfo?.access || null;
   const nickname = memberInfo?.nickname || null;
   const isLoggedIn = Boolean(access);
+  const diaryId = isLoggedIn ? generateDiaryId(memberInfo.id) : null;
 
   function handleLogout() {
     try {
@@ -33,6 +35,12 @@ export function Navbar() {
     }
   }
 
+  const handleOpenDiary = () => {
+    const url = `/diary/${diaryId}`;
+    const windowFeatures = "width=1400,height=800,max-width=800,max-height=600"; // 원하는 크기로 설정
+    window.open(url, "_blank", windowFeatures);
+  };
+
   return (
     <Flex
       h="50px"
@@ -44,14 +52,14 @@ export function Navbar() {
     >
       <Flex gap={5}>
         <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+          _hover={{ cursor: "pointer"}}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/")}
           w="100px" // Box 크기 고정
           h="auto" // 높이를 자동으로 조정
         >
-          <Img src={"/img/Petmily.png"} w="100%" h="auto" />
+          <Img src={"/img/petmily.png"} w="100%" h="auto" />
         </Box>
         <Box
           _hover={{ cursor: "pointer", bgColor: "gray.200" }}
@@ -123,11 +131,9 @@ export function Navbar() {
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
               borderRadius="md"
-              onClick={() => navigate("/diary/home")}
+              onClick={handleOpenDiary}
             >
-              <Link to="diary/home" target="_blank">
-                내 펫 다이어리
-              </Link>
+              마이 펫다이어리
             </Box>
             <Button
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}

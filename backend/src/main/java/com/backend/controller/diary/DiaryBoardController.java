@@ -58,8 +58,8 @@ public class DiaryBoardController {
 
     @DeleteMapping("{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity delete(@PathVariable Integer id, Authentication authentication) {
-        if (service.hasAccess(id, authentication)) {
+    public ResponseEntity delete(@PathVariable Integer id, Authentication authentication, @RequestParam(required = false) Integer memberId) {
+        if (service.hasAccess(id, authentication, memberId)) {
             service.remove(id);
             return ResponseEntity.ok().build();
 
@@ -76,14 +76,16 @@ public class DiaryBoardController {
                                List<String> removeFileList,
                                @RequestParam(value = "addFileList[]", required = false)
                                MultipartFile[] addFileList,
-                               Authentication authentication) throws IOException {
-
-        if (!service.hasAccess(diaryBoard.getId(), authentication)) {
+                               Authentication authentication,
+                               @RequestParam(required = false) Integer memberId) throws IOException {
+        System.out.println("diaryBoard = " + diaryBoard);
+        if (!service.hasAccess(diaryBoard.getId(), authentication, memberId)) {
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         }
 
+        // 테스트
 
         if (service.validate(diaryBoard)) {
             service.edit(diaryBoard, removeFileList, addFileList);

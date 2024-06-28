@@ -13,6 +13,7 @@ import com.backend.mapper.member.ProfileMapper;
 import com.backend.mapper.member.RefreshMapper;
 import com.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.Mergeable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -132,5 +133,18 @@ public class MemberService {
     // MemberList
     public List<Member> list() {
         return memberMapper.selectAll();
+    }
+
+    // diary ID 유효성 검증
+    public Member getMemberByDiaryId(String diaryId) {
+        try {
+            int userId = Integer.parseInt(diaryId.split("-")[1]) / 17;
+            System.out.println("Extracted userId: " + userId);  // 로그 추가
+            Member member= memberMapper.selectByMemberId(userId);
+            System.out.println("Found member: " + (member != null));  // 로그 추가
+            return member;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

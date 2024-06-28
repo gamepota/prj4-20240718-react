@@ -1,6 +1,6 @@
 USE prj3;
 
-TRUNCATE TABLE chat_message;
+TRUNCATE TABLE friends;
 
 ALTER TABLE chat_message
     CHANGE COLUMN sender sender_id INT,
@@ -83,3 +83,11 @@ CREATE TABLE friends (
                          FOREIGN KEY (member_id) REFERENCES member(id),
                          FOREIGN KEY (friend_id) REFERENCES member(id)
 );
+
+INSERT INTO prj3.friends
+(member_id, friend_id, member_nickname, friend_nickname)
+VALUES (34, 28, 'testkjh', 'testerkjh');
+
+INSERT INTO prj3.friends
+(member_id, friend_id, member_nickname, friend_nickname)
+VALUES (28, 34, 'testerkjh', 'testkjh');

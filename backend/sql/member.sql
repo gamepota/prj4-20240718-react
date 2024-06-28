@@ -45,3 +45,6 @@ ALTER TABLE member
 
 ALTER TABLE member
     ADD COLUMN profile_image VARCHAR(255) AFTER detailed_address;
+
+SELECT *
+FROM member;

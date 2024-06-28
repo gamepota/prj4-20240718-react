@@ -32,7 +32,8 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "../../../../../component/LoginProvider.jsx"; // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx"; // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
@@ -48,6 +49,7 @@ export function DiaryBoardEdit() {
   const access = memberInfo.access;
   const nickname = memberInfo.nickname;
   const isLoggedIn = Boolean(access);
+  const diaryId = generateDiaryId(memberInfo.id);
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/${id}`).then((res) => setDiaryBoard(res.data));
@@ -55,13 +57,14 @@ export function DiaryBoardEdit() {
 
   function handleClickSave() {
     axios
-      .putForm("/api/diaryBoard/edit", {
+      .putForm(`/api/diaryBoard/edit`, {
         id: diaryBoard.id,
         title: diaryBoard.title,
         content: diaryBoard.content,
-        memberInfo,
+        nickname: memberInfo.nickname,
         removeFileList,
         addFileList,
+        memberId: memberInfo.id,
       })
       .then(() => {
         toast({
@@ -69,7 +72,7 @@ export function DiaryBoardEdit() {
           description: `${diaryBoard.id}수정이 완료되었습니다.`,
           position: "top",
         });
-        navigate(`/diary/view/${diaryBoard.id}`);
+        navigate(`/diary/${diaryId}/view/${diaryBoard.id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
@@ -85,7 +88,6 @@ export function DiaryBoardEdit() {
       });
   }
 
-  console.log(memberInfo.id);
   if (diaryBoard === null) {
     return <Spinner />;
   }
@@ -120,7 +122,7 @@ export function DiaryBoardEdit() {
   return (
     <Box>
       <Box mb={10}>
-        <Heading>{diaryBoard.id}다이어리 수정</Heading>
+        <Heading>{diaryBoard.id}번 일기 수정</Heading>
       </Box>
       <Box>
         <Box mb={7}>

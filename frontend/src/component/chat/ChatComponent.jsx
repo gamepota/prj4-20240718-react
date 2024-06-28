@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, {useState, useEffect, useRef, useContext} from "react";
 import {
   Box,
   Input,
@@ -9,16 +9,16 @@ import {
   InputRightElement,
   IconButton,
   CloseButton,
-  HStack
+  HStack, Flex
 } from "@chakra-ui/react";
-import { MinusIcon, ChatIcon } from "@chakra-ui/icons";
+import {MinusIcon, ChatIcon} from "@chakra-ui/icons";
 import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
+import {Client} from "@stomp/stompjs";
 import axios from "axios";
-import { LoginContext } from '../LoginProvider'; // LoginContext 가져오기
+import {LoginContext} from '../LoginProvider'; // LoginContext 가져오기
 
-export const ChatComponent = ({ selectedFriend, onClose }) => {
-  const { memberInfo } = useContext(LoginContext) || {};
+export const ChatComponent = ({selectedFriend, onClose}) => {
+  const {memberInfo} = useContext(LoginContext) || {};
   const username = memberInfo?.nickname;
   const userId = memberInfo?.id;
   const [message, setMessage] = useState("");
@@ -30,7 +30,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
 
   useEffect(() => {
     if (username && selectedFriend) {
-      const roomId = [userId, selectedFriend.id].sort().join('-'); // 고유한 채팅방 ID 생성
+      const roomId = [userId, selectedFriend.id].sort((a, b) => a - b).join('-'); // 고유한 채팅방 ID 생성
       console.log(roomId);
       const socket = new SockJS(`/ws`);
       const client = new Client({
@@ -48,7 +48,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
           console.log("STOMP Client Connected");
 
           // Fetch previous messages
-          fetchMessagesForUser(userId);
+          fetchMessagesForRoom(roomId);
         },
         onStompError: (frame) => {
           console.error("Broker error: ", frame.headers["message"], frame.body);
@@ -73,9 +73,9 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
     }
   }, [username, selectedFriend]);
 
-  const fetchMessagesForUser = async (userId) => {
+  const fetchMessagesForRoom = async (roomId) => {
     try {
-      const response = await axios.get(`/api/chat/messages/${userId}`);
+      const response = await axios.get(`/api/chat/messages/${roomId}`);
       setMessages(response.data);
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -83,7 +83,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
   };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    messagesEndRef.current?.scrollIntoView({behavior: "auto"});
   }, [messages]);
 
   const sendMessage = async () => {
@@ -97,7 +97,7 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
       return;
     }
 
-    const roomId = [userId, selectedFriend.id].sort().join('-'); // 고유한 채팅방 ID 생성
+    const roomId = [userId, selectedFriend.id].sort((a, b) => a - b).join('-'); // 고유한 채팅방 ID 생성
     const chatMessage = {
       senderId: userId,
       recipientId: selectedFriend.id,
@@ -135,7 +135,8 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
   };
 
   return (
-    <Box position="fixed" bottom={2} right={2} p={2} minW="400px" maxW="400px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white">
+    <Box position="fixed" bottom={2} right={2} p={2} minW="400px" maxW="400px" borderWidth="1px" borderRadius="lg"
+         overflow="hidden" bg="white">
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
         <HStack>
           <Text fontWeight="bold">채팅</Text>
@@ -143,25 +144,33 @@ export const ChatComponent = ({ selectedFriend, onClose }) => {
         </HStack>
         <Box display="flex" justifyContent="flex-end" alignItems="center">
           <IconButton
-            icon={isMinimized ? <ChatIcon /> : <MinusIcon />}
+            icon={isMinimized ? <ChatIcon/> : <MinusIcon/>}
             size="sm"
             onClick={toggleMinimize}
             aria-label={isMinimized ? "Expand Chat" : "Minimize Chat"}
           />
-          <CloseButton onClick={onClose} />
+          <CloseButton onClick={onClose}/>
         </Box>
       </Box>
       {!isMinimized && (
         <VStack spacing={4} p={2}>
           <Box width="100%" h="300px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg">
             {messages.map((msg, index) => (
-              <Box key={index} bg={msg.senderId === userId ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
-                <Text fontWeight="bold">{msg.senderNickName}</Text>
-                <Text>{msg.content}</Text>
-                <Text fontSize="xs" color="gray.500">
-                  {new Date(msg.timestamp).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
-                </Text>
-              </Box>
+              <Flex key={index} justifyContent={Number(msg.senderId) === Number(userId) ? "flex-start" : "flex-end"} mb={2}>
+                <Box
+                  bg={Number(msg.senderId) === Number(userId) ? "blue.100" : "gray.100"}
+                  p={2}
+                  borderRadius="md"
+                  textAlign={Number(msg.senderId) === Number(userId) ? "left" : "right"}
+                  maxWidth="70%"
+                >
+                  <Text fontSize="xs" fontWeight="bold">{msg.senderNickName}</Text>
+                  <Text fontSize="xs">{msg.content}</Text>
+                  <Text fontSize="xs" color="gray.500">
+                    {new Date(msg.timestamp).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
+                  </Text>
+                </Box>
+              </Flex>
             ))}
             <div ref={messagesEndRef} />
           </Box>

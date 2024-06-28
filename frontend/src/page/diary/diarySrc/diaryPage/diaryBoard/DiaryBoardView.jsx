@@ -23,18 +23,21 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryBoardView() {
   const { id } = useParams();
   const [diaryBoard, setDiaryBoard] = useState(null);
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const nickname = memberInfo?.nickname || null;
   const access = memberInfo?.access || null;
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
+  const diaryId = generateDiaryId(memberInfo.id);
   useEffect(() => {
     axios
       .get(`/api/diaryBoard/${id}`)
@@ -49,21 +52,21 @@ export function DiaryBoardView() {
             description: "해당 게시물이 존재하지 않습니다.",
             position: "top",
           });
-          navigate("/diary/home");
+          navigate(`/diary/${diaryId}/list`);
         }
       });
   }, [id]);
 
   function handleClickRemove() {
     axios
-      .delete("/api/diaryBoard/" + diaryBoard.id)
+      .delete("/api/diaryBoard/" + diaryBoard.id, { params })
       .then(() => {
         toast({
           status: "success",
-          description: `${id}게시물이 삭제되었습니다.`,
+          description: `${id} 게시물이 삭제되었습니다.`,
           position: "top",
         });
-        navigate("/diary/home");
+        navigate(`/diary/${diaryId}/list`);
       })
       .catch(() => {
         toast({
@@ -80,6 +83,11 @@ export function DiaryBoardView() {
 
   if (diaryBoard === null) {
     return <Spinner />;
+  }
+
+  function handleDiaryEdit() {
+    const diaryId = generateDiaryId(memberInfo.id);
+    navigate(`/diary/${diaryId}/edit/${id}`);
   }
 
   return (
@@ -119,10 +127,7 @@ export function DiaryBoardView() {
           <Input type="datetime-local" value={diaryBoard.inserted} readOnly />
         </Box>
         <Flex mb={7} gap={2}>
-          <Button
-            onClick={() => navigate(`/diary/edit/${diaryBoard.id}`)}
-            colorScheme="purple"
-          >
+          <Button onClick={handleDiaryEdit} colorScheme="purple">
             수정
           </Button>
           <Button colorScheme="red" onClick={onOpen}>

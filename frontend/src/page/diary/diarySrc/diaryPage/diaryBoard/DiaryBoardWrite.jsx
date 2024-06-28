@@ -20,6 +20,7 @@ import {
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryBoardWrite() {
   const [title, setTitle] = useState("");
@@ -33,12 +34,13 @@ export function DiaryBoardWrite() {
   const navigate = useNavigate();
   const { id } = useParams();
   const username = memberInfo.nickname;
+  const diaryId = generateDiaryId(memberInfo.id);
 
   function handleSaveClick() {
     setLoading(true);
     axios
       .postForm("/api/diaryBoard/add", {
-        id,
+        diaryId,
         title,
         content,
         files,
@@ -50,7 +52,7 @@ export function DiaryBoardWrite() {
           status: "success",
           position: "top",
         });
-        navigate(`/diary/list`);
+        navigate(`/diary/${diaryId}/list`);
       })
       .catch((e) => {
         const code = e.response.status;

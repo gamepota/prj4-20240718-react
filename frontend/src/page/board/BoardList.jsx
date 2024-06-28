@@ -1,3 +1,5 @@
+import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import {
   Badge,
   Box,
@@ -17,8 +19,6 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,14 +33,9 @@ export function BoardList() {
   const [boardType, setBoardType] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchType, setSearchType] = useState("all");
-  // const [offsetReset, setOffsetReset] = useState(false);
   const [searchParams] = useSearchParams();
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
 
   const navigate = useNavigate();
-
-  const [selectedWriter, setSelectedWriter] = useState(null);
-  const [selectedWriterId, setSelectedWriterId] = useState(null);
 
   useEffect(() => {
     const boardTypeParam = searchParams.get("boardType") || "전체";
@@ -69,10 +64,8 @@ export function BoardList() {
 
   function handlePageSizeChange(number) {
     setPageAmount(number);
-    // setOffsetReset(true);
     searchParams.set("pageAmount", number);
     searchParams.set("offsetReset", true);
-    // console.log("searchParams=" + searchParams.toString());
     navigate(`?${searchParams}`);
   }
 

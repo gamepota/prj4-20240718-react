@@ -10,6 +10,7 @@ public class DiaryComment {
     private String comment;
     private Integer memberId;
     private String nickname;
+    private String username;
     private LocalDateTime inserted;
 
 

@@ -27,6 +27,7 @@ import {
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryBoardList() {
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
@@ -56,8 +57,6 @@ export function DiaryBoardList() {
     }
   }, [searchParams]);
 
-  console.log("boardList" + diaryBoardList);
-  console.log("pageInfo" + pageInfo);
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
     pageNumbers.push(i);
@@ -72,6 +71,15 @@ export function DiaryBoardList() {
     navigate(`/?${searchParams}`);
   }
 
+  function handleSelectedDiaryBoard(id) {
+    const diaryId = generateDiaryId(memberInfo.id);
+    return () => navigate(`/diary/${diaryId}/view/${id}`);
+  }
+  function handleWriteClick(id) {
+    const diaryId = generateDiaryId(memberInfo.id);
+    navigate(`/diary/${diaryId}/write/${id}`);
+  }
+
   return (
     <Box>
       <Box mb={5}></Box>
@@ -79,9 +87,7 @@ export function DiaryBoardList() {
         <Heading>다이어리 목록</Heading>
       </Center>
       <Box>
-        <Button onClick={() => navigate(`/diary/write/${memberInfo.id}`)}>
-          글쓰기
-        </Button>
+        {memberInfo && <Button onClick={handleWriteClick}>글쓰기</Button>}
       </Box>
       <Box>
         {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
@@ -101,7 +107,7 @@ export function DiaryBoardList() {
                     bgColor: "gray.200",
                   }}
                   cursor={"pointer"}
-                  onClick={() => navigate(`/diary/view/${diaryBoard.id}`)}
+                  onClick={handleSelectedDiaryBoard(diaryBoard.id)}
                   key={diaryBoard.id}
                 >
                   <Td>{diaryBoard.id}</Td>
@@ -118,7 +124,7 @@ export function DiaryBoardList() {
                       </Badge>
                     )}
                   </Td>
-                  <Td>{memberInfo.nickname}</Td>
+                  <Td>{diaryBoard.writer}</Td>
                 </Tr>
               ))}
             </Tbody>
