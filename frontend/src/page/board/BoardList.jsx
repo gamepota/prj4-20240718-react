@@ -95,6 +95,7 @@ export function BoardList() {
   function handleSearchClick() {
     searchParams.set("searchType", searchType);
     searchParams.set("keyword", searchKeyword);
+    searchParams.set("offsetReset", true);
 
     navigate(`?${searchParams}`);
   }
