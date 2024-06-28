@@ -1,7 +1,7 @@
 package com.backend.controller.friends;
 
+import com.backend.domain.friends.FriendDto;
 import com.backend.domain.friends.FriendRequest;
-import com.backend.domain.member.Member;
 import com.backend.service.friends.FriendsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +22,9 @@ public class FriendsController {
 	}
 
 	@GetMapping("/{memberId}")
-	public List<Member> getFriends(@PathVariable Integer memberId) {
+	public List<FriendDto> getFriends(@PathVariable Integer memberId) {
 		logger.info("Received request to fetch friends for member ID: {}", memberId);
-		List<Member> friends = friendsService.getFriendsWithIds(memberId);
+		List<FriendDto> friends = friendsService.getFriendsWithIds(memberId);
 		logger.info("Returning friends for member ID {}: {}", memberId, friends);
 		return friends;
 	}
@@ -43,9 +43,7 @@ public class FriendsController {
 	}
 
 	@GetMapping("/check")
-	public ResponseEntity<Boolean> checkFriendship(
-					@RequestParam Integer memberId,
-					@RequestParam Integer friendId) {
+	public ResponseEntity<Boolean> checkFriendship(@RequestParam Integer memberId, @RequestParam Integer friendId) {
 		boolean isFriend = friendsService.checkFriendship(memberId, friendId);
 		return ResponseEntity.ok(isFriend);
 	}
