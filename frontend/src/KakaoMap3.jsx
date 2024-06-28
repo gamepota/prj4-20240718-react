@@ -3,25 +3,30 @@ import axios from "axios";
 
 const { kakao } = window;
 
-const KakaoMap3 = () => {
+const KakaoMap3 = ({ placeId }) => {
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      createMap(lat, lng);
-      fetchData(lat, lng);
-      createMarker(lat, lng, "mini.png");
-    });
-  }, []);
+    const coordinatesMap = {
+      0: { center: [126.978, 37.5665], level: 6 }, // 서울
+      1: { center: [127.25, 37.5], level: 7 }, // 경기도
+      // 다른 지역도 추가
+    };
 
-  const createMap = (lat, lng) => {
+    if (placeId === null) return;
+
+    const { center, level } = coordinatesMap[placeId];
+
+    createMap(center[1], center[0], level);
+    fetchData(center[1], center[0]);
+  }, [placeId]);
+
+  const createMap = (lat, lng, level) => {
     const container = document.getElementById("map");
     const options = {
       center: new kakao.maps.LatLng(lat, lng),
-      level: 6,
+      level: level,
     };
     const mapInstance = new kakao.maps.Map(container, options);
     setMap(mapInstance);
@@ -91,7 +96,7 @@ const KakaoMap3 = () => {
 
   return (
     <div className="container mt-5">
-      <h2>Search Charging Stations</h2>
+      <h2>Map3</h2>
       <div id="map" style={{ width: "500px", height: "400px" }}></div>
     </div>
   );

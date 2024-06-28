@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import axios from "axios";
-import PlaceMap2 from "./page/place/PlaceMap2.jsx";
+import PlaceMap2 from "./page/place/PlaceMap2.jsx"; // KakaoMap3를 import합니다.
 
 const KakaoMap = () => {
   const [geojson, setGeojson] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [placeId, setPlaceId] = useState(null); // 고유번호 저장
   const [center, setCenter] = useState([128.02025, 36.2]);
   const [level, setLevel] = useState(13);
   const [polygonName, setPolygonName] = useState("");
@@ -43,11 +44,9 @@ const KakaoMap = () => {
   useEffect(() => {
     if (!geojson) return;
 
-    // Check if Kakao Maps API is already loaded
     if (window.kakao && window.kakao.maps) {
       initializeMap();
     } else {
-      // Load the Kakao Maps API script dynamically
       const script = document.createElement("script");
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing`;
       script.async = true;
@@ -61,15 +60,15 @@ const KakaoMap = () => {
 
   const initializeMap = () => {
     const kakao = window.kakao;
-    const data = geojson.features; // 이미 파싱된 객체 사용
+    const data = geojson.features;
     const polygons = [];
 
     const mapContainer = document.getElementById("pollution-map");
     const mapOption = {
       center: new kakao.maps.LatLng(36.2, 128.02025),
       level: 13,
-      draggable: true, // 드래그를 기본적으로 활성화
-      scrollwheel: false, // 확대/축소 비활성화
+      draggable: true,
+      scrollwheel: false,
     };
 
     const map = new kakao.maps.Map(mapContainer, mapOption);
@@ -78,26 +77,29 @@ const KakaoMap = () => {
 
     const minLat = 35;
     const maxLat = 36.4;
-    const fixedLng = 128.02025; // 고정된 경도 값
+    const fixedLng = 128.02025;
 
-    // 지도 이동 이벤트 리스너 등록
     kakao.maps.event.addListener(map, "center_changed", () => {
       const center = map.getCenter();
       const lat = center.getLat();
       const lng = center.getLng();
 
-      // 위도 범위를 벗어나면 제한된 범위 내로 다시 설정
       if (lat < minLat) {
         map.setCenter(new kakao.maps.LatLng(minLat, fixedLng));
       } else if (lat > maxLat) {
         map.setCenter(new kakao.maps.LatLng(maxLat, fixedLng));
       } else {
-        // 위도 범위 내에 있으면 경도는 고정
         map.setCenter(new kakao.maps.LatLng(lat, fixedLng));
       }
     });
 
-    const displayArea = (coordinates, name) => {
+    const regionMap = {
+      "Array(200)": 0, // 서울
+      "Array(400)": 1, // 경기도
+      // 다른 지역도 추가
+    };
+
+    const displayArea = (coordinates, name, index) => {
       const path = [];
       const center = calculateCenter(coordinates);
 
@@ -150,22 +152,24 @@ const KakaoMap = () => {
           infowindow.setPosition(mouseEvent.latLng);
           infowindow.setMap(map);
 
-          // 폴리곤 클릭 시 중심 좌표와 확대 수준을 설정하고 PlaceMap2를 렌더링
+          const id = regionMap[`Array(${coordinates.length})`]; // 고유번호 설정
+          setPlaceId(id); // 고유번호 저장
+
           setCenter([center[0], center[1]]);
-          setLevel(8); // 원하는 확대 수준으로 설정
+          setLevel(8);
           setPolygonName(name);
           setSelectedPlace(name);
         });
       });
     };
 
-    data.forEach((val) => {
+    data.forEach((val, index) => {
       const coordinates = val.geometry.coordinates;
-      const name = val.properties.CTP_KOR_NM; // 속성 이름 수정
+      const name = val.properties.CTP_KOR_NM;
 
       console.log("Coordinates for:", name, coordinates);
 
-      displayArea(coordinates, name);
+      displayArea(coordinates, name, index);
     });
   };
 
@@ -180,9 +184,7 @@ const KakaoMap = () => {
           borderRadius: "10px",
         }}
       ></Box>
-      {selectedPlace && (
-        <PlaceMap2 center={center} level={level} name={polygonName} />
-      )}
+      {selectedPlace && <PlaceMap2 placeId={placeId} />}
     </Box>
   );
 };

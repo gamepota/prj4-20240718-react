@@ -1,11 +1,11 @@
 import React from "react";
 import { Box } from "@chakra-ui/react";
-import KakaoMap2 from "../../KakaoMap2"; // KakaoMap2 컴포넌트 import
+import KakaoMap3 from "../../KakaoMap3"; // KakaoMap3 컴포넌트 import
 
-const PlaceMap2 = ({ center, level, name }) => {
+const PlaceMap2 = ({ placeId }) => {
   return (
     <Box>
-      <KakaoMap2 center={center} level={level} name={name} />
+      <KakaoMap3 placeId={placeId} />
     </Box>
   );
 };
