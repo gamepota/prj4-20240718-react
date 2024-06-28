@@ -24,6 +24,7 @@ import { DiaryHome } from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
 import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentWrite.jsx";
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
+import { DiaryComment } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
           { path: "comment/view/:id", element: <DiaryBoardView /> }, // 일기 보기
           { path: "comment/list", element: <DiaryCommentList /> }, // 방명록 목록
           { path: "comment/write/:id", element: <DiaryCommentWrite /> }, // 방명록 쓰기
+          { path: "comment", element: <DiaryComment /> }, // 방명록
           { path: "list", element: <DiaryBoardList /> }, // 다이어리 목록
           { path: "edit/:id", element: <DiaryBoardEdit /> }, // 일기 수정
           { path: "view/:id", element: <DiaryBoardView /> }, // 일기 보기

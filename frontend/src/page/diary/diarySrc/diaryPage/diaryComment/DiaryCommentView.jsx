@@ -86,7 +86,7 @@ export function DiaryCommentView() {
           <Textarea value={diaryComment.comment} readOnly />
         </FormControl>
       </Box>
-      <DiaryCommentComponent diaryCommentId={diaryComment.id} />
+      {/*<DiaryCommentComponent diaryCommentId={diaryComment.id} />*/}
       <Box mb={7}>
         <FormControl>작성일시</FormControl>
         <Input type="datetime-local" value={diaryComment.inserted} readOnly />

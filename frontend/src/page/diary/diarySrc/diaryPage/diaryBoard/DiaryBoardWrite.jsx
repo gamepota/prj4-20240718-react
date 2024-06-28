@@ -40,7 +40,7 @@ export function DiaryBoardWrite() {
     setLoading(true);
     axios
       .postForm("/api/diaryBoard/add", {
-        id,
+        diaryId,
         title,
         content,
         files,
