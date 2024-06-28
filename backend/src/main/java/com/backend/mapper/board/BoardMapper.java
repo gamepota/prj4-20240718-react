@@ -62,20 +62,21 @@ public interface BoardMapper {
                 FROM board b 
                 JOIN member m ON b.member_id = m.id
                 <where>
-                    <if test="boardType != null and boardType != ''">
+                    <if test="boardType != null and boardType != '전체'">
                         b.board_type = #{boardType}
                     </if>
                     <if test="searchType != null and keyword != null and keyword != ''">
                         <bind name="pattern" value="'%' + keyword + '%'" />
+                        AND
                         <choose>
                             <when test='searchType == "전체"'>
-                                OR (b.title LIKE #{pattern} OR b.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                                (b.title LIKE #{pattern} OR b.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
                             </when>
                             <when test='searchType == "글"'>
-                                OR (b.title LIKE #{pattern} OR b.content LIKE #{pattern})
+                                (b.title LIKE #{pattern} OR b.content LIKE #{pattern})
                             </when>
                             <when test='searchType == "작성자"'>
-                                OR m.nickname LIKE #{pattern}
+                                m.nickname LIKE #{pattern}
                             </when>
                         </choose>
                     </if>
@@ -106,15 +107,16 @@ public interface BoardMapper {
                     </if>
                     <if test="searchType != null and keyword != null and keyword != ''">
                         <bind name="pattern" value="'%' + keyword + '%'" />
+                        AND
                         <choose>
                             <when test='searchType == "전체"'>
-                                OR (b.title LIKE #{pattern} OR b.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                                (b.title LIKE #{pattern} OR b.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
                             </when>
                             <when test='searchType == "글"'>
-                                OR (b.title LIKE #{pattern} OR b.content LIKE #{pattern})
+                                (b.title LIKE #{pattern} OR b.content LIKE #{pattern})
                             </when>
                             <when test='searchType == "작성자"'>
-                                OR m.nickname LIKE #{pattern}
+                                m.nickname LIKE #{pattern}
                             </when>
                         </choose>
                     </if>
@@ -125,7 +127,6 @@ public interface BoardMapper {
                 </script>
             """)
     List<Board> selectAllPaging(@Param("offset") Integer offset, @Param("pageAmount") Integer pageAmount, @Param("boardType") String boardType, @Param("searchType") String searchType, @Param("keyword") String keyword);
-
 
     @Insert("""
             INSERT INTO board_file(board_id,name)
