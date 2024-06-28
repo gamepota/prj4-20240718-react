@@ -69,24 +69,6 @@ public interface MemberMapper {
             """)
     int deleteById(Integer id);
 
-    // HospitalCommentWrite
-    @Select("""
-            SELECT id, username
-            FROM member
-            WHERE username = #{username}
-            """)
-    Member detectByUsername(String username);
-
-//    // logged_in
-//    @Insert("""
-//            INSERT INTO logged_in(member_id, logged_in, logged_in_at)
-//            VALUES (#{memberId}, #{loggedIn}, #{loggedInAt})
-//            ON DUPLICATE KEY UPDATE
-//            logged_in = VALUES(logged_in),
-//            logged_in_at = VALUES(logged_in_at)
-//            """)
-//    int updateLoginStatus(@Param("memberId") Integer memberId, @Param("loggedIn") boolean loggedIn, @Param("loggedInAt") LocalDateTime now);
-
     // DiaryBoard
     @Select("""
             SELECT id,nickname
