@@ -1,9 +1,11 @@
-import {Box, Button, Flex, Img, Input} from "@chakra-ui/react";
+import { Box, Button, Flex, Img, Input } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {generateDiaryId} from "../util/util.jsx";
+import { generateDiaryId } from "../util/util.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouse } from "@fortawesome/free-solid-svg-icons";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -52,7 +54,7 @@ export function Navbar() {
     >
       <Flex gap={5}>
         <Box
-          _hover={{ cursor: "pointer"}}
+          _hover={{ cursor: "pointer" }}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/")}
