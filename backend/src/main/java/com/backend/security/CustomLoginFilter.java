@@ -1,6 +1,8 @@
 package com.backend.security;
 
+import com.backend.domain.member.LoginEntity;
 import com.backend.domain.member.RefreshEntity;
+import com.backend.mapper.member.LoginCheckMapper;
 import com.backend.mapper.member.RefreshMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -26,12 +28,14 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
     private final RefreshMapper refreshMapper;
+    private final LoginCheckMapper loginCheckMapper;
 
-    public CustomLoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshMapper refreshMapper) {
+    public CustomLoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshMapper refreshMapper, LoginCheckMapper loginCheckMapper) {
 
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.refreshMapper = refreshMapper;
+        this.loginCheckMapper = loginCheckMapper;
 
         // 커스텀 로그인 경로 설정
         setFilterProcessesUrl("/api/member/login");
@@ -59,6 +63,21 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         Integer id = customUserDetails.getId();
         String nickname = customUserDetails.getNickname();
+
+        // LoginCheck
+        // 회원이 존재하는지 탐색
+        LoginEntity existingRecord = loginCheckMapper.findByMemberNickname(nickname);
+        // 존재하지 않는 경우
+        if (existingRecord == null) {
+            // LoginEntity 인스턴스 생성
+            existingRecord = new LoginEntity();
+            // 로그인된 닉네임 정보 set
+            existingRecord.setMemberNickname(nickname);
+        }
+        // 로그인 true
+        existingRecord.setLoginCheck(true);
+        // 멤버정보 insert
+        loginCheckMapper.upsertLoginCheck(existingRecord);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();

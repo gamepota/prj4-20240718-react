@@ -1,5 +1,6 @@
 package com.backend.config;
 
+import com.backend.mapper.member.LoginCheckMapper;
 import com.backend.mapper.member.RefreshMapper;
 import com.backend.security.CustomLoginFilter;
 import com.backend.security.CustomLogoutFilter;
@@ -32,11 +33,13 @@ public class SecurityConfiguration {
     // JWTUtil 주입
     private final JWTUtil jwtUtil;
     private final RefreshMapper refreshMapper;
+    private final LoginCheckMapper loginCheckMapper;
 
-    public SecurityConfiguration(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshMapper refreshMapper) {
+    public SecurityConfiguration(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshMapper refreshMapper, LoginCheckMapper loginCheckMapper) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.refreshMapper = refreshMapper;
+        this.loginCheckMapper = loginCheckMapper;
     }
 
     @Bean
@@ -88,8 +91,8 @@ public class SecurityConfiguration {
 
         // 필터 추가
         http.addFilterBefore(new JWTFilter(jwtUtil), CustomLoginFilter.class);
-        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshMapper), LogoutFilter.class);
-        http.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshMapper), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshMapper, loginCheckMapper), LogoutFilter.class);
+        http.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshMapper, loginCheckMapper), UsernamePasswordAuthenticationFilter.class);
 
         // 세션 설정
         http.sessionManagement((session) -> session

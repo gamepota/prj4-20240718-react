@@ -1,5 +1,6 @@
 package com.backend.security;
 
+import com.backend.mapper.member.LoginCheckMapper;
 import com.backend.mapper.member.RefreshMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -17,11 +18,12 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
     private final JWTUtil jwtUtil;
     private final RefreshMapper refreshMapper;
+    private final LoginCheckMapper loginCheckMapper;
 
-    public CustomLogoutFilter(JWTUtil jwtUtil, RefreshMapper refreshMapper) {
+    public CustomLogoutFilter(JWTUtil jwtUtil, RefreshMapper refreshMapper, LoginCheckMapper loginCheckMapper) {
         this.jwtUtil = jwtUtil;
         this.refreshMapper = refreshMapper;
-
+        this.loginCheckMapper = loginCheckMapper;
     }
 
     @Override
@@ -92,6 +94,8 @@ public class CustomLogoutFilter extends GenericFilterBean {
         // Refresh 토큰 DB에서 제거
         int result = refreshMapper.deleteByRefresh(refresh);
         System.out.println("result = " + result);
+        // LoginCheck
+        loginCheckMapper.updatedLoginCheck(request.getParameter("nickname"));
 
         // Refresh 토큰 Cookie 값 0으로 설정하고 제거
         Cookie cookie = new Cookie("refresh", null);
