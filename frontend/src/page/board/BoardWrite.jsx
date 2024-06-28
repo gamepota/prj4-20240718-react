@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -11,6 +12,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spacer,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -153,8 +155,8 @@ export function BoardWrite() {
             ></Input>
           </FormControl>
         </Box>
-        <Box>
-          <Box>카테고리 선택</Box>
+        <Box>카테고리 선택</Box>
+        <Flex>
           <Menu>
             {({ isOpen }) => (
               <>
@@ -198,7 +200,11 @@ export function BoardWrite() {
               </>
             )}
           </Menu>
-        </Box>
+          <Spacer />
+          <Box>
+            <Button>반려동물 정보 글쓰기</Button>
+          </Box>
+        </Flex>
         <Box>
           <FormControl>
             <FormLabel>내용</FormLabel>
