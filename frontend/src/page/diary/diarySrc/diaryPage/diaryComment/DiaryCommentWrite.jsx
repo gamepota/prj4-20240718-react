@@ -2,11 +2,13 @@ import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Input,
   Textarea,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
@@ -54,30 +56,35 @@ export function DiaryCommentWrite({ onCommentAdded }) {
 
   return (
     <Box>
-      <Box mb={10}>방명록 작성</Box>
-      <Box>
-        <FormControl>
-          <FormLabel>작성자</FormLabel>
-          <Input value={nickname} readOnly />
-        </FormControl>
+      <Box mb={5}>방명록 작성</Box>
+      <Box borderWidth="1px" borderRadius="lg" p={4}>
+        <VStack spacing={4} align="stretch">
+          <FormControl>
+            <FormLabel>작성자</FormLabel>
+            <Input value={nickname} readOnly />
+          </FormControl>
+          <Flex align="center">
+            <FormControl flex="1">
+              <FormLabel>내용</FormLabel>
+              <Textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                height="40px" // 여기서 높이를 설정합니다.
+              />
+            </FormControl>
+            <Button
+              isLoading={loading}
+              isDisabled={disableSaveButton}
+              colorScheme={"blue"}
+              onClick={handleDiaryCommentSubmitClick}
+              ml={2}
+              height="40px"
+            >
+              <FontAwesomeIcon icon={faPaperPlane} />
+            </Button>
+          </Flex>
+        </VStack>
       </Box>
-      <Box mb={7}>
-        <FormControl>
-          <FormLabel>내용</FormLabel>
-          <Textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-        </FormControl>
-      </Box>
-      <Button
-        isLoading={loading}
-        isDisabled={disableSaveButton}
-        colorScheme={"blue"}
-        onClick={handleDiaryCommentSubmitClick}
-      >
-        <FontAwesomeIcon icon={faPaperPlane} />
-      </Button>
     </Box>
   );
 }

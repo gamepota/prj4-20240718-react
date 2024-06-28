@@ -1,9 +1,10 @@
-import React, {useContext, useEffect, useState} from "react";
-import {Outlet, useParams} from "react-router-dom";
-import {Box, Center, Spinner, Text} from "@chakra-ui/react";
+import React, { useContext, useEffect, useState } from "react";
+import { Outlet, useParams } from "react-router-dom";
+import { Box, Center, Spinner, Text } from "@chakra-ui/react";
 import { DiaryNavbar } from "../diaryComponent/DiaryNavbar.jsx";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
+import { FriendAddButton } from "../../../../component/FriendAddButton.jsx";
 
 export function DiaryHome() {
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
@@ -13,14 +14,15 @@ export function DiaryHome() {
   const [ownerNickname, setOwnerNickname] = useState("");
   const [ownerId, setOwnerId] = useState(null); // 다이어리 주인의 ID 상태 추가
 
-
   useEffect(() => {
     const validateDiaryId = async () => {
       try {
-        const response = await axios.get(`/api/member/validateDiaryId/${diaryId}`);
-        console.log(diaryId)
+        const response = await axios.get(
+          `/api/member/validateDiaryId/${diaryId}`,
+        );
+        console.log(diaryId);
         setIsValidDiaryId(response.data.isValid);
-        console.log(response.data)
+        console.log(response.data);
         if (response.data.isValid) {
           setOwnerNickname(response.data.nickname);
         }

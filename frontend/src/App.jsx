@@ -1,6 +1,6 @@
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import { createBrowserRouter, RouterProvider, useLocation } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./page/Home.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
