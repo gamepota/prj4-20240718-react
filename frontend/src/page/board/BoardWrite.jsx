@@ -12,9 +12,10 @@ import {
   MenuItem,
   MenuList,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
@@ -27,7 +28,9 @@ export function BoardWrite() {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [boardType, setBoardType] = useState("자유");
   const navigate = useNavigate();
+  const location = useLocation();
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const toast = useToast();
 
   // const onDrop = useCallback(
   //   (acceptedFiles) => {
@@ -74,6 +77,16 @@ export function BoardWrite() {
   }
 
   React.useEffect(() => {
+    if (!memberInfo) {
+      toast({
+        title: "로그인 회원만 가능합니다",
+        duration: 3000,
+        isClosable: true,
+        status: "error",
+      });
+      const previousPath = location.state?.from || "/";
+      navigate(previousPath, { replace: true });
+    }
     if (title.trim().length === 0 || content.trim().length === 0) {
       setDisableSaveButton(true);
     } else {
@@ -112,6 +125,9 @@ export function BoardWrite() {
     }
   }
 
+  if (!memberInfo) {
+    return <Box />;
+  }
   return (
     <Center>
       <Box

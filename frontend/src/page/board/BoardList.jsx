@@ -54,6 +54,17 @@ export function BoardList() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
+    setSearchType("all");
+    setSearchKeyword("");
+
+    const typeParam = searchParams.get("type");
+    const keywordParam = searchParams.get("keyword");
+    if (typeParam) {
+      setSearchType(typeParam);
+    }
+    if (keywordParam) {
+      setSearchKeyword(keywordParam);
+    }
   }, [searchParams]);
 
   function handlePageSizeChange(number) {
@@ -89,7 +100,9 @@ export function BoardList() {
       .then(() => {})
       .finally(navigate(`/board/${boardId}`));
   }
-  function handleSearchClick() {}
+  function handleSearchClick() {
+    navigate(`?type=${searchType}&keyword=${searchKeyword}`);
+  }
 
   return (
     <>
