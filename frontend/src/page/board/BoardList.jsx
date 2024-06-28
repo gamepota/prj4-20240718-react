@@ -43,6 +43,8 @@ export function BoardList() {
   const [selectedWriterId, setSelectedWriterId] = useState(null);
 
   useEffect(() => {
+    const boardTypeParam = searchParams.get("boardType") || "전체";
+    setBoardType(boardTypeParam);
     axios
       .get(`/api/board/list?${searchParams}`)
       .then((res) => {
