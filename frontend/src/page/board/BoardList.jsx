@@ -308,6 +308,11 @@ export function BoardList() {
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="검색어"
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleSearchClick();
+                }
+              }}
             />
           </Box>
           <Box>
