@@ -10,27 +10,23 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
-export function DiaryCommentWrite() {
-  const { id } = useParams();
-  const [diaryComment, setDiaryComment] = useState(null);
+export function DiaryCommentWrite({ onCommentAdded }) {
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  const access = memberInfo.access;
+  const { memberInfo } = useContext(LoginContext);
   const nickname = memberInfo.nickname;
-  const isLoggedIn = Boolean(access);
-  const navigate = useNavigate();
+  const diaryId = generateDiaryId(memberInfo.id);
 
   const handleDiaryCommentSubmitClick = () => {
     setLoading(true);
     axios
       .post("/api/diaryComment/add", {
-        id,
+        diaryId,
         nickname,
         memberId: memberInfo.id,
         comment,
@@ -41,28 +37,20 @@ export function DiaryCommentWrite() {
           position: "top",
           description: "방명록이 등록되었습니다.",
         });
-        navigate(`/diary/comment/list`);
+        onCommentAdded(res.data); // 새로운 댓글을 추가
+        setComment(""); // 입력창 초기화
       })
       .catch((e) => {
-        const code = e.response.status;
-
-        if (code === 400) {
-          toast({
-            status: "error",
-            position: "top",
-            description: "방명록 등록 중 오류가 발생했습니다.",
-          });
-        }
+        toast({
+          status: "error",
+          position: "top",
+          description: "방명록 등록 중 오류가 발생했습니다.",
+        });
       })
       .finally(() => setLoading(false));
   };
-  let disableSaveButton = false;
-  if (comment.trim().length === 0) {
-    disableSaveButton = true;
-  }
-  if (!memberInfo) {
-    return null; // 또는 로딩 스피너를 표시할 수 있습니다.
-  }
+
+  let disableSaveButton = comment.trim().length === 0;
 
   return (
     <Box>
@@ -70,13 +58,16 @@ export function DiaryCommentWrite() {
       <Box>
         <FormControl>
           <FormLabel>작성자</FormLabel>
-          <Input value={memberInfo.nickname} readOnly />
+          <Input value={nickname} readOnly />
         </FormControl>
       </Box>
       <Box mb={7}>
         <FormControl>
           <FormLabel>내용</FormLabel>
-          <Textarea onChange={(e) => setComment(e.target.value)} />
+          <Textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
         </FormControl>
       </Box>
       <Button

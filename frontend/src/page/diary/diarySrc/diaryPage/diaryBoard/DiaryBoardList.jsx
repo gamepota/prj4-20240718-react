@@ -71,14 +71,13 @@ export function DiaryBoardList() {
     navigate(`/?${searchParams}`);
   }
 
-  let disableSaveButton = false;
-  if (!memberInfo) {
-    disableSaveButton = true;
-  }
-
   function handleSelectedDiaryBoard(id) {
     const diaryId = generateDiaryId(memberInfo.id);
     return () => navigate(`/diary/${diaryId}/view/${id}`);
+  }
+  function handleWriteClick(id) {
+    const diaryId = generateDiaryId(memberInfo.id);
+    navigate(`/diary/${diaryId}/write/${id}`);
   }
 
   return (
@@ -88,12 +87,7 @@ export function DiaryBoardList() {
         <Heading>다이어리 목록</Heading>
       </Center>
       <Box>
-        <Button
-          isDisabled={disableSaveButton}
-          onClick={() => navigate(`/diary/${diaryId}/write`)}
-        >
-          글쓰기
-        </Button>
+        {memberInfo && <Button onClick={handleWriteClick}>글쓰기</Button>}
       </Box>
       <Box>
         {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}

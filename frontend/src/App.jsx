@@ -24,7 +24,7 @@ import { DiaryHome } from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
 import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentWrite.jsx";
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
-import { Navbar } from "./component/Navbar"; // NavBar 컴포넌트 임포트
+import { DiaryComment } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,14 +32,21 @@ const router = createBrowserRouter([
     element: <Home />,
     children: [
       { index: true, element: <MainPage /> }, // 메인페이지 렌더링
-      { path: "diary/:diaryId", element: <DiaryHome />, children: [ // 다이어리 하위 경로 설정
+      {
+        path: "diary/:diaryId",
+        element: <DiaryHome />,
+        children: [
+          // 다이어리 하위 경로 설정
+          { path: "comment/view/:id", element: <DiaryBoardView /> }, // 일기 보기
           { path: "comment/list", element: <DiaryCommentList /> }, // 방명록 목록
-          { path: "comment/write", element: <DiaryCommentWrite /> }, // 방명록 쓰기
+          { path: "comment/write/:id", element: <DiaryCommentWrite /> }, // 방명록 쓰기
+          { path: "comment", element: <DiaryComment /> }, // 방명록
           { path: "list", element: <DiaryBoardList /> }, // 다이어리 목록
           { path: "edit/:id", element: <DiaryBoardEdit /> }, // 일기 수정
           { path: "view/:id", element: <DiaryBoardView /> }, // 일기 보기
-          { path: "write", element: <DiaryBoardWrite /> }, // 일기 쓰기
-        ] },
+          { path: "write/:id", element: <DiaryBoardWrite /> }, // 일기 쓰기
+        ],
+      },
       { path: "member/signup", element: <MemberSignup /> }, // 회원 가입
       { path: "member/login", element: <MemberLogin /> }, // 회원 로그인
       { path: "member/page/:id", element: <MemberPage /> }, // 회원 페이지

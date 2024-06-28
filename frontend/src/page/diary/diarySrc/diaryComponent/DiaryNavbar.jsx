@@ -19,8 +19,8 @@ export function DiaryNavbar() {
           const response = await axios.get("/api/friends/check", {
             params: {
               memberId: memberInfo.id,
-              friendId: friendId
-            }
+              friendId: friendId,
+            },
           });
           setIsFriend(response.data);
         } catch (error) {
@@ -34,19 +34,19 @@ export function DiaryNavbar() {
 
   const addFriend = async () => {
     if (memberInfo && memberInfo.id !== friendId) {
-      console.log('Adding friend:', friendId)
-      console.log('Member ID:', memberInfo.id)
+      console.log("Adding friend:", friendId);
+      console.log("Member ID:", memberInfo.id);
       const data = {
         memberId: memberInfo.id,
-        friendId: friendId
+        friendId: friendId,
       };
 
       try {
-        const response = await axios.post('/api/friends/add', data);
-        console.log('Friend added successfully:', response.data);
+        const response = await axios.post("/api/friends/add", data);
+        console.log("Friend added successfully:", response.data);
         setIsFriend(true);
       } catch (error) {
-        console.error('Error adding friend:', error);
+        console.error("Error adding friend:", error);
       }
     }
   };
@@ -66,7 +66,7 @@ export function DiaryNavbar() {
       </Box>
       <Box>
         <Button
-          onClick={() => navigate(`/diary/${diaryId}/comment/list`)}
+          onClick={() => navigate(`/diary/${diaryId}/comment`)}
           cursor={"pointer"}
           _hover={{
             bg: "blue.200",
@@ -98,11 +98,13 @@ export function DiaryNavbar() {
         </Button>
       </Box>
       <Box>
-        {!isFriend && memberInfo && Number(memberInfo.id) !== Number(friendId) && (
-          <Button size="sm" onClick={addFriend}>
-            친구 추가
-          </Button>
-        )}
+        {!isFriend &&
+          memberInfo &&
+          Number(memberInfo.id) !== Number(friendId) && (
+            <Button size="sm" onClick={addFriend}>
+              친구 추가
+            </Button>
+          )}
       </Box>
     </Flex>
   );

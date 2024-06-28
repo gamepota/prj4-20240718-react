@@ -32,7 +32,8 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "../../../../../component/LoginProvider.jsx"; // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx"; // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
 // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
 
@@ -48,6 +49,7 @@ export function DiaryBoardEdit() {
   const access = memberInfo.access;
   const nickname = memberInfo.nickname;
   const isLoggedIn = Boolean(access);
+  const diaryId = generateDiaryId(memberInfo.id);
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/${id}`).then((res) => setDiaryBoard(res.data));
@@ -70,7 +72,7 @@ export function DiaryBoardEdit() {
           description: `${diaryBoard.id}수정이 완료되었습니다.`,
           position: "top",
         });
-        navigate(`/diary/view/${diaryBoard.id}`);
+        navigate(`/diary/${diaryId}/view/${diaryBoard.id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {

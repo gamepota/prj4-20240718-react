@@ -37,7 +37,7 @@ export function DiaryBoardView() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
   const params = memberId ? { memberId } : {};
-
+  const diaryId = generateDiaryId(memberInfo.id);
   useEffect(() => {
     axios
       .get(`/api/diaryBoard/${id}`)
@@ -52,7 +52,7 @@ export function DiaryBoardView() {
             description: "해당 게시물이 존재하지 않습니다.",
             position: "top",
           });
-          navigate(`/diary/list`);
+          navigate(`/diary/${diaryId}/list`);
         }
       });
   }, [id]);
@@ -66,7 +66,7 @@ export function DiaryBoardView() {
           description: `${id} 게시물이 삭제되었습니다.`,
           position: "top",
         });
-        navigate(`/diary/list`);
+        navigate(`/diary/${diaryId}/list`);
       })
       .catch(() => {
         toast({
@@ -127,10 +127,7 @@ export function DiaryBoardView() {
           <Input type="datetime-local" value={diaryBoard.inserted} readOnly />
         </Box>
         <Flex mb={7} gap={2}>
-          <Button
-            onClick={handleDiaryEdit}
-            colorScheme="purple"
-          >
+          <Button onClick={handleDiaryEdit} colorScheme="purple">
             수정
           </Button>
           <Button colorScheme="red" onClick={onOpen}>
