@@ -101,7 +101,10 @@ export function BoardList() {
       .finally(navigate(`/board/${boardId}`));
   }
   function handleSearchClick() {
-    navigate(`?type=${searchType}&keyword=${searchKeyword}`);
+    searchParams.set("type", searchType);
+    searchParams.set("keyword", searchKeyword);
+
+    navigate(`?${searchParams}`);
   }
 
   return (
