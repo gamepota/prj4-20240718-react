@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Box, Button, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
-import { ChatIcon, MinusIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import { ChatIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faMagnifyingGlass, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
     setIsMinimized(!isMinimized);
   };
 
-  useEffect(() => {
+  const fetchFriends = () => {
     if (memberId) {
       console.log(`Fetching friends for member ID: ${memberId}`);
       axios.get(`/api/friends/${memberId}`)
@@ -40,6 +40,29 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
     } else {
       setIsLoading(true); // memberId가 null일 때 로딩 상태로 설정
     }
+  };
+
+  const deleteFriend = (friendId) => {
+    if (memberId) {
+      axios.delete(`/api/friends/delete`, { params: { memberId, friendId } })
+        .then(response => {
+          console.log('Friend deleted:', response.data);
+          fetchFriends(); // 삭제 후 친구 목록 갱신
+        })
+        .catch(error => {
+          console.error("There was an error deleting the friend!", error);
+        });
+    }
+  };
+
+  useEffect(() => {
+    fetchFriends(); // 컴포넌트가 마운트될 때 친구 목록을 한 번 가져옴
+
+    const intervalId = setInterval(() => {
+      fetchFriends(); // 10초마다 친구 목록을 갱신
+    }, 5000);
+
+    return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 클리어
   }, [memberId]);
 
   return (
@@ -71,7 +94,7 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
         >
           <Text fontSize="xl" fontWeight="bold">친구 리스트</Text>
           <IconButton
-            icon={isMinimized ? <FontAwesomeIcon icon={faPlus} />: <MinusIcon />}
+            icon={isMinimized ? <FontAwesomeIcon icon={faPlus} /> : <MinusIcon />}
             size="sm"
             onClick={toggleMinimize}
             aria-label={isMinimized ? "Expand List" : "Minimize List"}
@@ -112,9 +135,9 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => onSelectFriend({ nickname: friend.nickname, id: friend.id })}
+                          onClick={() => deleteFriend(friend.id)}
                         >
-                          <FontAwesomeIcon icon={faMagnifyingGlass} />
+                          <DeleteIcon />
                         </Button>
                       </HStack>
                     </HStack>

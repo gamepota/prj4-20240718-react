@@ -2,10 +2,7 @@ package com.backend.mapper.friends;
 
 import com.backend.domain.friends.FriendDto;
 import com.backend.domain.member.Member;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -22,14 +19,16 @@ public interface FriendsMapper {
 	List<FriendDto> selectFriendsById(@Param("memberId") Integer memberId);
 
 	@Insert("""
-        INSERT INTO friends (member_id, friend_id, member_nickname, friend_nickname)
-        VALUES (
-            #{memberId},
-            #{friendId},
-            #{memberNickname},
-            #{friendNickname}
-        )
-    """)
+    INSERT INTO friends (member_id, friend_id, member_nickname, friend_nickname)
+    VALUES (
+        #{memberId},
+        #{friendId},
+        #{memberNickname},
+        #{friendNickname}
+    )
+    ON DUPLICATE KEY UPDATE
+        member_id = VALUES(member_id)
+""")
 	void insertFriend(@Param("memberId") Integer memberId, @Param("friendId") Integer friendId, @Param("memberNickname") String memberNickname, @Param("friendNickname") String friendNickname);
 
 	@Select("""
@@ -45,4 +44,10 @@ public interface FriendsMapper {
         WHERE id = #{id}
     """)
 	Member selectMemberById(@Param("id") Integer id);
+
+	@Delete("""
+        DELETE FROM friends
+        WHERE member_id = #{memberId} AND friend_id = #{friendId}
+    """)
+	void deleteFriend(@Param("memberId") Integer memberId, @Param("friendId") Integer friendId);
 }

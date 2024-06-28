@@ -47,4 +47,16 @@ public class FriendsController {
 		boolean isFriend = friendsService.checkFriendship(memberId, friendId);
 		return ResponseEntity.ok(isFriend);
 	}
+
+	@DeleteMapping("/delete")
+	public ResponseEntity<String> deleteFriend(@RequestParam Integer memberId, @RequestParam Integer friendId) {
+		logger.info("Received request to delete friend. Member ID: {}, Friend ID: {}", memberId, friendId);
+		try {
+			friendsService.deleteFriend(memberId, friendId);
+			return ResponseEntity.ok("Friend deleted successfully");
+		} catch (Exception e) {
+			logger.error("Error deleting friend", e);
+			return ResponseEntity.status(500).body("Error deleting friend");
+		}
+	}
 }
