@@ -68,13 +68,13 @@ public interface BoardMapper {
                     <if test="searchType != null and keyword != null and keyword != ''">
                         <bind name="pattern" value="'%' + keyword + '%'" />
                         <choose>
-                            <when test="searchType == '전체'">
+                            <when test='searchType == "전체"'>
                                 OR (b.title LIKE #{pattern} OR b.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
                             </when>
-                            <when test="searchType == '글'">
+                            <when test='searchType == "글"'>
                                 OR (b.title LIKE #{pattern} OR b.content LIKE #{pattern})
                             </when>
-                            <when test="searchType == '작성자'">
+                            <when test='searchType == "작성자"'>
                                 OR m.nickname LIKE #{pattern}
                             </when>
                         </choose>
@@ -82,7 +82,7 @@ public interface BoardMapper {
                 </where>
                 </script>
             """)
-    Integer selectByBoardType(String boardType, String searchType, String keyword);
+    Integer selectByBoardType(@Param("boardType") String boardType, @Param("searchType") String searchType, @Param("keyword") String keyword);
 
     @Select("""
                 <script>
@@ -107,13 +107,13 @@ public interface BoardMapper {
                     <if test="searchType != null and keyword != null and keyword != ''">
                         <bind name="pattern" value="'%' + keyword + '%'" />
                         <choose>
-                            <when test="searchType == '전체'">
+                            <when test='searchType == "전체"'>
                                 OR (b.title LIKE #{pattern} OR b.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
                             </when>
-                            <when test="searchType == '글'">
+                            <when test='searchType == "글"'>
                                 OR (b.title LIKE #{pattern} OR b.content LIKE #{pattern})
                             </when>
-                            <when test="searchType == '작성자'">
+                            <when test='searchType == "작성자"'>
                                 OR m.nickname LIKE #{pattern}
                             </when>
                         </choose>
@@ -124,7 +124,7 @@ public interface BoardMapper {
                 LIMIT #{offset}, #{pageAmount}
                 </script>
             """)
-    List<Board> selectAllPaging(Integer offset, Integer pageAmount, String boardType, String searchType, String keyword);
+    List<Board> selectAllPaging(@Param("offset") Integer offset, @Param("pageAmount") Integer pageAmount, @Param("boardType") String boardType, @Param("searchType") String searchType, @Param("keyword") String keyword);
 
 
     @Insert("""
