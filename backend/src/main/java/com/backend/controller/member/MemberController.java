@@ -94,6 +94,12 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    // MemberList
+    @GetMapping("/list")
+    public List<Member> list() {
+        return service.list();
+    }
+
     // 다이어리 ID 검증
     @GetMapping("/validateDiaryId/{diaryId}")
     public ResponseEntity<Map<String, Object>> validateDiaryId(@PathVariable String diaryId) {
@@ -111,11 +117,5 @@ public class MemberController {
             response.put("isValid", false);
             return ResponseEntity.ok(response);
         }
-    }
-
-    // MemberList
-    @GetMapping("/list")
-    public List<Member> list() {
-        return service.list();
     }
 }
