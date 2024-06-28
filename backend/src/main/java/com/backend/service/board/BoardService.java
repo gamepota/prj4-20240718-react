@@ -65,7 +65,8 @@ public class BoardService {
                 board.getContent() != null && !board.getContent().isBlank();
     }
 
-    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType)
+    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType,
+                                    String searchType, String keyword)
             throws Exception {
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
@@ -110,11 +111,11 @@ public class BoardService {
         }
 
         Integer countByBoardType;
-        if (boardType.equals("전체")) {
+        if (boardType.equals("전체") && searchType.equals("전체") && keyword.equals("")) {
 
             countByBoardType = mapper.selectAllCount();
         } else {
-            countByBoardType = mapper.selectByBoardType(boardType);
+            countByBoardType = mapper.selectByBoardType(boardType, searchType, keyword);
         }
 
         Integer lastPageNumber = (countByBoardType - 1) / pageAmount + 1;
@@ -135,7 +136,7 @@ public class BoardService {
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
 
-        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount, boardType));
+        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount, boardType, searchType, keyword));
     }
 
 //    public Map<String, Object> get(Integer id) {
