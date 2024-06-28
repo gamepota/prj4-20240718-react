@@ -28,6 +28,7 @@ import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { generateDiaryId } from "../../../../../util/util.jsx";
+import { format } from "date-fns";
 
 export function DiaryBoardList() {
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
@@ -37,6 +38,7 @@ export function DiaryBoardList() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const dateFnsDate = new Date();
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
@@ -84,7 +86,7 @@ export function DiaryBoardList() {
     <Box>
       <Box mb={5}></Box>
       <Center>
-        <Heading>다이어리 목록</Heading>
+        <Heading>일기장</Heading>
       </Center>
       <Box>
         {memberInfo && <Button onClick={handleWriteClick}>글쓰기</Button>}
@@ -98,6 +100,7 @@ export function DiaryBoardList() {
                 <Th>N번째 일기</Th>
                 <Th>내용</Th>
                 <Th>who?</Th>
+                <Th>where</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -110,6 +113,7 @@ export function DiaryBoardList() {
                   onClick={handleSelectedDiaryBoard(diaryBoard.id)}
                   key={diaryBoard.id}
                 >
+                  //ㄹㅇㅌ ㅋㅁㅌ ㄹㅅㅌ
                   <Td>{diaryBoard.id}</Td>
                   <Td>
                     {diaryBoard.title}
@@ -125,6 +129,10 @@ export function DiaryBoardList() {
                     )}
                   </Td>
                   <Td>{diaryBoard.writer}</Td>
+                  <Td>
+                    <span style={{ color: "red" }} />
+                    {format(dateFnsDate, "yyyy-MM-dd")}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
