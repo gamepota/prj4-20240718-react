@@ -135,7 +135,7 @@ export function Navbar() {
               borderRadius="md"
               onClick={handleOpenDiary}
             >
-              마이 펫다이어리
+              <FontAwesomeIcon icon={faHouse} />
             </Box>
             <Button
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
