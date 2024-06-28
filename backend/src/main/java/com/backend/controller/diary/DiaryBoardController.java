@@ -28,6 +28,7 @@ public class DiaryBoardController {
                               Authentication authentication) throws IOException {
         if (service.validate(diaryBoard)) {
             service.add(diaryBoard, files, authentication);
+            System.out.println("diaryBoard = " + diaryBoard);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();
