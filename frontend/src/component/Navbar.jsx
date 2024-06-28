@@ -15,14 +15,12 @@ export function Navbar() {
 
   function handleLogout() {
     try {
+      const formData = new FormData();
+      formData.append("nickname", nickname);
       axios
-        .post(
-          "/api/member/logout",
-          {},
-          {
-            withCredentials: true,
-          },
-        )
+        .post("/api/member/logout", formData, {
+          withCredentials: true,
+        })
         .then((response) => {
           if (response.status === 200) {
             setMemberInfo(null); // 상태 초기화
