@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -23,12 +23,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { BoardCommentEdit } from "./BoardCommentEdit.jsx";
+import { LoginContext } from "../LoginProvider.jsx"; //asdf
 
 //asdf
 export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
   const [isEditing, setIsEditing] = useState(false);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
 
   const handleRemoveClick = () => {
     setIsProcessing(true); // 삭제 처리 중임을 나타내는 상태 업데이트
@@ -56,38 +60,44 @@ export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
         <Box mr={3}>
           <FontAwesomeIcon icon={faUser} />
         </Box>
-        <Text fontWeight="bold">{comment.id}</Text>
+        <Text fontWeight="bold">{comment.writer}</Text>
         <Spacer />
         <Flex align="center">
           <Box mr={2}>
             <FontAwesomeIcon icon={faCalendarDays} />
           </Box>
-          <Text>{comment.inserted}</Text>
+          <Box fontSize="sm" color="gray.600" mr={2}>
+            {new Date(comment.inserted).toLocaleString()}
+          </Box>
         </Flex>
       </Flex>
       {isEditing || (
         <Flex>
           <Box whiteSpace={"pre"}>{comment.boardComment}</Box>
           <Spacer />
-          {/* 삭제 및 수정 버튼 항상 보이게 */}
-          <Button
-            variant="outline"
-            size="sm"
-            colorScheme="purple"
-            onClick={() => setIsEditing(true)}
-            mr={2}
-          >
-            <FontAwesomeIcon icon={faPenToSquare} /> 수정
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            isLoading={isProcessing}
-            colorScheme="red"
-            onClick={onOpen}
-          >
-            <FontAwesomeIcon icon={faTrashAlt} /> 삭제
-          </Button>
+          {/* 삭제 및 수정 버튼 댓글작성자만 보이게... */}
+          {memberId == comment.memberId && (
+            <Box>
+              <Button
+                variant="outline"
+                size="sm"
+                colorScheme="purple"
+                onClick={() => setIsEditing(true)}
+                mr={2}
+              >
+                <FontAwesomeIcon icon={faPenToSquare} /> 수정
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                isLoading={isProcessing}
+                colorScheme="red"
+                onClick={onOpen}
+              >
+                <FontAwesomeIcon icon={faTrashAlt} /> 삭제
+              </Button>
+            </Box>
+          )}
         </Flex>
       )}
       {isEditing && (

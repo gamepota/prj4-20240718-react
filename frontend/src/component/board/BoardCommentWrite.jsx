@@ -1,12 +1,5 @@
 import { useContext, useState } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Spinner,
-  Textarea,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Textarea, Tooltip } from "@chakra-ui/react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
@@ -14,14 +7,17 @@ import { LoginContext } from "../LoginProvider.jsx";
 
 export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
   const [boardComment, setBoardComment] = useState("");
-  const account = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
 
   function handleBoardCommentSubmitClick() {
     setIsProcessing(true);
     axios
-      .post("/api/comment/add", {
+      .postForm("/api/comment/add", {
         boardId,
         boardComment,
+        memberId: params.memberId,
       })
       .then(() => {
         setBoardComment("");
@@ -33,8 +29,8 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
   }
   // console.log(account);
 
-  if (!account) {
-    return <Spinner />;
+  if (!memberInfo) {
+    return;
   }
   return (
     <Flex gap={2}>

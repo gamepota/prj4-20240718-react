@@ -1,13 +1,17 @@
 package com.backend.service.member;
 
+import com.backend.domain.board.Board;
 import com.backend.domain.diary.DiaryBoard;
 import com.backend.domain.member.Member;
 import com.backend.domain.member.Profile;
 import com.backend.domain.member.Role;
+import com.backend.mapper.board.BoardCommentMapper;
+import com.backend.mapper.board.BoardMapper;
 import com.backend.mapper.diary.DiaryBoardMapper;
 import com.backend.mapper.member.MemberMapper;
 import com.backend.mapper.member.ProfileMapper;
 import com.backend.mapper.member.RefreshMapper;
+import com.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +34,9 @@ public class MemberService {
     private final DiaryBoardMapper diaryBoardMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final S3Client s3Client;
+    private final BoardService boardService;
+    private final BoardMapper boardMapper;
+    private final BoardCommentMapper boardCommentMapper;
 
     //MemberSignup
     public void signup(Member member) {
@@ -96,6 +103,19 @@ public class MemberService {
 
     // MemberDelete
     public void delete(Integer id) {
+        //회원이 쓴 게시물 조회
+        List<Board> boardList = boardMapper.selectByMemberId(id);
+
+        // 각 게시물 지우기
+        boardList.forEach(board -> boardService.delete(board.getId()));
+
+        // 좋아요 지우기
+        boardMapper.deleteLikeByMemberId(id);
+
+        // 댓글 지우기
+        boardCommentMapper.deleteByMemberId(id);
+
+
         List<DiaryBoard> diaryBoardList = diaryBoardMapper.selectByMemberId(id);
         refreshMapper.deleteByUsername(getById(id).getUsername());
         memberMapper.deleteById(id);

@@ -24,6 +24,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../component/LoginProvider.jsx";
+import Pagination from "../../component/Pagination.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -38,7 +39,12 @@ export function BoardList() {
 
   const navigate = useNavigate();
 
+  const [selectedWriter, setSelectedWriter] = useState(null);
+  const [selectedWriterId, setSelectedWriterId] = useState(null);
+
   useEffect(() => {
+    const boardTypeParam = searchParams.get("boardType") || "전체";
+    setBoardType(boardTypeParam);
     axios
       .get(`/api/board/list?${searchParams}`)
       .then((res) => {
@@ -48,6 +54,17 @@ export function BoardList() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
+    setSearchType("all");
+    setSearchKeyword("");
+
+    const typeParam = searchParams.get("type");
+    const keywordParam = searchParams.get("keyword");
+    if (typeParam) {
+      setSearchType(typeParam);
+    }
+    if (keywordParam) {
+      setSearchKeyword(keywordParam);
+    }
   }, [searchParams]);
 
   function handlePageSizeChange(number) {
@@ -83,7 +100,12 @@ export function BoardList() {
       .then(() => {})
       .finally(navigate(`/board/${boardId}`));
   }
-  function handleSearchClick() {}
+  function handleSearchClick() {
+    searchParams.set("type", searchType);
+    searchParams.set("keyword", searchKeyword);
+
+    navigate(`?${searchParams}`);
+  }
 
   return (
     <>
@@ -262,18 +284,7 @@ export function BoardList() {
                       <span> [{board.numberOfComments}]</span>
                     )}
                   </Td>
-                  <Td>
-                    <span
-                      onClick={() => navigate(`/diary/view/${board.memberId}`)}
-                      style={{
-                        cursor: "pointer",
-                        color: "blue",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      {board.writer}
-                    </span>
-                  </Td>
+                  <Td>{board.writer}</Td>
                   <Td textAlign="center">{board.numberOfLikes}</Td>
                   <Td textAlign="center">{board.views}</Td>
                 </Tr>
@@ -282,46 +293,11 @@ export function BoardList() {
           </Table>
         </Box>
       </Center>
-      <Center>
-        <Flex>
-          {pageInfo.prevPageNumber && (
-            <>
-              <Button onClick={() => handlePageButtonClick(1)}>맨앞</Button>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
-              >
-                이전
-              </Button>
-            </>
-          )}
-          {pageNumbers.map((pageNumber) => (
-            <Button
-              w={"10"}
-              onClick={() => handlePageButtonClick(pageNumber)}
-              key={pageNumber}
-              colorScheme={
-                pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
-              }
-            >
-              {pageNumber}
-            </Button>
-          ))}
-          {pageInfo.nextPageNumber && (
-            <>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
-              >
-                다음
-              </Button>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
-              >
-                맨뒤
-              </Button>
-            </>
-          )}
-        </Flex>
-      </Center>
+      <Pagination
+        pageInfo={pageInfo}
+        pageNumbers={pageNumbers}
+        handlePageButtonClick={handlePageButtonClick}
+      />
       <Center mb={10}>
         <Flex gap={1}>
           <Box>

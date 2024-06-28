@@ -10,14 +10,14 @@ public interface BoardCommentMapper {
 
     @Insert("""
                         INSERT INTO board_comment
-            (board_id, board_comment) 
-            VALUES (#{boardId}, #{boardComment})
+            (board_id, board_comment,member_id) 
+            VALUES (#{boardId}, #{boardComment},#{memberId})
                         """)
     int insert(BoardComment comment);
 
     @Select("""
-                        SELECT id, board_comment,inserted
-            FROM board_comment
+                        SELECT c.id, c.board_comment,c.inserted,m.nickname writer,c.member_id
+            FROM board_comment c JOIN member m ON c.member_id=m.id
                                     WHERE board_id=#{boardId}
                         ORDER BY id;
 
@@ -37,4 +37,17 @@ public interface BoardCommentMapper {
             WHERE id=#{id}
             """)
     int update(BoardComment boardComment);
+
+    @Delete("""
+            DELETE FROM board_comment
+            WHERE member_id=#{memberId}
+            """)
+    int deleteByMemberId(Integer memberId);
+
+    @Delete("""
+            DELETE FROM board_comment
+            WHERE board_id=#{boardId}
+
+                        """)
+    int deleteByBoardId(Integer boardId);
 }

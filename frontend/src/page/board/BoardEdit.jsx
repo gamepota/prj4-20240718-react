@@ -43,8 +43,8 @@ export function BoardEdit() {
   const params = memberId ? { memberId } : {};
 
   useEffect(() => {
-    axios.get(`/api/board/${id}`).then((res) => {
-      setBoard(res.data);
+    axios.get(`/api/board/${id}`, { params }).then((res) => {
+      setBoard(res.data.board);
     });
   }, []);
 
@@ -52,8 +52,7 @@ export function BoardEdit() {
     if (board) {
       if (
         board.title.trim().length === 0 ||
-        board.content.trim().length === 0 ||
-        board.writer.trim().length === 0
+        board.content.trim().length === 0
       ) {
         setDisableSaveButton(true);
       } else {
@@ -69,7 +68,7 @@ export function BoardEdit() {
         id: board.id,
         title: board.title,
         content: board.content,
-        writer: board.writer,
+        memberId: params.memberId,
         removeFileList,
         addFileList,
       })
@@ -77,10 +76,29 @@ export function BoardEdit() {
         toast({
           status: "success",
           description: `${board.id}번 게시글이 수정되었습니다`,
+          duration: 500,
           position: "top",
         });
         navigate(`/board/${id}`);
-      });
+      })
+      .catch((err) => {
+        if (err.response.status === 403) {
+          toast({
+            status: "error",
+            description: "권한이 없답니다",
+            duration: 500,
+            position: "top",
+          });
+        } else {
+          toast({
+            status: "error",
+            description: "다른 오류가 발생했습니다",
+            duration: 500,
+            position: "top",
+          });
+        }
+      })
+      .finally(() => onClose());
   }
 
   //useEffect가 실행될때까지 스피너 돌아감..
@@ -133,11 +151,7 @@ export function BoardEdit() {
       setInvisibledText(true);
       setAddFileList(selectedFiles);
     }
-    if (
-      board.title.trim().length === 0 ||
-      board.content.trim().length === 0 ||
-      board.writer.trim().length === 0
-    ) {
+    if (board.title.trim().length === 0 || board.content.trim().length === 0) {
       setDisableSaveButton(true);
     } else {
       setDisableSaveButton(false);

@@ -118,6 +118,23 @@ SET views=1;
 # 임시 댓글테이블 member_id없이 수정
 SHOW CREATE TABLE board;
 
+#댓글테이블 삭제 후 member_id다시 설정...
+DROP TABLE board_comment;
+
+#댓글테이블 board_comment속성 추가 및 데이터 백업...
+ALTER TABLE board_comment
+    CHANGE COLUMN comment board_comment VARCHAR(255);
+
+CREATE TABLE board_comment
+(
+    id        INT PRIMARY KEY AUTO_INCREMENT,
+    board_id  INT          NOT NULL REFERENCES board (id),
+    member_id INT          NOT NULL REFERENCES member (id),
+    comment   VARCHAR(500) NOT NULL,
+    inserted  DATETIME     NOT NULL DEFAULT NOW()
+);
+
+
 SELECT *
 FROM board_comment;
 

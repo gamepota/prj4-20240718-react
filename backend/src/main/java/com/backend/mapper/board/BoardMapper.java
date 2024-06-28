@@ -65,7 +65,7 @@ public interface BoardMapper {
 
     @Select("""
                  <script>
-                 SELECT b.id,b.title,m.nickname writer,b.board_type,b.views,
+                 SELECT b.id,b.title,m.nickname writer,b.board_type,b.views,b.member_id,
             COUNT(DISTINCT f.name)number_of_images,
             COUNT(DISTINCT  l.member_id)number_of_likes,
             COUNT(DISTINCT  c.id)number_of_comments
@@ -152,4 +152,26 @@ public interface BoardMapper {
             AND member_id=#{memberId}
             """)
     int selectLikeByBoardIdAndMemberId(Integer id, Integer memberId);
+
+    @Select("""
+                        SELECT id
+                        FROM board
+                        WHERE member_id=#{id}
+            """)
+    List<Board> selectByMemberId(Integer id);
+
+    @Delete("""
+            DELETE FROM board_like
+            WHERE member_id=#{memberId}
+            """)
+    int deleteLikeByMemberId(Integer memberId);
+
+    @Delete("""
+                        DELETE FROM board_like
+                        WHERE member_id=#{id};
+
+            """)
+    int deleteLikeByBoardId(Integer id);
+
+
 }

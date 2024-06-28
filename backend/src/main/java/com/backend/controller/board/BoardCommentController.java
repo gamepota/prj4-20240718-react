@@ -15,11 +15,11 @@ public class BoardCommentController {
     final BoardCommentServivce service;
 
     @PostMapping("add")
-//    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity addComment(@RequestBody BoardComment comment /*Authentication authentication*/) {
+    public ResponseEntity addComment(BoardComment comment) {
+//        System.out.println("이것은 커멘트컨트롤러의 add요청 comment = " + comment);
         if (service.validate(comment)) {
-//            System.out.println("이것은 validate 통과한 comment = " + comment);
-            service.add(comment /*authentication*/);
+            System.out.println("이것은 validate 통과한 comment = " + comment);
+            service.add(comment);
 
             return ResponseEntity.ok().build();
         } else {
