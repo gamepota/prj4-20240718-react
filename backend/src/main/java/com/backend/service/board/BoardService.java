@@ -115,6 +115,7 @@ public class BoardService {
 
             countByBoardType = mapper.selectAllCount();
         } else {
+            System.out.println("이것은 서비스의 boardType = " + boardType);
             countByBoardType = mapper.selectByBoardType(boardType, searchType, keyword);
         }
 

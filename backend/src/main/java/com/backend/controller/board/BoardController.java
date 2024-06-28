@@ -48,7 +48,8 @@ public class BoardController {
                                     @RequestParam(defaultValue = "전체") String searchType,
                                     @RequestParam(defaultValue = "") String keyword) throws Exception {
 //        System.out.println("page = " + page);
-        return service.list(page, pageAmount, offsetReset, session, boardType, boardType, keyword);
+        System.out.println("이것은 서비스의 searchType = " + searchType);
+        return service.list(page, pageAmount, offsetReset, session, boardType, searchType, keyword);
     }
 
     @GetMapping("{id}")

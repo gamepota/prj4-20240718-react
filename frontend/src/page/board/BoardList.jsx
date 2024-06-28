@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Badge,
@@ -23,7 +23,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "../../component/LoginProvider.jsx";
 import Pagination from "../../component/Pagination.jsx";
 
 export function BoardList() {
@@ -32,7 +31,7 @@ export function BoardList() {
   const [pageInfo, setPageInfo] = useState({});
   const [boardType, setBoardType] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [searchType, setSearchType] = useState("all");
+  const [searchType, setSearchType] = useState("전체");
   const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
@@ -49,13 +48,13 @@ export function BoardList() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-    setSearchType("all");
+    setSearchType("전체");
     setSearchKeyword("");
 
-    const typeParam = searchParams.get("type");
+    const searchTypeParam = searchParams.get("searchType");
     const keywordParam = searchParams.get("keyword");
-    if (typeParam) {
-      setSearchType(typeParam);
+    if (searchTypeParam) {
+      setSearchType(searchTypeParam);
     }
     if (keywordParam) {
       setSearchKeyword(keywordParam);
@@ -94,7 +93,7 @@ export function BoardList() {
       .finally(navigate(`/board/${boardId}`));
   }
   function handleSearchClick() {
-    searchParams.set("type", searchType);
+    searchParams.set("searchType", searchType);
     searchParams.set("keyword", searchKeyword);
 
     navigate(`?${searchParams}`);
@@ -298,9 +297,9 @@ export function BoardList() {
               value={searchType}
               onChange={(e) => setSearchType(e.target.value)}
             >
-              <option value="all">전체</option>
-              <option value="text">글</option>
-              <option value="nickName">작성자</option>
+              <option value="전체">전체</option>
+              <option value="글">글</option>
+              <option value="작성자">작성자</option>
             </Select>
           </Box>
           <Box>

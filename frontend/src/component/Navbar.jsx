@@ -110,37 +110,68 @@ export function Navbar() {
               {`게시판`}
             </MenuButton>
             <MenuList>
-              <MenuItem onClick={() => navigate("/board/list?boardType=전체")}>
+              {/* 각 게시판 메뉴 클릭 시 navigate 함수 호출 */}
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=전체");
+                  onClose();
+                }}
+              >
                 전체 게시판
               </MenuItem>
-              <MenuItem onClick={() => navigate("/board/list?boardType=자유")}>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=자유");
+                  onClose();
+                }}
+              >
                 자유 게시판
               </MenuItem>
               <MenuItem
-                onClick={() => navigate("/board/list?boardType=사진 공유")}
+                onClick={() => {
+                  navigate("/board/list?boardType=사진 공유");
+                  onClose();
+                }}
               >
                 사진 공유 게시판
               </MenuItem>
               <MenuItem
-                onClick={() => navigate("/board/list?boardType=질문/답변")}
+                onClick={() => {
+                  navigate("/board/list?boardType=질문/답변");
+                  onClose();
+                }}
               >
                 질문/답변 게시판
               </MenuItem>
               <MenuItem
-                onClick={() => navigate("/board/list?boardType=반려동물 건강")}
+                onClick={() => {
+                  navigate("/board/list?boardType=반려동물 건강");
+                  onClose();
+                }}
               >
                 반려동물 건강 게시판
               </MenuItem>
               <MenuItem
-                onClick={() => navigate("/board/list?boardType=훈련/교육")}
+                onClick={() => {
+                  navigate("/board/list?boardType=훈련/교육");
+                  onClose();
+                }}
               >
                 훈련/교육 게시판
               </MenuItem>
-              <MenuItem onClick={() => navigate("/board/list?boardType=리뷰")}>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=리뷰");
+                  onClose();
+                }}
+              >
                 리뷰 게시판
               </MenuItem>
               <MenuItem
-                onClick={() => navigate("/board/list?boardType=이벤트/모임")}
+                onClick={() => {
+                  navigate("/board/list?boardType=이벤트/모임");
+                  onClose();
+                }}
               >
                 이벤트/모임 게시판
               </MenuItem>
