@@ -132,11 +132,6 @@ export function BoardView() {
     window.open(url, "_blank", windowFeatures);
   };
 
-  const handleReport = (reason) => {
-    console.log("신고 사유:", reason);
-    onCloseReport();
-  };
-
   return (
     <Box maxW="800px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10}>
       <Box p={4} bg="gray.100" borderRadius="md" boxShadow="md" mb={4}>
@@ -210,7 +205,7 @@ export function BoardView() {
         )}
       </Flex>
       <BoardCommentComponent boardId={board.id} />
-      {memberId === board.memberId && (
+      {(memberId === board.memberId || memberId == 1) && (
         <Flex justify="flex-end">
           <Button
             colorScheme="purple"
@@ -232,7 +227,8 @@ export function BoardView() {
       <ReportModal
         isOpen={isOpenReport}
         onClose={onCloseReport}
-        handleReport={handleReport}
+        boardId={board.id}
+        memberId={board.memberId}
       />
     </Box>
   );
