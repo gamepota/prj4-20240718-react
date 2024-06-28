@@ -14,6 +14,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryCommentList() {
   const [diaryCommentList, setDiaryCommentList] = useState([]);
@@ -31,7 +32,14 @@ export function DiaryCommentList() {
         console.error("Error fetching comments:", err);
       });
   }, [id]);
-
+  function handleWriteClick() {
+    const diaryId = generateDiaryId(memberInfo.id);
+    navigate(`/diary/${diaryId}/comment/write`);
+  }
+  function handleViewClick(id) {
+    const diaryId = generateDiaryId(memberInfo.id);
+    return () => navigate(`/diary/${diaryId}/comment/view/${id}`);
+  }
   return (
     <Box>
       <Box mb={5}></Box>
@@ -39,11 +47,7 @@ export function DiaryCommentList() {
         <Heading>방명록 목록</Heading>
       </Center>
       <Box mb={5}>
-        <Button
-          onClick={() => navigate(`/diary/comment/write/${memberInfo.id}`)}
-        >
-          작성
-        </Button>
+        <Button onClick={handleWriteClick}>작성</Button>
       </Box>
 
       <Box>
@@ -59,12 +63,7 @@ export function DiaryCommentList() {
             </Thead>
             <Tbody>
               {diaryCommentList.map((diaryComment) => (
-                <Tr
-                  onClick={() =>
-                    navigate(`/diary/comment/view/${diaryComment.id}`)
-                  }
-                  key={diaryComment.id}
-                >
+                <Tr onClick={handleViewClick} key={diaryComment.id}>
                   <Td>{diaryComment.id}</Td>
                   <Td>{diaryComment.comment}</Td>
                   <Td>{memberInfo.nickname}</Td>

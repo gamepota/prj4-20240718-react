@@ -13,6 +13,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryCommentView() {
   const { id } = useParams();
@@ -26,6 +27,7 @@ export function DiaryCommentView() {
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
   const params = memberId ? { memberId } : {};
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const diaryId = generateDiaryId(memberInfo.id);
 
   useEffect(() => {
     axios
@@ -38,7 +40,7 @@ export function DiaryCommentView() {
             description: "해당 게시물이 존재하지 않습니다.",
             position: "top",
           });
-          navigate("/diaryComment/list");
+          navigate(`/diary/${diaryId}/comment/list`);
         }
       });
   }, [id]);

@@ -13,6 +13,7 @@ import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryCommentWrite() {
   const { id } = useParams();
@@ -25,6 +26,7 @@ export function DiaryCommentWrite() {
   const nickname = memberInfo.nickname;
   const isLoggedIn = Boolean(access);
   const navigate = useNavigate();
+  const diaryId = generateDiaryId(memberInfo.id);
 
   const handleDiaryCommentSubmitClick = () => {
     setLoading(true);
@@ -41,7 +43,7 @@ export function DiaryCommentWrite() {
           position: "top",
           description: "방명록이 등록되었습니다.",
         });
-        navigate(`/diary/comment/list`);
+        navigate(`/diary/${diaryId}/comment/list`);
       })
       .catch((e) => {
         const code = e.response.status;
