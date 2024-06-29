@@ -40,7 +40,7 @@ export function BoardReportList() {
     const boardTypeParam = searchParams.get("boardType") || "전체";
     setBoardType(boardTypeParam);
     axios
-      .get(`/api/board/list?${searchParams}`)
+      .get(`/api/board/report/list?${searchParams}`)
       .then((res) => {
         setBoardList(res.data.boardList);
         setPageInfo(res.data.pageInfo);
@@ -247,7 +247,9 @@ export function BoardReportList() {
             <Tbody>
               {boardList.map((board) => (
                 <Tr key={board.id}>
-                  <Td textAlign="center">0</Td>
+                  <Td textAlign="center">
+                    <span> {board.numberOfReports}</span>
+                  </Td>
                   <Td textAlign="center">
                     <span
                       onClick={() =>

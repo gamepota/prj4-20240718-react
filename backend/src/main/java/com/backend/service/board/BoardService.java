@@ -298,4 +298,80 @@ public class BoardService {
 
         }
     }
+
+    public Map<String, Object> reportList(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType, String searchType, String keyword)
+            throws Exception {
+
+        if (page <= 0) {
+            throw new IllegalArgumentException("page must be greater than 0");
+        }
+
+        // 세션에서 값 가져오기
+        Object sessionValue = session.getAttribute(PAGE_INFO_SESSION_KEY);
+        Integer offset;
+
+        // 세션 값이 없을 때 초기화
+        if (sessionValue == null) {
+            offset = 1;
+            session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
+        } else if (sessionValue instanceof Integer) {
+            offset = (Integer) sessionValue;
+        } else if (sessionValue instanceof String) {
+            try {
+                offset = Integer.valueOf((String) sessionValue);
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException("Invalid type for session attribute", e);
+            }
+        } else {
+            throw new IllegalStateException("Invalid type for session attribute");
+        }
+
+        // 페이지에 따른 offset 계산
+
+        // 세션에 새로운 offset 저장
+        session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
+
+
+//        System.out.println("이것은 서비스의 boardType = " + boardType);
+        // 페이지 정보 계산
+        Map<String, Object> pageInfo = new HashMap<>();
+        if (offsetReset) {
+            offset = 0;
+            page = 1;
+            pageInfo.put("currentPageNumber", 1);
+        } else {
+            offset = (page - 1) * pageAmount;
+            pageInfo.put("currentPageNumber", page);
+        }
+
+        Integer countByBoardType;
+        if (boardType.equals("전체") && searchType.equals("전체") && keyword.equals("")) {
+
+            countByBoardType = mapper.selectAllCountWithReportBoard();
+        } else {
+            System.out.println("이것은 서비스의 boardType = " + boardType);
+            countByBoardType = mapper.selectByBoardTypeWithReportBoard(boardType, searchType, keyword);
+        }
+
+        Integer lastPageNumber = (countByBoardType - 1) / pageAmount + 1;
+        Integer leftPageNumber = (page - 1) / 10 * 10 + 1;
+        Integer rightPageNumber = Math.min(leftPageNumber + 9, lastPageNumber);
+        Integer prevPageNumber = (leftPageNumber > 1) ? leftPageNumber - 1 : null;
+        Integer nextPageNumber = (rightPageNumber < lastPageNumber) ? rightPageNumber + 1 : null;
+
+        if (prevPageNumber != null) {
+            pageInfo.put("prevPageNumber", prevPageNumber);
+        }
+        if (nextPageNumber != null) {
+            pageInfo.put("nextPageNumber", nextPageNumber);
+        }
+
+        pageInfo.put("lastPageNumber", lastPageNumber);
+        pageInfo.put("leftPageNumber", leftPageNumber);
+        pageInfo.put("rightPageNumber", rightPageNumber);
+        pageInfo.put("offset", offset);
+
+        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPagingWithReportBoard(offset, pageAmount, boardType, searchType, keyword));
+    }
+
 }

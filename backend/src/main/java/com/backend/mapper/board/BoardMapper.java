@@ -230,4 +230,84 @@ public interface BoardMapper {
             """)
     int selectCountReportWithPrimaryKey(BoardReport boardReport);
 
+    @Select("""
+                    SELECT COUNT(*)FROM board_report;
+
+            """)
+    Integer selectAllCountWithReportBoard();
+
+    @Select("""
+            <script>
+                SELECT COUNT(DISTINCT b.id)
+                FROM board b 
+                JOIN member m ON b.member_id = m.id
+                JOIN board_report br ON b.id = br.board_id
+                <where>
+                    <if test="boardType != null and boardType != '전체'">
+                        b.board_type = #{boardType}
+                    </if>
+                    <if test="searchType != null and keyword != null and keyword != ''">
+                        <bind name="pattern" value="'%' + keyword + '%'" />
+                        AND
+                        <choose>
+                            <when test='searchType == "전체"'>
+                                (b.title LIKE #{pattern} OR b.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                            </when>
+                            <when test='searchType == "글"'>
+                                (b.title LIKE #{pattern} OR b.content LIKE #{pattern})
+                            </when>
+                            <when test='searchType == "작성자"'>
+                                m.nickname LIKE #{pattern}
+                            </when>
+                        </choose>
+                    </if>
+                </where>
+            </script>
+            """)
+    Integer selectByBoardTypeWithReportBoard(String boardType, String searchType, String keyword);
+
+    @Select("""
+            <script>
+            SELECT b.id,
+                   b.title,
+                   m.nickname writer,
+                   b.board_type,
+                   b.views,
+                   b.member_id,
+                    COUNT(br.board_id) number_of_reports,
+                   COUNT(DISTINCT f.name) number_of_images,
+                   COUNT(DISTINCT l.member_id) number_of_likes,
+                   COUNT(DISTINCT c.id) number_of_comments
+            FROM board b
+            JOIN member m ON b.member_id = m.id
+            JOIN board_report br ON b.id = br.board_id
+            LEFT JOIN board_file f ON b.id = f.board_id
+            LEFT JOIN board_like l ON b.id = l.board_id
+            LEFT JOIN board_comment c ON b.id = c.board_id
+            <where>
+                <if test="boardType != null and boardType != '전체'">
+                    b.board_type = #{boardType}
+                </if>
+                <if test="searchType != null and keyword != null and keyword != ''">
+                    <bind name="pattern" value="'%' + keyword + '%'" />
+                    AND
+                    <choose>
+                        <when test='searchType == "전체"'>
+                            (b.title LIKE #{pattern} OR b.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                        </when>
+                        <when test='searchType == "글"'>
+                            (b.title LIKE #{pattern} OR b.content LIKE #{pattern})
+                        </when>
+                        <when test='searchType == "작성자"'>
+                            m.nickname LIKE #{pattern}
+                        </when>
+                    </choose>
+                </if>
+            </where>
+            GROUP BY b.id, b.title, m.nickname, b.board_type, b.views, b.member_id
+            ORDER BY b.id DESC
+            LIMIT #{offset}, #{pageAmount}
+            </script>
+            """)
+    List<Board> selectAllPagingWithReportBoard(Integer offset, Integer pageAmount, String boardType, String searchType, String keyword);
 }

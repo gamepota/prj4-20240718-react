@@ -133,7 +133,7 @@ public class BoardController {
                                           @RequestParam(defaultValue = "전체") String searchType,
                                           @RequestParam(defaultValue = "") String keyword) throws Exception {
 //        System.out.println("page = " + page);
-        return service.list(page, pageAmount, offsetReset, session, boardType, searchType, keyword);
+        return service.reportList(page, pageAmount, offsetReset, session, boardType, searchType, keyword);
     }
 }
 

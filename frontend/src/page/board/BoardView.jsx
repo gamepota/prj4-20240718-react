@@ -243,7 +243,7 @@ export function BoardView() {
         isOpen={isOpenReport}
         onClose={onCloseReport}
         boardId={board.id}
-        memberId={board.memberId}
+        memberId={params.memberId}
       />
     </Box>
   );

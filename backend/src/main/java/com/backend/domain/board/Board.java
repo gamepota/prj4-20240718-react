@@ -16,6 +16,7 @@ public class Board {
     private Integer views;
     private String boardType;
 
+    private Integer numberOfReports;
     private Integer numberOfImages;
     private Integer numberOfComments;
     private Integer numberOfLikes;

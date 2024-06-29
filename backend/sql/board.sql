@@ -141,8 +141,18 @@ CREATE TABLE board_report
     PRIMARY KEY (board_id, member_id)
 
 );
+-- 1. reportType 열 추가
+ALTER TABLE board_report
+    ADD COLUMN reportType VARCHAR(30);
+
+-- 2. 기존 행들의 reportType을 임의의 값(예: 1)으로 설정
+UPDATE board_report
+SET reportType = '기타';
+
+
+
 SELECT *
-FROM board_report
+FROM board_report;
 
 
 
