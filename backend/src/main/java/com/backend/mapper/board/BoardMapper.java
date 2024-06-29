@@ -1,6 +1,7 @@
 package com.backend.mapper.board;
 
 import com.backend.domain.board.Board;
+import com.backend.domain.board.BoardReport;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -217,5 +218,9 @@ public interface BoardMapper {
             """)
     int deleteLikeByBoardId(Integer id);
 
-
+    @Insert("""
+                INSERT INTO board_report (board_id,member_id,content)
+                VALUES (#{boardId},#{memberId},#{content})
+            """)
+    int insertReport(BoardReport boardReport);
 }

@@ -3,6 +3,7 @@ package com.backend.service.board;
 
 import com.backend.domain.board.Board;
 import com.backend.domain.board.BoardFile;
+import com.backend.domain.board.BoardReport;
 import com.backend.mapper.board.BoardCommentMapper;
 import com.backend.mapper.board.BoardMapper;
 import jakarta.servlet.http.HttpSession;
@@ -276,5 +277,18 @@ public class BoardService {
         return result;
     }
 
+
+    public boolean isLoggedIn(Integer memberId) {
+        return memberId != null && memberId > 0;
+    }
+
+    public void addReport(Map<String, Object> req) {
+        BoardReport boardReport = new BoardReport();
+        boardReport.setBoardId((Integer) req.get("boardId"));
+        boardReport.setMemberId((Integer) req.get("memberId"));
+        boardReport.setContent((String) req.get("reason"));
+
+        mapper.insertReport(boardReport);
+    }
 
 }

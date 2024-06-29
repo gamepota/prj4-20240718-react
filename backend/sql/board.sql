@@ -140,7 +140,10 @@ CREATE TABLE board_report
     content   VARCHAR(500) NOT NULL,
     PRIMARY KEY (board_id, member_id)
 
-)
+);
+SELECT *
+FROM board_report
+
 
 
 SELECT *

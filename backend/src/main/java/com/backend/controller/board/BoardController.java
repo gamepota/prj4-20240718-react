@@ -110,8 +110,14 @@ public class BoardController {
     }
 
     @PostMapping("/report")
-    public void report(@RequestBody Map<String, Object> req) {
+    public ResponseEntity report(@RequestBody Map<String, Object> req) {
         System.out.println("req = " + req);
+        if (service.isLoggedIn((Integer) req.get("memberId"))) {
+            service.addReport(req);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
 }
