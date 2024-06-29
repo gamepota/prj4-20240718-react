@@ -61,6 +61,29 @@ public class MemberService {
         return memberMapper.selectByNickname(nickname);
     }
 
+    // MemberEdit
+    public Member getById(Integer id) {
+        Member member = memberMapper.selectByMemberId(id);
+        if (member == null) {
+            return null;
+        }
+        Profile profile = profileMapper.selectProfileByMemberId(id);
+        if (profile != null) {
+            String imageUrl = srcPrefix + profile.getUploadPath();
+            member.setImageUrl(imageUrl);
+        }
+        return member;
+    }
+
+    public boolean update(Integer id, Member member) {
+        member.setId(id);
+        // 비밀번호가 변경된 경우만 암호화
+        if (member.getPassword() != null && !member.getPassword().isEmpty()) {
+            member.setPassword(passwordEncoder.encode(member.getPassword()));
+        }
+        return memberMapper.update(member) > 0;
+    }
+
     // MemberPage
     @Transactional
     public void saveProfileImage(Integer memberId, MultipartFile file) throws IOException {
@@ -68,7 +91,7 @@ public class MemberService {
         String key = "profile/" + memberId + "/" + fileName;
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
-                .key(key)
+                .key("prj3/" + key)
                 .acl(ObjectCannedACL.PUBLIC_READ)
                 .build();
 
@@ -100,20 +123,6 @@ public class MemberService {
 
     public String getSrcPrefix() {
         return srcPrefix;
-    }
-
-    // MemberEdit
-    public Member getById(Integer id) {
-        return memberMapper.selectByMemberId(id);
-    }
-
-    public boolean update(Integer id, Member member) {
-        member.setId(id);
-        // 비밀번호가 변경된 경우만 암호화
-        if (member.getPassword() != null && !member.getPassword().isEmpty()) {
-            member.setPassword(passwordEncoder.encode(member.getPassword()));
-        }
-        return memberMapper.update(member) > 0;
     }
 
     // MemberDelete

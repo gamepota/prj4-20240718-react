@@ -48,10 +48,7 @@ public class MemberController {
     // MemberEdit
     @GetMapping("/{id}")
     public ResponseEntity<Member> getById(@PathVariable Integer id) {
-        Member member = service.getById(id);  // 서비스에서 회원 정보를 조회
-        Profile profile = service.getProfileByMemberId(id); // 저장된 프로필 가져오기
-        String imageUrl = service.getSrcPrefix() + profile.getUploadPath(); // 프로필 이미지 URL 생성
-        member.setImageUrl(imageUrl);
+        Member member = service.getById(id);
         if (member == null) {
             return ResponseEntity.notFound().build();
         }
@@ -93,7 +90,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("프로필 이미지 삭제 실패");
         }
     }
-    
+
     // MemberDelete
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Integer id, @RequestParam(required = false) String password, @RequestHeader(value = "memberInfoId") Integer memberInfoId) {
