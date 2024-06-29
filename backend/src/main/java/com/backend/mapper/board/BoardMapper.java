@@ -274,6 +274,7 @@ public interface BoardMapper {
                    b.board_type,
                    b.views,
                    b.member_id,
+                    br.member_id repoterId,
                     COUNT(br.board_id) number_of_reports,
                    COUNT(DISTINCT f.name) number_of_images,
                    COUNT(DISTINCT l.member_id) number_of_likes,
@@ -310,4 +311,11 @@ public interface BoardMapper {
             </script>
             """)
     List<Board> selectAllPagingWithReportBoard(Integer offset, Integer pageAmount, String boardType, String searchType, String keyword);
+
+
+    @Select("""
+            SELECT * FROM board_report
+            WHERE board_id = #{boardId} 
+            """)
+    Board selectBoardById(Integer boardId);
 }

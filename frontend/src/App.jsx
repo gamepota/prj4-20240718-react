@@ -28,6 +28,7 @@ import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/D
 import { DiaryComment } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
 import KakaoMap from "./KakaoMap.jsx";
 import { BoardReportList } from "./page/board/BoardReportList.jsx";
+import { BoardReportListContents } from "./page/board/BoardReportListContents.jsx";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
       { path: "board/write", element: <BoardWrite /> }, //게시판 글쓰기
       { path: "board/list", element: <BoardList /> }, //게시판 목록
       { path: "board/list/report", element: <BoardReportList /> }, //신고된 게시물 목록
+      {
+        path: "board/list/report/content",
+        element: <BoardReportListContents />,
+      }, //신고 내용
       { path: "board/edit/:id", element: <BoardEdit /> }, //게시글 수정
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
       { path: "place/map", element: <PlaceMap /> }, // 지도 보기

@@ -135,5 +135,11 @@ public class BoardController {
 //        System.out.println("page = " + page);
         return service.reportList(page, pageAmount, offsetReset, session, boardType, searchType, keyword);
     }
+
+    @GetMapping("/report/list/content")
+    public ResponseEntity<Map<String, Object>> reportContent(@RequestParam Integer boardId, @RequestParam Integer memberId) {
+        Map<String, Object> response = service.reportContent(boardId, memberId);
+        return ResponseEntity.ok(response);
+    }
 }
 

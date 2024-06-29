@@ -15,6 +15,8 @@ public class Board {
     private LocalDateTime inserted;
     private Integer views;
     private String boardType;
+    private String repoterId;
+    private String repoterNickname;
 
     private Integer numberOfReports;
     private Integer numberOfImages;

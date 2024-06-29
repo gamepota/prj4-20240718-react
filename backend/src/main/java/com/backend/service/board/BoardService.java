@@ -374,4 +374,18 @@ public class BoardService {
         return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPagingWithReportBoard(offset, pageAmount, boardType, searchType, keyword));
     }
 
+    public Map<String, Object> reportContent(Integer boardId, Integer memberId) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 게시글 정보 조회
+        Board board = mapper.selectBoardById(boardId);
+
+
+        // 신고 내용 조회
+
+        // 응답 데이터 구성
+        response.put("retpoterId", board.getRepoterId());
+        response.put("boardId", board.getId());
+        return response;
+    }
 }

@@ -247,8 +247,19 @@ export function BoardReportList() {
             <Tbody>
               {boardList.map((board) => (
                 <Tr key={board.id}>
-                  <Td textAlign="center">
-                    <span> {board.numberOfReports}</span>
+                  <Td
+                    textAlign="center"
+                    onClick={() =>
+                      navigate("content", {
+                        state: {
+                          boardId: board.id,
+                          memberId: board.repoterId,
+                        },
+                      })
+                    } // 절대 경로 사용
+                    style={{ cursor: "pointer" }} // 커서 스타일 추가
+                  >
+                    <span>{board.numberOfReports}</span>
                   </Td>
                   <Td textAlign="center">
                     <span
