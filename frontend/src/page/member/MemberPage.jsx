@@ -73,10 +73,26 @@ export function MemberPage() {
   }
 
   // 프로필 이미지 삭제
-  function handleProfileImageDelete() {
-    setProfileImage(null);
-    setImageFile(null);
-    setHasProfileImage(false);
+  async function handleProfileImageDelete() {
+    try {
+      await axios.delete(`/api/member/profile/${id}`);
+      setProfileImage(null);
+      setImageFile(null);
+      setHasProfileImage(false);
+      toast({
+        title: "프로필 이미지가 삭제되었습니다.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (err) {
+      Swal.fire({
+        title: "프로필 이미지 삭제 실패",
+        text: "오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
+        icon: "error",
+        confirmButtonText: "확인",
+      });
+    }
   }
 
   // 프로필 이미지 저장
