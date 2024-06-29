@@ -133,6 +133,14 @@ CREATE TABLE board_comment
     comment   VARCHAR(500) NOT NULL,
     inserted  DATETIME     NOT NULL DEFAULT NOW()
 );
+CREATE TABLE board_report
+(
+    board_id  INT          NOT NULL REFERENCES board (id) ON DELETE CASCADE,
+    member_id INT          NOT NULL REFERENCES member (id) ON DELETE CASCADE,
+    content   VARCHAR(500) NOT NULL,
+    PRIMARY KEY (board_id, member_id)
+
+)
 
 
 SELECT *

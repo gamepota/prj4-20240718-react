@@ -108,5 +108,11 @@ public class BoardController {
 
         return ResponseEntity.ok(service.like(req));
     }
+
+    @PostMapping("/report")
+    public void report(@RequestBody Map<String, Object> req) {
+        System.out.println("req = " + req);
+    }
+
 }
 

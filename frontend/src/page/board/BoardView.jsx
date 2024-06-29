@@ -197,7 +197,22 @@ export function BoardView() {
           </Box>
         )}
         <Spacer />
-        <Button onClick={onOpenReport}>신고</Button>
+        <Button
+          onClick={() => {
+            if (!memberInfo) {
+              toast({
+                description: "로그인 해주시길 바랍니다",
+                duration: 5000,
+                position: "top",
+                isClosable: "true",
+              });
+            } else {
+              onOpenReport();
+            }
+          }}
+        >
+          신고
+        </Button>
         {isLikeProcessing && (
           <Box ml={2}>
             <Spinner size="sm" />
