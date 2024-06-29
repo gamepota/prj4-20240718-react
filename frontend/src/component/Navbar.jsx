@@ -175,9 +175,20 @@ export function Navbar() {
               >
                 이벤트/모임 게시판
               </MenuItem>
+              {memberInfo && memberInfo.id == 1 && (
+                <MenuItem
+                  onClick={() => {
+                    navigate("/board/list/report");
+                    onClose();
+                  }}
+                >
+                  신고 게시판
+                </MenuItem>
+              )}
             </MenuList>
           </Menu>
         </Box>
+
         <Box
           _hover={{ cursor: "pointer", bgColor: "gray.200" }}
           p={2}

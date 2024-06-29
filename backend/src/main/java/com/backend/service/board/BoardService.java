@@ -282,13 +282,20 @@ public class BoardService {
         return memberId != null && memberId > 0;
     }
 
-    public void addReport(Map<String, Object> req) {
+    public boolean addReport(Map<String, Object> req) {
         BoardReport boardReport = new BoardReport();
         boardReport.setBoardId((Integer) req.get("boardId"));
         boardReport.setMemberId((Integer) req.get("memberId"));
         boardReport.setContent((String) req.get("reason"));
+        //신고 안 했으면
+        int count = mapper.selectCountReportWithPrimaryKey(boardReport);
+        if (count == 0) {
+            mapper.insertReport(boardReport);
+            return true;
+        }//이미 신고 했으면
+        else {
+            return false;
 
-        mapper.insertReport(boardReport);
+        }
     }
-
 }

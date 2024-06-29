@@ -113,12 +113,27 @@ public class BoardController {
     public ResponseEntity report(@RequestBody Map<String, Object> req) {
         System.out.println("req = " + req);
         if (service.isLoggedIn((Integer) req.get("memberId"))) {
-            service.addReport(req);
-            return ResponseEntity.ok().build();
+            if (service.addReport(req)) {
+                service.addReport(req);
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
+    @GetMapping("/report/list")
+    public Map<String, Object> reportList(@RequestParam(defaultValue = "1") Integer page,
+                                          @RequestParam(defaultValue = "30") Integer pageAmount,
+                                          @RequestParam(defaultValue = "false") Boolean offsetReset,
+                                          HttpSession session,
+                                          @RequestParam(defaultValue = "전체") String boardType,
+                                          @RequestParam(defaultValue = "전체") String searchType,
+                                          @RequestParam(defaultValue = "") String keyword) throws Exception {
+//        System.out.println("page = " + page);
+        return service.list(page, pageAmount, offsetReset, session, boardType, searchType, keyword);
+    }
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import { createBrowserRouter, RouterProvider, useLocation } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./page/Home.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
@@ -27,6 +27,7 @@ import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
 import { DiaryComment } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
 import KakaoMap from "./KakaoMap.jsx";
+import { BoardReportList } from "./page/board/BoardReportList.jsx";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,7 @@ const router = createBrowserRouter([
       { path: "member/edit/:id", element: <MemberEdit /> }, // 회원 정보 수정 및 탈퇴
       { path: "board/write", element: <BoardWrite /> }, //게시판 글쓰기
       { path: "board/list", element: <BoardList /> }, //게시판 목록
+      { path: "board/list/report", element: <BoardReportList /> }, //신고된 게시물 목록
       { path: "board/edit/:id", element: <BoardEdit /> }, //게시글 수정
       { path: "board/:id", element: <BoardView /> }, //게시글 보기
       { path: "place/map", element: <PlaceMap /> }, // 지도 보기

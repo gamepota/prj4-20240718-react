@@ -223,4 +223,11 @@ public interface BoardMapper {
                 VALUES (#{boardId},#{memberId},#{content})
             """)
     int insertReport(BoardReport boardReport);
+
+    @Select("""
+                SELECT COUNT(*) FROM board_report
+                WHERE board_id=#{boardId} AND member_id=#{memberId}
+            """)
+    int selectCountReportWithPrimaryKey(BoardReport boardReport);
+
 }
