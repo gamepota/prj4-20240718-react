@@ -32,6 +32,7 @@ export function BoardList() {
   const [boardType, setBoardType] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchType, setSearchType] = useState("전체");
+  const [selectedBoardId, setSelectedBoardId] = useState(null); // 새로운 상태 추가
   const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
@@ -90,7 +91,10 @@ export function BoardList() {
     axios
       .get(`/api/board/${boardId}`)
       .then(() => {})
-      .finally(navigate(`/board/${boardId}`));
+      .finally(() => {
+        setSelectedBoardId(boardId);
+        navigate(`/board/${boardId}`);
+      });
   }
   function handleSearchClick() {
     searchParams.set("searchType", searchType);
@@ -260,11 +264,14 @@ export function BoardList() {
                   </Td>
                   <Td textAlign="center">{board.id}</Td>
                   <Td
-                    onClick={() => handleBoardClick(board.id)}
+                    onClick={() => {
+                      handleBoardClick(board.id);
+                    }}
                     cursor="pointer"
                     _hover={{
                       bgColor: "gray.200",
                     }}
+                    bg={board.id === selectedBoardId ? "gray.200" : ""}
                   >
                     {board.title}
                     {board.numberOfImages > 0 && (
