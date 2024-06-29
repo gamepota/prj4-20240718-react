@@ -11,7 +11,7 @@ public interface ProfileMapper {
     @Insert("""
             INSERT INTO profile (member_id, file_name, upload_path) 
             VALUES (#{memberId}, #{fileName}, #{uploadPath})
-                """)
+            """)
     int insertProfile(Profile profile);
 
     @Select("""

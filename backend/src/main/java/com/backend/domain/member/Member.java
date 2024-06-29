@@ -22,4 +22,5 @@ public class Member {
     private LocalDateTime inserted;
     private Role role;
     private String tokenRole;
+    private String imageUrl;
 }

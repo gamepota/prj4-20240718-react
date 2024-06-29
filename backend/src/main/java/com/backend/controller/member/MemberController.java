@@ -1,6 +1,7 @@
 package com.backend.controller.member;
 
 import com.backend.domain.member.Member;
+import com.backend.domain.member.Profile;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,31 +45,13 @@ public class MemberController {
         return ResponseEntity.ok(nickname);
     }
 
-    // MemberPage
-    @PostMapping("/profile/{id}")
-    public ResponseEntity<String> uploadProfileImage(@PathVariable Integer id, @RequestParam("profileImage") MultipartFile file) {
-        try {
-            service.saveProfileImage(id, file);
-            return ResponseEntity.ok("프로필 이미지가 저장되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("프로필 이미지 저장 실패");
-        }
-    }
-
-    @DeleteMapping("/profile/{id}")
-    public ResponseEntity<String> deleteProfileImage(@PathVariable Integer id) {
-        try {
-            service.deleteProfileByMemberId(id);
-            return ResponseEntity.ok("프로필 이미지 삭제 성공");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("프로필 이미지 삭제 실패");
-        }
-    }
-
     // MemberEdit
     @GetMapping("/{id}")
     public ResponseEntity<Member> getById(@PathVariable Integer id) {
         Member member = service.getById(id);  // 서비스에서 회원 정보를 조회
+        Profile profile = service.getProfileByMemberId(id); // 저장된 프로필 가져오기
+        String imageUrl = service.getSrcPrefix() + profile.getUploadPath(); // 프로필 이미지 URL 생성
+        member.setImageUrl(imageUrl);
         if (member == null) {
             return ResponseEntity.notFound().build();
         }
@@ -84,6 +67,33 @@ public class MemberController {
         }
     }
 
+    // MemberPage
+    @PostMapping("/profile/{id}")
+    public ResponseEntity<Map<String, String>> uploadProfileImage(@PathVariable Integer id, @RequestParam("profileImage") MultipartFile file) {
+        try {
+            service.saveProfileImage(id, file);
+            Profile profile = service.getProfileByMemberId(id); // 저장된 프로필 가져오기
+            String imageUrl = service.getSrcPrefix() + profile.getUploadPath(); // 프로필 이미지 URL 생성
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "프로필 이미지가 저장되었습니다.");
+            response.put("profileImage", imageUrl); // 저장된 프로필 이미지 URL 추가
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "프로필 이미지 저장 실패"));
+        }
+    }
+
+    @DeleteMapping("/profile/{id}")
+    public ResponseEntity<String> deleteProfileImage(@PathVariable Integer id) {
+        try {
+            service.deleteProfileByMemberId(id);
+            return ResponseEntity.ok("프로필 이미지 삭제 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("프로필 이미지 삭제 실패");
+        }
+    }
+    
     // MemberDelete
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Integer id, @RequestParam(required = false) String password, @RequestHeader(value = "memberInfoId") Integer memberInfoId) {

@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -61,10 +62,10 @@ public class MemberService {
     }
 
     // MemberPage
-
+    @Transactional
     public void saveProfileImage(Integer memberId, MultipartFile file) throws IOException {
         String fileName = memberId + "_" + file.getOriginalFilename();
-        String key = "prj3/" + "profile/" + memberId + "/" + fileName;
+        String key = "profile/" + memberId + "/" + fileName;
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
@@ -78,6 +79,11 @@ public class MemberService {
         profile.setFileName(fileName);
         profile.setUploadPath(key);
 
+        Profile profile1 = profileMapper.selectProfileByMemberId(memberId);
+        if (profile1 != null) {
+            profileMapper.deleteProfileByMemberId(memberId);
+        }
+
         profileMapper.insertProfile(profile);
     }
 
@@ -90,6 +96,10 @@ public class MemberService {
         if (profile != null) {
             profileMapper.deleteProfileByMemberId(memberId);
         }
+    }
+
+    public String getSrcPrefix() {
+        return srcPrefix;
     }
 
     // MemberEdit
