@@ -40,8 +40,11 @@ export function MemberPage() {
         const memberData = res.data;
         setUsername(memberData.username);
         setNickname(memberData.nickname);
-        setProfileImage(memberData.profileImage); // 프로필 이미지 URL 설정
-        setHasProfileImage(!!memberData.profileImage);
+        setProfileImage(memberData.imageUrl);
+        if (memberData.profileImage) {
+          setProfileImage(memberData.profileImage); // 프로필 이미지 URL 설정
+          setHasProfileImage(true);
+        }
       } catch (err) {
         Swal.fire({
           title: "회원 정보를 불러오는 데 실패했습니다.",
@@ -76,38 +79,36 @@ export function MemberPage() {
   }
 
   // 프로필 이미지 저장
-  function handleSaveProfileImage() {
+  async function handleSaveProfileImage() {
     if (imageFile) {
       const formData = new FormData();
       formData.append("profileImage", imageFile);
 
-      axios
-        .post(`/api/member/profile/${id}`, formData, {
+      try {
+        const res = await axios.post(`/api/member/profile/${id}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        })
-        .then((res) => {
-          toast({
-            title: res.data.message,
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          });
-
-          // 프로필 이미지 업데이트
-          setProfileImage(res.data.profileImage); // 업데이트된 프로필 이미지 URL 설정
-          setHasProfileImage(true);
-          setImageFile(null);
-        })
-        .catch((err) => {
-          Swal.fire({
-            title: "프로필 이미지 저장 실패",
-            text: "오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
-            icon: "error",
-            confirmButtonText: "확인",
-          });
         });
+        toast({
+          title: res.data.message,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+
+        // 프로필 이미지 업데이트
+        setProfileImage(res.data.profileImage); // 업데이트된 프로필 이미지 URL 설정
+        setHasProfileImage(true);
+        setImageFile(null);
+      } catch (err) {
+        Swal.fire({
+          title: "프로필 이미지 저장 실패",
+          text: "오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
+          icon: "error",
+          confirmButtonText: "확인",
+        });
+      }
     }
   }
 
