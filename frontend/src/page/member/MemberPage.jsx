@@ -40,7 +40,7 @@ export function MemberPage() {
         const memberData = res.data;
         setUsername(memberData.username);
         setNickname(memberData.nickname);
-        setProfileImage(memberData.profileImage);
+        setProfileImage(memberData.profileImage); // 프로필 이미지 URL 설정
         setHasProfileImage(!!memberData.profileImage);
       } catch (err) {
         Swal.fire({
@@ -73,6 +73,42 @@ export function MemberPage() {
     setProfileImage(null);
     setImageFile(null);
     setHasProfileImage(false);
+  }
+
+  // 프로필 이미지 저장
+  function handleSaveProfileImage() {
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append("profileImage", imageFile);
+
+      axios
+        .post(`/api/member/profile/${id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          toast({
+            title: res.data.message,
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+
+          // 프로필 이미지 업데이트
+          setProfileImage(res.data.profileImage); // 업데이트된 프로필 이미지 URL 설정
+          setHasProfileImage(true);
+          setImageFile(null);
+        })
+        .catch((err) => {
+          Swal.fire({
+            title: "프로필 이미지 저장 실패",
+            text: "오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
+            icon: "error",
+            confirmButtonText: "확인",
+          });
+        });
+    }
   }
 
   // 회원 정보 수정 페이지로 이동
@@ -139,42 +175,6 @@ export function MemberPage() {
     }
   }
 
-  // 프로필 이미지 저장
-  function handleSaveProfileImage() {
-    if (imageFile) {
-      const formData = new FormData();
-      formData.append("profileImage", imageFile);
-
-      axios
-        .post(`/api/member/profile/${id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          toast({
-            title: "프로필 이미지가 저장되었습니다.",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          });
-
-          // 프로필 이미지 업데이트
-          setProfileImage(res.data.profileImage);
-          setHasProfileImage(true);
-          setImageFile(null);
-        })
-        .catch((err) => {
-          Swal.fire({
-            title: "프로필 이미지 저장 실패",
-            text: "오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
-            icon: "error",
-            confirmButtonText: "확인",
-          });
-        });
-    }
-  }
-
   return (
     <Center>
       <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
@@ -187,7 +187,6 @@ export function MemberPage() {
               <>
                 <Image
                   src={profileImage}
-                  alt="프로필 이미지"
                   boxSize="150px"
                   borderRadius="full"
                   mx="auto"
