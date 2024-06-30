@@ -18,6 +18,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
@@ -38,6 +39,7 @@ export function DiaryBoardView() {
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
   const params = memberId ? { memberId } : {};
   const diaryId = generateDiaryId(memberInfo.id);
+
   useEffect(() => {
     axios
       .get(`/api/diaryBoard/${id}`)
@@ -91,65 +93,75 @@ export function DiaryBoardView() {
   }
 
   return (
-    <Box>
-      <Box>{diaryBoard.id}번째 일기</Box>
-      <Box>
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>제목</FormLabel>
-            <Input value={diaryBoard.title} readOnly />
-          </FormControl>
-        </Box>
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>본문</FormLabel>
-            <Textarea value={diaryBoard.content} readOnly />
-          </FormControl>
-        </Box>
-        <Box mb={7}>
-          {diaryBoard.fileList &&
-            diaryBoard.fileList.map((file) => (
-              <Card m={3} key={file.name}>
-                <CardBody>
-                  <Image w={"100%"} src={file.src} />
-                </CardBody>
-              </Card>
-            ))}
-        </Box>
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>작성자</FormLabel>
-            <Input value={diaryBoard.writer} readOnly />
-          </FormControl>
-        </Box>
-        <Box mb={7}>
-          <FormControl>작성일시</FormControl>
-          <Input type="datetime-local" value={diaryBoard.inserted} readOnly />
-        </Box>
-        <Flex mb={7} gap={2}>
-          <Button onClick={handleDiaryEdit} colorScheme="purple">
-            수정
-          </Button>
-          <Button colorScheme="red" onClick={onOpen}>
-            삭제
-          </Button>
-        </Flex>
+    <Box maxW="800px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">
+      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+        <Text fontSize="2xl" fontWeight="bold">
+          {diaryBoard.id}번째 일기
+        </Text>
+        {isLoggedIn && (
+          <Flex gap={2}>
+            <Button onClick={handleDiaryEdit} colorScheme="purple">
+              수정
+            </Button>
+            <Button colorScheme="red" onClick={onOpen}>
+              삭제
+            </Button>
+          </Flex>
+        )}
+      </Flex>
 
-        <Box mb={20}></Box>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>게시물 삭제</ModalHeader>
-            <ModalBody>삭제하시겠습니까?</ModalBody>
-            <ModalFooter>
-              <Button onClick={onClose}>취소</Button>
-              <Button colorScheme="red" onClick={handleClickRemove}>
-                확인
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+      <Box mb={6}>
+        <FormControl>
+          <FormLabel fontSize="lg" fontWeight="bold">제목</FormLabel>
+          <Input value={diaryBoard.title} readOnly bg="gray.50" />
+        </FormControl>
       </Box>
+
+      <Box mb={6}>
+        <FormControl>
+          <FormLabel fontSize="lg" fontWeight="bold">본문</FormLabel>
+          <Textarea value={diaryBoard.content} readOnly bg="gray.50" />
+        </FormControl>
+      </Box>
+
+      <Box mb={6}>
+        {diaryBoard.fileList &&
+          diaryBoard.fileList.map((file) => (
+            <Card m={3} key={file.name} boxShadow="md">
+              <CardBody>
+                <Image w="100%" src={file.src} borderRadius="md" />
+              </CardBody>
+            </Card>
+          ))}
+      </Box>
+
+      <Box mb={6}>
+        <FormControl>
+          <FormLabel fontSize="lg" fontWeight="bold">작성자</FormLabel>
+          <Input value={diaryBoard.writer} readOnly bg="gray.50" />
+        </FormControl>
+      </Box>
+
+      <Box mb={6}>
+        <FormControl>
+          <FormLabel fontSize="lg" fontWeight="bold">작성일시</FormLabel>
+          <Input type="datetime-local" value={diaryBoard.inserted} readOnly bg="gray.50" />
+        </FormControl>
+      </Box>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>게시물 삭제</ModalHeader>
+          <ModalBody>삭제하시겠습니까?</ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>취소</Button>
+            <Button colorScheme="red" onClick={handleClickRemove}>
+              확인
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

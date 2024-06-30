@@ -4,7 +4,7 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Input,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -54,21 +54,15 @@ export function DiaryCommentWrite({ onCommentAdded }) {
 
   return (
     <Box>
-      <Box mb={10}>방명록 작성</Box>
       <Box>
-        <FormControl>
-          <FormLabel>작성자</FormLabel>
-          <Input value={nickname} readOnly />
-        </FormControl>
+        <Text fontWeight="bold" fontSize="large">{nickname}님!</Text>
       </Box>
-      <Box mb={7}>
-        <FormControl>
-          <FormLabel>내용</FormLabel>
+      <Box mb={2}>
           <Textarea
+            placeholder="방명록을 남겨보세요"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-        </FormControl>
       </Box>
       <Button
         isLoading={loading}

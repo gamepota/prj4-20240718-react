@@ -10,6 +10,7 @@ import {
   Input,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -38,7 +39,7 @@ export function BoardEdit() {
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
   const params = memberId ? { memberId } : {};
 
@@ -46,23 +47,17 @@ export function BoardEdit() {
     axios.get(`/api/board/${id}`, { params }).then((res) => {
       setBoard(res.data.board);
     });
-  }, []);
+  }, [id, params]);
 
   useEffect(() => {
     if (board) {
-      if (
-        board.title.trim().length === 0 ||
-        board.content.trim().length === 0
-      ) {
-        setDisableSaveButton(true);
-      } else {
-        setDisableSaveButton(false);
-      }
+      setDisableSaveButton(
+        board.title.trim().length === 0 || board.content.trim().length === 0
+      );
     }
   }, [board]);
 
-  //파일 업로드 crud완료...
-  function handleClickSave() {
+  const handleClickSave = () => {
     axios
       .putForm(`/api/board/edit`, {
         id: board.id,
@@ -82,67 +77,54 @@ export function BoardEdit() {
         navigate(`/board/${id}`);
       })
       .catch((err) => {
-        if (err.response.status === 403) {
-          toast({
-            status: "error",
-            description: "권한이 없답니다",
-            duration: 500,
-            position: "top",
-          });
-        } else {
-          toast({
-            status: "error",
-            description: "다른 오류가 발생했습니다",
-            duration: 500,
-            position: "top",
-          });
-        }
+        const errorMessage =
+          err.response.status === 403 ? "권한이 없답니다" : "다른 오류가 발생했습니다";
+        toast({
+          status: "error",
+          description: errorMessage,
+          duration: 500,
+          position: "top",
+        });
       })
-      .finally(() => onClose());
-  }
+      .finally(onClose);
+  };
 
-  //useEffect가 실행될때까지 스피너 돌아감..
   if (board === null) {
-    return <Spinner />;
-  }
-
-  const fileNameList = [];
-  for (let addFile of addFileList) {
-    let duplicate = false;
-    for (let file of board.fileList) {
-      if (file.name === addFile.name) {
-        duplicate = true;
-        break;
-      }
-    }
-    fileNameList.push(
-      <li key={addFile.name}>
-        {addFile.name}
-        {duplicate && <Badge colorScheme="red">override</Badge>}
-      </li>,
+    return (
+      <Flex justify="center" align="center" h="100vh">
+        <Spinner size="xl" />
+      </Flex>
     );
   }
 
-  function handleRemoveSwitchChange(name, checked) {
-    if (checked) {
-      setRemoveFileList([...removeFileList, name]);
-    } else {
-      setRemoveFileList(removeFileList.filter((item) => item !== name));
-    }
-    return undefined;
-  }
+  const fileNameList = addFileList.map((file) => {
+    const duplicate = board.fileList.some((boardFile) => boardFile.name === file.name);
+    return (
+      <li key={file.name}>
+        {file.name}
+        {duplicate && <Badge colorScheme="red">override</Badge>}
+      </li>
+    );
+  });
 
-  function handleChange(e) {
+  const handleRemoveSwitchChange = (name, checked) => {
+    setRemoveFileList((prevList) =>
+      checked ? [...prevList, name] : prevList.filter((item) => item !== name)
+    );
+  };
+
+  const handleChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     let totalSize = 0;
     let hasOversizedFile = false;
 
     selectedFiles.forEach((file) => {
       if (file.size > 100 * 1024 * 1024) {
-        hasOversizedFile = false;
+        hasOversizedFile = true;
       }
       totalSize += file.size;
     });
+
     if (totalSize > 100 * 1024 * 1024 || hasOversizedFile) {
       setDisableSaveButton(true);
       setInvisibledText(false);
@@ -151,105 +133,87 @@ export function BoardEdit() {
       setInvisibledText(true);
       setAddFileList(selectedFiles);
     }
+
     if (board.title.trim().length === 0 || board.content.trim().length === 0) {
       setDisableSaveButton(true);
     } else {
       setDisableSaveButton(false);
     }
-  }
+  };
 
   return (
-    <Box>
-      <Box>{id}번 게시물 수정</Box>
+    <Box maxW="800px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10} bg="gray.50">
+      <Text fontSize="2xl" fontWeight="bold" mb={6}>{id}번 게시물 수정</Text>
       <Box>
-        <FormControl>
+        <FormControl mb={4}>
           <FormLabel>제목</FormLabel>
           <Input
             defaultValue={board.title}
             onChange={(e) => setBoard({ ...board, title: e.target.value })}
           />
         </FormControl>
-      </Box>
-      <Box>
-        <FormControl>
+        <FormControl mb={4}>
           <FormLabel>본문</FormLabel>
           <Textarea
             defaultValue={board.content}
             onChange={(e) => setBoard({ ...board, content: e.target.value })}
           />
         </FormControl>
-      </Box>
-      <Box>
-        {board.fileList &&
-          board.fileList.map((file) => (
-            <Box border={"2px solid black"} m={3} key={file.name}>
-              <Flex>
-                <FontAwesomeIcon icon={faTrashCan} />
-                <Switch
-                  onChange={(e) =>
-                    handleRemoveSwitchChange(file.name, e.target.checked)
-                  }
-                />
-                <Text>{file.name}</Text>
-              </Flex>
-              <Box>
-                <Image
-                  sx={
-                    removeFileList.includes(file.name)
-                      ? { filter: "blur(8px)" }
-                      : {}
-                  }
-                  src={file.src}
-                />
+        <Box mb={4}>
+          {board.fileList &&
+            board.fileList.map((file) => (
+              <Box border="1px solid gray" borderRadius="md" p={3} mb={3} key={file.name}>
+                <Flex justify="space-between" align="center">
+                  <Flex align="center">
+                    <FontAwesomeIcon icon={faTrashCan} style={{ marginRight: "8px" }} />
+                    <Switch
+                      onChange={(e) => handleRemoveSwitchChange(file.name, e.target.checked)}
+                    />
+                    <Text ml={3}>{file.name}</Text>
+                  </Flex>
+                  <Box>
+                    <Image
+                      boxSize="100px"
+                      objectFit="cover"
+                      src={file.src}
+                      alt={file.name}
+                      borderRadius="md"
+                      style={
+                        removeFileList.includes(file.name) ? { filter: "blur(8px)" } : {}
+                      }
+                    />
+                  </Box>
+                </Flex>
               </Box>
-            </Box>
-          ))}
-      </Box>
-      <Box>
-        <FormControl>
+            ))}
+        </Box>
+        <FormControl mb={4}>
           <FormLabel>파일</FormLabel>
-          <Input
-            multiple
-            type="file"
-            accept="image/*"
-            onChange={handleChange}
-          />
+          <Input multiple type="file" accept="image/*" onChange={handleChange} />
           {!invisibledText && (
             <FormHelperText color="red.500">
               총 용량은 100MB, 한 파일은 100MB를 초과할 수 없습니다.
             </FormHelperText>
           )}
         </FormControl>
-      </Box>
-      <Box>
-        <ul>{fileNameList}</ul>
-      </Box>
-      <Box>
-        <FormControl>
-          <FormLabel>작성자</FormLabel>
-          <Input
-            defaultValue={board.writer}
-            onChange={(e) => setBoard({ ...board, writer: e.target.value })}
-          />
-        </FormControl>
-      </Box>
-      <Box>
-        <Button
-          colorScheme={"blue"}
-          onClick={onOpen}
-          isDisabled={disableSaveButton}
-        >
-          수정
-        </Button>
+        <Box mb={4}>
+          <ul>{fileNameList}</ul>
+        </Box>
+        <Flex justify="flex-end" gap={3}>
+          <Button colorScheme="blue" onClick={onOpen} isDisabled={disableSaveButton}>
+            수정
+          </Button>
+        </Flex>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader></ModalHeader>
-          <ModalBody>수정하시겠습니까?</ModalBody>
+          <ModalHeader>게시물 수정</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>정말로 수정하시겠습니까?</ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>취소</Button>
-            <Button onClick={handleClickSave} colorScheme={"blue"}>
+            <Button onClick={handleClickSave} colorScheme="blue">
               확인
             </Button>
           </ModalFooter>

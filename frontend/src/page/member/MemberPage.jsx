@@ -9,6 +9,7 @@ import {
   Icon,
   Image,
   Input,
+  Text,
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -176,8 +177,8 @@ export function MemberPage() {
   }
 
   return (
-    <Center>
-      <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
+    <Center mt={10}>
+      <Box w={600} p={8} boxShadow="lg" borderRadius="md" bg="white">
         <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
           마이페이지
         </Box>
@@ -195,12 +196,11 @@ export function MemberPage() {
                 />
                 <CloseButton
                   position="absolute"
-                  top="-10px"
-                  right="100px"
-                  size="lg"
+                  top="0"
+                  right="0"
+                  size="md"
                   color="red.200"
                   _hover={{ color: "red.500" }}
-                  boxSize="24px"
                   onClick={handleProfileImageDelete}
                 />
               </>

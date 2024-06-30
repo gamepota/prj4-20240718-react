@@ -21,6 +21,7 @@ import {
   Tooltip,
   useDisclosure,
   useToast,
+  Text,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -43,197 +44,186 @@ export function BoardView() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const navigate = useNavigate();
   const toast = useToast();
-  // LoginProvider
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
   const params = memberId ? { memberId } : {};
 
   const [selectedWriter, setSelectedWriter] = useState(null);
   const [selectedWriterId, setSelectedWriterId] = useState(null);
-  // if (memberInfo != null) {
-  //   const access = memberInfo.access;
-  //   const userId = memberInfo.id;
-  //   const nickname = memberInfo.nickname;
-  //   const isLoggedIn = Boolean(access);
-  // }
+
   useEffect(() => {
-    // console.log("params=", params);
-    axios
-      .get(`/api/board/${id}`, {
-        params,
-      })
-      .then((res) => {
-        // console.log(res.data);
-        setBoard(res.data.board);
-        setLike(res.data.like);
-      })
-      .catch((err) => {
-        if (err.response.status === 404) {
+    const fetchBoardData = async () => {
+      try {
+        const response = await axios.get(`/api/board/${id}`);
+        setBoard(response.data.board);
+        setLike(response.data.like);
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
           toast({
             status: "info",
             description: "해당 게시물이 존재하지 않습니다",
             position: "top",
-            duration: "500",
+            duration: 500,
           });
+        } else {
+          console.error(err);
         }
-      });
-  }, [id]);
-  if (board === null) {
-    return <Spinner />;
-  }
-  function handleClickRemove() {
-    axios
-      .delete("/api/board/" + board.id, {
-        params,
-      })
-      .then(() => {
-        toast({
-          status: "success",
-          description: `${id}번 게시물이 삭제되었습니다`,
-          position: "top",
-          duration: "10",
-        });
-        navigate(`/`);
-      })
-      .catch(() => {
-        toast({
-          status: "error",
-          description: `잘못된 삭제 명령입니다`,
-          position: "top",
-          duration: "10",
-        });
-      })
+      }
+    };
 
-      .finally(() => onClose);
-  }
-  function handleClickLike() {
-    console.log("좋아요버튼 눌렀을 때 memberInfo=", memberInfo);
+    fetchBoardData();
+  }, [id, toast]);
+
+  const handleClickRemove = async () => {
+    try {
+      await axios.delete(`/api/board/${board.id}`);
+      toast({
+        status: "success",
+        description: `${id}번 게시물이 삭제되었습니다`,
+        position: "top",
+        duration: 3000,
+      });
+      navigate(`/`);
+    } catch (err) {
+      toast({
+        status: "error",
+        description: "잘못된 삭제 명령입니다",
+        position: "top",
+        duration: 3000,
+      });
+    } finally {
+      onClose();
+    }
+  };
+
+  const handleClickLike = async () => {
     if (!memberInfo) {
       return;
     }
     setIsLikeProcessing(true);
-    axios
-      .put("/api/board/like", { boardId: board.id, memberId: memberInfo.id })
-      .then((res) => {
-        setLike(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLikeProcessing(false);
-      });
-  }
+    try {
+      const response = await axios.put("/api/board/like", { boardId: board.id, memberId: memberInfo.id });
+      setLike(response.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLikeProcessing(false);
+    }
+  };
 
-  function handleWriterClick(writer, writerId) {
+  const handleWriterClick = (writer, writerId) => {
     setSelectedWriter(writer);
     setSelectedWriterId(writerId);
-  }
-  function handleDiaryView() {
+  };
+
+  const handleDiaryView = () => {
     const diaryId = generateDiaryId(selectedWriterId);
     const url = `/diary/${diaryId}`;
-    const windowFeatures = "width=1400,height=800"; // 원하는 크기로 설정
+    const windowFeatures = "width=1400,height=800";
     window.open(url, "_blank", windowFeatures);
-  }
+  };
 
   return (
-    <Box maxW="800px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10}>
-      <Box p={4} bg="gray.100" borderRadius="md" boxShadow="md" mb={4}>
-        <Flex justify="space-between" align="center" mb={2}>
-          <Box fontWeight="bold" fontSize="xl">
-            {board.title}
+    <Box maxW="800px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10} bg="gray.50">
+      {board ? (
+        <>
+          <Box p={4} bg="white" borderRadius="md" boxShadow="md" mb={4}>
+            <Flex justify="space-between" align="center" mb={2}>
+              <Text fontWeight="bold" fontSize="2xl" color="teal.500">
+                {board.title}
+              </Text>
+              <Flex align="center">
+                <Text fontSize="sm" color="gray.600" mr={2}>
+                  {new Date(board.inserted).toLocaleString()}
+                </Text>
+                <Popover>
+                  <PopoverTrigger>
+                    <Badge
+                      cursor="pointer"
+                      colorScheme="teal"
+                      onClick={() => handleWriterClick(board.writer, board.memberId)}
+                    >
+                      {board.writer}
+                    </Badge>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverBody>
+                      <Button colorScheme="teal" onClick={handleDiaryView}>
+                        작성자 다이어리 보기
+                      </Button>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </Flex>
+            </Flex>
+            <Flex justify="space-between" align="center" mt={2}>
+              <Text fontSize="md" color="gray.600">조회수: {board.views}</Text>
+              <Text fontSize="md" color="gray.600">추천수: {like.count}</Text>
+            </Flex>
           </Box>
-          <Flex align="center">
-            <Box fontSize="sm" color="gray.600" mr={2}>
-              {new Date(board.inserted).toLocaleString()}
-            </Box>
-            <Popover>
-              <PopoverTrigger>
-                <Badge
-                  cursor="pointer"
-                  color="blue.600"
-                  onClick={() =>
-                    handleWriterClick(board.writer, board.memberId)
-                  }
-                >
-                  {board.writer}
-                </Badge>
-              </PopoverTrigger>
-              <PopoverContent>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <PopoverBody>
-                  <Button lorScheme="blue" onClick={handleDiaryView}>
-                    작성자 다이어리 보기
-                  </Button>
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
-          </Flex>
-        </Flex>
-        <Flex justify="space-between" align="center">
-          <Box>조회수: {board.views}</Box>
-          <Box>추천수: {like.count}</Box>
-        </Flex>
-      </Box>
-      <Box p={4} bg="white" borderRadius="md" boxShadow="md">
-        {board.fileList &&
-          board.fileList.map((file) => (
-            <Box key={file.name} mb={3}>
-              <Image src={file.src} alt={file.name} borderRadius="md" />
-            </Box>
-          ))}
-        {board.content}
-      </Box>
-      <Flex mb={4} align="center">
-        <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
-          <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
-            {like.like ? (
-              <FontAwesomeIcon icon={fullHeart} />
-            ) : (
-              <FontAwesomeIcon icon={emptyHeart} />
+          <Box p={4} bg="white" borderRadius="md" boxShadow="md" mb={4}>
+            {board.fileList &&
+              board.fileList.map((file) => (
+                <Box key={file.name} mb={3}>
+                  <Image src={file.src} alt={file.name} borderRadius="md" />
+                </Box>
+              ))}
+            <Text fontSize="md" color="gray.800">{board.content}</Text>
+          </Box>
+          <Flex mb={4} align="center">
+            <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
+              <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
+                {like.like ? (
+                  <FontAwesomeIcon icon={fullHeart} color="teal" />
+                ) : (
+                  <FontAwesomeIcon icon={emptyHeart} color="teal" />
+                )}
+              </Box>
+            </Tooltip>
+            {like.count > 0 && (
+              <Text mx={3} fontSize="3xl" color="teal.500">
+                {like.count}
+              </Text>
             )}
-          </Box>
-        </Tooltip>
-        {like.count > 0 && (
-          <Box mx={3} fontSize="3xl">
-            {like.count}
-          </Box>
-        )}
-        {isLikeProcessing && (
-          <Box ml={2}>
-            <Spinner size="sm" />
-          </Box>
-        )}
-      </Flex>
-      <BoardCommentComponent boardId={board.id} />
-      {memberId == board.memberId && (
-        <Box>
-          <Button
-            colorScheme={"purple"}
-            onClick={() => navigate(`/board/edit/${id}`)}
-          >
-            수정
-          </Button>
-          <Button colorScheme={"red"} onClick={onOpen}>
-            삭제
-          </Button>
-        </Box>
+            {isLikeProcessing && (
+              <Box ml={2}>
+                <Spinner size="sm" />
+              </Box>
+            )}
+          </Flex>
+          <BoardCommentComponent boardId={board.id} />
+          {memberId === board.memberId && (
+            <Flex mt={4} justify="flex-end" gap={2}>
+              <Button colorScheme="teal" onClick={() => navigate(`/board/edit/${id}`)}>
+                수정
+              </Button>
+              <Button colorScheme="red" onClick={onOpen}>
+                삭제
+              </Button>
+            </Flex>
+          )}
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>게시물 삭제</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>정말로 삭제하시겠습니까?</ModalBody>
+              <ModalFooter>
+                <Button onClick={onClose}>취소</Button>
+                <Button colorScheme="red" onClick={handleClickRemove}>
+                  확인
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </>
+      ) : (
+        <Flex justify="center" align="center" h="100vh">
+          <Spinner size="xl" />
+        </Flex>
       )}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>삭제하시곘습니까?</ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>취소</Button>
-            <Button colorScheme={"red"} onClick={handleClickRemove}>
-              확인
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </Box>
   );
 }

@@ -18,6 +18,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
@@ -93,6 +94,7 @@ export function BoardList() {
       .then(() => {})
       .finally(navigate(`/board/${boardId}`));
   }
+
   function handleSearchClick() {
     searchParams.set("type", searchType);
     searchParams.set("keyword", searchKeyword);
@@ -100,175 +102,41 @@ export function BoardList() {
     navigate(`?${searchParams}`);
   }
 
+  const bg = useColorModeValue("white", "gray.800");
+  const hoverBg = useColorModeValue("gray.100", "gray.700");
+
   return (
     <>
-      <Center>
-        <Flex
-          maxW={"500px"}
-          flexDirection={"column"}
-          alignItems={"center"}
-          gap={6}
-        >
-          <Box>
-            <Menu textAlign={"center"} m={"auto"} fontSize={"2xl"}>
-              {({ isOpen }) => (
-                <>
-                  <MenuButton
-                    as={Button}
-                    rightIcon={
-                      isOpen ? (
-                        <span>
-                          <ChevronDownIcon />
-                        </span>
-                      ) : (
-                        <span>
-                          <ChevronUpIcon />
-                        </span>
-                      )
-                    }
-                    bg={"gray.700"}
-                    color={"white"}
-                    fontWeight={"bold"}
-                    _hover={{ bg: "gray.800" }}
-                    size={"lg"}
-                    p={6}
-                  >
-                    {`${boardType} 게시판`}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("전체")}
-                    >
-                      전체 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("자유")}
-                    >
-                      자유 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("사진 공유")}
-                    >
-                      사진 공유 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("질문/답변")}
-                    >
-                      질문/답변 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() =>
-                        handleClickBoardTypeButton("반려동물 건강")
-                      }
-                    >
-                      반려동물 건강 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("훈련/교육")}
-                    >
-                      훈련/교육 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("리뷰")}
-                    >
-                      리뷰게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("이벤트/모임")}
-                    >
-                      이벤트/모임 게시판
-                    </MenuItem>
-                  </MenuList>
-                </>
-              )}
-            </Menu>
-          </Box>
-
-          <Box>
-            <Menu textAlign={"center"} fontSize={"lg"}>
-              {({ isOpen }) => (
-                <>
-                  <MenuButton
-                    as={Button}
-                    rightIcon={
-                      isOpen ? (
-                        <span>
-                          <ChevronDownIcon />
-                        </span>
-                      ) : (
-                        <span>
-                          <ChevronUpIcon />
-                        </span>
-                      )
-                    }
-                    colorScheme={"blue"}
-                    size={"md"}
-                  >
-                    {`게시글 (${pageAmount})개씩 보기`}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem onClick={() => handlePageSizeChange(10)}>
-                      10개씩 보기
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePageSizeChange(30)}>
-                      30개씩 보기
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePageSizeChange(50)}>
-                      50개씩 보기
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePageSizeChange(100)}>
-                      100개씩 보기
-                    </MenuItem>
-                  </MenuList>
-                </>
-              )}
-            </Menu>
-          </Box>
-        </Flex>
-      </Center>
-
-      <Center>
-        <Box mb={10}></Box>
-        <Box mb={10}>
-          <Table boxShadow="lg" borderRadius="10">
-            <Thead>
+      <Center mt={10} mb={10}>
+        <Box w="full" maxW="1200px">
+          <Table boxShadow="lg" borderRadius="md" bg={bg}>
+            <Thead bg={useColorModeValue("gray.200", "gray.700")}>
               <Tr>
-                <Th textAlign={"center"}>게시판 종류</Th>
-                <Th>게시글ID</Th>
-                <Th w={500} textAlign="center">
+                <Th textAlign="center">게시판 종류</Th>
+                <Th textAlign="center">게시글ID</Th>
+                <Th textAlign="center" w={500}>
                   제목
                 </Th>
-                <Th>작성자</Th>
-                <Th>추천수</Th>
-                <Th>조회수</Th>
+                <Th textAlign="center">작성자</Th>
+                <Th textAlign="center">추천수</Th>
+                <Th textAlign="center">조회수</Th>
               </Tr>
             </Thead>
             <Tbody>
               {boardList.map((board) => (
-                <Tr key={board.id}>
-                  <Td textAlign="center">
-                    <span
-                      onClick={() =>
-                        handleClickBoardTypeButton(board.boardType)
-                      }
-                      style={{
-                        cursor: "pointer",
-                      }}
-                    >
-                      {board.boardType}
-                    </span>
+                <Tr key={board.id} _hover={{ bg: hoverBg }}>
+                  <Td textAlign="center" cursor="pointer" onClick={() => handleClickBoardTypeButton(board.boardType)}>
+                    {board.boardType}
                   </Td>
                   <Td textAlign="center">{board.id}</Td>
                   <Td
-                    onClick={() => handleBoardClick(board.id)}
+                    textAlign="center"
                     cursor="pointer"
-                    _hover={{
-                      bgColor: "gray.200",
-                    }}
+                    onClick={() => handleBoardClick(board.id)}
                   >
                     {board.title}
                     {board.numberOfImages > 0 && (
-                      <Badge ml={2}>
+                      <Badge ml={2} colorScheme="teal">
                         {board.numberOfImages}
                         <FontAwesomeIcon icon={faImage} />
                       </Badge>
@@ -277,7 +145,7 @@ export function BoardList() {
                       <span> [{board.numberOfComments}]</span>
                     )}
                   </Td>
-                  <Td>{board.writer}</Td>
+                  <Td textAlign="center">{board.writer}</Td>
                   <Td textAlign="center">{board.numberOfLikes}</Td>
                   <Td textAlign="center">{board.views}</Td>
                 </Tr>
@@ -286,17 +154,21 @@ export function BoardList() {
           </Table>
         </Box>
       </Center>
+
       <Pagination
         pageInfo={pageInfo}
         pageNumbers={pageNumbers}
         handlePageButtonClick={handlePageButtonClick}
       />
+
       <Center mb={10}>
-        <Flex gap={1}>
+        <Flex gap={2}>
           <Box>
             <Select
               value={searchType}
               onChange={(e) => setSearchType(e.target.value)}
+              boxShadow="md"
+              _hover={{ boxShadow: "lg" }}
             >
               <option value="all">전체</option>
               <option value="text">글</option>
@@ -308,14 +180,56 @@ export function BoardList() {
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="검색어"
+              boxShadow="md"
+              _hover={{ boxShadow: "lg" }}
             />
           </Box>
           <Box>
-            <Button onClick={handleSearchClick}>
+            <Button
+              onClick={handleSearchClick}
+              colorScheme="teal"
+              boxShadow="md"
+              _hover={{ boxShadow: "lg" }}
+            >
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </Button>
           </Box>
         </Flex>
+      </Center>
+
+      <Center mb={10}>
+        <Box>
+          <Menu textAlign={"center"} fontSize={"lg"}>
+            {({ isOpen }) => (
+              <>
+                <MenuButton
+                  as={Button}
+                  rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                  colorScheme="teal"
+                  size="md"
+                  boxShadow="md"
+                  _hover={{ boxShadow: "lg" }}
+                >
+                  {`게시글 (${pageAmount})개씩 보기`}
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={() => handlePageSizeChange(10)}>
+                    10개씩 보기
+                  </MenuItem>
+                  <MenuItem onClick={() => handlePageSizeChange(30)}>
+                    30개씩 보기
+                  </MenuItem>
+                  <MenuItem onClick={() => handlePageSizeChange(50)}>
+                    50개씩 보기
+                  </MenuItem>
+                  <MenuItem onClick={() => handlePageSizeChange(100)}>
+                    100개씩 보기
+                  </MenuItem>
+                </MenuList>
+              </>
+            )}
+          </Menu>
+        </Box>
       </Center>
     </>
   );

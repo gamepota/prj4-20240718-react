@@ -1,9 +1,9 @@
-import {Box, Button, Flex, Img, Input} from "@chakra-ui/react";
+import { Box, Button, Flex, Img, Input, useColorModeValue } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {generateDiaryId} from "../util/util.jsx";
+import { generateDiaryId } from "../util/util.jsx";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -37,32 +37,37 @@ export function Navbar() {
 
   const handleOpenDiary = () => {
     const url = `/diary/${diaryId}`;
-    const windowFeatures = "width=1400,height=800,max-width=800,max-height=600"; // 원하는 크기로 설정
+    const windowFeatures = "width=1400,height=800,menubar=no,toolbar=no,location=no,resizable=no,scrollbars=no,status=no"; // 원하는 크기로 설정
     window.open(url, "_blank", windowFeatures);
   };
 
+  const bg = useColorModeValue("white", "gray.800");
+  const color = useColorModeValue("black", "white");
+  const hoverBg = useColorModeValue("gray.100", "gray.700");
+
   return (
     <Flex
-      h="50px"
+      h="60px"
       alignItems="center"
       justifyContent="space-between"
       px={5}
-      bg="white"
+      bg={bg}
+      color={color}
       boxShadow="md"
     >
-      <Flex gap={5}>
+      <Flex gap={5} alignItems="center">
         <Box
-          _hover={{ cursor: "pointer"}}
+          _hover={{ cursor: "pointer" }}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/")}
-          w="100px" // Box 크기 고정
-          h="auto" // 높이를 자동으로 조정
+          w="100px"
+          h="auto"
         >
           <Img src={"/img/petmily.png"} w="100%" h="auto" />
         </Box>
         <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+          _hover={{ cursor: "pointer", bg: hoverBg }}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/board/list")}
@@ -70,7 +75,7 @@ export function Navbar() {
           게시판
         </Box>
         <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+          _hover={{ cursor: "pointer", bg: hoverBg }}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/place/map")}
@@ -78,7 +83,7 @@ export function Navbar() {
           동물병원 찾기
         </Box>
         <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+          _hover={{ cursor: "pointer", bg: hoverBg }}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/board")}
@@ -86,7 +91,7 @@ export function Navbar() {
           반려동물 정보
         </Box>
         <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+          _hover={{ cursor: "pointer", bg: hoverBg }}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/aichat")}
@@ -103,16 +108,18 @@ export function Navbar() {
             borderColor="gray.300"
           />
           <Button
-            bgColor="purple.100"
-            _hover={{ bgColor: "purple.200" }}
+            bg="teal.400"
+            color="white"
+            _hover={{ bg: "teal.500" }}
             ml={2}
           >
             검색
           </Button>
         </Flex>
         <Button
-          bgColor="purple.100"
-          _hover={{ bgColor: "purple.200" }}
+          bg="teal.400"
+          color="white"
+          _hover={{ bg: "teal.500" }}
           onClick={() => navigate("/board/write")}
         >
           새 글쓰기
@@ -120,7 +127,7 @@ export function Navbar() {
         {isLoggedIn ? (
           <>
             <Box
-              _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+              _hover={{ cursor: "pointer", bg: hoverBg }}
               p={2}
               borderRadius="md"
               onClick={() => navigate(`/member/page/${memberInfo.id}`)}
@@ -128,7 +135,7 @@ export function Navbar() {
               {nickname}님
             </Box>
             <Box
-              _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+              _hover={{ cursor: "pointer", bg: hoverBg }}
               p={2}
               borderRadius="md"
               onClick={handleOpenDiary}
@@ -136,7 +143,7 @@ export function Navbar() {
               마이 펫다이어리
             </Box>
             <Button
-              _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+              _hover={{ bg: hoverBg }}
               p={2}
               borderRadius="md"
               onClick={handleLogout}
@@ -147,7 +154,7 @@ export function Navbar() {
         ) : (
           <>
             <Button
-              _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+              _hover={{ bg: hoverBg }}
               p={2}
               borderRadius="md"
               onClick={() => navigate("/member/login")}

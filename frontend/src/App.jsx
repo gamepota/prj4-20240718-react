@@ -27,6 +27,8 @@ import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/
 import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
 import { DiaryComment } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
 import KakaoMap from "./KakaoMap.jsx";
+import theme from "./theme.js";
+import {DiaryCommentView} from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentView.jsx";
 
 const router = createBrowserRouter([
   {
@@ -39,7 +41,7 @@ const router = createBrowserRouter([
         element: <DiaryHome />,
         children: [
           // 다이어리 하위 경로 설정
-          { path: "comment/view/:id", element: <DiaryBoardView /> }, // 일기 보기
+          { path: "comment/view/:id", element: <DiaryCommentView /> }, // 일기 보기
           { path: "comment/list", element: <DiaryCommentList /> }, // 방명록 목록
           { path: "comment/write/:id", element: <DiaryCommentWrite /> }, // 방명록 쓰기
           { path: "comment", element: <DiaryComment /> }, // 방명록
@@ -71,7 +73,7 @@ const router = createBrowserRouter([
 function App(props) {
   return (
     <LoginProvider>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <RouterProvider router={router} />
       </ChakraProvider>
     </LoginProvider>

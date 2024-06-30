@@ -1,3 +1,5 @@
+import React, {useContext, useEffect, useState} from "react";
+import axios from "axios";
 import {
   Badge,
   Box,
@@ -27,15 +29,11 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { generateDiaryId } from "../../../../../util/util.jsx"; // import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
-
-// import { LoginContext } from "../../diaryComponent/LoginProvider.jsx";
+import {useNavigate, useParams} from "react-router-dom";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
+import {LoginContext} from "../../../../../component/LoginProvider.jsx";
+import {generateDiaryId} from "../../../../../util/util.jsx";
 
 export function DiaryBoardEdit() {
   const { id } = useParams();
@@ -45,15 +43,15 @@ export function DiaryBoardEdit() {
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  const access = memberInfo.access;
-  const nickname = memberInfo.nickname;
+  const { memberInfo } = useContext(LoginContext);
+  const access = memberInfo?.access;
+  const nickname = memberInfo?.nickname;
   const isLoggedIn = Boolean(access);
   const diaryId = generateDiaryId(memberInfo.id);
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/${id}`).then((res) => setDiaryBoard(res.data));
-  }, []);
+  }, [id]);
 
   function handleClickSave() {
     axios
@@ -69,7 +67,7 @@ export function DiaryBoardEdit() {
       .then(() => {
         toast({
           status: "success",
-          description: `${diaryBoard.id}수정이 완료되었습니다.`,
+          description: `${diaryBoard.id}번 게시물이 수정되었습니다.`,
           position: "top",
         });
         navigate(`/diary/${diaryId}/view/${diaryBoard.id}`);
@@ -78,7 +76,7 @@ export function DiaryBoardEdit() {
         if (err.response.status === 400) {
           toast({
             status: "error",
-            description: `${diaryBoard.id}게시물이 수정되지 않았습니다. 작성한 내용을 확인해주세요.`,
+            description: "게시물이 수정되지 않았습니다. 작성한 내용을 확인해주세요.",
             position: "top",
           });
         }
@@ -92,107 +90,77 @@ export function DiaryBoardEdit() {
     return <Spinner />;
   }
 
-  const fileNameList = [];
-  for (let addFile of addFileList) {
-    let duplicate = false;
-    for (let file of diaryBoard.fileList) {
-      if (file.name === addFile.name) {
-        duplicate = true;
-        break;
-      }
-    }
-    fileNameList.push(
-      <Flex>
-        <Text fontSize={"md"} mr={3}>
+  const fileNameList = Array.from(addFileList).map((addFile) => {
+    const duplicate = diaryBoard.fileList.some((file) => file.name === addFile.name);
+    return (
+      <Flex key={addFile.name} justify="space-between" align="center">
+        <Text fontSize="md" mr={3}>
           {addFile.name}
         </Text>
-        <Box>{duplicate && <Badge colorScheme="red">override</Badge>}</Box>
-      </Flex>,
+        {duplicate && <Badge colorScheme="red">override</Badge>}
+      </Flex>
+    );
+  });
+
+  function handleRemoveSwitchChange(name, checked) {
+    setRemoveFileList((prevList) =>
+      checked ? [...prevList, name] : prevList.filter((item) => item !== name)
     );
   }
 
-  function handleRemoveSwitchChange(name, checked) {
-    if (checked) {
-      setRemoveFileList([...removeFileList, name]);
-    } else {
-      setRemoveFileList(removeFileList.filter((item) => item !== name));
-    }
-  }
-
   return (
-    <Box>
-      <Box mb={10}>
-        <Heading>{diaryBoard.id}번 일기 수정</Heading>
-      </Box>
+    <Box maxW="800px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">
+      <Text fontSize="x-large" mb={10}>{diaryBoard.id}번 일기 수정</Text>
       <Box>
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>제목</FormLabel>
-            <Input
-              defaultValue={diaryBoard.title}
-              onChange={(e) =>
-                setDiaryBoard({ ...diaryBoard, title: e.target.value })
-              }
-            />
-          </FormControl>
-        </Box>
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>내용</FormLabel>
-            <Textarea
-              defaultValue={diaryBoard.content}
-              onChange={(e) =>
-                setDiaryBoard({ ...diaryBoard, content: e.target.value })
-              }
-            ></Textarea>
-          </FormControl>
-        </Box>
-        <Box mb={7}>
-          {diaryBoard.fileList &&
-            diaryBoard.fileList.map((file) => (
-              <Card m={3} key={file.name}>
-                <CardFooter>
-                  <Flex gap={3}>
-                    <Box>
-                      <FontAwesomeIcon color="black" icon={faTrashCan} />
-                    </Box>
-                    <Box>
-                      <Switch
-                        colorScheme={"red"}
-                        onChange={(e) =>
-                          handleRemoveSwitchChange(file.name, e.target.checked)
-                        }
-                      />
-                    </Box>
-                    <Box>
-                      <Text>{file.name}</Text>
-                    </Box>
-                  </Flex>
-                </CardFooter>
+        <FormControl mb={7}>
+          <FormLabel>제목</FormLabel>
+          <Input
+            defaultValue={diaryBoard.title}
+            onChange={(e) => setDiaryBoard({ ...diaryBoard, title: e.target.value })}
+          />
+        </FormControl>
+        <FormControl mb={7}>
+          <FormLabel>내용</FormLabel>
+          <Textarea
+            defaultValue={diaryBoard.content}
+            onChange={(e) => setDiaryBoard({ ...diaryBoard, content: e.target.value })}
+          />
+        </FormControl>
+        <FormControl mb={7}>
+          <FormLabel>파일</FormLabel>
+          <Input
+            multiple
+            type="file"
+            accept="image/*"
+            onChange={(e) => setAddFileList(e.target.files)}
+          />
+        </FormControl>
+        {diaryBoard.fileList && (
+          <Box mb={7}>
+            {diaryBoard.fileList.map((file) => (
+              <Card key={file.name} m={3} boxShadow="md">
                 <CardBody>
                   <Image
-                    sx={
-                      removeFileList.includes(file.name)
-                        ? { filter: "blur(8px)" }
-                        : {}
-                    }
                     src={file.src}
+                    sx={removeFileList.includes(file.name) ? { filter: "blur(8px)" } : {}}
                   />
                 </CardBody>
+                <CardFooter>
+                  <Flex align="center" justify="space-between">
+                    <Flex align="center" gap={3}>
+                      <FontAwesomeIcon color="black" icon={faTrashCan} />
+                      <Switch
+                        colorScheme="red"
+                        onChange={(e) => handleRemoveSwitchChange(file.name, e.target.checked)}
+                      />
+                      <Text>{file.name}</Text>
+                    </Flex>
+                  </Flex>
+                </CardFooter>
               </Card>
             ))}
-        </Box>
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>파일</FormLabel>
-            <Input
-              multiple
-              type="file"
-              accept="image/*"
-              onChange={(e) => setAddFileList(e.target.files)}
-            />
-          </FormControl>
-        </Box>
+          </Box>
+        )}
         {fileNameList.length > 0 && (
           <Box mb={7}>
             <Card>
@@ -207,25 +175,21 @@ export function DiaryBoardEdit() {
             </Card>
           </Box>
         )}
-        <Box mb={7}>
-          <FormControl>
-            <FormLabel>작성자</FormLabel>
-            <Input defaultValue={diaryBoard.writer} readOnly />
-          </FormControl>
-        </Box>
-        <Box mb={7}>
-          <Button onClick={onOpen} colorScheme={"blue"}>
-            저장
-          </Button>
-        </Box>
+        <FormControl mb={7}>
+          <FormLabel>작성자</FormLabel>
+          <Input defaultValue={diaryBoard.writer} readOnly />
+        </FormControl>
+        <Button onClick={onOpen} colorScheme="blue">
+          저장
+        </Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader></ModalHeader>
+          <ModalHeader>저장 확인</ModalHeader>
           <ModalBody>저장하시겠습니까?</ModalBody>
           <ModalFooter>
-            <Button onClick={handleClickSave} colorScheme={"blue"}>
+            <Button onClick={handleClickSave} colorScheme="blue">
               확인
             </Button>
             <Button onClick={onClose}>취소</Button>

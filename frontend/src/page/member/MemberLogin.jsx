@@ -13,6 +13,9 @@ import {
   Link,
   Spinner,
   Text,
+  VStack,
+  Heading,
+  useToast,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -25,6 +28,7 @@ export function MemberLogin(props) {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { setMemberInfo } = useContext(LoginContext);
+  const toast = useToast();
 
   async function handleLogin(event) {
     if (event) event.preventDefault(); // form submit 방지
@@ -86,84 +90,67 @@ export function MemberLogin(props) {
   }
 
   return (
-    <>
-      <Center>
-        <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
-          <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
+    <Center minHeight="80vh" bg="gray.50">
+      <Box w={{ base: "90%", md: "500px" }} p={6} boxShadow="lg" borderRadius="md" bg="white">
+        <VStack spacing={6} align="stretch">
+          <Heading as="h1" size="lg" textAlign="center">
             로그인
-          </Box>
-          <Box>
-            {error && (
-              <Alert status="error" mb={4}>
-                <AlertIcon />
-                {error}
-              </Alert>
-            )}
-            <FormControl mb={4}>
-              <FormLabel>이메일</FormLabel>
+          </Heading>
+          {error && (
+            <Alert status="error" borderRadius="md">
+              <AlertIcon />
+              {error}
+            </Alert>
+          )}
+          <FormControl id="email">
+            <FormLabel>이메일</FormLabel>
+            <Input
+              type="email"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="이메일을 입력하세요"
+              onKeyPress={handleKeyPress}
+            />
+          </FormControl>
+          <FormControl id="password">
+            <FormLabel>비밀번호</FormLabel>
+            <InputGroup>
               <Input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="이메일을 입력하세요"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="비밀번호를 입력하세요"
                 onKeyPress={handleKeyPress}
               />
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel>비밀번호</FormLabel>
-              <InputGroup>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="비밀번호를 입력하세요"
-                  onKeyPress={handleKeyPress}
-                />
-              </InputGroup>
-            </FormControl>
-            <Flex justifyContent="space-between" mb={5}>
-              <FormControl display="flex" alignItems="center"></FormControl>
-              <Flex
-                gap={5}
-                fontSize="sm"
-                justifyContent="flex-end"
-                alignItems="center"
-                minWidth="200px"
-              >
-                <Link
-                  as={RouterLink}
-                  to="/member/find"
-                  whiteSpace="nowrap"
-                  _hover={{ fontWeight: "bold" }}
-                >
-                  비밀번호 찾기
-                </Link>
-              </Flex>
-            </Flex>
-            <Box mt={5}>
-              <Button
-                width={"100%"}
-                _hover={{ bgColor: "purple.500 ", color: "white" }}
-                onClick={handleLogin}
-                isLoading={isLoading}
-              >
-                {isLoading ? <Spinner size="sm" /> : "로그인"}
-              </Button>
-            </Box>
-            <Text mt={5} textAlign="center">
-              아직 펫밀리의 회원이 아니신가요?{" "}
-              <Link
-                as={RouterLink}
-                to="/member/signup"
-                color="blue.500"
-                fontWeight="bold"
-                _hover={{ textDecoration: "underline" }}
-              >
-                가입하기
-              </Link>
-            </Text>
-          </Box>
-        </Box>
-      </Center>
-    </>
+            </InputGroup>
+          </FormControl>
+          <Flex justify="space-between">
+            <Link as={RouterLink} to="/member/find" fontSize="sm" color="blue.500">
+              비밀번호 찾기
+            </Link>
+          </Flex>
+          <Button
+            colorScheme="teal"
+            onClick={handleLogin}
+            isLoading={isLoading}
+            width="full"
+          >
+            {isLoading ? <Spinner size="sm" /> : "로그인"}
+          </Button>
+          <Text textAlign="center">
+            아직 펫밀리의 회원이 아니신가요?{" "}
+            <Link
+              as={RouterLink}
+              to="/member/signup"
+              color="blue.500"
+              fontWeight="bold"
+              _hover={{ textDecoration: "underline" }}
+            >
+              가입하기
+            </Link>
+          </Text>
+        </VStack>
+      </Box>
+    </Center>
   );
 }

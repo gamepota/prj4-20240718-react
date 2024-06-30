@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Box, Input, Button, VStack, HStack, Text, InputGroup, InputRightElement, IconButton } from "@chakra-ui/react";
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { Box, Input, Button, VStack, Text, InputGroup, InputRightElement, IconButton } from "@chakra-ui/react";
 import { MinusIcon, ChatIcon } from "@chakra-ui/icons";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import axios from 'axios';
+import { LoginContext } from "../LoginProvider.jsx";
 
 export function AIChat() {
-  const [name, setName] = useState(""); // 사용자 이름
+  const { memberInfo } = useContext(LoginContext);
+  const name = memberInfo?.nickname || "Anonymous"; // 사용자 nickname
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null); // stompClient 상태 정의 및 초기화
@@ -105,9 +107,9 @@ export function AIChat() {
   };
 
   return (
-    <Box mt={2} p={2} w={"80%"} h={"auto"} borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white">
+    <Box mt={10} p={4} w="80%" maxW="800px" mx="auto" borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white" boxShadow="lg">
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
-        <Text fontWeight="bold"> AI 수의사와 상담 </Text>
+        <Text fontWeight="bold">AI 수의사와 상담</Text>
         <IconButton
           icon={isMinimized ? <ChatIcon /> : <MinusIcon />}
           size="sm"
@@ -117,15 +119,7 @@ export function AIChat() {
       </Box>
       {!isMinimized && (
         <VStack spacing={4} p={2}>
-          <HStack width="100%">
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="이름을 입력하세요"
-            />
-          </HStack>
-          <Box width="100%" h="300px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg">
+          <Box width="100%" h="400px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg" bg="gray.50">
             {messages.map((msg, index) => (
               <Box key={index} bg={msg.role === 'user' ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
                 <Text fontWeight="bold">{msg.role === 'user' ? name : 'AI 수의사'}</Text>

@@ -4,6 +4,8 @@ import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import {
   Box,
   Button,
+  Card,
+  CardBody,
   FormControl,
   FormLabel,
   Input,
@@ -11,16 +13,18 @@ import {
   Textarea,
   useDisclosure,
   useToast,
+  VStack,
+  HStack,
+  Text, Center,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryCommentView() {
   const { id } = useParams();
-  console.log(id);
   const [diaryComment, setDiaryComment] = useState(null);
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  const access = memberInfo.access;
+  const { memberInfo } = useContext(LoginContext);
+  const access = memberInfo?.access;
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
@@ -47,13 +51,14 @@ export function DiaryCommentView() {
 
   function handleClickRemove() {
     axios
-      .delete(`/api/diaryComment` + diaryComment.id, { params })
+      .delete(`/api/diaryComment/${diaryComment.id}`, { params })
       .then(() => {
         toast({
           status: "success",
           description: "삭제가 완료되었습니다.",
           position: "top",
         });
+        navigate(`/diary/${diaryId}/comment/list`);
       })
       .catch(() => {
         toast({
@@ -68,31 +73,51 @@ export function DiaryCommentView() {
   }
 
   if (diaryComment === null) {
-    return <Spinner />;
+    return (
+      <Center>
+        <Spinner size="xl" />
+      </Center>
+    );
   }
 
   return (
-    <Box>
-      <Box>방 명 록</Box>
-      <Box mb={7}>
-        <FormControl>
-          <FormLabel>작성자</FormLabel>
-          <Input value={memberInfo.nickname} readOnly />
-        </FormControl>
+    <Center bg="gray.100" py={20}>
+      <Box w="800px" bg="white" boxShadow="lg" borderRadius="md" p={6}>
+        <Card w="100%" variant="outline">
+          <CardBody>
+            <VStack spacing={4} align="stretch">
+              <Box>
+                <Text fontWeight="bold" fontSize="2xl" color="teal.500">
+                  방명록
+                </Text>
+              </Box>
+              <Box>
+                <Text fontWeight="bold" fontSize="lg" color="gray.600">
+                  {diaryComment.nickname} 님이 남긴 방명록이에요!
+                </Text>
+              </Box>
+              <Box>
+                <FormControl>
+                  <FormLabel fontWeight="bold">방명록</FormLabel>
+                  <Textarea value={diaryComment.comment} readOnly />
+                </FormControl>
+              </Box>
+              <Box>
+                <FormControl>
+                  <FormLabel fontWeight="bold">작성일시</FormLabel>
+                  <Input type="datetime-local" value={diaryComment.inserted} readOnly />
+                </FormControl>
+              </Box>
+              <HStack spacing={4} justifyContent="flex-end">
+                <Button colorScheme="purple">수정</Button>
+                <Button colorScheme="red" onClick={handleClickRemove}>
+                  삭제
+                </Button>
+              </HStack>
+            </VStack>
+          </CardBody>
+        </Card>
       </Box>
-      <Box mb={7}>
-        <FormControl>
-          <FormLabel>방명록</FormLabel>
-          <Textarea value={diaryComment.comment} readOnly />
-        </FormControl>
-      </Box>
-      {/*<DiaryCommentComponent diaryCommentId={diaryComment.id} />*/}
-      <Box mb={7}>
-        <FormControl>작성일시</FormControl>
-        <Input type="datetime-local" value={diaryComment.inserted} readOnly />
-      </Box>
-      <Button colorScheme={"purple"}>수정</Button>
-      <Button onClick={handleClickRemove}>삭제</Button>
-    </Box>
+    </Center>
   );
 }
