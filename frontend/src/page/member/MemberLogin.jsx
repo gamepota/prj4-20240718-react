@@ -8,6 +8,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Img,
   Input,
   InputGroup,
   Link,
@@ -85,6 +86,18 @@ export function MemberLogin(props) {
     }
   }
 
+  async function handleNaverLogin() {
+    try {
+      const response = await axios.get("/api/member/login/naver");
+      if (response.status === 302) {
+        // 네이버 로그인 페이지로 리디렉션
+        window.location.href = response.headers.location;
+      }
+    } catch (error) {
+      setError("네이버 로그인 요청에 실패했습니다.");
+    }
+  }
+
   return (
     <>
       <Center>
@@ -147,6 +160,17 @@ export function MemberLogin(props) {
                 isLoading={isLoading}
               >
                 {isLoading ? <Spinner size="sm" /> : "로그인"}
+              </Button>
+              <Button
+                mt={4}
+                width={"100%"}
+                bg="#03C75A"
+                color="white"
+                _hover={{ bg: "#02A447" }}
+                leftIcon={<Img src="/img/naver-logo.png" boxSize="20px" />}
+                onClick={handleNaverLogin}
+              >
+                네이버로 로그인
               </Button>
             </Box>
             <Text mt={5} textAlign="center">
