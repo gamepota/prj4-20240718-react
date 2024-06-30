@@ -1,129 +1,43 @@
-// import React, { useState } from "react";
-// import { Icon } from "@iconify/react";
-// import {
-//   addDays,
-//   addMonths,
-//   endOfMonth,
-//   endOfWeek,
-//   format,
-//   isSameDay,
-//   isSameMonth,
-//   parse,
-//   startOfMonth,
-//   startOfWeek,
-//   subMonths,
-// } from "date-fns";
-// import "./DiaryCalendar.css"; // CSS 파일을 import 합니다.
-// const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
-//   return (
-//     <div className="header row">
-//       <div className="col col-start">
-//         <span className="text">
-//           <span className="text month">{format(currentMonth, "M")}월</span>
-//           {format(currentMonth, "yyyy")}
-//         </span>
-//       </div>
-//       <div className="col col-end">
-//         <Icon icon="bi:arrow-left-circle-fill" onClick={prevMonth} />
-//         <Icon icon="bi:arrow-right-circle-fill" onClick={nextMonth} />
-//       </div>
-//     </div>
-//   );
-// };
-//
-// const RenderDays = () => {
-//   const days = [];
-//   const date = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-//
-//   for (let i = 0; i < 7; i++) {
-//     days.push(
-//       <div className="col" key={i}>
-//         {date[i]}
-//       </div>,
-//     );
-//   }
-//
-//   return <div className="days row">{days}</div>;
-// };
-//
-// const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
-//   const monthStart = startOfMonth(currentMonth);
-//   const monthEnd = endOfMonth(monthStart);
-//   const startDate = startOfWeek(monthStart);
-//   const endDate = endOfWeek(monthEnd);
-//
-//   const rows = [];
-//   let days = [];
-//   let day = startDate;
-//   let formattedDate = "";
-//
-//   while (day <= endDate) {
-//     for (let i = 0; i < 7; i++) {
-//       formattedDate = format(day, "d");
-//       const cloneDay = day;
-//       days.push(
-//         <div
-//           className={`col cell ${
-//             !isSameMonth(day, monthStart)
-//               ? "disabled"
-//               : isSameDay(day, selectedDate)
-//                 ? "selected"
-//                 : format(currentMonth, "M") !== format(day, "M")
-//                   ? "not-valid"
-//                   : "valid"
-//           }`}
-//           key={day}
-//           onClick={() => onDateClick(parse(cloneDay))}
-//         >
-//           <span
-//             className={
-//               format(currentMonth, "M") !== format(day, "M")
-//                 ? "text not-valid"
-//                 : ""
-//             }
-//           >
-//             {formattedDate}
-//           </span>
-//         </div>,
-//       );
-//       day = addDays(day, 1);
-//     }
-//     rows.push(
-//       <div className="row" key={day}>
-//         {days}
-//       </div>,
-//     );
-//     days = [];
-//   }
-//   return <div className="body">{rows}</div>;
-// };
-//
-// export const DiaryCalendar = () => {
-//   const [currentMonth, setCurrentMonth] = useState(new Date());
-//   const [selectedDate, setSelectedDate] = useState(new Date());
-//
-//   const prevMonth = () => {
-//     setCurrentMonth(subMonths(currentMonth, 1));
-//   };
-//   const nextMonth = () => {
-//     setCurrentMonth(addMonths(currentMonth, 1));
-//   };
-//   const onDateClick = (day) => {
-//     setSelectedDate(day);
-//   };
-//   return (
-//     <div className="calendar">
-//       <RenderHeader
-//         currentMonth={currentMonth}
-//         prevMonth={prevMonth}
-//         nextMonth={nextMonth}
-//       />
-//       <RenderDays />
-//       <RenderCells
-//         currentMonth={currentMonth}
-//         selectedDate={selectedDate}
-//         onDateClick={onDateClick}
-//       />
-//     </div>
-//   );
-// };
+import React, { useContext, useRef, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction"; // 날짜 및 이벤트 클릭을 위한 플러그인
+import "./DiaryCalendar.css";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx"; // 필요한 CSS 파일 경로 확인
+
+const DiaryCalendar = () => {
+  const [events, setEvents] = useState([]);
+  const calendarRef = useRef(null);
+  const { memberInfo } = useContext(LoginContext);
+
+  const handleDateClick = (info) => {
+    const title = prompt("메모를 입력하세요:");
+    if (title) {
+      setEvents([
+        ...events,
+        {
+          title,
+          start: info.dateStr,
+          allDay: true,
+        },
+      ]);
+    }
+  };
+
+  return (
+    <div id="calendar">
+      {memberInfo && memberInfo.id && memberInfo.nickname && (
+        <FullCalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          events={events}
+          dateClick={handleDateClick}
+          height="auto" // 캘린더의 높이를 자동으로 조정
+        />
+      )}
+    </div>
+  );
+};
+
+export default DiaryCalendar;

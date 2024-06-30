@@ -28,7 +28,7 @@ export function DiaryComment() {
       }
     };
     fetchComments();
-  }, [id, memberInfo.id, diaryCommentList]);
+  }, [id, memberInfo.id]); // `diaryCommentList`를 종속성 배열에서 제거
 
   const handleCommentAdded = (newComment) => {
     setDiaryCommentList((prevList) => [newComment, ...prevList]); // 새로운 댓글을 맨 위에 추가

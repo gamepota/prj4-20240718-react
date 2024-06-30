@@ -94,7 +94,7 @@ export function DiaryNavbar() {
             bg: "blue.200",
           }}
         >
-          접종 날짜
+          기록
         </Button>
       </Box>
       <Box>

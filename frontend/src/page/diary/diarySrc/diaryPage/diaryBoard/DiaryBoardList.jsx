@@ -65,7 +65,7 @@ export function DiaryBoardList() {
   }
 
   function handleSearchClick() {
-    navigate(`/?type=${searchType}$keyword=${searchKeyword}`);
+    navigate(`/?type=${searchType}&keyword=${searchKeyword}`);
   }
 
   function handlePageButtonClick(pageNumber) {
@@ -77,9 +77,10 @@ export function DiaryBoardList() {
     const diaryId = generateDiaryId(memberInfo.id);
     return () => navigate(`/diary/${diaryId}/view/${id}`);
   }
-  function handleWriteClick(id) {
+
+  function handleWriteClick() {
     const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/write/${id}`);
+    navigate(`/diary/${diaryId}/write/${diaryId}`);
   }
 
   return (
@@ -113,7 +114,6 @@ export function DiaryBoardList() {
                   onClick={handleSelectedDiaryBoard(diaryBoard.id)}
                   key={diaryBoard.id}
                 >
-                  //ㄹㅇㅌ ㅋㅁㅌ ㄹㅅㅌ
                   <Td>{diaryBoard.id}</Td>
                   <Td>
                     {diaryBoard.title}
@@ -187,7 +187,7 @@ export function DiaryBoardList() {
                 pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
               }
             >
-              {pageNumbers}
+              {pageNumber}
             </Button>
           ))}
           {pageInfo.nextPageNumber && (
