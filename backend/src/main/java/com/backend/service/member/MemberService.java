@@ -25,7 +25,9 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -168,8 +170,19 @@ public class MemberService {
     }
 
     // MemberList
-    public List<Member> list() {
-        return memberMapper.selectAll();
+    public Map<String, Object> list(int page, int pageSize) {
+        int totalMembers = memberMapper.countAllMembers();
+        int totalPages = (int) Math.ceil((double) totalMembers / pageSize);
+        int offset = (page - 1) * pageSize;
+
+        List<Member> members = memberMapper.selectAll(pageSize, offset);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("members", members);
+        result.put("totalPages", totalPages);
+        result.put("currentPage", page);
+
+        return result;
     }
 
     // diary ID 유효성 검증

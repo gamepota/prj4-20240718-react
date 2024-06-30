@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -107,8 +106,11 @@ public class MemberController {
 
     // MemberList
     @GetMapping("/list")
-    public List<Member> list() {
-        return service.list();
+    public ResponseEntity<Map<String, Object>> getMemberList(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        Map<String, Object> response = service.list(page, pageSize);
+        return ResponseEntity.ok(response);
     }
 
     // MemberFind

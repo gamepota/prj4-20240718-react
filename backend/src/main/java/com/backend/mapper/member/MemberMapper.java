@@ -35,8 +35,15 @@ public interface MemberMapper {
             SELECT *
             FROM member
             ORDER BY id ASC
+            LIMIT #{limit} OFFSET #{offset}
             """)
-    List<Member> selectAll();
+    List<Member> selectAll(@Param("limit") int limit, @Param("offset") int offset);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM member
+            """)
+    int countAllMembers();
 
     // MemberEdit
     @Select("""
