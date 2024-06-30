@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction"; // 날짜 및 이벤트 클릭을 위한 플러그인
@@ -10,17 +10,24 @@ const DiaryCalendar = () => {
   const calendarRef = useRef(null);
   const { memberInfo } = useContext(LoginContext);
 
+  useEffect(() => {
+    const savedEvents = JSON.parse(localStorage.getItem("diaryEvents"));
+    if (savedEvents) {
+      setEvents(savedEvents);
+    }
+  }, []);
+
   const handleDateClick = (info) => {
     const title = prompt("메모를 입력하세요:");
     if (title) {
-      setEvents([
-        ...events,
-        {
-          title,
-          start: info.dateStr,
-          allDay: true,
-        },
-      ]);
+      const newEvent = {
+        title,
+        start: info.dateStr,
+        allDay: true,
+      };
+      const updatedEvents = [...events, newEvent];
+      setEvents(updatedEvents);
+      localStorage.setItem("diaryEvents", JSON.stringify(updatedEvents));
     }
   };
 
