@@ -35,12 +35,10 @@ export function MemberFind() {
     }
 
     try {
-      const response = await axios.post("/api/member/find-password", {
-        username,
-      });
+      const response = await axios.post("/api/member/sendEmail", { username });
 
       if (response.status === 200) {
-        setSuccessMessage("비밀번호 재설정 링크가 이메일로 전송되었습니다.");
+        setSuccessMessage("임시 비밀번호가 이메일로 전송되었습니다.");
         toast({
           title: "성공",
           description: "임시 비밀번호가 이메일로 전송되었습니다.",
@@ -58,11 +56,11 @@ export function MemberFind() {
     }
   }
 
-  function handleKeyPress(event) {
+  const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      handleFindPassword();
+      handleFindPassword(event);
     }
-  }
+  };
 
   return (
     <Center>
