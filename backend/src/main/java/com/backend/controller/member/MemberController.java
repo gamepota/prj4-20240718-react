@@ -2,6 +2,7 @@ package com.backend.controller.member;
 
 import com.backend.domain.member.Member;
 import com.backend.domain.member.Profile;
+import com.backend.service.member.EmailSenderService;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RequestMapping("/api/member")
 public class MemberController {
     private final MemberService service;
+    private final EmailSenderService emailSenderService;
 
     // MemberSignup
     @PostMapping("/signup")
@@ -105,6 +107,19 @@ public class MemberController {
     @GetMapping("/list")
     public List<Member> list() {
         return service.list();
+    }
+
+    // MemberFind
+    @PostMapping("/find-password")
+    public ResponseEntity<String> findPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("username");
+        try {
+            emailSenderService.createMail(email);
+            return ResponseEntity.ok("임시 비밀번호가 이메일로 전송되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace(); // 서버 로그에 예외 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("비밀번호 재설정 메일 전송에 실패했습니다.");
+        }
     }
 
     // 다이어리 ID 검증
