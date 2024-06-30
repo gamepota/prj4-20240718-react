@@ -43,7 +43,7 @@ export function MemberFind() {
         setSuccessMessage("비밀번호 재설정 링크가 이메일로 전송되었습니다.");
         toast({
           title: "성공",
-          description: "비밀번호 재설정 링크가 이메일로 전송되었습니다.",
+          description: "임시 비밀번호가 이메일로 전송되었습니다.",
           status: "success",
           duration: 5000,
           isClosable: true,
