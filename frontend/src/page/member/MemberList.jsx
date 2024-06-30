@@ -19,27 +19,31 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider";
+import Pagination from "../../component/Pagination.jsx";
 
 export function MemberList() {
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const toast = useToast();
   const navigate = useNavigate();
   const { memberInfo } = useContext(LoginContext);
 
   useEffect(() => {
     if (memberInfo?.id === "1") {
-      fetchMembers();
+      fetchMembers(currentPage);
     } else {
       setIsLoading(false);
     }
-  }, [memberInfo]);
+  }, [memberInfo, currentPage]);
 
-  function fetchMembers() {
+  function fetchMembers(page) {
     axios
-      .get("/api/member/list")
+      .get(`/api/member/list?page=${page}&pageSize=10`)
       .then((response) => {
-        setMembers(response.data);
+        setMembers(response.data.members);
+        setTotalPages(response.data.totalPages);
       })
       .catch((error) => {
         toast({
@@ -52,6 +56,10 @@ export function MemberList() {
       .finally(() => {
         setIsLoading(false);
       });
+  }
+
+  function handlePageButtonClick(pageNumber) {
+    setCurrentPage(pageNumber);
   }
 
   // 가입일시 포맷
@@ -101,7 +109,7 @@ export function MemberList() {
               position: "top",
               duration: 3000,
             });
-            fetchMembers();
+            fetchMembers(currentPage);
           })
           .catch((error) => {
             toast({
@@ -190,6 +198,16 @@ export function MemberList() {
             ))}
           </Tbody>
         </Table>
+        <Pagination
+          pageInfo={{
+            currentPageNumber: currentPage,
+            nextPageNumber: currentPage < totalPages ? currentPage + 1 : null,
+            prevPageNumber: currentPage > 1 ? currentPage - 1 : null,
+            lastPageNumber: totalPages,
+          }}
+          pageNumbers={Array.from({ length: totalPages }, (_, i) => i + 1)}
+          handlePageButtonClick={handlePageButtonClick}
+        />
       </Box>
     </Center>
   );
