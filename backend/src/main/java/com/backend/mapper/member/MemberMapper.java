@@ -77,21 +77,21 @@ public interface MemberMapper {
             """)
     void updatePasswordByEmail(String username, String password);
 
-//    // OAuth2
-//    @Insert("""
-//            INSERT INTO member(username, email, name, role)
-//            VALUES (#{username}, #{email}, #{name}, #{role})
-//            """)
-//    @Options(useGeneratedKeys = true, keyProperty = "id")
-//    int insertMember(Member member);
-//
-//    @Update("""
-//            UPDATE member
-//            SET email = #{email},
-//                name = #{name}
-//            WHERE username = #{username}
-//            """)
-//    int updateMember(Member member);
+    // OAuth2
+    @Insert("""
+            INSERT INTO member(username, name, role)
+            VALUES (#{username}, #{name}, #{role})
+            """)
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insertMember(Member member);
+
+    @Update("""
+            UPDATE member
+            SET username = #{username},
+                name = #{name}
+            WHERE username = #{username}
+            """)
+    int updateMember(Member member);
 
     // DiaryBoard
     @Select("""

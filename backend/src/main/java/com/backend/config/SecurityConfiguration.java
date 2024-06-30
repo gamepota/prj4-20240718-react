@@ -6,11 +6,11 @@ import com.backend.security.CustomLoginFilter;
 import com.backend.security.CustomLogoutFilter;
 import com.backend.security.JWTFilter;
 import com.backend.security.JWTUtil;
+import com.backend.service.member.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,12 +35,14 @@ public class SecurityConfiguration {
     private final JWTUtil jwtUtil;
     private final RefreshMapper refreshMapper;
     private final LoginCheckMapper loginCheckMapper;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-    public SecurityConfiguration(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshMapper refreshMapper, LoginCheckMapper loginCheckMapper) {
+    public SecurityConfiguration(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshMapper refreshMapper, LoginCheckMapper loginCheckMapper, CustomOAuth2UserService customOAuth2UserService) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.refreshMapper = refreshMapper;
         this.loginCheckMapper = loginCheckMapper;
+        this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Bean
@@ -83,14 +85,16 @@ public class SecurityConfiguration {
         // http basic disable
         http.httpBasic((auth) -> auth.disable());
         //oauth2
-        http.oauth2Login(Customizer.withDefaults());
-
+        http.oauth2Login((oauth2) -> oauth2
+                .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+                        .userService(customOAuth2UserService)));
         // 경로별 권한
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/reissue").permitAll()
                 .anyRequest().authenticated());
+
 
         // 필터 추가
         http.addFilterBefore(new JWTFilter(jwtUtil), CustomLoginFilter.class);

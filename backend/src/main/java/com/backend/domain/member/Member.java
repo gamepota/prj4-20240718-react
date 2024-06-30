@@ -23,4 +23,5 @@ public class Member {
     private Role role;
     private String tokenRole;
     private String imageUrl;
+    private String email;
 }
