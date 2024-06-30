@@ -7,6 +7,8 @@ import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -110,16 +112,21 @@ public class MemberController {
     }
 
     // MemberFind
-    @PostMapping("/find-password")
-    public ResponseEntity<String> findPassword(@RequestBody Map<String, String> request) {
-        String email = request.get("username");
-        try {
-            emailSenderService.createMail(email);
-            return ResponseEntity.ok("임시 비밀번호가 이메일로 전송되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace(); // 서버 로그에 예외 출력
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("비밀번호 재설정 메일 전송에 실패했습니다.");
+    @GetMapping("/find")
+    public String findPassword(Model model) {
+        return "/member/find";
+    }
+
+    @Transactional
+    @PostMapping("/sendEmail")
+    public ResponseEntity<String> sendEmail(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        Member memberEmail = service.getByUsername(username);
+        if (memberEmail == null) {
+            return ResponseEntity.notFound().build();
         }
+        String tempPassword = emailSenderService.createMail(username);
+        return ResponseEntity.ok(tempPassword);
     }
 
     // 다이어리 ID 검증

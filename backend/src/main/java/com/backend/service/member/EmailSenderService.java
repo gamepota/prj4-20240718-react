@@ -1,10 +1,8 @@
 package com.backend.service.member;
 
 import com.backend.domain.member.EmailSender;
-import com.backend.mapper.member.EmailMapper;
+import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.MailAuthenticationException;
-import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +14,7 @@ public class EmailSenderService {
 
     private final JavaMailSender mailSender;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final EmailMapper emailMapper;
+    private final MemberMapper mapper;
 
     public String createMail(String username) {
         EmailSender sender = new EmailSender();
@@ -24,16 +22,15 @@ public class EmailSenderService {
 
         sender.setAddress(username);
         sender.setTitle("임시 비밀번호 발급");
-        sender.setContent("임시 비밀번호: " + tempPassword + "\n로그인 후 비밀번호를 반드시 변경해 주세요.\n");
-
+        sender.setContent("임시 비밀번호: " + tempPassword + "\n 로그인 후 비밀번호를 반드시 변경해 주세요.\n");
         sendEmail(sender);
         updatePassword(username, tempPassword);
 
-        return tempPassword; // 임시 비밀번호 반환
+        return tempPassword;
     }
 
-    // 임시 비밀번호 생성
-    public String getTempPassword() {
+    private String getTempPassword() {
+
         char[] charSet = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
                 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
         StringBuilder tempPassword = new StringBuilder();
@@ -46,27 +43,18 @@ public class EmailSenderService {
         return tempPassword.toString();
     }
 
-    // 이메일 보내기
-    public void sendEmail(EmailSender sender) {
+    private void sendEmail(EmailSender sender) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("petmily24@gmail.com");
-        message.setReplyTo("petmily24@gmail.com");
+        message.setFrom("petmily2024@naver.com");
+        message.setReplyTo("petmily2024@naver.com");
         message.setTo(sender.getAddress());
         message.setSubject(sender.getTitle());
         message.setText(sender.getContent());
-        try {
-            mailSender.send(message);
-        } catch (MailAuthenticationException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Mail Authentication failed. Check your email and password settings.", e);
-        } catch (MailException e) {
-            e.printStackTrace();
-            throw e;
-        }
+        mailSender.send(message);
     }
 
-    private void updatePassword(String username, String tempPassword) {
+    public void updatePassword(String username, String tempPassword) {
         String password = passwordEncoder.encode(tempPassword);
-        emailMapper.updatePasswordByEmail(username, password);
+        mapper.updatePasswordByEmail(username, password);
     }
 }

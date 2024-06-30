@@ -69,6 +69,30 @@ public interface MemberMapper {
             """)
     int deleteById(Integer id);
 
+    // MemberFind
+    @Update("""
+            UPDATE member
+            SET password = #{password}
+            WHERE username = #{username}
+            """)
+    void updatePasswordByEmail(String username, String password);
+
+//    // OAuth2
+//    @Insert("""
+//            INSERT INTO member(username, email, name, role)
+//            VALUES (#{username}, #{email}, #{name}, #{role})
+//            """)
+//    @Options(useGeneratedKeys = true, keyProperty = "id")
+//    int insertMember(Member member);
+//
+//    @Update("""
+//            UPDATE member
+//            SET email = #{email},
+//                name = #{name}
+//            WHERE username = #{username}
+//            """)
+//    int updateMember(Member member);
+
     // DiaryBoard
     @Select("""
             SELECT id,nickname
