@@ -1,7 +1,13 @@
-import React, { useEffect } from "react";
-import { Box } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Flex, Input } from "@chakra-ui/react";
+
+const { kakao } = window;
 
 export const PlaceMap2 = ({ ctprvnCd }) => {
+  const [map, setMap] = useState(null);
+  const [keyword, setKeyword] = useState("");
+  const [address, setAddress] = useState("");
+
   useEffect(() => {
     if (window.kakao && window.kakao.maps) {
       initializeMap();
@@ -27,6 +33,7 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     };
 
     const map = new kakao.maps.Map(mapContainer, mapOption);
+    setMap(map);
 
     if (ctprvnCd) {
       // Center the map based on the ctprvnCd
@@ -59,5 +66,66 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     }
   };
 
-  return <Box id="place-map" width="100%" height="500px" />;
+  const searchPlaces = () => {
+    const ps = new kakao.maps.services.Places();
+    ps.keywordSearch(keyword, (data, status) => {
+      if (status === kakao.maps.services.Status.OK) {
+        let bounds = new kakao.maps.LatLngBounds();
+        data.forEach((place) => {
+          const position = new kakao.maps.LatLng(place.y, place.x);
+          const marker = new kakao.maps.Marker({
+            position,
+            map,
+          });
+          bounds.extend(position);
+        });
+        map.setBounds(bounds);
+      }
+    });
+  };
+
+  const searchAddress = () => {
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.addressSearch(address, (result, status) => {
+      if (status === kakao.maps.services.Status.OK) {
+        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        map.setCenter(coords);
+        const marker = new kakao.maps.Marker({
+          map,
+          position: coords,
+        });
+        const infowindow = new kakao.maps.InfoWindow({
+          content:
+            '<div style="width:150px;text-align:center;padding:6px 0;">여기입니다!</div>',
+        });
+        infowindow.open(map, marker);
+      }
+    });
+  };
+
+  return (
+    <Box>
+      <Flex direction="column" align="center" mb={4}>
+        <Input
+          type="text"
+          placeholder="장소 검색"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          mb={2}
+        />
+        <Button onClick={searchPlaces} mb={4}>
+          검색
+        </Button>
+        <Input
+          type="text"
+          placeholder="주소 검색"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          mb={2}
+        />
+        <Button onClick={searchAddress}>검색</Button>
+      </Flex>
+      <Box id="place-map" width="100%" height="500px" />
+    </Box>
+  );
 };
