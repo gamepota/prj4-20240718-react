@@ -100,7 +100,7 @@ export function MemberLogin(props) {
 
   return (
     <>
-      <Center>
+      <Center mt={5}>
         <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
           <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
             로그인

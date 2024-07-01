@@ -142,7 +142,7 @@ export function MemberList() {
   }
 
   return (
-    <Center>
+    <Center mt={5}>
       <Box
         w="100%"
         maxW="1200px"
