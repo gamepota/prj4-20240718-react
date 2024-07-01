@@ -12,6 +12,7 @@ import {
   MenuItem,
   MenuList,
   Select,
+  SimpleGrid,
   Table,
   Tbody,
   Td,
@@ -32,7 +33,8 @@ export function BoardList() {
   const [boardType, setBoardType] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchType, setSearchType] = useState("전체");
-  const [selectedBoardId, setSelectedBoardId] = useState(null); // 새로운 상태 추가
+  const [selectedBoardId, setSelectedBoardId] = useState(null);
+  const [boards, setBoards] = useState([]);
   const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
@@ -96,6 +98,7 @@ export function BoardList() {
         navigate(`/board/${boardId}`);
       });
   }
+
   function handleSearchClick() {
     searchParams.set("searchType", searchType);
     searchParams.set("keyword", searchKeyword);
@@ -222,10 +225,9 @@ export function BoardList() {
                     </MenuItem>
                     <MenuItem onClick={() => handlePageSizeChange(100)}>
                       100개씩 보기
-                    </MenuItem>
                   </MenuList>
                 </>
-              )}
+                )}
             </Menu>
           </Box>
         </Flex>
@@ -234,46 +236,24 @@ export function BoardList() {
       <Center>
         <Box mb={10}></Box>
         <Box mb={10}>
-          <Table boxShadow="lg" borderRadius="10">
-            <Thead>
-              <Tr>
-                <Th textAlign={"center"}>게시판 종류</Th>
-                <Th>게시글ID</Th>
-                <Th w={500} textAlign="center">
-                  제목
-                </Th>
-                <Th>작성자</Th>
-                <Th>추천수</Th>
-                <Th>조회수</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
+          {boardType === "반려동물 정보" ? (
+            <SimpleGrid columns={[1, 2, 3]} spacing={10}>
               {boardList.map((board) => (
-                <Tr key={board.id}>
-                  <Td textAlign="center">
-                    <span
-                      onClick={() =>
-                        handleClickBoardTypeButton(board.boardType)
-                      }
-                      style={{
-                        cursor: "pointer",
-                      }}
-                    >
-                      {board.boardType}
-                    </span>
-                  </Td>
-                  <Td textAlign="center">{board.id}</Td>
-                  <Td
-                    onClick={() => {
-                      handleBoardClick(board.id);
-                    }}
-                    cursor="pointer"
-                    _hover={{
-                      bgColor: "gray.200",
-                    }}
-                    bg={board.id === selectedBoardId ? "gray.200" : ""}
-                  >
+                <Box
+                  key={board.id}
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  overflow="hidden"
+                  p={4}
+                  cursor="pointer"
+                  onClick={() => handleBoardClick(board.id)}
+                  _hover={{ bg: "gray.200" }}
+                >
+                  <Box fontWeight="bold" as="h4" fontSize="xl">
                     {board.title}
+                  </Box>
+                  <Box>{board.writer}</Box>
+                  <Box>
                     {board.numberOfImages > 0 && (
                       <Badge ml={2}>
                         {board.numberOfImages}
@@ -283,14 +263,73 @@ export function BoardList() {
                     {board.numberOfComments > 0 && (
                       <span> [{board.numberOfComments}]</span>
                     )}
-                  </Td>
-                  <Td>{board.writer}</Td>
-                  <Td textAlign="center">{board.numberOfLikes}</Td>
-                  <Td textAlign="center">{board.views}</Td>
-                </Tr>
+                  </Box>
+                  <Box>
+                    <span>추천수: {board.numberOfLikes}</span>
+                    <span>조회수: {board.views}</span>
+                  </Box>
+                </Box>
               ))}
-            </Tbody>
-          </Table>
+            </SimpleGrid>
+          ) : (
+            <Table boxShadow="lg" borderRadius="10">
+              <Thead>
+                <Tr>
+                  <Th textAlign={"center"}>게시판 종류</Th>
+                  <Th>게시글ID</Th>
+                  <Th w={500} textAlign="center">
+                    제목
+                  </Th>
+                  <Th>작성자</Th>
+                  <Th>추천수</Th>
+                  <Th>조회수</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {boardList.map((board) => (
+                  <Tr key={board.id}>
+                    <Td textAlign="center">
+                      <span
+                        onClick={() =>
+                          handleClickBoardTypeButton(board.boardType)
+                        }
+                        style={{
+                          cursor: "pointer",
+                        }}
+                      >
+                        {board.boardType}
+                      </span>
+                    </Td>
+                    <Td textAlign="center">{board.id}</Td>
+                    <Td
+                      onClick={() => {
+                        handleBoardClick(board.id);
+                      }}
+                      cursor="pointer"
+                      _hover={{
+                        bgColor: "gray.200",
+                      }}
+                      bg={board.id === selectedBoardId ? "gray.200" : ""}
+                    >
+                      {board.title}
+                      {board.numberOfImages > 0 && (
+                        <Badge ml={2}>
+                          {board.numberOfImages}
+                          <FontAwesomeIcon icon={faImage} />
+                        </Badge>
+                      )}
+                      {board.numberOfComments > 0 && (
+                        <span> [{board.numberOfComments}]</span>
+                      )}
+                    </Td>
+                    <Td>{board.writer}</Td>
+                    <Td textAlign="center">{board.numberOfLikes}</Td>
+                    <Td textAlign="center">{board.views}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
         </Box>
       </Center>
       <Pagination
@@ -330,5 +369,5 @@ export function BoardList() {
         </Flex>
       </Center>
     </>
-  );
+);
 }

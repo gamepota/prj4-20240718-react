@@ -142,10 +142,11 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/api/board/delete")
+    @DeleteMapping("delete")
     public ResponseEntity deleteMultiple(@RequestBody DeleteRequest deleteRequest) {
         List<Integer> ids = deleteRequest.getIds();
         Integer memberId = deleteRequest.getMemberId();
+        System.out.println("memberId = " + memberId);
 
         for (Integer id : ids) {
             if (!service.hasAccess(id, memberId)) {
