@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.Map;
 
 @RestController
@@ -77,13 +78,11 @@ public class NaverAuthController {
                 String accessJwt = jwtUtil.createJwt("access", username, role, 600000L);
                 String refreshJwt = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
+                // 프론트엔드로 리디렉션
+                String redirectUrl = "http://localhost:5173/oauth2/code/naver?access=" + accessJwt + "&refresh=" + refreshJwt;
                 HttpHeaders responseHeaders = new HttpHeaders();
-                responseHeaders.set("access", accessJwt);
-                responseHeaders.set("refresh", refreshJwt);
-
-                return ResponseEntity.ok()
-                        .headers(responseHeaders)
-                        .body(Map.of("id", userInfo.get("id"), "nickname", userInfo.get("nickname"), "role", role));
+                responseHeaders.setLocation(URI.create(redirectUrl));
+                return new ResponseEntity<>(responseHeaders, HttpStatus.FOUND);
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
