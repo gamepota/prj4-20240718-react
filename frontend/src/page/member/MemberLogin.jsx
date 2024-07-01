@@ -89,9 +89,10 @@ export function MemberLogin(props) {
   async function handleNaverLogin() {
     try {
       const response = await axios.get("/api/member/login/naver");
-      if (response.status === 302) {
+      if (response.status === 200) {
+        const { url } = response.data;
         // 네이버 로그인 페이지로 리디렉션
-        window.location.href = response.headers.location;
+        window.location.href = url;
       }
     } catch (error) {
       setError("네이버 로그인 요청에 실패했습니다.");
