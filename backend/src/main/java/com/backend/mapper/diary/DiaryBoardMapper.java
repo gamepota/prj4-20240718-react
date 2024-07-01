@@ -19,6 +19,7 @@ public interface DiaryBoardMapper {
                 SELECT
                 d.id,
                 d.title,
+    						d.inserted,
                 m.nickname writer
                 FROM diary d JOIN member m ON d.member_id = m.id
                 ORDER BY d.id DESC

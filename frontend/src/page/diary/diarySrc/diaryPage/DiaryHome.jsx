@@ -176,7 +176,7 @@ export function DiaryHome() {
             ) : (
               <>
                 <Text>{profileData.statusMessage}</Text>
-                <Textarea value={profileData.introduction} fontSize="sm" h={"250px"} readOnly/>
+                <Textarea value={profileData.introduction || "자기소개가 없습니다."} fontSize="sm" h={"250px"} readOnly/>
                 <HStack spacing={2} alignSelf="flex-end"> // 버튼들을 입력창 우측 아래로 정렬
                   <Button colorScheme="teal" size="sm" onClick={() => setIsEditing(true)}>
                     수정

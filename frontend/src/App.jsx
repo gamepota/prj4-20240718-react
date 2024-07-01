@@ -1,34 +1,35 @@
 import React from "react";
-import { ChakraProvider } from "@chakra-ui/react";
-import { createBrowserRouter, RouterProvider, useLocation } from "react-router-dom";
-import { Home } from "./page/Home.jsx";
-import { MemberSignup } from "./page/member/MemberSignup.jsx";
-import { MemberLogin } from "./page/member/MemberLogin.jsx";
-import { MemberFind } from "./page/member/MemberFind.jsx";
-import { MemberPage } from "./page/member/MemberPage.jsx";
-import { MemberList } from "./page/member/MemberList.jsx";
-import { MemberEdit } from "./page/member/MemberEdit.jsx";
-import { BoardWrite } from "./page/board/BoardWrite.jsx";
-import { BoardList } from "./page/board/BoardList.jsx";
-import { BoardView } from "./page/board/BoardView.jsx";
-import { BoardEdit } from "./page/board/BoardEdit.jsx";
-import { DiaryBoardWrite } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardWrite.jsx";
-import { DiaryBoardView } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardView.jsx";
-import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardEdit.jsx";
-import { PlaceMap } from "./page/place/PlaceMap.jsx";
-import { PlaceReview } from "./page/place/PlaceReview.jsx";
-import { PlaceLocal } from "./page/place/PlaceLocal.jsx";
-import { AIChat } from "./component/chat/AIChat.jsx";
-import { MainPage } from "./page/MainPage.jsx";
-import { LoginProvider } from "./component/LoginProvider.jsx";
-import { DiaryHome } from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
-import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
-import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentWrite.jsx";
-import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
-import { DiaryComment } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
+import {ChakraProvider} from "@chakra-ui/react";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {Home} from "./page/Home.jsx";
+import {MemberSignup} from "./page/member/MemberSignup.jsx";
+import {MemberLogin} from "./page/member/MemberLogin.jsx";
+import {MemberFind} from "./page/member/MemberFind.jsx";
+import {MemberPage} from "./page/member/MemberPage.jsx";
+import {MemberList} from "./page/member/MemberList.jsx";
+import {MemberEdit} from "./page/member/MemberEdit.jsx";
+import {BoardWrite} from "./page/board/BoardWrite.jsx";
+import {BoardList} from "./page/board/BoardList.jsx";
+import {BoardView} from "./page/board/BoardView.jsx";
+import {BoardEdit} from "./page/board/BoardEdit.jsx";
+import {DiaryBoardWrite} from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardWrite.jsx";
+import {DiaryBoardView} from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardView.jsx";
+import {DiaryBoardEdit} from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardEdit.jsx";
+import {PlaceMap} from "./page/place/PlaceMap.jsx";
+import {PlaceReview} from "./page/place/PlaceReview.jsx";
+import {PlaceLocal} from "./page/place/PlaceLocal.jsx";
+import {AIChat} from "./component/chat/AIChat.jsx";
+import {MainPage} from "./page/MainPage.jsx";
+import {LoginProvider} from "./component/LoginProvider.jsx";
+import {DiaryHome} from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
+import {DiaryBoardList} from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
+import {DiaryCommentWrite} from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentWrite.jsx";
+import {DiaryCommentList} from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
+import {DiaryComment} from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
 import KakaoMap from "./KakaoMap.jsx";
 import theme from "./theme.js";
 import {DiaryCommentView} from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentView.jsx";
+import {DiaryHomeMain} from "./page/diary/DiaryHomeMain.jsx";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
         element: <DiaryHome />,
         children: [
           // 다이어리 하위 경로 설정
+          { index: true, element: <DiaryHomeMain /> }, // 다이어리 메인페이지 렌더링
           { path: "comment/view/:id", element: <DiaryCommentView /> }, // 일기 보기
           { path: "comment/list", element: <DiaryCommentList /> }, // 방명록 목록
           { path: "comment/write/:id", element: <DiaryCommentWrite /> }, // 방명록 쓰기
