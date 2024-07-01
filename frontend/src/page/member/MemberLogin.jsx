@@ -155,15 +155,20 @@ export function MemberLogin(props) {
             <Box mt={5}>
               <Button
                 width={"100%"}
-                _hover={{ bgColor: "purple.500 ", color: "white" }}
+                height={"50px"}
+                bg={"#B0E0E6"}
+                color="purple"
+                _hover={{ bg: "#89CFF0" }}
                 onClick={handleLogin}
                 isLoading={isLoading}
+                leftIcon={<Img src="/img/favicon.png" boxSize="20px" />}
               >
-                {isLoading ? <Spinner size="sm" /> : "로그인"}
+                {isLoading ? <Spinner size="sm" /> : "펫밀리로 로그인"}
               </Button>
               <Button
                 mt={4}
                 width={"100%"}
+                height={"50px"}
                 bg="#03C75A"
                 color="white"
                 _hover={{ bg: "#02A447" }}
