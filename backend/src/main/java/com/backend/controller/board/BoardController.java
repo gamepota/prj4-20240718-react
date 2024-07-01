@@ -1,6 +1,7 @@
 package com.backend.controller.board;
 
 import com.backend.domain.board.Board;
+import com.backend.domain.board.DeleteRequest;
 import com.backend.service.board.BoardService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -139,6 +140,24 @@ public class BoardController {
     public ResponseEntity<Map<String, Object>> reportContent(@RequestParam Integer boardId, @RequestParam Integer repoterMemberId) {
         Map<String, Object> response = service.reportContent(boardId, repoterMemberId);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/api/board/delete")
+    public ResponseEntity deleteMultiple(@RequestBody DeleteRequest deleteRequest) {
+        List<Integer> ids = deleteRequest.getIds();
+        Integer memberId = deleteRequest.getMemberId();
+
+        for (Integer id : ids) {
+            if (!service.hasAccess(id, memberId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+
+        for (Integer id : ids) {
+            service.delete(id);
+        }
+
+        return ResponseEntity.ok().build();
     }
 }
 

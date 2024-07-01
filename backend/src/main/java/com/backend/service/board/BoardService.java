@@ -241,8 +241,12 @@ public class BoardService {
     public boolean hasAccess(Integer id, Integer memberId) {
         Board board = mapper.selectById(id);
 
-        return board.getMemberId()
-                .equals(memberId);
+        if (board.getMemberId().equals(memberId) || memberId == 1) {
+            return true;
+        } else {
+            return false;
+        }
+        
     }
 
     public Map<String, Object> like(Map<String, Object> req) {

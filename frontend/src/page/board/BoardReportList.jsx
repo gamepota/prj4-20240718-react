@@ -299,9 +299,15 @@ export function BoardReportList() {
                 <Th>
                   <input
                     type="checkbox"
-                    checked={selectedBoards.length === boardList.length}
+                    checked={
+                      selectedBoards.length > 0 &&
+                      selectedBoards.length === boardList.length
+                    }
                     onChange={() => {
-                      if (selectedBoards.length === boardList.length) {
+                      if (
+                        selectedBoards.length > 0 &&
+                        selectedBoards.length === boardList.length
+                      ) {
                         setSelectedBoards([]);
                       } else {
                         setSelectedBoards(boardList.map((board) => board.id));
