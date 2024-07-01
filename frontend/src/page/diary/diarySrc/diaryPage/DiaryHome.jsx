@@ -1,11 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
-import { Box, Button, Center, Input, Spinner, Text, Textarea, VStack, Image, HStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  HStack,
+  Image,
+  Input,
+  Spinner,
+  Text,
+  Textarea,
+  VStack,
+} from "@chakra-ui/react";
 import { DiaryNavbar } from "../diaryComponent/DiaryNavbar.jsx";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
 import { FriendAddButton } from "../../../../component/FriendAddButton.jsx";
-import {extractUserIdFromDiaryId} from "../../../../util/util.jsx";
+import { extractUserIdFromDiaryId } from "../../../../util/util.jsx";
 
 export function DiaryHome() {
   const { memberInfo } = useContext(LoginContext);
@@ -14,13 +25,18 @@ export function DiaryHome() {
   const [isLoading, setIsLoading] = useState(true);
   const [ownerNickname, setOwnerNickname] = useState("");
   const [ownerId, setOwnerId] = useState(null); // 다이어리 주인의 ID 상태 추가
-  const [profileData, setProfileData] = useState({ statusMessage: "", introduction: "" });
+  const [profileData, setProfileData] = useState({
+    statusMessage: "",
+    introduction: "",
+  });
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const validateDiaryId = async () => {
       try {
-        const response = await axios.get(`/api/member/validateDiaryId/${diaryId}`);
+        const response = await axios.get(
+          `/api/member/validateDiaryId/${diaryId}`,
+        );
         setIsValidDiaryId(response.data.isValid);
         if (response.data.isValid) {
           setOwnerNickname(response.data.nickname);
@@ -48,7 +64,10 @@ export function DiaryHome() {
     try {
       const response = await axios.get(`/api/diaryBoard/profile/${ownerId}`);
       const { status_message, introduction } = response.data;
-      setProfileData({ statusMessage: status_message || "", introduction: introduction || "" });
+      setProfileData({
+        statusMessage: status_message || "",
+        introduction: introduction || "",
+      });
     } catch (error) {
       if (error.response && error.response.status === 404) {
         // 프로필이 존재하지 않는 경우 기본값 설정
@@ -63,12 +82,14 @@ export function DiaryHome() {
     const data = {
       ownerId: extractUserIdFromDiaryId(diaryId),
       status_message: profileData.statusMessage,
-      introduction: profileData.introduction
+      introduction: profileData.introduction,
     };
 
     try {
       // 프로필 존재 여부 확인
-      const checkProfileResponse = await axios.get(`/api/diaryBoard/profile/${ownerId}`);
+      const checkProfileResponse = await axios.get(
+        `/api/diaryBoard/profile/${ownerId}`,
+      );
       if (checkProfileResponse.status === 200) {
         // 프로필이 존재하면 PUT 요청
         await axios.put(`/api/diaryBoard/profile/${ownerId}`, data);
@@ -143,10 +164,10 @@ export function DiaryHome() {
             </Text>
             <Box>
               <Image
-                borderRadius='full'
-                boxSize='150px'
-                src='https://bit.ly/dan-abramov'
-                alt='Dan Abramov'
+                borderRadius="full"
+                boxSize="150px"
+                src="https://bit.ly/dan-abramov"
+                alt="Dan Abramov"
               />
             </Box>
 
@@ -154,22 +175,37 @@ export function DiaryHome() {
               <>
                 <Input
                   value={profileData.statusMessage}
-                  onChange={(e) => setProfileData({ ...profileData, statusMessage: e.target.value })}
+                  onChange={(e) =>
+                    setProfileData({
+                      ...profileData,
+                      statusMessage: e.target.value,
+                    })
+                  }
                   placeholder="상태메시지를 입력하세요"
                   size="sm"
                   h="30px"
                 />
                 <Textarea
                   value={profileData.introduction}
-                  onChange={(e) => setProfileData({ ...profileData, introduction: e.target.value })}
+                  onChange={(e) =>
+                    setProfileData({
+                      ...profileData,
+                      introduction: e.target.value,
+                    })
+                  }
                   placeholder="자기소개를 입력하세요"
                   size="sm"
                   height="250px"
                   bg="white"
                   maxLength={255}
                 />
-                <HStack spacing={2} alignSelf="flex-end"> // 버튼들을 입력창 우측 아래로 정렬
-                  <Button colorScheme="teal" size="sm" onClick={handleSaveProfileData}>
+                <HStack spacing={2} alignSelf="flex-end">
+                  {/*// 버튼들을 입력창 우측 아래로 정렬*/}
+                  <Button
+                    colorScheme="teal"
+                    size="sm"
+                    onClick={handleSaveProfileData}
+                  >
                     저장
                   </Button>
                 </HStack>
@@ -177,9 +213,19 @@ export function DiaryHome() {
             ) : (
               <>
                 <Text>{profileData.statusMessage}</Text>
-                <Textarea value={profileData.introduction || "자기소개가 없습니다."} fontSize="sm" h={"250px"} readOnly/>
-                <HStack spacing={2} alignSelf="flex-end"> // 버튼들을 입력창 우측 아래로 정렬
-                  <Button colorScheme="teal" size="sm" onClick={() => setIsEditing(true)}>
+                <Textarea
+                  value={profileData.introduction || "자기소개가 없습니다."}
+                  fontSize="sm"
+                  h={"250px"}
+                  readOnly
+                />
+                <HStack spacing={2} alignSelf="flex-end">
+                  {/*// 버튼들을 입력창 우측 아래로 정렬*/}
+                  <Button
+                    colorScheme="teal"
+                    size="sm"
+                    onClick={() => setIsEditing(true)}
+                  >
                     수정
                   </Button>
                 </HStack>
