@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction"; // 날짜 및 이벤트 클릭을 위한 플러그인
+import interactionPlugin from "@fullcalendar/interaction";
 import "./DiaryCalendar.css";
-import { LoginContext } from "../../../../../component/LoginProvider.jsx"; // 필요한 CSS 파일 경로 확인
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 const DiaryCalendar = () => {
   const [events, setEvents] = useState([]);
@@ -31,6 +31,33 @@ const DiaryCalendar = () => {
     }
   };
 
+  const handleEventClick = (info) => {
+    const action = prompt(
+      "메모를 수정하거나 삭제하려면 '수정' 또는 '삭제'를 입력하세요:",
+      info.event.title,
+    );
+    if (action === "수정") {
+      const updatedTitle = prompt("메모를 수정하세요:", info.event.title);
+      if (updatedTitle) {
+        const updatedEvents = events.map((event) =>
+          event.start === info.event.startStr
+            ? { ...event, title: updatedTitle }
+            : event,
+        );
+        setEvents(updatedEvents);
+        localStorage.setItem("diaryEvents", JSON.stringify(updatedEvents));
+        info.event.setProp("title", updatedTitle); // 캘린더의 이벤트 제목 업데이트
+      }
+    } else if (action === "삭제") {
+      const updatedEvents = events.filter(
+        (event) => event.start !== info.event.startStr,
+      );
+      setEvents(updatedEvents);
+      localStorage.setItem("diaryEvents", JSON.stringify(updatedEvents));
+      info.event.remove(); // 캘린더에서 이벤트 제거
+    }
+  };
+
   return (
     <div id="calendar">
       {memberInfo && memberInfo.id && memberInfo.nickname && (
@@ -40,7 +67,8 @@ const DiaryCalendar = () => {
           initialView="dayGridMonth"
           events={events}
           dateClick={handleDateClick}
-          height="auto" // 캘린더의 높이를 자동으로 조정
+          eventClick={handleEventClick} // 이벤트 클릭 핸들러 추가
+          height="auto"
         />
       )}
     </div>
