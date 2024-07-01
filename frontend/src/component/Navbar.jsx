@@ -11,7 +11,7 @@ import {
   useDisclosure,
   useMediaQuery,
 } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -50,6 +50,14 @@ export function Navbar() {
     const windowFeatures = "width=1400,height=800,max-width=800,max-height=600";
     window.open(url, "_blank", windowFeatures);
   };
+
+  useEffect(() => {
+    // 페이지 내용이 Navbar 밑에서부터 시작하도록 body 패딩 설정
+    document.body.style.paddingTop = isLargerThan768 ? "100px" : "120px";
+    return () => {
+      document.body.style.paddingTop = "0";
+    };
+  }, [isLargerThan768]);
 
   return (
     <Flex
