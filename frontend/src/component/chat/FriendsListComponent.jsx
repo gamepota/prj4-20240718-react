@@ -59,8 +59,8 @@ export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { 
     fetchFriends(); // 컴포넌트가 마운트될 때 친구 목록을 한 번 가져옴
 
     const intervalId = setInterval(() => {
-      fetchFriends(); // 10초마다 친구 목록을 갱신
-    }, 5000);
+      fetchFriends(); // 30초마다 친구 목록을 갱신
+    }, 30000);
 
     return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 클리어
   }, [memberId]);
