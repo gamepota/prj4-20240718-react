@@ -1,5 +1,15 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import { Box, Input, Button, VStack, Text, InputGroup, InputRightElement, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Input,
+  Button,
+  VStack,
+  Text,
+  InputGroup,
+  InputRightElement,
+  IconButton,
+  Flex,
+} from "@chakra-ui/react";
 import { MinusIcon, ChatIcon } from "@chakra-ui/icons";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
@@ -10,7 +20,13 @@ export function AIChat() {
   const { memberInfo } = useContext(LoginContext);
   const name = memberInfo?.nickname || "Anonymous"; // 사용자 nickname
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      role: 'assistant',
+      content: '안녕하세요, 무엇을 도와드릴까요?',
+      timestamp: new Date().toISOString()
+    }
+  ]);
   const [stompClient, setStompClient] = useState(null); // stompClient 상태 정의 및 초기화
   const [isConnected, setIsConnected] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false); // 최소화 상태 관리
@@ -109,7 +125,7 @@ export function AIChat() {
   return (
     <Box mt={10} p={4} w="80%" maxW="800px" mx="auto" borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white" boxShadow="lg">
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
-        <Text fontWeight="bold">AI 수의사와 상담</Text>
+        <Text fontWeight="bold" fontSize="lg">AI 수의사와 상담</Text>
         <IconButton
           icon={isMinimized ? <ChatIcon /> : <MinusIcon />}
           size="sm"
@@ -119,13 +135,22 @@ export function AIChat() {
       </Box>
       {!isMinimized && (
         <VStack spacing={4} p={2}>
-          <Box width="100%" h="400px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg" bg="gray.50">
+          <Box width="100%" h="500px" overflowY="scroll" p={2} borderWidth="1px" borderRadius="lg" bg="gray.50">
             {messages.map((msg, index) => (
-              <Box key={index} bg={msg.role === 'user' ? "blue.100" : "gray.100"} p={2} borderRadius="md" mb={2}>
-                <Text fontWeight="bold">{msg.role === 'user' ? name : 'AI 수의사'}</Text>
-                <Text>{msg.content}</Text>
-                <Text fontSize="xs" color="gray.500">{new Date(msg.timestamp).toLocaleTimeString()}</Text>
-              </Box>
+              <Flex key={index} justifyContent={msg.role === 'user' ? "flex-start" : "flex-end"} mb={2}>
+                <Box
+                  bg={msg.role === 'user' ? "blue.100" : "gray.100"}
+                  p={3}
+                  borderRadius="md"
+                  maxWidth="70%"
+                >
+                  <Text fontSize="md" fontWeight="bold">{msg.role === 'user' ? name : 'AI 수의사'}</Text>
+                  <Text fontSize="md">{msg.content}</Text>
+                  <Text fontSize="sm" color="gray.500">
+                    {new Date(msg.timestamp).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
+                  </Text>
+                </Box>
+              </Flex>
             ))}
             <div ref={messagesEndRef} />
           </Box>
@@ -136,9 +161,10 @@ export function AIChat() {
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="메시지를 입력하세요"
+              fontSize="md"
             />
             <InputRightElement width="4.5rem">
-              <Button h="1.75rem" size="sm" onClick={sendMessage} disabled={!isConnected}>
+              <Button h="1.75rem" size="md" onClick={sendMessage} disabled={!isConnected}>
                 보내기
               </Button>
             </InputRightElement>
