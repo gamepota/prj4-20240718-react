@@ -157,9 +157,9 @@ export function MemberLogin(props) {
               <Button
                 width={"100%"}
                 height={"50px"}
-                bg={"#B0E0E6"}
+                bg={"#E6E6FA"}
                 color="purple"
-                _hover={{ bg: "#89CFF0" }}
+                _hover={{ bg: "#DCD0FF" }}
                 onClick={handleLogin}
                 isLoading={isLoading}
                 leftIcon={<Img src="/img/favicon.png" boxSize="20px" />}
