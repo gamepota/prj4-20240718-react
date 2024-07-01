@@ -42,36 +42,38 @@ export function BoardReportList() {
   const params = memberId ? { memberId } : {};
 
   const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const boardTypeParam = searchParams.get("boardType") || "전체";
+        setBoardType(boardTypeParam);
 
-  useEffect(
-    () => {
-      const boardTypeParam = searchParams.get("boardType") || "전체";
-      setBoardType(boardTypeParam);
-      axios
-        .get(`/api/board/report/list?${searchParams}`)
-        .then((res) => {
-          setBoardList(res.data.boardList);
-          setPageInfo(res.data.pageInfo);
-          navigate("/board/list/report");
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
-      setSearchType("전체");
-      setSearchKeyword("");
+        const response = await axios.get(
+          `/api/board/report/list?${searchParams}`,
+        );
+        setBoardList(response.data.boardList);
+        setPageInfo(response.data.pageInfo);
 
-      const searchTypeParam = searchParams.get("searchType");
-      const keywordParam = searchParams.get("keyword");
-      if (searchTypeParam) {
-        setSearchType(searchTypeParam);
+        setSearchType("전체");
+        setSearchKeyword("");
+
+        const searchTypeParam = searchParams.get("searchType");
+        const keywordParam = searchParams.get("keyword");
+        if (searchTypeParam) {
+          setSearchType(searchTypeParam);
+        }
+        if (keywordParam) {
+          setSearchKeyword(keywordParam);
+        }
+
+        navigate("/board/list/report");
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-      if (keywordParam) {
-        setSearchKeyword(keywordParam);
-      }
-    },
-    [searchParams],
-    [],
-  );
+    };
+
+    fetchData();
+  }, [searchParams, navigate]); // navigate를 의존성 배열에 추가하여 useEffect가 navigate 후에 실행되도록 함
 
   function handlePageSizeChange(number) {
     setPageAmount(number);
