@@ -138,7 +138,16 @@ export function BoardReportList() {
           position: "top",
         });
         setSelectedBoards([]);
-        navigate(`/board/list/report`);
+
+        axios
+          .get(`/api/board/report/list`)
+          .then((res) => {
+            setBoardList(res.data.boardList);
+            setPageInfo(res.data.pageInfo);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
       })
       .catch((error) => {
         // 삭제 실패 시에는 에러 메시지 표시
