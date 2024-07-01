@@ -23,7 +23,7 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     const mapContainer = document.getElementById("place-map");
     const mapOption = {
       center: new kakao.maps.LatLng(36.2, 128.02025),
-      level: 13,
+      level: 13, // 기본 확대 레벨 설정
     };
 
     const map = new kakao.maps.Map(mapContainer, mapOption);
@@ -55,6 +55,7 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
       const location = locations[ctprvnCd];
       if (location) {
         map.setCenter(new kakao.maps.LatLng(location.lat, location.lng));
+        map.setLevel(6); // 공통 확대 레벨 설정
       }
     }
   };
