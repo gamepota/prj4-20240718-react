@@ -94,7 +94,8 @@ public interface BoardMapper {
                        b.board_type,
                        b.views,
                        b.member_id,
-                       (SELECT bf.name fileList FROM board_file bf WHERE bf.board_id = b.id LIMIT 1) fileList,
+                      (SELECT bf.board_id FROM board_file bf WHERE bf.board_id = b.id LIMIT 1) AS fileList,
+                      
                        COUNT(DISTINCT f.name) number_of_images,
                        COUNT(DISTINCT l.member_id) number_of_likes,
                        COUNT(DISTINCT c.id) number_of_comments
@@ -327,4 +328,13 @@ public interface BoardMapper {
                 WHERE br.board_id = #{boardId} ;
             """)
     List<BoardReport> selectReportsByBoardId(Integer boardId);
+
+    @Select("""
+                SELECT bf.name
+                FROM board_file bf
+                WHERE bf.board_id = #{boardId}
+                LIMIT 1;
+            """)
+    String getFileImageByboardId(@Param("boardId") String boardId);
+
 }

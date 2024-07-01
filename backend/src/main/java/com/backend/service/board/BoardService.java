@@ -143,13 +143,22 @@ public class BoardService {
 
         // 각각의 Board 객체에 fileList 추가
         for (Board board : boardList) {
-            if (board.getFileList() != null && !board.getFileList().isEmpty()) {
-                String firstImageName = board.getFileList().toString(); // 이미 문자열입니다
+            System.out.println("Board ID: " + board.getId());
+
+            // getFileImageByboardId 메서드 호출
+            String firstImageName = mapper.getFileImageByboardId(board.getId().toString());
+            System.out.println("File Name: " + firstImageName);
+
+            if (firstImageName != null) {
                 String thumbnailUrl = srcPrefix + "board/" + board.getId() + "/" + firstImageName;
 
-                // BoardFile 객체를 생성하여 fileList에 추가
+                System.out.println("First Image Name: " + firstImageName);
+                System.out.println("Thumbnail URL: " + thumbnailUrl);
+
                 List<BoardFile> files = Collections.singletonList(new BoardFile(firstImageName, thumbnailUrl));
                 board.setFileList(files);
+
+                System.out.println("Updated FileList: " + board.getFileList());
             }
         }
 

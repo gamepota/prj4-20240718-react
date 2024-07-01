@@ -18,6 +18,7 @@ public class Board {
     private String repoterId;
     private String repoterNickname;
     private String thumbnailUrl;
+    private BoardFile fileName;
 
     private Integer numberOfReports;
     private Integer numberOfImages;
