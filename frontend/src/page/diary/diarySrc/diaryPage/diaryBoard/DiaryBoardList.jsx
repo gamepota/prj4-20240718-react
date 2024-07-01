@@ -15,13 +15,13 @@ import {
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React, {useContext, useEffect, useState} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faImages, faMagnifyingGlass,} from "@fortawesome/free-solid-svg-icons";
+import React, { useContext, useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImages, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import {useNavigate, useSearchParams} from "react-router-dom";
-import {LoginContext} from "../../../../../component/LoginProvider.jsx";
-import {generateDiaryId} from "../../../../../util/util.jsx";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 import Pagination from "../../../../../component/Pagination.jsx";
 import { format } from "date-fns";
 
@@ -33,10 +33,10 @@ export function DiaryBoardList() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const dateFnsDate = new Date();
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
+      // 변경된 부분
       setDiaryBoardList(res.data.diaryBoardList);
       setPageInfo(res.data.pageInfo);
     });
@@ -60,12 +60,16 @@ export function DiaryBoardList() {
   }
 
   function handleSearchClick() {
-    navigate(`/?type=${searchType}$keyword=${searchKeyword}`);
+    const params = new URLSearchParams(searchParams);
+    params.set("type", searchType);
+    params.set("keyword", searchKeyword);
+    navigate(`/api/diaryBoard/list?${params.toString()}`); // 변경된 부분
   }
 
   function handlePageButtonClick(pageNumber) {
-    searchParams.set("page", pageNumber);
-    navigate(`/?${searchParams}`);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", pageNumber);
+    navigate(`/api/diaryBoard/list?${params.toString()}`); // 변경된 부분
   }
 
   function handleSelectedDiaryBoard(id) {
@@ -75,10 +79,10 @@ export function DiaryBoardList() {
 
   function handleWriteClick() {
     const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/write/${id}`);
+    navigate(`/diary/${diaryId}/write/${diaryBoardList.id}`);
   }
 
-  const bg = useColorModeValue("white", "gray.800");
+  // const bg = useColorModeValue("white", "gray.800");
   const hoverBg = useColorModeValue("gray.100", "gray.700");
 
   return (
@@ -99,6 +103,7 @@ export function DiaryBoardList() {
                 <Th>N번째 일기</Th>
                 <Th>내용</Th>
                 <Th>who?</Th>
+                <Th>작성일자</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -120,6 +125,11 @@ export function DiaryBoardList() {
                     )}
                   </Td>
                   <Td textAlign="center">{diaryBoard.writer}</Td>
+                  <Td>
+                    {" "}
+                    <span style={{ color: "red" }} />
+                    {format(new Date(diaryBoard.inserted), "yyyy.MM.dd")}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
