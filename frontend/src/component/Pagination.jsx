@@ -1,44 +1,66 @@
 import React from "react";
-import { Button, Center, Flex } from "@chakra-ui/react";
+import { Button, Center, Flex, IconButton, useColorModeValue } from "@chakra-ui/react";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 const Pagination = ({ pageInfo, pageNumbers, handlePageButtonClick }) => {
+  const buttonBg = useColorModeValue("gray.200", "gray.700");
+  const activeButtonBg = useColorModeValue("blue.500", "blue.200");
+  const textColor = useColorModeValue("black", "white");
+
   return (
-    <Center>
+    <Center mt={4} mb={4}>
       <Flex>
         {pageInfo.prevPageNumber && (
           <>
-            <Button onClick={() => handlePageButtonClick(1)}>맨앞</Button>
-            <Button
+            <IconButton
+              icon={<ArrowLeftIcon />}
+              onClick={() => handlePageButtonClick(1)}
+              aria-label="맨앞"
+              bg={buttonBg}
+              _hover={{ bg: activeButtonBg }}
+              mr={2}
+            />
+            <IconButton
+              icon={<ChevronLeftIcon />}
               onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
-            >
-              이전
-            </Button>
+              aria-label="이전"
+              bg={buttonBg}
+              _hover={{ bg: activeButtonBg }}
+              mr={2}
+            />
           </>
         )}
         {pageNumbers.map((pageNumber) => (
           <Button
             key={pageNumber}
-            w="10"
+            w={10}
             onClick={() => handlePageButtonClick(pageNumber)}
-            colorScheme={
-              pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
-            }
+            bg={pageNumber === pageInfo.currentPageNumber ? activeButtonBg : buttonBg}
+            color={pageNumber === pageInfo.currentPageNumber ? textColor : "inherit"}
+            _hover={{ bg: activeButtonBg }}
+            mr={2}
           >
             {pageNumber}
           </Button>
         ))}
         {pageInfo.nextPageNumber && (
           <>
-            <Button
+            <IconButton
+              icon={<ChevronRightIcon />}
               onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
-            >
-              다음
-            </Button>
-            <Button
+              aria-label="다음"
+              bg={buttonBg}
+              _hover={{ bg: activeButtonBg }}
+              ml={2}
+            />
+            <IconButton
+              icon={<ArrowRightIcon />}
               onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
-            >
-              맨뒤
-            </Button>
+              aria-label="맨뒤"
+              bg={buttonBg}
+              _hover={{ bg: activeButtonBg }}
+              ml={2}
+            />
           </>
         )}
       </Flex>

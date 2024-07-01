@@ -10,19 +10,20 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import KakaoMap2 from "../KakaoMap2.jsx";
 
 const PetProfile = ({ name, imgSrc }) => (
-  <Box textAlign="center">
+  <Box textAlign="center" m={4}>
     <Image src={imgSrc} borderRadius="full" boxSize="150px" mb={2} />
-    <Text fontWeight="bold">{name}</Text>
+    <Text fontWeight="bold" fontSize="md">{name}</Text>
   </Box>
 );
 
 const PetInfoTable = ({ data }) => (
-  <Table variant="simple" size="sm">
-    <Thead>
+  <Table variant="simple" size="md" boxShadow="md" borderRadius="md">
+    <Thead bg={useColorModeValue("gray.200", "gray.700")}>
       <Tr>
         <Th>No.</Th>
         <Th>Name</Th>
@@ -31,7 +32,7 @@ const PetInfoTable = ({ data }) => (
     </Thead>
     <Tbody>
       {data.map((row, index) => (
-        <Tr key={index}>
+        <Tr key={index} _hover={{ bg: useColorModeValue("gray.100", "gray.600") }}>
           <Td>{row.no}</Td>
           <Td>{row.name}</Td>
           <Td>{row.value}</Td>
@@ -59,37 +60,35 @@ export const MainPage = () => {
   ];
 
   return (
-    <Box p={4}>
-      <Flex justify="center" p={4} maxW={"70%"}>
-        <Text fontSize="xl" fontWeight="bold">
+    <Box p={4} maxW="1200px" mx="auto">
+      <Flex justify="center" p={4} mb={8}>
+        <Text fontSize="2xl" fontWeight="bold">
           내 반려동물을 소개합니다.
         </Text>
       </Flex>
-      <Flex justify="space-around" mb={4} maxW={"70%"} alignContent={"center"}>
+      <Flex justify="space-around" mb={8} wrap="wrap">
         <PetProfile name="똘기" imgSrc="/img/곰벌레.jpg" />
         <PetProfile name="땡이" imgSrc="/img/리트리버즈.jpg" />
         <PetProfile name="호치" imgSrc="/img/벌거숭이두더지쥐.jpg" />
         <PetProfile name="새초미" imgSrc="/img/코알라.jpg" />
       </Flex>
-      <Flex justify="space-around" mb={4} maxW={"70%"}>
-        <Box>
-          <h3>아무 말 게시판</h3>
+      <Flex justify="space-around" mb={8} wrap="wrap" gap={8}>
+        <Box flex="1" minW="300px">
+          <Text fontSize="lg" fontWeight="bold" mb={2}>아무 말 게시판</Text>
           <PetInfoTable data={board1} />
         </Box>
-        <Box>
-          <h3>아무 노래 게시판</h3>
+        <Box flex="1" minW="300px">
+          <Text fontSize="lg" fontWeight="bold" mb={2}>아무 노래 게시판</Text>
           <PetInfoTable data={board2} />
         </Box>
       </Flex>
-
-      <Flex justify="center" p={4}>
+      <Flex justify="center" p={4} mb={8}>
         <Text fontSize="lg" fontWeight="bold">
           근처 동물 병원 보기
         </Text>
       </Flex>
-
       <Flex justify="center">
-        <Box mx={"auto"} w={"500px"} h={"300px"}>
+        <Box mx={"auto"} w={"100%"} maxW={"600px"} h={"400px"}>
           <KakaoMap2 />
         </Box>
       </Flex>

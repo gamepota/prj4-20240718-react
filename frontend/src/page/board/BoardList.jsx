@@ -20,6 +20,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
@@ -107,6 +108,9 @@ export function BoardList() {
 
     navigate(`?${searchParams}`);
   }
+
+  const bg = useColorModeValue("white", "gray.800");
+  const hoverBg = useColorModeValue("gray.100", "gray.700");
 
   return (
     <>

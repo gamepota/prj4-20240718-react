@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { ChakraProvider } from "@chakra-ui/react";
+import React from "react";
+import { useState } from "react";
+import { ChakraProvider, theme } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./page/Home.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
@@ -24,7 +25,6 @@ import { LoginProvider } from "./component/LoginProvider.jsx";
 import { DiaryHome } from "./page/diary/diarySrc/diaryPage/DiaryHome.jsx";
 import { DiaryBoardList } from "./page/diary/diarySrc/diaryPage/diaryBoard/DiaryBoardList.jsx";
 import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentWrite.jsx";
-import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
 import { DiaryComment } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
 import KakaoMap from "./KakaoMap.jsx";
 import { BoardReportList } from "./page/board/BoardReportList.jsx";
@@ -33,6 +33,9 @@ import { PlaceMap2 } from "./page/place/PlaceMap2.jsx";
 
 const App = () => {
   const [selectedCtprvnCd, setSelectedCtprvnCd] = useState(null);
+import DiaryCalendar from "./page/diary/diarySrc/diaryPage/diaryCalendar/DiaryCalendar.jsx";
+import { DiaryHomeMain } from "./page/diary/diarySrc/diaryPage/DiaryHomeMain.jsx";
+import { DiaryCommentView } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentView.jsx";
 
 const router = createBrowserRouter([
   {
@@ -45,10 +48,13 @@ const router = createBrowserRouter([
         element: <DiaryHome />,
         children: [
           // 다이어리 하위 경로 설정
+          { path: "calendar", element: <DiaryCalendar /> }, // 예방접종
           { path: "comment/view/:id", element: <DiaryBoardView /> }, // 일기 보기
-          { path: "comment/list", element: <DiaryCommentList /> }, // 방명록 목록
+          { index: true, element: <DiaryHomeMain /> }, // 다이어리 메인페이지 렌더링
+          { path: "comment/view/:id", element: <DiaryCommentView /> }, // 일기 보기
+          // { path: "comment/list/:id", element: <DiaryCommentList /> }, // 방명록 목록
           { path: "comment/write/:id", element: <DiaryCommentWrite /> }, // 방명록 쓰기
-          { path: "comment", element: <DiaryComment /> }, // 방명록
+          { path: "comment/:id", element: <DiaryComment /> }, // 방명록
           { path: "list", element: <DiaryBoardList /> }, // 다이어리 목록
           { path: "edit/:id", element: <DiaryBoardEdit /> }, // 일기 수정
           { path: "view/:id", element: <DiaryBoardView /> }, // 일기 보기
@@ -127,7 +133,7 @@ const router = createBrowserRouter([
 
   return (
     <LoginProvider>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <RouterProvider router={router} />
       </ChakraProvider>
     </LoginProvider>

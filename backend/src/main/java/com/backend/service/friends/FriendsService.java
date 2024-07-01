@@ -38,4 +38,8 @@ public class FriendsService {
 	public boolean checkFriendship(Integer memberId, Integer friendId) {
 		return friendsMapper.checkFriendship(memberId, friendId) > 0;
 	}
+
+	public void deleteFriend(Integer memberId, Integer friendId) {
+		friendsMapper.deleteFriend(memberId, friendId);
+	}
 }

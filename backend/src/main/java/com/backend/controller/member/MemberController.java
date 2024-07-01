@@ -139,10 +139,12 @@ public class MemberController {
 
         System.out.println("Diary ID: " + diaryId);  // 로그 추가
         System.out.println("Member found: " + (member != null));  // 로그 추가
+        System.out.println("memberId: " + member.getId());  // 로그 추가
 
         if (member != null) {
             response.put("isValid", true);
             response.put("nickname", member.getNickname());
+            response.put("ownerId", member.getId());
             return ResponseEntity.ok(response);
         } else {
             response.put("isValid", false);

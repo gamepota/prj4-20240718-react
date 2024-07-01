@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useContext} from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   Box,
   Input,
@@ -9,45 +9,58 @@ import {
   InputRightElement,
   IconButton,
   CloseButton,
-  HStack, Flex
+  HStack,
+  Flex
 } from "@chakra-ui/react";
-import {MinusIcon, ChatIcon} from "@chakra-ui/icons";
+import { MinusIcon, ChatIcon } from "@chakra-ui/icons";
 import SockJS from "sockjs-client";
-import {Client} from "@stomp/stompjs";
+import { Client } from "@stomp/stompjs";
 import axios from "axios";
-import {LoginContext} from '../LoginProvider'; // LoginContext 가져오기
+import { LoginContext } from '../LoginProvider';
 
-export const ChatComponent = ({selectedFriend, onClose}) => {
-  const {memberInfo} = useContext(LoginContext) || {};
+export const ChatComponent = ({ selectedFriend, onClose, onNewMessage }) => {
+  const { memberInfo } = useContext(LoginContext) || {};
   const username = memberInfo?.nickname;
   const userId = memberInfo?.id;
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false); // 기본값을 minimized로 설정
+  const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef(null);
 
+  const prevOnNewMessageRef = useRef();
+
   useEffect(() => {
+    if (prevOnNewMessageRef.current !== onNewMessage) {
+      console.log("onNewMessage updated:", onNewMessage);
+      prevOnNewMessageRef.current = onNewMessage;
+    }
+  }, [onNewMessage]);
+
+  useEffect(() => {
+    console.log("ChatComponent mounted. selectedFriend:", selectedFriend);
+
     if (username && selectedFriend) {
-      const roomId = [userId, selectedFriend.id].sort((a, b) => a - b).join('-'); // 고유한 채팅방 ID 생성
-      console.log(roomId);
+      const roomId = [userId, selectedFriend.id].sort((a, b) => a - b).join('-');
       const socket = new SockJS(`/ws`);
       const client = new Client({
         webSocketFactory: () => socket,
         reconnectDelay: 5000,
         onConnect: () => {
-          console.log("Connected to WebSocket");
           client.subscribe(`/topic/chatroom/${roomId}`, (message) => {
             const receivedMessage = JSON.parse(message.body);
-            console.log("Received message:", receivedMessage);
             setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+            console.log("Received message:", receivedMessage);
+            if (onNewMessage && typeof onNewMessage === 'function') {
+              console.log("Calling onNewMessage with senderId:", receivedMessage.senderId);
+              onNewMessage(receivedMessage.senderId);
+            } else {
+              console.log("onNewMessage is not available or not a function:", onNewMessage);
+            }
           });
           setIsConnected(true);
           setStompClient(client);
-          console.log("STOMP Client Connected");
-
-          // Fetch previous messages
           fetchMessagesForRoom(roomId);
         },
         onStompError: (frame) => {
@@ -59,7 +72,6 @@ export const ChatComponent = ({selectedFriend, onClose}) => {
           setIsConnected(false);
         },
         onDisconnect: () => {
-          console.log("Disconnected from WebSocket");
           setIsConnected(false);
         }
       });
@@ -71,7 +83,7 @@ export const ChatComponent = ({selectedFriend, onClose}) => {
         }
       };
     }
-  }, [username, selectedFriend]);
+  }, [username, selectedFriend, onNewMessage, userId]);
 
   const fetchMessagesForRoom = async (roomId) => {
     try {
@@ -83,21 +95,19 @@ export const ChatComponent = ({selectedFriend, onClose}) => {
   };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({behavior: "auto"});
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   }, [messages]);
 
   const sendMessage = async () => {
     if (!isConnected) {
-      console.error("Cannot send message: WebSocket is not connected.");
       return;
     }
 
     if (!message.trim() || !selectedFriend) {
-      console.error("Cannot send message: message or selectedFriend is empty.");
       return;
     }
 
-    const roomId = [userId, selectedFriend.id].sort((a, b) => a - b).join('-'); // 고유한 채팅방 ID 생성
+    const roomId = [userId, selectedFriend.id].sort((a, b) => a - b).join('-');
     const chatMessage = {
       senderId: userId,
       recipientId: selectedFriend.id,
@@ -105,18 +115,14 @@ export const ChatComponent = ({selectedFriend, onClose}) => {
       senderNickName: username,
       recipientNickName: selectedFriend.nickname
     };
-    console.log("Sending message:", chatMessage);
 
-    // WebSocket을 통해 메시지 전송
     stompClient.publish({
       destination: `/app/chat/${roomId}`,
       body: JSON.stringify(chatMessage)
     });
 
-    // HTTP POST 요청을 통해 메시지 저장
     try {
-      await axios.post('/api/chat', chatMessage); // axios 요청 경로 수정
-      console.log("Message saved to the server");
+      await axios.post('/api/chat', chatMessage);
     } catch (error) {
       console.error("Error saving message to the server:", error);
     }
@@ -135,8 +141,7 @@ export const ChatComponent = ({selectedFriend, onClose}) => {
   };
 
   return (
-    <Box position="fixed" bottom={2} right={2} p={2} minW="400px" maxW="400px" borderWidth="1px" borderRadius="lg"
-         overflow="hidden" bg="white">
+    <Box position="fixed" bottom={2} right={2} p={2} minW="400px" maxW="400px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg="white">
       <Box display="flex" justifyContent="space-between" alignItems="center" borderBottomWidth="1px" p={2}>
         <HStack>
           <Text fontWeight="bold">채팅</Text>
@@ -144,12 +149,12 @@ export const ChatComponent = ({selectedFriend, onClose}) => {
         </HStack>
         <Box display="flex" justifyContent="flex-end" alignItems="center">
           <IconButton
-            icon={isMinimized ? <ChatIcon/> : <MinusIcon/>}
+            icon={isMinimized ? <ChatIcon /> : <MinusIcon />}
             size="sm"
             onClick={toggleMinimize}
             aria-label={isMinimized ? "Expand Chat" : "Minimize Chat"}
           />
-          <CloseButton onClick={onClose}/>
+          <CloseButton onClick={onClose} />
         </Box>
       </Box>
       {!isMinimized && (
@@ -164,9 +169,9 @@ export const ChatComponent = ({selectedFriend, onClose}) => {
                   textAlign={Number(msg.senderId) === Number(userId) ? "left" : "right"}
                   maxWidth="70%"
                 >
-                  <Text fontSize="xs" fontWeight="bold">{msg.senderNickName}</Text>
-                  <Text fontSize="xs">{msg.content}</Text>
-                  <Text fontSize="xs" color="gray.500">
+                  <Text fontSize="md" fontWeight="bold">{msg.senderNickName}</Text>
+                  <Text fontSize="md">{msg.content}</Text>
+                  <Text fontSize="md" color="gray.500">
                     {new Date(msg.timestamp).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
                   </Text>
                 </Box>

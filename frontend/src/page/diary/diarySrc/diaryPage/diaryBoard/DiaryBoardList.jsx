@@ -13,21 +13,17 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleLeft,
-  faAngleRight,
-  faAnglesLeft,
-  faAnglesRight,
-  faImages,
-  faMagnifyingGlass,
-} from "@fortawesome/free-solid-svg-icons";
+import { faImages, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { generateDiaryId } from "../../../../../util/util.jsx";
+import Pagination from "../../../../../component/Pagination.jsx";
+import { format } from "date-fns";
 
 export function DiaryBoardList() {
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
@@ -40,6 +36,7 @@ export function DiaryBoardList() {
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
+      // 변경된 부분
       setDiaryBoardList(res.data.diaryBoardList);
       setPageInfo(res.data.pageInfo);
     });
@@ -63,25 +60,33 @@ export function DiaryBoardList() {
   }
 
   function handleSearchClick() {
-    navigate(`/?type=${searchType}$keyword=${searchKeyword}`);
+    const params = new URLSearchParams(searchParams);
+    params.set("type", searchType);
+    params.set("keyword", searchKeyword);
+    navigate(`/api/diaryBoard/list?${params.toString()}`); // 변경된 부분
   }
 
   function handlePageButtonClick(pageNumber) {
-    searchParams.set("page", pageNumber);
-    navigate(`/?${searchParams}`);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", pageNumber);
+    navigate(`/api/diaryBoard/list?${params.toString()}`); // 변경된 부분
   }
 
   function handleSelectedDiaryBoard(id) {
     const diaryId = generateDiaryId(memberInfo.id);
     return () => navigate(`/diary/${diaryId}/view/${id}`);
   }
-  function handleWriteClick(id) {
+
+  function handleWriteClick() {
     const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/write/${id}`);
+    navigate(`/diary/${diaryId}/write/${diaryBoardList.id}`);
   }
 
+  // const bg = useColorModeValue("white", "gray.800");
+  const hoverBg = useColorModeValue("gray.100", "gray.700");
+
   return (
-    <Box>
+    <>
       <Box mb={5}></Box>
       <Center>
         <Heading>다이어리 목록</Heading>
@@ -98,45 +103,53 @@ export function DiaryBoardList() {
                 <Th>N번째 일기</Th>
                 <Th>내용</Th>
                 <Th>who?</Th>
+                <Th>작성일자</Th>
               </Tr>
             </Thead>
             <Tbody>
               {diaryBoardList.map((diaryBoard) => (
                 <Tr
-                  _hover={{
-                    bgColor: "gray.200",
-                  }}
-                  cursor={"pointer"}
-                  onClick={handleSelectedDiaryBoard(diaryBoard.id)}
                   key={diaryBoard.id}
+                  _hover={{ bg: hoverBg }}
+                  cursor="pointer"
+                  onClick={handleSelectedDiaryBoard(diaryBoard.id)}
                 >
-                  <Td>{diaryBoard.id}</Td>
-                  <Td>
+                  <Td textAlign="center">{diaryBoard.id}</Td>
+                  <Td textAlign="center">
                     {diaryBoard.title}
                     {diaryBoard.numberOfImages > 0 && (
-                      <Badge ml={2}>
-                        <Flex gap={1}>
-                          <Box>
-                            <FontAwesomeIcon icon={faImages} />
-                          </Box>
-                          <Box>{diaryBoard.numberOfImages}</Box>
-                        </Flex>
+                      <Badge ml={2} colorScheme="teal">
+                        <FontAwesomeIcon icon={faImages} />
+                        {diaryBoard.numberOfImages}
                       </Badge>
                     )}
                   </Td>
-                  <Td>{diaryBoard.writer}</Td>
+                  <Td textAlign="center">{diaryBoard.writer}</Td>
+                  <Td>
+                    {" "}
+                    <span style={{ color: "red" }} />
+                    {format(new Date(diaryBoard.inserted), "yyyy.MM.dd")}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
         )}
       </Box>
+      <Pagination
+        pageInfo={pageInfo}
+        pageNumbers={pageNumbers}
+        handlePageButtonClick={handlePageButtonClick}
+      />
+
       <Center mb={10}>
-        <Flex gap={1}>
+        <Flex gap={2}>
           <Box>
             <Select
               value={searchType}
               onChange={(e) => setSearchType(e.target.value)}
+              boxShadow="md"
+              _hover={{ boxShadow: "lg" }}
             >
               <option value="all">전체</option>
               <option value="text">글</option>
@@ -148,56 +161,22 @@ export function DiaryBoardList() {
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="검색어"
+              boxShadow="md"
+              _hover={{ boxShadow: "lg" }}
             />
           </Box>
           <Box>
-            <Button onClick={handleSearchClick}>
+            <Button
+              onClick={handleSearchClick}
+              colorScheme="teal"
+              boxShadow="md"
+              _hover={{ boxShadow: "lg" }}
+            >
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </Button>
           </Box>
         </Flex>
       </Center>
-      <Center>
-        <Flex gap={1}>
-          {pageInfo.prevPageNumber && (
-            <>
-              <Button onClick={() => handlePageButtonClick(1)}>
-                <FontAwesomeIcon icon={faAnglesLeft} />
-              </Button>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
-              >
-                <FontAwesomeIcon icon={faAngleLeft} />
-              </Button>
-            </>
-          )}
-          {pageNumbers.map((pageNumber) => (
-            <Button
-              onClick={() => handlePageButtonClick(pageNumber)}
-              key={pageNumber}
-              colorScheme={
-                pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
-              }
-            >
-              {pageNumbers}
-            </Button>
-          ))}
-          {pageInfo.nextPageNumber && (
-            <>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
-              >
-                <FontAwesomeIcon icon={faAngleRight} />
-              </Button>
-              <Button
-                onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
-              >
-                <FontAwesomeIcon icon={faAnglesRight} />
-              </Button>
-            </>
-          )}
-        </Flex>
-      </Center>
-    </Box>
+    </>
   );
 }

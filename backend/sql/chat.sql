@@ -91,3 +91,7 @@ VALUES (34, 28, 'testkjh', 'testerkjh');
 INSERT INTO prj3.friends
 (member_id, friend_id, member_nickname, friend_nickname)
 VALUES (28, 34, 'testerkjh', 'testkjh');
+
+ALTER TABLE friends ADD UNIQUE INDEX unique_member_friend (member_id, friend_id);
+
+DESC diary_profile;
