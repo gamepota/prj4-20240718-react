@@ -94,7 +94,7 @@ public interface BoardMapper {
                        b.board_type,
                        b.views,
                        b.member_id,
-                       (SELECT bf.name FROM board_file bf WHERE bf.board_id = b.id LIMIT 1) fileList,
+                       (SELECT bf.name fileList FROM board_file bf WHERE bf.board_id = b.id LIMIT 1) fileList,
                        COUNT(DISTINCT f.name) number_of_images,
                        COUNT(DISTINCT l.member_id) number_of_likes,
                        COUNT(DISTINCT c.id) number_of_comments

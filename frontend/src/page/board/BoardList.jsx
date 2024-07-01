@@ -244,7 +244,7 @@ export function BoardList() {
                   {/* 썸네일 추가 부분 */}
                   {board.fileList && (
                     <Box mb={2}>
-                      <Image src={`경로/${board.fileList}`} alt="썸네일" />
+                      <Image src={board.fileList[0]} alt="썸네일" />
                     </Box>
                   )}
 
