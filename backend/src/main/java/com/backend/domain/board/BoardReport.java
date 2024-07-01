@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 public class BoardReport {
     private Integer boardId;
     private Integer memberId;
+    private String reporter;
+    private String reportType;
     private String content;
 
 }

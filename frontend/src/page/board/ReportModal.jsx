@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Box,
   Button,
   Input,
   Modal,
@@ -16,14 +17,34 @@ import axios from "axios";
 
 const ReportModal = ({ isOpen, onClose, boardId, memberId }) => {
   const toast = useToast();
-  const [customReason, setCustomReason] = useState("");
+  const [customReasons, setCustomReasons] = useState({
+    "부적절한 콘텐츠": "",
+    스팸: "",
+    도배: "",
+    비방: "",
+    분탕: "",
+    기타: "",
+  });
+  const [selectedReason, setSelectedReason] = useState("");
+  const [isReasonEmpty, setIsReasonEmpty] = useState(false);
 
-  const handleReport = (reason) => {
+  const handleReport = () => {
+    if (selectedReason === "" || customReasons[selectedReason].trim() === "") {
+      setIsReasonEmpty(true);
+      toast({
+        title: "신고 사유 입력",
+        description: "신고 사유를 입력해주세요.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
     axios
       .post("/api/board/report", {
         boardId,
         memberId,
-        reason,
+        reason: customReasons[selectedReason],
       })
       .then((res) => {
         toast({
@@ -55,18 +76,14 @@ const ReportModal = ({ isOpen, onClose, boardId, memberId }) => {
       });
   };
 
-  const handleCustomReport = () => {
-    if (!customReason.trim()) {
-      toast({
-        title: "신고 사유 입력",
-        description: "신고 사유를 입력해주세요.",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-      });
-      return;
+  const handleReasonChange = (reason, value) => {
+    setCustomReasons({
+      ...customReasons,
+      [reason]: value,
+    });
+    if (value.trim() !== "") {
+      setIsReasonEmpty(false);
     }
-    handleReport(customReason);
   };
 
   return (
@@ -76,26 +93,34 @@ const ReportModal = ({ isOpen, onClose, boardId, memberId }) => {
         <ModalHeader>신고 사유 선택</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing={3}>
-            <Button onClick={() => handleReport("부적절한 콘텐츠")}>
-              부적절한 콘텐츠
-            </Button>
-            <Button onClick={() => handleReport("스팸")}>스팸</Button>
-            <Button onClick={() => handleReport("도배")}>도배</Button>
-            <Button onClick={() => handleReport("비방")}>비방</Button>
-            <Button onClick={() => handleReport("분탕")}>분탕</Button>
-            <Input
-              placeholder="기타 사유 입력"
-              value={customReason}
-              onChange={(e) => setCustomReason(e.target.value)}
-            />
-            <Button colorScheme="blue" onClick={handleCustomReport}>
-              제출
-            </Button>
+          <VStack spacing={4}>
+            {Object.keys(customReasons).map((reason) => (
+              <Box key={reason} width="100%">
+                <Button width="100%" onClick={() => setSelectedReason(reason)}>
+                  {reason}
+                </Button>
+                {selectedReason === reason && (
+                  <Input
+                    mt={2}
+                    placeholder={`${reason}에 대한 상세 사유를 입력해주세요.`}
+                    value={customReasons[reason]}
+                    onChange={(e) => handleReasonChange(reason, e.target.value)}
+                    isInvalid={
+                      isReasonEmpty && customReasons[reason].trim() === ""
+                    }
+                  />
+                )}
+              </Box>
+            ))}
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={onClose}>취소</Button>
+          <Button colorScheme="blue" mr={3} onClick={handleReport}>
+            제출
+          </Button>
+          <Button variant="ghost" onClick={onClose}>
+            취소
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

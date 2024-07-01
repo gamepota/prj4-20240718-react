@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
   Badge,
@@ -18,12 +18,14 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "../../component/Pagination.jsx";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardReportList() {
   const [boardList, setBoardList] = useState([]);
@@ -33,6 +35,11 @@ export function BoardReportList() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchType, setSearchType] = useState("전체");
   const [searchParams] = useSearchParams();
+  const [selectedBoards, setSelectedBoards] = useState([]); // 선택된 게시글 ID 관리
+  const toast = useToast();
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
 
   const navigate = useNavigate();
 
@@ -90,14 +97,61 @@ export function BoardReportList() {
     axios
       .get(`/api/board/${boardId}`)
       .then(() => {})
-      .finally(navigate(`/board/${boardId}`));
+      .finally(() => navigate(`/board/${boardId}`));
   }
+
   function handleSearchClick() {
     searchParams.set("searchType", searchType);
     searchParams.set("keyword", searchKeyword);
     searchParams.set("offsetReset", true);
 
     navigate(`?${searchParams}`);
+  }
+
+  // 체크박스를 토글하는 함수
+  function toggleCheckbox(boardId) {
+    if (selectedBoards.includes(boardId)) {
+      setSelectedBoards(selectedBoards.filter((id) => id !== boardId));
+    } else {
+      setSelectedBoards([...selectedBoards, boardId]);
+    }
+  }
+
+  // 선택된 게시글 삭제 요청 보내기
+  function handleDeleteSelected() {
+    if (selectedBoards.length === 0) {
+      return; // 선택된 게시글이 없으면 무시
+    }
+
+    axios
+      .delete("/api/board/delete", {
+        data: {
+          ids: selectedBoards,
+          memberId: params.memberId,
+        },
+      })
+      .then((res) => {
+        // 삭제 성공 시에는 성공 메시지 표시
+        toast({
+          status: "success",
+          description: "삭제가 완료되었습니다",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        setSelectedBoards([]);
+        navigate("/board/list/report");
+      })
+      .catch((error) => {
+        // 삭제 실패 시에는 에러 메시지 표시
+        toast({
+          status: "error",
+          description: "삭제 중 오류가 발생했습니다",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
   }
 
   return (
@@ -230,9 +284,31 @@ export function BoardReportList() {
       <Center>
         <Box mb={10}></Box>
         <Box mb={10}>
+          <Flex align="center" justify="center" mb={4}>
+            <Button
+              colorScheme="red"
+              onClick={handleDeleteSelected}
+              disabled={selectedBoards.length === 0}
+            >
+              선택 삭제
+            </Button>
+          </Flex>
           <Table boxShadow="lg" borderRadius="10">
             <Thead>
               <Tr>
+                <Th>
+                  <input
+                    type="checkbox"
+                    checked={selectedBoards.length === boardList.length}
+                    onChange={() => {
+                      if (selectedBoards.length === boardList.length) {
+                        setSelectedBoards([]);
+                      } else {
+                        setSelectedBoards(boardList.map((board) => board.id));
+                      }
+                    }}
+                  />
+                </Th>
                 <Th>누적된 신고 수</Th>
                 <Th textAlign={"center"}>게시판 종류</Th>
                 <Th>게시글ID</Th>
@@ -247,13 +323,20 @@ export function BoardReportList() {
             <Tbody>
               {boardList.map((board) => (
                 <Tr key={board.id}>
+                  <Td>
+                    <input
+                      type="checkbox"
+                      checked={selectedBoards.includes(board.id)}
+                      onChange={() => toggleCheckbox(board.id)}
+                    />
+                  </Td>
                   <Td
                     textAlign="center"
                     onClick={() =>
                       navigate("content", {
                         state: {
                           boardId: board.id,
-                          memberId: board.repoterId,
+                          repoterMemberId: board.repoterId,
                         },
                       })
                     } // 절대 경로 사용

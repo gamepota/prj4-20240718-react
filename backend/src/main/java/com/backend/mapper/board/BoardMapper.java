@@ -213,14 +213,14 @@ public interface BoardMapper {
 
     @Delete("""
                         DELETE FROM board_like
-                        WHERE member_id=#{id};
+                        WHERE board_id=#{id};
 
             """)
     int deleteLikeByBoardId(Integer id);
 
     @Insert("""
-                INSERT INTO board_report (board_id,member_id,content)
-                VALUES (#{boardId},#{memberId},#{content})
+                INSERT INTO board_report (board_id, member_id, content, reportType)
+                VALUES (#{boardId}, #{memberId}, #{content}, #{reportType})
             """)
     int insertReport(BoardReport boardReport);
 
@@ -312,10 +312,17 @@ public interface BoardMapper {
             """)
     List<Board> selectAllPagingWithReportBoard(Integer offset, Integer pageAmount, String boardType, String searchType, String keyword);
 
-
     @Select("""
-            SELECT * FROM board_report
-            WHERE board_id = #{boardId} 
+            SELECT * FROM board
+            WHERE id = #{boardId} 
             """)
     Board selectBoardById(Integer boardId);
+
+    @Select("""
+                SELECT br.board_id, m.nickname as reporter, br.content, br.reportType
+                FROM board_report br
+                JOIN member m ON br.member_id = m.id
+                WHERE br.board_id = #{boardId} ;
+            """)
+    List<BoardReport> selectReportsByBoardId(Integer boardId);
 }

@@ -114,7 +114,6 @@ public class BoardController {
         System.out.println("req = " + req);
         if (service.isLoggedIn((Integer) req.get("memberId"))) {
             if (service.addReport(req)) {
-                service.addReport(req);
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -137,8 +136,8 @@ public class BoardController {
     }
 
     @GetMapping("/report/list/content")
-    public ResponseEntity<Map<String, Object>> reportContent(@RequestParam Integer boardId, @RequestParam Integer memberId) {
-        Map<String, Object> response = service.reportContent(boardId, memberId);
+    public ResponseEntity<Map<String, Object>> reportContent(@RequestParam Integer boardId, @RequestParam Integer repoterMemberId) {
+        Map<String, Object> response = service.reportContent(boardId, repoterMemberId);
         return ResponseEntity.ok(response);
     }
 }

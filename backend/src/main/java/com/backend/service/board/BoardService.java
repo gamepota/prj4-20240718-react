@@ -282,20 +282,20 @@ public class BoardService {
         return memberId != null && memberId > 0;
     }
 
+
     public boolean addReport(Map<String, Object> req) {
         BoardReport boardReport = new BoardReport();
         boardReport.setBoardId((Integer) req.get("boardId"));
         boardReport.setMemberId((Integer) req.get("memberId"));
         boardReport.setContent((String) req.get("reason"));
+        boardReport.setReportType((String) req.get("reportType")); // 새로운 필드 추가
         //신고 안 했으면
         int count = mapper.selectCountReportWithPrimaryKey(boardReport);
         if (count == 0) {
             mapper.insertReport(boardReport);
             return true;
-        }//이미 신고 했으면
-        else {
+        } else {
             return false;
-
         }
     }
 
@@ -374,18 +374,18 @@ public class BoardService {
         return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPagingWithReportBoard(offset, pageAmount, boardType, searchType, keyword));
     }
 
-    public Map<String, Object> reportContent(Integer boardId, Integer memberId) {
+    public Map<String, Object> reportContent(Integer boardId, Integer repoterMemberId) {
         Map<String, Object> response = new HashMap<>();
 
         // 게시글 정보 조회
         Board board = mapper.selectBoardById(boardId);
 
-
         // 신고 내용 조회
+        List<BoardReport> reports = mapper.selectReportsByBoardId(boardId);
 
         // 응답 데이터 구성
-        response.put("retpoterId", board.getRepoterId());
-        response.put("boardId", board.getId());
+        response.put("board", board);
+        response.put("reports", reports);
         return response;
     }
 }
