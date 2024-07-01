@@ -2,13 +2,13 @@ import React, { useState, useEffect, useContext } from "react";
 import { Box, Button, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
 import { ChatIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faMagnifyingGlass, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { LoginContext } from '../LoginProvider.jsx';
 import { generateDiaryId } from "../../util/util"; // 다이어리 ID 생성 함수 임포트
 
-export const FriendsListComponent = ({ onSelectFriend }) => {
+export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { // newMessages prop 추가 및 기본값 설정
   const [friends, setFriends] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -116,6 +116,7 @@ export const FriendsListComponent = ({ onSelectFriend }) => {
                       <HStack spacing={2}>
                         <Box as="span" borderRadius="full" bg={friend.online ? "green.400" : "gray.400"} boxSize="10px" />
                         <Text>{friend.nickname}</Text>
+                        {newMessages[friend.id] && <Box as="span" borderRadius="full" bg="red.400" boxSize="8px" />} {/* 새로운 메시지 여부 표시 */}
                       </HStack>
                       <HStack spacing={1}>
                         <Button

@@ -17,7 +17,7 @@ import {Client} from "@stomp/stompjs";
 import axios from "axios";
 import {LoginContext} from '../LoginProvider'; // LoginContext 가져오기
 
-export const ChatComponent = ({selectedFriend, onClose}) => {
+export const ChatComponent = ({selectedFriend, onClose, onNewMessage}) => { // onNewMessage 추가
   const {memberInfo} = useContext(LoginContext) || {};
   const username = memberInfo?.nickname;
   const userId = memberInfo?.id;
@@ -42,6 +42,10 @@ export const ChatComponent = ({selectedFriend, onClose}) => {
             const receivedMessage = JSON.parse(message.body);
             console.log("Received message:", receivedMessage);
             setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+
+            if (receivedMessage.senderId !== userId) {
+              onNewMessage(receivedMessage.senderId); // onNewMessage 호출
+            }
           });
           setIsConnected(true);
           setStompClient(client);
