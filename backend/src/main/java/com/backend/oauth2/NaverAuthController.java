@@ -1,5 +1,7 @@
 package com.backend.oauth2;
 
+import com.backend.security.JWTUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/member/login")
+@RequiredArgsConstructor
 public class NaverAuthController {
 
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")
@@ -24,14 +27,15 @@ public class NaverAuthController {
     private String redirectUri;
 
     private final String state = "random_state_string"; // CSRF 방지를 위한 상태값 (랜덤 문자열 생성)
+    private final JWTUtil jwtUtil;
 
     @GetMapping("/naver")
-    public ResponseEntity<Void> naverLogin() {
+    public ResponseEntity<Map<String, String>> naverLogin() {
         String naverAuthUrl = String.format(
                 "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=%s&redirect_uri=%s&state=%s",
                 clientId, redirectUri, state
         );
-        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, naverAuthUrl).build();
+        return ResponseEntity.ok(Map.of("url", naverAuthUrl));
     }
 
     @GetMapping("/oauth2/code/naver")
@@ -64,10 +68,22 @@ public class NaverAuthController {
             );
 
             if (userInfoResponse.getStatusCode().is2xxSuccessful()) {
-                Map<String, Object> userInfo = userInfoResponse.getBody();
-                // 사용자 정보 처리 로직 (DB 저장 또는 업데이트 등)
-                // 예를 들어 사용자 정보를 프론트엔드로 반환
-                return ResponseEntity.ok(userInfo);
+                Map<String, Object> userInfo = (Map<String, Object>) userInfoResponse.getBody().get("response");
+
+                // 사용자 정보를 이용해 JWT 토큰 생성
+                String username = userInfo.get("email").toString();
+                String role = "ROLE_USER"; // 기본 역할 설정
+
+                String accessJwt = jwtUtil.createJwt("access", username, role, 600000L);
+                String refreshJwt = jwtUtil.createJwt("refresh", username, role, 86400000L);
+
+                HttpHeaders responseHeaders = new HttpHeaders();
+                responseHeaders.set("access", accessJwt);
+                responseHeaders.set("refresh", refreshJwt);
+
+                return ResponseEntity.ok()
+                        .headers(responseHeaders)
+                        .body(Map.of("id", userInfo.get("id"), "nickname", userInfo.get("nickname"), "role", role));
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
