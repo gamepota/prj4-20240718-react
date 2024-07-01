@@ -19,6 +19,7 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +139,23 @@ public class BoardService {
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
 
-        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount, boardType, searchType, keyword));
+        List<Board> boardList = mapper.selectAllPaging(offset, pageAmount, boardType, searchType, keyword);
+
+        // 각각의 Board 객체에 fileList 추가
+        for (Board board : boardList) {
+            // fileList가 null이 아니고 비어 있지 않은 경우에만 처리
+            if (board.getFileList() != null && !board.getFileList().isEmpty()) {
+                // 첫 번째 이미지의 경로를 가져와서 fileList에 설정
+                String firstImageName = String.valueOf(board.getFileList().get(0));
+                String thumbnailUrl = srcPrefix + "board/" + board.getId() + "/" + firstImageName;
+
+                // BoardFile 객체를 생성하여 fileList에 추가
+                List<BoardFile> files = Collections.singletonList(new BoardFile(firstImageName, thumbnailUrl));
+                board.setFileList(files);
+            }
+        }
+
+        return Map.of("pageInfo", pageInfo, "boardList", boardList);
     }
 
 //    public Map<String, Object> get(Integer id) {
@@ -246,7 +263,7 @@ public class BoardService {
         } else {
             return false;
         }
-        
+
     }
 
     public Map<String, Object> like(Map<String, Object> req) {

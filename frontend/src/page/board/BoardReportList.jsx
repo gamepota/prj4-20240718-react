@@ -43,30 +43,35 @@ export function BoardReportList() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const boardTypeParam = searchParams.get("boardType") || "전체";
-    setBoardType(boardTypeParam);
-    axios
-      .get(`/api/board/report/list?${searchParams}`)
-      .then((res) => {
-        setBoardList(res.data.boardList);
-        setPageInfo(res.data.pageInfo);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-    setSearchType("전체");
-    setSearchKeyword("");
+  useEffect(
+    () => {
+      const boardTypeParam = searchParams.get("boardType") || "전체";
+      setBoardType(boardTypeParam);
+      axios
+        .get(`/api/board/report/list?${searchParams}`)
+        .then((res) => {
+          setBoardList(res.data.boardList);
+          setPageInfo(res.data.pageInfo);
+          navigate("/board/list/report");
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+      setSearchType("전체");
+      setSearchKeyword("");
 
-    const searchTypeParam = searchParams.get("searchType");
-    const keywordParam = searchParams.get("keyword");
-    if (searchTypeParam) {
-      setSearchType(searchTypeParam);
-    }
-    if (keywordParam) {
-      setSearchKeyword(keywordParam);
-    }
-  }, [searchParams]);
+      const searchTypeParam = searchParams.get("searchType");
+      const keywordParam = searchParams.get("keyword");
+      if (searchTypeParam) {
+        setSearchType(searchTypeParam);
+      }
+      if (keywordParam) {
+        setSearchKeyword(keywordParam);
+      }
+    },
+    [searchParams],
+    [],
+  );
 
   function handlePageSizeChange(number) {
     setPageAmount(number);

@@ -94,6 +94,7 @@ public interface BoardMapper {
                        b.board_type,
                        b.views,
                        b.member_id,
+                       (SELECT bf.name FROM board_file bf WHERE bf.board_id = b.id LIMIT 1) fileList,
                        COUNT(DISTINCT f.name) number_of_images,
                        COUNT(DISTINCT l.member_id) number_of_likes,
                        COUNT(DISTINCT c.id) number_of_comments
@@ -128,6 +129,7 @@ public interface BoardMapper {
                 </script>
             """)
     List<Board> selectAllPaging(@Param("offset") Integer offset, @Param("pageAmount") Integer pageAmount, @Param("boardType") String boardType, @Param("searchType") String searchType, @Param("keyword") String keyword);
+
 
     @Insert("""
             INSERT INTO board_file(board_id,name)

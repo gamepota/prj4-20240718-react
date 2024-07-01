@@ -32,6 +32,8 @@ export function BoardWrite() {
   const navigate = useNavigate();
   const location = useLocation();
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
   const toast = useToast();
 
   // const onDrop = useCallback(
@@ -196,6 +198,11 @@ export function BoardWrite() {
                   <MenuItem onClick={() => setBoardType("이벤트/모임")}>
                     이벤트/모임 게시판
                   </MenuItem>
+                  {params.memberId === 1 && (
+                    <MenuItem onClick={() => setBoardType("반려동물 정보")}>
+                      반려동물 정보 게시판
+                    </MenuItem>
+                  )}
                 </MenuList>
               </>
             )}

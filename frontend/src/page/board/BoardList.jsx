@@ -6,6 +6,7 @@ import {
   Button,
   Center,
   Flex,
+  Image,
   Input,
   Menu,
   MenuButton,
@@ -240,6 +241,13 @@ export function BoardList() {
                   onClick={() => handleBoardClick(board.id)}
                   _hover={{ bg: "gray.200" }}
                 >
+                  {/* 썸네일 추가 부분 */}
+                  {board.fileList && (
+                    <Box mb={2}>
+                      <Image src={`경로/${board.fileList}`} alt="썸네일" />
+                    </Box>
+                  )}
+
                   <Box fontWeight="bold" as="h4" fontSize="xl">
                     {board.title}
                   </Box>
