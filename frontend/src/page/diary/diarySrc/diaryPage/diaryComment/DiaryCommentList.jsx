@@ -4,8 +4,8 @@ import {useNavigate} from "react-router-dom";
 import {LoginContext} from "../../../../../component/LoginProvider.jsx";
 import {generateDiaryId} from "../../../../../util/util.jsx";
 
-export function DiaryCommentList({diaryCommentList}) {
-  const {memberInfo} = useContext(LoginContext);
+export function DiaryCommentList({ diaryCommentList }) {
+  const { memberInfo } = useContext(LoginContext);
   const navigate = useNavigate();
 
   function handleViewClick(commentId) {

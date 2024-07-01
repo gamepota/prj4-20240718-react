@@ -1,6 +1,5 @@
 import { Box, Spinner } from "@chakra-ui/react";
-import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
-import { DiaryCommentList } from "./DiaryCommentList.jsx";
+import { DiaryCommentComponent } from "./DiaryCommentComponent.jsx";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -48,3 +47,4 @@ export function DiaryComment() {
     </Box>
   );
 }
+//테스트 완료

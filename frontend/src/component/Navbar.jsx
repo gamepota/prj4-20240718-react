@@ -1,9 +1,9 @@
-import { Box, Button, Flex, Img, Input, useColorModeValue } from "@chakra-ui/react";
+import {Box, Button, Flex, Img, Input} from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { generateDiaryId } from "../util/util.jsx";
+import {generateDiaryId} from "../util/util.jsx";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -140,7 +140,7 @@ export function Navbar() {
               borderRadius="md"
               onClick={handleOpenDiary}
             >
-              마이 펫다이어리
+              <FontAwesomeIcon icon={faHouse} />
             </Box>
             <Button
               _hover={{ bg: hoverBg }}

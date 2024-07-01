@@ -33,6 +33,7 @@ export function DiaryHome() {
         setIsLoading(false);
       }
     };
+
     validateDiaryId();
   }, [diaryId]);
 

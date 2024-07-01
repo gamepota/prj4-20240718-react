@@ -1,0 +1,8 @@
+#calendar {
+    max-width: 80%;
+    margin: 20px auto;
+}
+
+.fc {
+    font-size: 14px; /* 캘린더의 글꼴 크기를 조정 */
+}

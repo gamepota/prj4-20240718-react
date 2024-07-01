@@ -26,47 +26,54 @@ public class DiaryBoardController {
 	private final DiaryBoardService service;
 	private final DiaryProfileService diaryProfileService;
 
-	@PostMapping("add")
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity add(DiaryBoard diaryBoard,
-	                          @RequestParam(value = "files[]", required = false) MultipartFile[] files,
-	                          Authentication authentication) throws IOException {
-		if (service.validate(diaryBoard)) {
-			service.add(diaryBoard, files, authentication);
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.badRequest().build();
-		}
-	}
+    @PostMapping("add")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity add(DiaryBoard diaryBoard,
+                              @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+                              Authentication authentication) throws IOException {
+        if (service.validate(diaryBoard)) {
+            service.add(diaryBoard, files, authentication);
+            System.out.println("diaryBoard = " + diaryBoard);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
 
-	@GetMapping("list")
-	public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
-	                                @RequestParam(value = "type", required = false) String searchType,
-	                                @RequestParam(value = "keyword", defaultValue = "") String keyword) {
-		return service.list(page, searchType, keyword);
-	}
 
-	@GetMapping("{id}")
-	public ResponseEntity get(@PathVariable Integer id) {
-		DiaryBoard diaryBoard = service.get(id);
-		if (diaryBoard == null) {
-			return ResponseEntity.notFound().build();
-		} else {
-			return ResponseEntity.ok().body(diaryBoard);
-		}
-	}
+    }
 
-	@DeleteMapping("{id}")
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity delete(@PathVariable Integer id, Authentication authentication, @RequestParam(required = false) Integer memberId) {
-		if (service.hasAccess(id, authentication, memberId)) {
-			service.remove(id);
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		}
-	}
+    @GetMapping("list")
+    public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
+                                    @RequestParam(value = "type", required = false) String searchType,
+                                    @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+        return service.list(page, searchType, keyword);
 
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity get(@PathVariable Integer id) {
+
+        DiaryBoard diaryBoard = service.get(id);
+        if (diaryBoard == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().body(diaryBoard);
+        }
+
+    }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity delete(@PathVariable Integer id, Authentication authentication, @RequestParam(required = false) Integer memberId) {
+        if (service.hasAccess(id, authentication, memberId)) {
+            service.remove(id);
+            return ResponseEntity.ok().build();
+
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+    }
 
 	@PutMapping("edit")
 	@PreAuthorize("isAuthenticated()")

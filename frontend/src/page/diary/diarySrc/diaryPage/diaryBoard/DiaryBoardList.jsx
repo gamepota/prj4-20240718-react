@@ -23,16 +23,17 @@ import {useNavigate, useSearchParams} from "react-router-dom";
 import {LoginContext} from "../../../../../component/LoginProvider.jsx";
 import {generateDiaryId} from "../../../../../util/util.jsx";
 import Pagination from "../../../../../component/Pagination.jsx";
+import { format } from "date-fns";
 
 export function DiaryBoardList() {
-  const { memberInfo } = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const [diaryBoardList, setDiaryBoardList] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [searchParams] = useSearchParams();
-
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const dateFnsDate = new Date();
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
@@ -59,7 +60,7 @@ export function DiaryBoardList() {
   }
 
   function handleSearchClick() {
-    navigate(`/?type=${searchType}&keyword=${searchKeyword}`);
+    navigate(`/?type=${searchType}$keyword=${searchKeyword}`);
   }
 
   function handlePageButtonClick(pageNumber) {
@@ -74,31 +75,30 @@ export function DiaryBoardList() {
 
   function handleWriteClick() {
     const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/write`);
+    navigate(`/diary/${diaryId}/write/${id}`);
   }
 
   const bg = useColorModeValue("white", "gray.800");
   const hoverBg = useColorModeValue("gray.100", "gray.700");
 
   return (
-    <>
-      <Center mb={10}>
+    <Box>
+      <Box mb={5}></Box>
+      <Center>
         <Heading>다이어리 목록</Heading>
       </Center>
-
-      <Center mb={5}>
-        <Box w="full" maxW="1200px">
-          {memberInfo && (
-            <Button onClick={handleWriteClick} mb={5} colorScheme="teal">
-              글쓰기
-            </Button>
-          )}
-          <Table boxShadow="lg" borderRadius="md" bg={bg}>
-            <Thead bg={useColorModeValue("gray.200", "gray.700")}>
+      <Box>
+        {memberInfo && <Button onClick={handleWriteClick}>글쓰기</Button>}
+      </Box>
+      <Box>
+        {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
+        {diaryBoardList.length > 0 && (
+          <Table>
+            <Thead>
               <Tr>
-                <Th textAlign="center">N번째 일기</Th>
-                <Th textAlign="center">내용</Th>
-                <Th textAlign="center">작성자</Th>
+                <Th>N번째 일기</Th>
+                <Th>내용</Th>
+                <Th>who?</Th>
               </Tr>
             </Thead>
             <Tbody>

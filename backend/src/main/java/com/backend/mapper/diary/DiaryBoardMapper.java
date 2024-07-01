@@ -60,6 +60,7 @@ public interface DiaryBoardMapper {
                 SELECT d.id,
                        d.title,
                        m.nickname writer,
+                       d.inserted,
                        COUNT(DISTINCT f.name) AS number_of_images
                 FROM diary d
                 JOIN member m ON d.member_id = m.id
