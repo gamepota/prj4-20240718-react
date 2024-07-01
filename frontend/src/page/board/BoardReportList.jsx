@@ -43,38 +43,30 @@ export function BoardReportList() {
 
   const navigate = useNavigate();
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const boardTypeParam = searchParams.get("boardType") || "전체";
-        setBoardType(boardTypeParam);
-
-        const response = await axios.get(
-          `/api/board/report/list?${searchParams}`,
-        );
-        setBoardList(response.data.boardList);
-        setPageInfo(response.data.pageInfo);
-
-        setSearchType("전체");
-        setSearchKeyword("");
-
-        const searchTypeParam = searchParams.get("searchType");
-        const keywordParam = searchParams.get("keyword");
-        if (searchTypeParam) {
-          setSearchType(searchTypeParam);
-        }
-        if (keywordParam) {
-          setSearchKeyword(keywordParam);
-        }
-
+    const boardTypeParam = searchParams.get("boardType") || "전체";
+    setBoardType(boardTypeParam);
+    axios
+      .get("/api/board/report/list?${searchParams}")
+      .then((res) => {
+        setBoardList(res.data.boardList);
+        setPageInfo(res.data.pageInfo);
         navigate("/board/list/report");
-      } catch (error) {
+      })
+      .catch((error) => {
         console.error("Error fetching data:", error);
-      }
-    };
+      });
+    setSearchType("전체");
+    setSearchKeyword("");
 
-    fetchData();
-  }, [searchParams, navigate]); // navigate를 의존성 배열에 추가하여 useEffect가 navigate 후에 실행되도록 함
-
+    const searchTypeParam = searchParams.get("searchType");
+    const keywordParam = searchParams.get("keyword");
+    if (searchTypeParam) {
+      setSearchType(searchTypeParam);
+    }
+    if (keywordParam) {
+      setSearchKeyword(keywordParam);
+    }
+  }, [searchParams]);
   function handlePageSizeChange(number) {
     setPageAmount(number);
     searchParams.set("pageAmount", number);
