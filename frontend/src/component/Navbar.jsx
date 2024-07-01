@@ -78,7 +78,7 @@ export function Navbar() {
           w="100px" // Box 크기 고정
           h="auto" // 높이를 자동으로 조정
         >
-          <Img src={"/img/petmily.png"} w="100%" h="auto" />
+          <Img src={"/img/petmily-logo.png"} w="100%" h="auto" />
         </Box>
         <Box
           textAlign={"center"}
