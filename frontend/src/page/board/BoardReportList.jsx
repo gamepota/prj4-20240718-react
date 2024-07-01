@@ -46,11 +46,10 @@ export function BoardReportList() {
     const boardTypeParam = searchParams.get("boardType") || "전체";
     setBoardType(boardTypeParam);
     axios
-      .get("/api/board/report/list?${searchParams}")
+      .get(`/api/board/report/list?${searchParams}`)
       .then((res) => {
         setBoardList(res.data.boardList);
         setPageInfo(res.data.pageInfo);
-        navigate("/board/list/report");
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -139,7 +138,7 @@ export function BoardReportList() {
           position: "top",
         });
         setSelectedBoards([]);
-        navigate("/board/list/report");
+        navigate(`/board/list/report`);
       })
       .catch((error) => {
         // 삭제 실패 시에는 에러 메시지 표시
