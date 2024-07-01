@@ -1,57 +1,92 @@
-import {Box, Button, Card, CardBody, Center, HStack, Text, Textarea, VStack,} from "@chakra-ui/react";
-import React, {useContext} from "react";
-import {useNavigate} from "react-router-dom";
-import {LoginContext} from "../../../../../component/LoginProvider.jsx";
-import {generateDiaryId} from "../../../../../util/util.jsx";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  HStack,
+  Image,
+  Text,
+  Textarea,
+  VStack,
+} from "@chakra-ui/react";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouseChimney } from "@fortawesome/free-solid-svg-icons";
+import { format } from "date-fns";
 
 export function DiaryCommentList({ diaryCommentList }) {
   const { memberInfo } = useContext(LoginContext);
   const navigate = useNavigate();
+  const dateFnsDate = new Date();
 
-  function handleViewClick(commentId) {
+  function handleFriendsHome() {
     const diaryId = generateDiaryId(memberInfo.id);
-    return () => navigate(`/diary/${diaryId}/comment/view/${commentId}`);
+    navigate(`/diary/${diaryId}`);
   }
 
   return (
-    <Box p={5}>
-      <Center mb={5}>
-        <Text fontWeight="bold" fontSize="x-large" > 방명록 보기 </Text>
-      </Center>
-      {diaryCommentList.length === 0 ? (
-        <Center>방명록이 없습니다.</Center>
-      ) : (
-        <VStack spacing={4}>
-          {diaryCommentList.map((diaryComment, index) => (
-            <Card key={diaryComment.id} w="100%" variant="outline" boxShadow="md">
-              <CardBody>
-                <HStack justifyContent="space-between" mb={2}>
-                  <HStack>
-                  <Text fontWeight="bold">No.{index + 1}</Text>
-                  <Text fontWeight="bold">{diaryComment.nickname}</Text>
-                  </HStack>
-                  <Text fontSize="sm" color="gray.500">
-                    {diaryComment.inserted}
-                  </Text>
+    <Box m={4}>
+      {" "}
+      {/* 전체 리스트의 위아래 공간을 추가 */}
+      <Box mb={20}></Box>
+      <Box>
+        {diaryCommentList.length === 0 && <Center>방명록이 없습니다.</Center>}
+        {diaryCommentList.length > 0 && (
+          <VStack spacing={3} align="stretch">
+            {diaryCommentList.map((diaryComment) => (
+              <Box
+                key={diaryComment.id}
+                p={4} // 아이템의 패딩을 추가하여 내부 공간을 확보
+                borderWidth="10px"
+                borderRadius="md"
+                // onClick={handleViewClick(diaryComment.id)}
+              >
+                <HStack spacing={3}>
+                  <Image
+                    src={diaryComment.photoUrl}
+                    boxSize="200px"
+                    // borderRadius="full"
+                    alt={diaryComment.nickname+"의 프로필 사진"}
+                  />
+                  <Flex direction="column" align="flex-end" w="100%">
+                    <HStack w="100%" justify="space-between" spacing={2}>
+                      <HStack spacing={1}>
+                        <Text fontSize="13px">No.{diaryComment.id}</Text>
+                        <Text fontWeight="bold">{memberInfo.nickname}</Text>
+                        <Button
+                          onClick={handleFriendsHome}
+                          p={0}
+                          m={0}
+                          bg="transparent"
+                          _hover={{ bg: "transparent" }}
+                        >
+                          <FontAwesomeIcon icon={faHouseChimney} />
+                        </Button>
+                      </HStack>
+                      <Text fontSize="sm" color="gray.500">
+                        <span style={{ color: "red" }} />
+                        {format(dateFnsDate, "yyyy.MM.dd")}
+                      </Text>
+                    </HStack>
+                    <Box w="100%" textAlign="center" mt={2}>
+                      <Textarea
+                        value={diaryComment.comment}
+                        readOnly
+                        size="sm"
+                        resize="none"
+                        p={1}
+                      />
+                    </Box>
+                  </Flex>
                 </HStack>
-                <Textarea
-                  value={diaryComment.comment}
-                  minH="100px"
-                  isReadOnly
-                  mb={2}
-                />
-                <Button
-                  colorScheme="teal"
-                  size="sm"
-                  onClick={handleViewClick(diaryComment.id)}
-                >
-                  자세히 보기
-                </Button>
-              </CardBody>
-            </Card>
-          ))}
-        </VStack>
-      )}
+              </Box>
+            ))}
+          </VStack>
+        )}
+      </Box>
     </Box>
   );
 }

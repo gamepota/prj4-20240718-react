@@ -1,26 +1,14 @@
 import React, {useContext, useEffect, useState} from "react";
 import {
-  Badge,
-  Box,
-  Center,
-  Heading,
-  Image,
-  SimpleGrid,
-  Spinner,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  useColorModeValue,
+  Badge, Box, Center, Heading, Image, SimpleGrid, Spinner, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue,
 } from "@chakra-ui/react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
-import {LoginContext} from "../../component/LoginProvider.jsx";
+import {LoginContext} from "../../../../component/LoginProvider.jsx";
+
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faImages} from "@fortawesome/free-solid-svg-icons";
+import {format} from "date-fns";
 
 export function DiaryHomeMain() {
   const {memberInfo} = useContext(LoginContext);
@@ -58,15 +46,12 @@ export function DiaryHomeMain() {
   };
 
   if (isLoading) {
-    return (
-      <Center mt={10}>
+    return (<Center mt={10}>
         <Spinner size="xl"/>
-      </Center>
-    );
+      </Center>);
   }
 
-  return (
-    <Box>
+  return (<Box>
       <Box mb={5}>
         <Image
           src="https://via.placeholder.com/1200x300"
@@ -82,10 +67,7 @@ export function DiaryHomeMain() {
         <SimpleGrid columns={{base: 1, md: 2}} spacing={10}>
           <Box>
             <Heading size="md" mb={3}>다이어리 게시물</Heading>
-            {diaryBoardList.length === 0 ? (
-              <Text>조회 결과가 없습니다.</Text>
-            ) : (
-              <Table variant="simple">
+            {diaryBoardList.length === 0 ? (<Text>조회 결과가 없습니다.</Text>) : (<Table variant="simple">
                 <Thead>
                   <Tr>
                     <Th>No.</Th>
@@ -99,19 +81,16 @@ export function DiaryHomeMain() {
                         cursor="pointer">
                       <Td>{diaryBoard.id}</Td>
                       <Td>{diaryBoard.title}</Td>
-                      <Td>{diaryBoard.inserted}</Td>
-                    </Tr>
-                  ))}
+                      <Td>
+                        {format(new Date(diaryBoard.inserted), "yyyy.MM.dd")}
+                      </Td>
+                    </Tr>))}
                 </Tbody>
-              </Table>
-            )}
+              </Table>)}
           </Box>
           <Box>
             <Heading size="md" mb={3}>방명록</Heading>
-            {diaryCommentList.length === 0 ? (
-              <Text>방명록이 없습니다.</Text>
-            ) : (
-              <Table variant="simple">
+            {diaryCommentList.length === 0 ? (<Text>방명록이 없습니다.</Text>) : (<Table variant="simple">
                 <Thead>
                   <Tr>
                     <Th>No.</Th>
@@ -127,15 +106,14 @@ export function DiaryHomeMain() {
                       <Td>{index + 1}</Td>
                       <Td>{diaryComment.nickname}</Td>
                       <Td>{diaryComment.comment.substring(0, 20)}...</Td>
-                      <Td>{diaryComment.inserted}</Td>
-                    </Tr>
-                  ))}
+                      <Td>
+                        {format(new Date(diaryComment.inserted), "yyyy.MM.dd")}
+                      </Td>
+                    </Tr>))}
                 </Tbody>
-              </Table>
-            )}
+              </Table>)}
           </Box>
         </SimpleGrid>
       </Box>
-    </Box>
-  );
+    </Box>);
 }

@@ -28,6 +28,9 @@ import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/D
 import { DiaryComment } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
 import KakaoMap from "./KakaoMap.jsx";
 import DiaryCalendar from "./page/diary/diarySrc/diaryPage/diaryCalendar/DiaryCalendar.jsx";
+import {DiaryHomeMain} from "./page/diary/diarySrc/diaryPage/DiaryHomeMain.jsx";
+import {DiaryCommentView} from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentView.jsx"
+import {theme} from "@chakra-ui/react";
 
 const router = createBrowserRouter([
   {

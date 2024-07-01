@@ -82,7 +82,7 @@ export function DiaryBoardList() {
   const hoverBg = useColorModeValue("gray.100", "gray.700");
 
   return (
-    <Box>
+    <>
       <Box mb={5}></Box>
       <Center>
         <Heading>다이어리 목록</Heading>
@@ -102,13 +102,6 @@ export function DiaryBoardList() {
               </Tr>
             </Thead>
             <Tbody>
-              {diaryBoardList.length === 0 && (
-                <Tr>
-                  <Td colSpan="3" textAlign="center">
-                    조회 결과가 없습니다.
-                  </Td>
-                </Tr>
-              )}
               {diaryBoardList.map((diaryBoard) => (
                 <Tr
                   key={diaryBoard.id}
@@ -131,9 +124,8 @@ export function DiaryBoardList() {
               ))}
             </Tbody>
           </Table>
-        </Box>
-      </Center>
-
+        )}
+      </Box>
       <Pagination
         pageInfo={pageInfo}
         pageNumbers={pageNumbers}
