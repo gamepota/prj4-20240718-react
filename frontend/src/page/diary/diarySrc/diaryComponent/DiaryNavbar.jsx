@@ -77,7 +77,7 @@ export function DiaryNavbar() {
       </Box>
       <Box>
         <Button
-          onClick={() => navigate(`/diary/${diaryId}/list`)}
+          onClick={() => navigate(`/diary/${diaryId}/list/${memberInfo.id}`)}
           cursor={"pointer"}
           _hover={{
             bgColor: "blue.200",
