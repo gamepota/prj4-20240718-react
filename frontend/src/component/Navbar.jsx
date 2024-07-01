@@ -209,7 +209,7 @@ export function Navbar() {
           _hover={{ cursor: "pointer", bgColor: "gray.200" }}
           p={2}
           borderRadius="md"
-          onClick={() => navigate("/board")}
+          onClick={() => navigate("/board/list?boardType=반려동물 정보")}
         >
           반려동물 정보
         </Box>
