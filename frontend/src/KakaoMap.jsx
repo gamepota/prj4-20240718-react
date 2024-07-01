@@ -110,7 +110,7 @@ const KakaoMap = ({ onPolygonSelect }) => {
           customOverlay.setMap(null);
         });
 
-        kakao.maps.event.addListener(polygon, "click", function () {
+        kakao.maps.event.addListener(polygon, "click", function (mouseEvent) {
           onPolygonSelect(ctprvnCd);
           const content = `<div class="info"><div class="title">${name}</div></div>`;
           infowindow.setContent(content);
