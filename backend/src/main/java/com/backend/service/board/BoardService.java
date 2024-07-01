@@ -199,6 +199,8 @@ public class BoardService {
                 .map(name -> new BoardFile(name, srcPrefix + "board/" + +id + "/" + name)).collect(Collectors.toList());
         board.setFileList(files);
         Map<String, Object> like = new HashMap<>();
+//        System.out.println("files = " + files);
+//        System.out.println("fileNames = " + fileNames);
         if (memberId == null) {
             like.put("like", false);
         } else {
