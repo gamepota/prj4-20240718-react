@@ -242,9 +242,12 @@ export function BoardList() {
                   _hover={{ bg: "gray.200" }}
                 >
                   {/* 썸네일 추가 부분 */}
-                  {board.fileList && (
+                  {board.fileList && board.fileList.length > 0 && (
                     <Box mb={2}>
-                      <Image src={board.fileList[0]} alt="썸네일" />
+                      <Image
+                        src={board.fileList[0].thumbnailUrl}
+                        alt="썸네일"
+                      />
                     </Box>
                   )}
 

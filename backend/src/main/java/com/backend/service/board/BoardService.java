@@ -143,10 +143,8 @@ public class BoardService {
 
         // 각각의 Board 객체에 fileList 추가
         for (Board board : boardList) {
-            // fileList가 null이 아니고 비어 있지 않은 경우에만 처리
             if (board.getFileList() != null && !board.getFileList().isEmpty()) {
-                // 첫 번째 이미지의 경로를 가져와서 fileList에 설정
-                String firstImageName = String.valueOf(board.getFileList().get(0));
+                String firstImageName = board.getFileList().toString(); // 이미 문자열입니다
                 String thumbnailUrl = srcPrefix + "board/" + board.getId() + "/" + firstImageName;
 
                 // BoardFile 객체를 생성하여 fileList에 추가
