@@ -53,6 +53,11 @@ export function Navbar() {
 
   return (
     <Flex
+      position="fixed"
+      top="0"
+      left="0"
+      right="0"
+      zIndex="1000"
       minHeight={{ base: "120px", md: "100px" }}
       alignItems="center"
       justifyContent="space-between"
@@ -75,9 +80,9 @@ export function Navbar() {
         {isLargerThan768 && (
           <>
             <Box
-              textAlign={"center"}
-              m={"auto"}
-              fontSize={"2xl"}
+              textAlign="center"
+              m="auto"
+              fontSize="lg"
               onMouseEnter={onOpen}
               onMouseLeave={onClose}
             >
@@ -85,13 +90,13 @@ export function Navbar() {
                 <MenuButton
                   as={Button}
                   rightIcon={isOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
-                  bg={"gray.700"}
-                  color={"white"}
-                  fontWeight={"bold"}
-                  size={"lg"}
-                  p={6}
+                  bg="gray.700"
+                  color="white"
+                  fontWeight="medium"
+                  size="md"
+                  p={4}
                 >
-                  {`게시판`}
+                  게시판
                 </MenuButton>
                 <MenuList>
                   <MenuItem
@@ -183,6 +188,8 @@ export function Navbar() {
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
               borderRadius="md"
+              fontSize="md"
+              fontWeight="medium"
               onClick={() => navigate("/place/map")}
             >
               동물병원 찾기
@@ -191,6 +198,8 @@ export function Navbar() {
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
               borderRadius="md"
+              fontSize="md"
+              fontWeight="medium"
               onClick={() => navigate("/board/list?boardType=반려동물 정보")}
             >
               반려동물 정보
@@ -199,6 +208,8 @@ export function Navbar() {
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
               p={2}
               borderRadius="md"
+              fontSize="md"
+              fontWeight="medium"
               onClick={() => navigate("/aichat")}
             >
               AI 수의사
@@ -215,11 +226,15 @@ export function Navbar() {
                 placeholder="통합 검색"
                 borderRadius="md"
                 borderColor="gray.300"
+                fontSize="md"
+                size="md"
               />
               <Button
                 bgColor="purple.100"
                 _hover={{ bgColor: "purple.200" }}
                 ml={2}
+                fontSize="md"
+                fontWeight="medium"
               >
                 검색
               </Button>
@@ -227,6 +242,8 @@ export function Navbar() {
             <Button
               bgColor="purple.100"
               _hover={{ bgColor: "purple.200" }}
+              fontSize="md"
+              fontWeight="medium"
               onClick={() => navigate("/board/write")}
             >
               새 글쓰기
@@ -237,6 +254,8 @@ export function Navbar() {
                   _hover={{ cursor: "pointer", bgColor: "gray.200" }}
                   p={2}
                   borderRadius="md"
+                  fontSize="md"
+                  fontWeight="medium"
                   onClick={() => navigate(`/member/page/${memberInfo.id}`)}
                 >
                   {nickname}님
@@ -245,14 +264,19 @@ export function Navbar() {
                   _hover={{ cursor: "pointer", bgColor: "gray.200" }}
                   p={2}
                   borderRadius="md"
+                  fontSize="md"
+                  fontWeight="medium"
                   onClick={handleOpenDiary}
                 >
-                  마이 펫다이어리
+                  다이어리
                 </Box>
                 <Button
-                  _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+                  bgColor="purple.100"
+                  _hover={{ cursor: "pointer", bgColor: "purple.200" }}
                   p={2}
                   borderRadius="md"
+                  fontSize="md"
+                  fontWeight="medium"
                   onClick={handleLogout}
                 >
                   로그아웃
@@ -261,9 +285,12 @@ export function Navbar() {
             ) : (
               <>
                 <Button
-                  _hover={{ cursor: "pointer", bgColor: "gray.200" }}
+                  bgColor="purple.100"
+                  _hover={{ cursor: "pointer", bgColor: "purple.200" }}
                   p={2}
                   borderRadius="md"
+                  fontSize="md"
+                  fontWeight="medium"
                   onClick={() => navigate("/member/login")}
                 >
                   로그인
@@ -273,7 +300,12 @@ export function Navbar() {
           </>
         ) : (
           <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            <MenuButton
+              as={Button}
+              rightIcon={<ChevronDownIcon />}
+              fontSize="md"
+              fontWeight="medium"
+            >
               메뉴
             </MenuButton>
             <MenuList>
