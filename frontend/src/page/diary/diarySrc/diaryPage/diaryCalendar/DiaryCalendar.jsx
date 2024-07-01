@@ -60,7 +60,7 @@ const DiaryCalendar = () => {
 
   return (
     <div id="calendar">
-      {memberInfo && memberInfo.id && memberInfo.nickname && (
+      {memberInfo.access && memberInfo.id && memberInfo.nickname && (
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, interactionPlugin]}
