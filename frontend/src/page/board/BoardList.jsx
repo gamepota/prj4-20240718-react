@@ -197,17 +197,7 @@ export function BoardList() {
                 <>
                   <MenuButton
                     as={Button}
-                    rightIcon={
-                      isOpen ? (
-                        <span>
-                          <ChevronDownIcon />
-                        </span>
-                      ) : (
-                        <span>
-                          <ChevronUpIcon />
-                        </span>
-                      )
-                    }
+                    rightIcon={isOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
                     colorScheme={"blue"}
                     size={"md"}
                   >
@@ -225,9 +215,10 @@ export function BoardList() {
                     </MenuItem>
                     <MenuItem onClick={() => handlePageSizeChange(100)}>
                       100개씩 보기
+                    </MenuItem>
                   </MenuList>
                 </>
-                )}
+              )}
             </Menu>
           </Box>
         </Flex>
@@ -369,5 +360,5 @@ export function BoardList() {
         </Flex>
       </Center>
     </>
-);
+  );
 }
