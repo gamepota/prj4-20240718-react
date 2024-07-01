@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
   Badge,
@@ -6,45 +6,47 @@ import {
   Button,
   Center,
   Flex,
-  Image,
   Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Select,
-  SimpleGrid,
   Table,
   Tbody,
   Td,
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "../../component/Pagination.jsx";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
-export function BoardList() {
+export function BoardReportList() {
   const [boardList, setBoardList] = useState([]);
   const [pageAmount, setPageAmount] = useState(30);
   const [pageInfo, setPageInfo] = useState({});
   const [boardType, setBoardType] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchType, setSearchType] = useState("전체");
-  const [selectedBoardId, setSelectedBoardId] = useState(null);
-  const [boards, setBoards] = useState([]);
   const [searchParams] = useSearchParams();
+  const [selectedBoards, setSelectedBoards] = useState([]); // 선택된 게시글 ID 관리
+  const toast = useToast();
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
 
   const navigate = useNavigate();
-
   useEffect(() => {
     const boardTypeParam = searchParams.get("boardType") || "전체";
     setBoardType(boardTypeParam);
     axios
-      .get(`/api/board/list?${searchParams}`)
+      .get(`/api/board/report/list?${searchParams}`)
       .then((res) => {
         setBoardList(res.data.boardList);
         setPageInfo(res.data.pageInfo);
@@ -64,7 +66,6 @@ export function BoardList() {
       setSearchKeyword(keywordParam);
     }
   }, [searchParams]);
-
   function handlePageSizeChange(number) {
     setPageAmount(number);
     searchParams.set("pageAmount", number);
@@ -94,10 +95,7 @@ export function BoardList() {
     axios
       .get(`/api/board/${boardId}`)
       .then(() => {})
-      .finally(() => {
-        setSelectedBoardId(boardId);
-        navigate(`/board/${boardId}`);
-      });
+      .finally(() => navigate(`/board/${boardId}`));
   }
 
   function handleSearchClick() {
@@ -106,6 +104,52 @@ export function BoardList() {
     searchParams.set("offsetReset", true);
 
     navigate(`?${searchParams}`);
+  }
+
+  // 체크박스를 토글하는 함수
+  function toggleCheckbox(boardId) {
+    if (selectedBoards.includes(boardId)) {
+      setSelectedBoards(selectedBoards.filter((id) => id !== boardId));
+    } else {
+      setSelectedBoards([...selectedBoards, boardId]);
+    }
+  }
+
+  // 선택된 게시글 삭제 요청 보내기
+  function handleDeleteSelected() {
+    if (selectedBoards.length === 0) {
+      return; // 선택된 게시글이 없으면 무시
+    }
+
+    axios
+      .delete("/api/board/delete", {
+        data: {
+          ids: selectedBoards,
+          memberId: params.memberId,
+        },
+      })
+      .then((res) => {
+        // 삭제 성공 시에는 성공 메시지 표시
+        toast({
+          status: "success",
+          description: "삭제가 완료되었습니다",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        setSelectedBoards([]);
+        navigate(`/board/list/report`);
+      })
+      .catch((error) => {
+        // 삭제 실패 시에는 에러 메시지 표시
+        toast({
+          status: "error",
+          description: "삭제 중 오류가 발생했습니다",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      });
   }
 
   return (
@@ -198,7 +242,17 @@ export function BoardList() {
                 <>
                   <MenuButton
                     as={Button}
-                    rightIcon={isOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
+                    rightIcon={
+                      isOpen ? (
+                        <span>
+                          <ChevronDownIcon />
+                        </span>
+                      ) : (
+                        <span>
+                          <ChevronUpIcon />
+                        </span>
+                      )
+                    }
                     colorScheme={"blue"}
                     size={"md"}
                   >
@@ -228,31 +282,93 @@ export function BoardList() {
       <Center>
         <Box mb={10}></Box>
         <Box mb={10}>
-          {boardType === "반려동물 정보" ? (
-            <SimpleGrid columns={[1, 2, 3]} spacing={10}>
+          <Flex align="center" justify="center" mb={4}>
+            <Button
+              colorScheme="red"
+              onClick={handleDeleteSelected}
+              disabled={selectedBoards.length === 0}
+            >
+              선택 삭제
+            </Button>
+          </Flex>
+          <Table boxShadow="lg" borderRadius="10">
+            <Thead>
+              <Tr>
+                <Th>
+                  <input
+                    type="checkbox"
+                    checked={
+                      selectedBoards.length > 0 &&
+                      selectedBoards.length === boardList.length
+                    }
+                    onChange={() => {
+                      if (
+                        selectedBoards.length > 0 &&
+                        selectedBoards.length === boardList.length
+                      ) {
+                        setSelectedBoards([]);
+                      } else {
+                        setSelectedBoards(boardList.map((board) => board.id));
+                      }
+                    }}
+                  />
+                </Th>
+                <Th>누적된 신고 수</Th>
+                <Th textAlign={"center"}>게시판 종류</Th>
+                <Th>게시글ID</Th>
+                <Th w={500} textAlign="center">
+                  제목
+                </Th>
+                <Th>작성자</Th>
+                <Th>추천수</Th>
+                <Th>조회수</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
               {boardList.map((board) => (
-                <Box
-                  key={board.id}
-                  borderWidth="1px"
-                  borderRadius="lg"
-                  overflow="hidden"
-                  p={4}
-                  cursor="pointer"
-                  onClick={() => handleBoardClick(board.id)}
-                  _hover={{ bg: "gray.200" }}
-                >
-                  {/* 썸네일 추가 부분 */}
-                  {board.fileList && board.fileList.length > 0 && (
-                    <Box mb={2}>
-                      <Image src={board.fileList[0].src} alt="썸네일" />
-                    </Box>
-                  )}
-
-                  <Box fontWeight="bold" as="h4" fontSize="xl">
+                <Tr key={board.id}>
+                  <Td>
+                    <input
+                      type="checkbox"
+                      checked={selectedBoards.includes(board.id)}
+                      onChange={() => toggleCheckbox(board.id)}
+                    />
+                  </Td>
+                  <Td
+                    textAlign="center"
+                    onClick={() =>
+                      navigate("content", {
+                        state: {
+                          boardId: board.id,
+                          repoterMemberId: board.repoterId,
+                        },
+                      })
+                    } // 절대 경로 사용
+                    style={{ cursor: "pointer" }} // 커서 스타일 추가
+                  >
+                    <span>{board.numberOfReports}</span>
+                  </Td>
+                  <Td textAlign="center">
+                    <span
+                      onClick={() =>
+                        handleClickBoardTypeButton(board.boardType)
+                      }
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    >
+                      {board.boardType}
+                    </span>
+                  </Td>
+                  <Td textAlign="center">{board.id}</Td>
+                  <Td
+                    onClick={() => handleBoardClick(board.id)}
+                    cursor="pointer"
+                    _hover={{
+                      bgColor: "gray.200",
+                    }}
+                  >
                     {board.title}
-                  </Box>
-                  <Box>{board.writer}</Box>
-                  <Box>
                     {board.numberOfImages > 0 && (
                       <Badge ml={2}>
                         {board.numberOfImages}
@@ -262,73 +378,14 @@ export function BoardList() {
                     {board.numberOfComments > 0 && (
                       <span> [{board.numberOfComments}]</span>
                     )}
-                  </Box>
-                  <Box>
-                    <span>추천수: {board.numberOfLikes}</span>
-                    <span>조회수: {board.views}</span>
-                  </Box>
-                </Box>
-              ))}
-            </SimpleGrid>
-          ) : (
-            <Table boxShadow="lg" borderRadius="10">
-              <Thead>
-                <Tr>
-                  <Th textAlign={"center"}>게시판 종류</Th>
-                  <Th>게시글ID</Th>
-                  <Th w={500} textAlign="center">
-                    제목
-                  </Th>
-                  <Th>작성자</Th>
-                  <Th>추천수</Th>
-                  <Th>조회수</Th>
+                  </Td>
+                  <Td>{board.writer}</Td>
+                  <Td textAlign="center">{board.numberOfLikes}</Td>
+                  <Td textAlign="center">{board.views}</Td>
                 </Tr>
-              </Thead>
-              <Tbody>
-                {boardList.map((board) => (
-                  <Tr key={board.id}>
-                    <Td textAlign="center">
-                      <span
-                        onClick={() =>
-                          handleClickBoardTypeButton(board.boardType)
-                        }
-                        style={{
-                          cursor: "pointer",
-                        }}
-                      >
-                        {board.boardType}
-                      </span>
-                    </Td>
-                    <Td textAlign="center">{board.id}</Td>
-                    <Td
-                      onClick={() => {
-                        handleBoardClick(board.id);
-                      }}
-                      cursor="pointer"
-                      _hover={{
-                        bgColor: "gray.200",
-                      }}
-                      bg={board.id === selectedBoardId ? "gray.200" : ""}
-                    >
-                      {board.title}
-                      {board.numberOfImages > 0 && (
-                        <Badge ml={2}>
-                          {board.numberOfImages}
-                          <FontAwesomeIcon icon={faImage} />
-                        </Badge>
-                      )}
-                      {board.numberOfComments > 0 && (
-                        <span> [{board.numberOfComments}]</span>
-                      )}
-                    </Td>
-                    <Td>{board.writer}</Td>
-                    <Td textAlign="center">{board.numberOfLikes}</Td>
-                    <Td textAlign="center">{board.views}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          )}
+              ))}
+            </Tbody>
+          </Table>
         </Box>
       </Center>
       <Pagination

@@ -1,22 +1,17 @@
+// BoardView.jsx
 import {
   Badge,
   Box,
   Button,
   Flex,
   Image,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Popover,
   PopoverArrow,
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
   PopoverTrigger,
+  Spacer,
   Spinner,
   Tooltip,
   useDisclosure,
@@ -31,6 +26,8 @@ import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 import { generateDiaryId } from "../../util/util.jsx";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import ReportModal from "./ReportModal";
 
 export function BoardView() {
   const { id } = useParams();
@@ -40,30 +37,29 @@ export function BoardView() {
     count: 0,
   });
   const [isLikeProcessing, setIsLikeProcessing] = useState(false);
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const {
+    isOpen: isOpenDelete,
+    onOpen: onOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenReport,
+    onOpen: onOpenReport,
+    onClose: onCloseReport,
+  } = useDisclosure();
   const navigate = useNavigate();
   const toast = useToast();
-  // LoginProvider
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
   const params = memberId ? { memberId } : {};
 
   const [selectedWriter, setSelectedWriter] = useState(null);
   const [selectedWriterId, setSelectedWriterId] = useState(null);
-  // if (memberInfo != null) {
-  //   const access = memberInfo.access;
-  //   const userId = memberInfo.id;
-  //   const nickname = memberInfo.nickname;
-  //   const isLoggedIn = Boolean(access);
-  // }
+
   useEffect(() => {
-    // console.log("params=", params);
     axios
-      .get(`/api/board/${id}`, {
-        params,
-      })
+      .get(`/api/board/${id}`, { params })
       .then((res) => {
-        // console.log(res.data);
         setBoard(res.data.board);
         setLike(res.data.like);
       })
@@ -73,41 +69,40 @@ export function BoardView() {
             status: "info",
             description: "해당 게시물이 존재하지 않습니다",
             position: "top",
-            duration: "500",
+            duration: 500,
           });
         }
       });
   }, [id]);
+
   if (board === null) {
     return <Spinner />;
   }
-  function handleClickRemove() {
+
+  const handleClickRemove = () => {
     axios
-      .delete("/api/board/" + board.id, {
-        params,
-      })
+      .delete(`/api/board/${board.id}`, { params })
       .then(() => {
         toast({
           status: "success",
           description: `${id}번 게시물이 삭제되었습니다`,
           position: "top",
-          duration: "10",
+          duration: 10,
         });
         navigate(`/`);
       })
       .catch(() => {
         toast({
           status: "error",
-          description: `잘못된 삭제 명령입니다`,
+          description: "잘못된 삭제 명령입니다",
           position: "top",
-          duration: "10",
+          duration: 10,
         });
       })
+      .finally(onCloseDelete);
+  };
 
-      .finally(() => onClose);
-  }
-  function handleClickLike() {
-    console.log("좋아요버튼 눌렀을 때 memberInfo=", memberInfo);
+  const handleClickLike = () => {
     if (!memberInfo) {
       return;
     }
@@ -123,18 +118,19 @@ export function BoardView() {
       .finally(() => {
         setIsLikeProcessing(false);
       });
-  }
+  };
 
-  function handleWriterClick(writer, writerId) {
+  const handleWriterClick = (writer, writerId) => {
     setSelectedWriter(writer);
     setSelectedWriterId(writerId);
-  }
-  function handleDiaryView() {
+  };
+
+  const handleDiaryView = () => {
     const diaryId = generateDiaryId(selectedWriterId);
     const url = `/diary/${diaryId}`;
-    const windowFeatures = "width=1400,height=800"; // 원하는 크기로 설정
+    const windowFeatures = "width=1400,height=800";
     window.open(url, "_blank", windowFeatures);
-  }
+  };
 
   return (
     <Box maxW="800px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10}>
@@ -163,7 +159,7 @@ export function BoardView() {
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
-                  <Button lorScheme="blue" onClick={handleDiaryView}>
+                  <Button colorScheme="blue" onClick={handleDiaryView}>
                     작성자 다이어리 보기
                   </Button>
                 </PopoverBody>
@@ -200,6 +196,23 @@ export function BoardView() {
             {like.count}
           </Box>
         )}
+        <Spacer />
+        <Button
+          onClick={() => {
+            if (!memberInfo) {
+              toast({
+                description: "로그인 해주시길 바랍니다",
+                duration: 5000,
+                position: "top",
+                isClosable: "true",
+              });
+            } else {
+              onOpenReport();
+            }
+          }}
+        >
+          신고
+        </Button>
         {isLikeProcessing && (
           <Box ml={2}>
             <Spinner size="sm" />
@@ -207,33 +220,33 @@ export function BoardView() {
         )}
       </Flex>
       <BoardCommentComponent boardId={board.id} />
-      {memberId == board.memberId && (
-        <Box>
+      {(memberId === board.memberId || memberId == 1) && (
+        <Flex justify="flex-end">
           <Button
-            colorScheme={"purple"}
+            colorScheme="purple"
             onClick={() => navigate(`/board/edit/${id}`)}
+            mr={2}
           >
             수정
           </Button>
-          <Button colorScheme={"red"} onClick={onOpen}>
+          <Button colorScheme="red" onClick={onOpenDelete}>
             삭제
           </Button>
-        </Box>
+        </Flex>
       )}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>삭제하시곘습니까?</ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>취소</Button>
-            <Button colorScheme={"red"} onClick={handleClickRemove}>
-              확인
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <DeleteConfirmationModal
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        onClickRemove={handleClickRemove}
+      />
+      <ReportModal
+        isOpen={isOpenReport}
+        onClose={onCloseReport}
+        boardId={board.id}
+        memberId={params.memberId}
+      />
     </Box>
   );
 }
+
+export default BoardView;

@@ -1,6 +1,7 @@
 package com.backend.controller.board;
 
 import com.backend.domain.board.Board;
+import com.backend.domain.board.DeleteRequest;
 import com.backend.service.board.BoardService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -44,9 +45,12 @@ public class BoardController {
                                     @RequestParam(defaultValue = "30") Integer pageAmount,
                                     @RequestParam(defaultValue = "false") Boolean offsetReset,
                                     HttpSession session,
-                                    @RequestParam(defaultValue = "전체") String boardType) throws Exception {
+                                    @RequestParam(defaultValue = "전체") String boardType,
+                                    @RequestParam(defaultValue = "전체") String searchType,
+                                    @RequestParam(defaultValue = "") String keyword) throws Exception {
 //        System.out.println("page = " + page);
-        return service.list(page, pageAmount, offsetReset, session, boardType);
+        System.out.println("이것은 서비스의 searchType = " + searchType);
+        return service.list(page, pageAmount, offsetReset, session, boardType, searchType, keyword);
     }
 
     @GetMapping("{id}")
@@ -104,6 +108,57 @@ public class BoardController {
 //        }
 
         return ResponseEntity.ok(service.like(req));
+    }
+
+    @PostMapping("/report")
+    public ResponseEntity report(@RequestBody Map<String, Object> req) {
+        System.out.println("req = " + req);
+        if (service.isLoggedIn((Integer) req.get("memberId"))) {
+            if (service.addReport(req)) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/report/list")
+    public Map<String, Object> reportList(@RequestParam(defaultValue = "1") Integer page,
+                                          @RequestParam(defaultValue = "30") Integer pageAmount,
+                                          @RequestParam(defaultValue = "false") Boolean offsetReset,
+                                          HttpSession session,
+                                          @RequestParam(defaultValue = "전체") String boardType,
+                                          @RequestParam(defaultValue = "전체") String searchType,
+                                          @RequestParam(defaultValue = "") String keyword) throws Exception {
+//        System.out.println("page = " + page);
+        return service.reportList(page, pageAmount, offsetReset, session, boardType, searchType, keyword);
+    }
+
+    @GetMapping("/report/list/content")
+    public ResponseEntity<Map<String, Object>> reportContent(@RequestParam Integer boardId, @RequestParam Integer repoterMemberId) {
+        Map<String, Object> response = service.reportContent(boardId, repoterMemberId);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity deleteMultiple(@RequestBody DeleteRequest deleteRequest) {
+        List<Integer> ids = deleteRequest.getIds();
+        Integer memberId = deleteRequest.getMemberId();
+        System.out.println("memberId = " + memberId);
+
+        for (Integer id : ids) {
+            if (!service.hasAccess(id, memberId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+
+        for (Integer id : ids) {
+            service.delete(id);
+        }
+
+        return ResponseEntity.ok().build();
     }
 }
 

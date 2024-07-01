@@ -3,6 +3,7 @@ package com.backend.service.board;
 
 import com.backend.domain.board.Board;
 import com.backend.domain.board.BoardFile;
+import com.backend.domain.board.BoardReport;
 import com.backend.mapper.board.BoardCommentMapper;
 import com.backend.mapper.board.BoardMapper;
 import jakarta.servlet.http.HttpSession;
@@ -18,6 +19,7 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +67,8 @@ public class BoardService {
                 board.getContent() != null && !board.getContent().isBlank();
     }
 
-    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType)
+    public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType,
+                                    String searchType, String keyword)
             throws Exception {
         if (page <= 0) {
             throw new IllegalArgumentException("page must be greater than 0");
@@ -110,11 +113,12 @@ public class BoardService {
         }
 
         Integer countByBoardType;
-        if (boardType.equals("전체")) {
+        if (boardType.equals("전체") && searchType.equals("전체") && keyword.equals("")) {
 
             countByBoardType = mapper.selectAllCount();
         } else {
-            countByBoardType = mapper.selectByBoardType(boardType);
+            System.out.println("이것은 서비스의 boardType = " + boardType);
+            countByBoardType = mapper.selectByBoardType(boardType, searchType, keyword);
         }
 
         Integer lastPageNumber = (countByBoardType - 1) / pageAmount + 1;
@@ -135,7 +139,30 @@ public class BoardService {
         pageInfo.put("rightPageNumber", rightPageNumber);
         pageInfo.put("offset", offset);
 
-        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPaging(offset, pageAmount, boardType));
+        List<Board> boardList = mapper.selectAllPaging(offset, pageAmount, boardType, searchType, keyword);
+
+        // 각각의 Board 객체에 fileList 추가
+        for (Board board : boardList) {
+            System.out.println("Board ID: " + board.getId());
+
+            // getFileImageByboardId 메서드 호출
+            String firstImageName = mapper.getFileImageByboardId(board.getId().toString());
+            System.out.println("File Name: " + firstImageName);
+
+            if (firstImageName != null) {
+                String thumbnailUrl = srcPrefix + "board/" + board.getId() + "/" + firstImageName;
+
+                System.out.println("First Image Name: " + firstImageName);
+                System.out.println("Thumbnail URL: " + thumbnailUrl);
+
+                List<BoardFile> files = Collections.singletonList(new BoardFile(firstImageName, thumbnailUrl));
+                board.setFileList(files);
+
+                System.out.println("Updated FileList: " + board.getFileList());
+            }
+        }
+
+        return Map.of("pageInfo", pageInfo, "boardList", boardList);
     }
 
 //    public Map<String, Object> get(Integer id) {
@@ -172,6 +199,8 @@ public class BoardService {
                 .map(name -> new BoardFile(name, srcPrefix + "board/" + +id + "/" + name)).collect(Collectors.toList());
         board.setFileList(files);
         Map<String, Object> like = new HashMap<>();
+//        System.out.println("files = " + files);
+//        System.out.println("fileNames = " + fileNames);
         if (memberId == null) {
             like.put("like", false);
         } else {
@@ -238,8 +267,12 @@ public class BoardService {
     public boolean hasAccess(Integer id, Integer memberId) {
         Board board = mapper.selectById(id);
 
-        return board.getMemberId()
-                .equals(memberId);
+        if (board.getMemberId().equals(memberId) || memberId == 1) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public Map<String, Object> like(Map<String, Object> req) {
@@ -275,4 +308,114 @@ public class BoardService {
     }
 
 
+    public boolean isLoggedIn(Integer memberId) {
+        return memberId != null && memberId > 0;
+    }
+
+
+    public boolean addReport(Map<String, Object> req) {
+        BoardReport boardReport = new BoardReport();
+        boardReport.setBoardId((Integer) req.get("boardId"));
+        boardReport.setMemberId((Integer) req.get("memberId"));
+        boardReport.setContent((String) req.get("reason"));
+        boardReport.setReportType((String) req.get("reportType")); // 새로운 필드 추가
+        //신고 안 했으면
+        int count = mapper.selectCountReportWithPrimaryKey(boardReport);
+        if (count == 0) {
+            mapper.insertReport(boardReport);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Map<String, Object> reportList(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType, String searchType, String keyword)
+            throws Exception {
+
+        if (page <= 0) {
+            throw new IllegalArgumentException("page must be greater than 0");
+        }
+
+        // 세션에서 값 가져오기
+        Object sessionValue = session.getAttribute(PAGE_INFO_SESSION_KEY);
+        Integer offset;
+
+        // 세션 값이 없을 때 초기화
+        if (sessionValue == null) {
+            offset = 1;
+            session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
+        } else if (sessionValue instanceof Integer) {
+            offset = (Integer) sessionValue;
+        } else if (sessionValue instanceof String) {
+            try {
+                offset = Integer.valueOf((String) sessionValue);
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException("Invalid type for session attribute", e);
+            }
+        } else {
+            throw new IllegalStateException("Invalid type for session attribute");
+        }
+
+        // 페이지에 따른 offset 계산
+
+        // 세션에 새로운 offset 저장
+        session.setAttribute(PAGE_INFO_SESSION_KEY, offset);
+
+
+//        System.out.println("이것은 서비스의 boardType = " + boardType);
+        // 페이지 정보 계산
+        Map<String, Object> pageInfo = new HashMap<>();
+        if (offsetReset) {
+            offset = 0;
+            page = 1;
+            pageInfo.put("currentPageNumber", 1);
+        } else {
+            offset = (page - 1) * pageAmount;
+            pageInfo.put("currentPageNumber", page);
+        }
+
+        Integer countByBoardType;
+        if (boardType.equals("전체") && searchType.equals("전체") && keyword.equals("")) {
+
+            countByBoardType = mapper.selectAllCountWithReportBoard();
+        } else {
+            System.out.println("이것은 서비스의 boardType = " + boardType);
+            countByBoardType = mapper.selectByBoardTypeWithReportBoard(boardType, searchType, keyword);
+        }
+
+        Integer lastPageNumber = (countByBoardType - 1) / pageAmount + 1;
+        Integer leftPageNumber = (page - 1) / 10 * 10 + 1;
+        Integer rightPageNumber = Math.min(leftPageNumber + 9, lastPageNumber);
+        Integer prevPageNumber = (leftPageNumber > 1) ? leftPageNumber - 1 : null;
+        Integer nextPageNumber = (rightPageNumber < lastPageNumber) ? rightPageNumber + 1 : null;
+
+        if (prevPageNumber != null) {
+            pageInfo.put("prevPageNumber", prevPageNumber);
+        }
+        if (nextPageNumber != null) {
+            pageInfo.put("nextPageNumber", nextPageNumber);
+        }
+
+        pageInfo.put("lastPageNumber", lastPageNumber);
+        pageInfo.put("leftPageNumber", leftPageNumber);
+        pageInfo.put("rightPageNumber", rightPageNumber);
+        pageInfo.put("offset", offset);
+
+        return Map.of("pageInfo", pageInfo, "boardList", mapper.selectAllPagingWithReportBoard(offset, pageAmount, boardType, searchType, keyword));
+    }
+
+    public Map<String, Object> reportContent(Integer boardId, Integer repoterMemberId) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 게시글 정보 조회
+        Board board = mapper.selectBoardById(boardId);
+
+        // 신고 내용 조회
+        List<BoardReport> reports = mapper.selectReportsByBoardId(boardId);
+
+        // 응답 데이터 구성
+        response.put("board", board);
+        response.put("reports", reports);
+        return response;
+    }
 }

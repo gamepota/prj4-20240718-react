@@ -133,6 +133,27 @@ CREATE TABLE board_comment
     comment   VARCHAR(500) NOT NULL,
     inserted  DATETIME     NOT NULL DEFAULT NOW()
 );
+CREATE TABLE board_report
+(
+    board_id  INT          NOT NULL REFERENCES board (id) ON DELETE CASCADE,
+    member_id INT          NOT NULL REFERENCES member (id) ON DELETE CASCADE,
+    content   VARCHAR(500) NOT NULL,
+    PRIMARY KEY (board_id, member_id)
+
+);
+-- 1. reportType 열 추가
+ALTER TABLE board_report
+    ADD COLUMN reportType VARCHAR(30);
+
+-- 2. 기존 행들의 reportType을 임의의 값(예: 1)으로 설정
+UPDATE board_report
+SET reportType = '기타';
+
+
+
+SELECT *
+FROM board_report;
+
 
 
 SELECT *

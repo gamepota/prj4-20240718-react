@@ -1,19 +1,38 @@
-import {Box, Button, Flex, Img, Input} from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Img,
+  Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  useDisclosure,
+} from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {generateDiaryId} from "../util/util.jsx";
+import { generateDiaryId } from "../util/util.jsx";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
 export function Navbar() {
   const navigate = useNavigate();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   // LoginProvider
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const access = memberInfo?.access || null;
   const nickname = memberInfo?.nickname || null;
   const isLoggedIn = Boolean(access);
   const diaryId = isLoggedIn ? generateDiaryId(memberInfo.id) : null;
+  const handleMouseEnter = () => {
+    onOpen();
+  };
+
+  const handleMouseLeave = () => {
+    onClose();
+  };
 
   function handleLogout() {
     try {
@@ -52,7 +71,7 @@ export function Navbar() {
     >
       <Flex gap={5}>
         <Box
-          _hover={{ cursor: "pointer"}}
+          _hover={{ cursor: "pointer" }}
           p={2}
           borderRadius="md"
           onClick={() => navigate("/")}
@@ -62,13 +81,122 @@ export function Navbar() {
           <Img src={"/img/petmily.png"} w="100%" h="auto" />
         </Box>
         <Box
-          _hover={{ cursor: "pointer", bgColor: "gray.200" }}
-          p={2}
-          borderRadius="md"
-          onClick={() => navigate("/board/list")}
+          textAlign={"center"}
+          m={"auto"}
+          fontSize={"2xl"}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
-          게시판
+          <Menu isOpen={isOpen}>
+            <MenuButton
+              as={Button}
+              rightIcon={
+                isOpen ? (
+                  <span>
+                    <ChevronDownIcon />
+                  </span>
+                ) : (
+                  <span>
+                    <ChevronUpIcon />
+                  </span>
+                )
+              }
+              bg={"gray.700"}
+              color={"white"}
+              fontWeight={"bold"}
+              size={"lg"}
+              p={6}
+            >
+              {`게시판`}
+            </MenuButton>
+            <MenuList>
+              {/* 각 게시판 메뉴 클릭 시 navigate 함수 호출 */}
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=전체");
+                  onClose();
+                }}
+              >
+                전체 게시판
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=자유");
+                  onClose();
+                }}
+              >
+                자유 게시판
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=사진 공유");
+                  onClose();
+                }}
+              >
+                사진 공유 게시판
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=질문/답변");
+                  onClose();
+                }}
+              >
+                질문/답변 게시판
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=반려동물 건강");
+                  onClose();
+                }}
+              >
+                반려동물 건강 게시판
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=훈련/교육");
+                  onClose();
+                }}
+              >
+                훈련/교육 게시판
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=리뷰");
+                  onClose();
+                }}
+              >
+                리뷰 게시판
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=이벤트/모임");
+                  onClose();
+                }}
+              >
+                이벤트/모임 게시판
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/board/list?boardType=반려동물 정보");
+                  onClose();
+                }}
+              >
+                반려동물 정보 게시판
+              </MenuItem>
+              {memberInfo && memberInfo.id == 1 && (
+                <MenuItem
+                  onClick={() => {
+                    navigate("/board/list/report");
+                    onClose();
+                  }}
+                >
+                  신고 게시판
+                </MenuItem>
+              )}
+            </MenuList>
+          </Menu>
         </Box>
+
         <Box
           _hover={{ cursor: "pointer", bgColor: "gray.200" }}
           p={2}
@@ -81,7 +209,7 @@ export function Navbar() {
           _hover={{ cursor: "pointer", bgColor: "gray.200" }}
           p={2}
           borderRadius="md"
-          onClick={() => navigate("/board")}
+          onClick={() => navigate("/board/list?boardType=반려동물 정보")}
         >
           반려동물 정보
         </Box>
