@@ -13,6 +13,7 @@ import { MemberPage } from "./page/member/MemberPage.jsx";
 import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import { LoginProvider } from "./component/LoginProvider.jsx";
+import { OAuthLogin } from "./page/member/OAuthLogin.jsx";
 
 // Board
 import { BoardWrite } from "./page/board/BoardWrite.jsx";
@@ -60,6 +61,7 @@ const App = () => {
         { path: "member/page/:id", element: <MemberPage /> }, // 회원 페이지
         { path: "member/list", element: <MemberList /> }, // 회원 목록
         { path: "member/edit/:id", element: <MemberEdit /> }, // 회원 정보 수정 및 탈퇴
+        { path: "member/oauth/login", element: <OAuthLogin /> }, // 소셜 로그인
 
         // Board
         { path: "board/write", element: <BoardWrite /> }, // 게시판 글쓰기
