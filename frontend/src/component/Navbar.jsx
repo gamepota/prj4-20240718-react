@@ -10,7 +10,7 @@ import {
   MenuList,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -20,6 +20,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 export function Navbar() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [searchQuery, setSearchQuery] = useState("");
   // LoginProvider
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const access = memberInfo?.access || null;
@@ -59,6 +60,12 @@ export function Navbar() {
     const windowFeatures = "width=1400,height=800,max-width=800,max-height=600"; // 원하는 크기로 설정
     window.open(url, "_blank", windowFeatures);
   };
+
+  function handleSearchClick() {
+    const searchParams = new URLSearchParams();
+    searchParams.append("keyword", searchQuery);
+    navigate(`board/list?${searchParams.toString()}`);
+  }
 
   return (
     <Flex
@@ -229,11 +236,19 @@ export function Navbar() {
             placeholder="통합 검색"
             borderRadius="md"
             borderColor="gray.300"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleSearchClick();
+              }
+            }}
           />
           <Button
             bgColor="purple.100"
             _hover={{ bgColor: "purple.200" }}
             ml={2}
+            onClick={handleSearchClick}
           >
             검색
           </Button>
