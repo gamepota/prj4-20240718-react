@@ -45,6 +45,7 @@ const ReportModal = ({ isOpen, onClose, boardId, memberId }) => {
         boardId,
         memberId,
         reason: customReasons[selectedReason],
+        reportType: selectedReason,
       })
       .then((res) => {
         toast({

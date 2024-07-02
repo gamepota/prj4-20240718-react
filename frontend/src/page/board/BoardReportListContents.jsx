@@ -49,10 +49,10 @@ export function BoardReportListContents() {
               <VStack align="stretch" spacing={3}>
                 <HStack justify="space-between">
                   <Text fontWeight="bold">신고자: {report.reporter}</Text>
-                  <Text color="red.500">{report.content}</Text>
+                  <Text color="red.500">{report.reportType}</Text>
                 </HStack>
                 <Divider />
-                <Text>{report.reportType}</Text>
+                <Text>{report.content}</Text>
               </VStack>
             </Box>
           ),
