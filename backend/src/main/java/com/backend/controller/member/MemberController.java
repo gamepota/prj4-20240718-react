@@ -51,6 +51,7 @@ public class MemberController {
     // MemberEdit
     @GetMapping("/{id}")
     public ResponseEntity<Member> getById(@PathVariable Integer id) {
+        System.out.println("이것은 멤버컨트롤러의 id = " + id);
         Member member = service.getById(id);
         if (member == null) {
             return ResponseEntity.notFound().build();

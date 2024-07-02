@@ -145,6 +145,7 @@ export function Navbar() {
               _hover={{ bgColor: "purple.200" }}
               fontSize="md"
               fontWeight="medium"
+              onClick={() => navigate("/board/write")}
             >
               새 글쓰기
             </Button>
