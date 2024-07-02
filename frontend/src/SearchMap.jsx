@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Button, Input, List, ListItem } from "@chakra-ui/react";
+import { Box, List, ListItem } from "@chakra-ui/react";
+import SearchBox from "./SearchBox";
 
 const SearchMap = () => {
   const [places, setPlaces] = useState([]);
   const [pagination, setPagination] = useState(null);
-  const [keyword, setKeyword] = useState("");
   const mapRef = useRef(null);
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
@@ -27,13 +27,10 @@ const SearchMap = () => {
       const map = new kakao.maps.Map(container, options);
       setMap(map);
       infowindow.current = new kakao.maps.InfoWindow({ zIndex: 1 });
-
-      // 키워드로 장소를 검색합니다
-      searchPlaces();
     };
   }, []);
 
-  const searchPlaces = () => {
+  const searchPlaces = (keyword) => {
     const kakao = window.kakao;
     const ps = new kakao.maps.services.Places();
 
@@ -119,23 +116,9 @@ const SearchMap = () => {
     infowindow.current.open(map, marker);
   };
 
-  const handleKeywordChange = (e) => {
-    setKeyword(e.target.value);
-  };
-
-  const handleSearchClick = () => {
-    searchPlaces();
-  };
-
   return (
     <Box>
-      <Input
-        id="keyword"
-        placeholder="키워드를 입력하세요"
-        value={keyword}
-        onChange={handleKeywordChange}
-      />
-      <Button onClick={handleSearchClick}>검색</Button>
+      <SearchBox onSearch={searchPlaces} />
       <Box id="map" ref={mapRef} width="100%" height="500px" />
       <Box id="menu_wrap">
         <List id="placesList">

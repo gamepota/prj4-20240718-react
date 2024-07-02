@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Flex, Input } from "@chakra-ui/react";
+import React, { useEffect, useRef, useState } from "react";
+import { Box } from "@chakra-ui/react";
+import SearchBox from "../../SearchBox.jsx";
 
 const { kakao } = window;
 
 export const PlaceMap2 = ({ ctprvnCd }) => {
   const [map, setMap] = useState(null);
-  const [keyword, setKeyword] = useState("");
-  const [address, setAddress] = useState("");
+  const [markers, setMarkers] = useState([]);
+  const mapRef = useRef(null);
 
   useEffect(() => {
     if (window.kakao && window.kakao.maps) {
@@ -26,7 +27,7 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
   const initializeMap = () => {
     const kakao = window.kakao;
 
-    const mapContainer = document.getElementById("place-map");
+    const mapContainer = mapRef.current;
     const mapOption = {
       center: new kakao.maps.LatLng(36.2, 128.02025),
       level: 13, // 기본 확대 레벨 설정
@@ -66,66 +67,96 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     }
   };
 
-  const searchPlaces = () => {
+  const searchPlaces = (keyword) => {
+    const kakao = window.kakao;
     const ps = new kakao.maps.services.Places();
-    ps.keywordSearch(keyword, (data, status) => {
-      if (status === kakao.maps.services.Status.OK) {
-        let bounds = new kakao.maps.LatLngBounds();
-        data.forEach((place) => {
-          const position = new kakao.maps.LatLng(place.y, place.x);
-          const marker = new kakao.maps.Marker({
-            position,
-            map,
-          });
-          bounds.extend(position);
-        });
-        map.setBounds(bounds);
-      }
-    });
+
+    if (!keyword.replace(/^\s+|\s+$/g, "")) {
+      alert("키워드를 입력해주세요!");
+      return false;
+    }
+
+    ps.keywordSearch(keyword, placesSearchCB);
   };
 
-  const searchAddress = () => {
-    const geocoder = new kakao.maps.services.Geocoder();
-    geocoder.addressSearch(address, (result, status) => {
-      if (status === kakao.maps.services.Status.OK) {
-        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-        map.setCenter(coords);
-        const marker = new kakao.maps.Marker({
-          map,
-          position: coords,
-        });
-        const infowindow = new kakao.maps.InfoWindow({
-          content:
-            '<div style="width:150px;text-align:center;padding:6px 0;">여기입니다!</div>',
-        });
-        infowindow.open(map, marker);
-      }
-    });
+  const placesSearchCB = (data, status) => {
+    const kakao = window.kakao;
+    if (status === kakao.maps.services.Status.OK) {
+      displayPlaces(data);
+    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+      alert("검색 결과가 존재하지 않습니다.");
+    } else if (status === kakao.maps.services.Status.ERROR) {
+      alert("검색 결과 중 오류가 발생했습니다.");
+    }
   };
+
+  const displayPlaces = (places) => {
+    const kakao = window.kakao;
+    const bounds = new kakao.maps.LatLngBounds();
+
+    // 기존 마커 제거
+    markers.forEach((marker) => marker.setMap(null));
+    setMarkers([]);
+
+    const newMarkers = places.map((place, index) => {
+      const position = new kakao.maps.LatLng(place.y, place.x);
+      const marker = addMarker(position, index);
+      bounds.extend(position);
+
+      // 마커와 검색 결과 항목에 이벤트 등록
+      kakao.maps.event.addListener(marker, "mouseover", () => {
+        displayInfowindow(marker, place.place_name);
+      });
+
+      kakao.maps.event.addListener(marker, "mouseout", () => {
+        infowindow.close();
+      });
+
+      return marker;
+    });
+
+    setMarkers(newMarkers);
+    map.setBounds(bounds);
+  };
+
+  const addMarker = (position, idx) => {
+    const kakao = window.kakao;
+    const imageSrc =
+      "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png";
+    const imageSize = new kakao.maps.Size(36, 37);
+    const imgOptions = {
+      spriteSize: new kakao.maps.Size(36, 691),
+      spriteOrigin: new kakao.maps.Point(0, idx * 46 + 10),
+      offset: new kakao.maps.Point(13, 37),
+    };
+    const markerImage = new kakao.maps.MarkerImage(
+      imageSrc,
+      imageSize,
+      imgOptions,
+    );
+    const marker = new kakao.maps.Marker({
+      position,
+      image: markerImage,
+    });
+
+    marker.setMap(map);
+    return marker;
+  };
+
+  const displayInfowindow = (marker, title) => {
+    const content = `<div style="padding:5px;z-index:1;">${title}</div>`;
+    infowindow.setContent(content);
+    infowindow.open(map, marker);
+  };
+
+  const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
   return (
-    <Box>
-      <Flex direction="column" align="center" mb={4}>
-        <Input
-          type="text"
-          placeholder="장소 검색"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          mb={2}
-        />
-        <Button onClick={searchPlaces} mb={4}>
-          검색
-        </Button>
-        <Input
-          type="text"
-          placeholder="주소 검색"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          mb={2}
-        />
-        <Button onClick={searchAddress}>검색</Button>
-      </Flex>
-      <Box id="place-map" width="100%" height="500px" />
+    <Box position="relative" width="100%" height="500px">
+      <Box position="absolute" top="10px" left="10px" zIndex="10">
+        <SearchBox onSearch={searchPlaces} />
+      </Box>
+      <Box id="place-map" ref={mapRef} width="100%" height="100%" />
     </Box>
   );
 };
