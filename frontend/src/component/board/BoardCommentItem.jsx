@@ -21,6 +21,7 @@ import { faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { BoardCommentEdit } from "./BoardCommentEdit.jsx";
 import { LoginContext } from "../LoginProvider.jsx";
+import { generateDiaryId } from "../../util/util.jsx";
 
 export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -70,16 +71,42 @@ export function BoardCommentItem({ comment, isProcessing, setIsProcessing }) {
       });
   };
 
+  function handleDiaryView() {
+    const diaryId = generateDiaryId(comment.memberId);
+    const url = `/diary/${diaryId}`;
+    const windowFeatures = "width=1531,height=864";
+    window.open(url, "_blank", windowFeatures);
+  }
+
   return (
     <Box p={4} borderWidth="1px" borderRadius="md" mb={4} bg="white">
       <Flex align="center" mb={3}>
         {profileImage ? (
-          <Image src={profileImage} boxSize="40px" borderRadius="full" mr={2} />
+          <Image
+            src={profileImage}
+            boxSize="40px"
+            borderRadius="full"
+            mr={2}
+            sx={{ cursor: "pointer" }}
+            onClick={handleDiaryView}
+          />
         ) : (
-          <Avatar name={comment.writer} size="sm" mr={2} />
+          <Avatar
+            name={comment.writer}
+            size="sm"
+            mr={2}
+            sx={{ cursor: "pointer" }}
+            onClick={handleDiaryView}
+          />
         )}
         <Box>
-          <Text fontWeight="bold">{comment.writer}</Text>
+          <Text
+            fontWeight="bold"
+            onClick={handleDiaryView}
+            sx={{ cursor: "pointer" }}
+          >
+            {comment.writer}
+          </Text>
           <Text fontSize="sm" color="gray.500">
             {new Date(comment.inserted).toLocaleString()}
           </Text>
