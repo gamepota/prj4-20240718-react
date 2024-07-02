@@ -6,16 +6,17 @@ import {
   Button,
   Card,
   CardBody,
+  Center,
   FormControl,
   FormLabel,
+  HStack,
   Input,
   Spinner,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
   VStack,
-  HStack,
-  Text, Center,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateDiaryId } from "../../../../../util/util.jsx";
@@ -32,7 +33,7 @@ export function DiaryCommentView() {
   const params = memberId ? { memberId } : {};
   const { onOpen, onClose, isOpen } = useDisclosure();
   const diaryId = generateDiaryId(memberInfo.id);
-
+  console.log(id);
   useEffect(() => {
     axios
       .get(`/api/diaryComment/${id}`)
@@ -44,7 +45,7 @@ export function DiaryCommentView() {
             description: "해당 게시물이 존재하지 않습니다.",
             position: "top",
           });
-          navigate(`/diary/${diaryId}/comment/list`);
+          navigate(`/diary/${diaryId}/comment`);
         }
       });
   }, [id]);
@@ -58,7 +59,7 @@ export function DiaryCommentView() {
           description: "삭제가 완료되었습니다.",
           position: "top",
         });
-        navigate(`/diary/${diaryId}/comment/list`);
+        navigate(`/diary/${diaryId}/comment`);
       })
       .catch(() => {
         toast({
@@ -78,6 +79,11 @@ export function DiaryCommentView() {
         <Spinner size="xl" />
       </Center>
     );
+  }
+
+  function handleCommentEdit() {
+    const diaryId = generateDiaryId(memberInfo.id);
+    navigate(`/diary/${diaryId}/comment/edit/${diaryComment.id}`);
   }
 
   return (
@@ -105,11 +111,17 @@ export function DiaryCommentView() {
               <Box>
                 <FormControl>
                   <FormLabel fontWeight="bold">작성일시</FormLabel>
-                  <Input type="datetime-local" value={diaryComment.inserted} readOnly />
+                  <Input
+                    type="datetime-local"
+                    value={diaryComment.inserted}
+                    readOnly
+                  />
                 </FormControl>
               </Box>
               <HStack spacing={4} justifyContent="flex-end">
-                <Button colorScheme="purple">수정</Button>
+                <Button colorScheme="purple" onClick={handleCommentEdit}>
+                  수정
+                </Button>
                 <Button colorScheme="red" onClick={handleClickRemove}>
                   삭제
                 </Button>

@@ -21,28 +21,32 @@ import { faImages, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { generateDiaryId } from "../../../../../util/util.jsx";
 import Pagination from "../../../../../component/Pagination.jsx";
-import { format } from "date-fns";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryBoardList() {
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const [diaryBoardList, setDiaryBoardList] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
-      // 변경된 부분
-      setDiaryBoardList(res.data.diaryBoardList);
-      setPageInfo(res.data.pageInfo);
-    });
+    console.log("Search Params:", searchParams.toString());
 
-    setSearchType("all");
-    setSearchKeyword("");
+    axios
+      .get(`/api/diaryBoard/list?${searchParams.toString()}`)
+      .then((res) => {
+        console.log("API Response:", res.data);
+        setDiaryBoardList(res.data.diaryBoardList);
+        setPageInfo(res.data.pageInfo);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
 
     const typeParam = searchParams.get("type");
     const keywordParam = searchParams.get("keyword");
@@ -52,7 +56,7 @@ export function DiaryBoardList() {
     if (keywordParam) {
       setSearchKeyword(keywordParam);
     }
-  }, [searchParams]);
+  }, [searchParams.toString()]);
 
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
@@ -60,53 +64,63 @@ export function DiaryBoardList() {
   }
 
   function handleSearchClick() {
-    const params = new URLSearchParams(searchParams);
-    params.set("type", searchType);
-    params.set("keyword", searchKeyword);
-    navigate(`/api/diaryBoard/list?${params.toString()}`); // 변경된 부분
+    const params = new URLSearchParams({
+      type: searchType,
+      keyword: searchKeyword,
+    });
+    setSearchParams(params);
+    navigate(`/?${params.toString()}`);
   }
 
   function handlePageButtonClick(pageNumber) {
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNumber);
-    navigate(`/api/diaryBoard/list?${params.toString()}`); // 변경된 부분
+    setSearchParams(params);
+    navigate(`/?${params.toString()}`);
   }
 
-  function handleSelectedDiaryBoard(id) {
+  function handleSelectedDiaryBoard(diaryBoardId) {
     const diaryId = generateDiaryId(memberInfo.id);
-    return () => navigate(`/diary/${diaryId}/view/${id}`);
+    return () => navigate(`/diary/${diaryId}/view/${diaryBoardId}`);
   }
 
-  function handleWriteClick() {
+  function handleWriteClick(diaryBoardId) {
     const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/write/${diaryBoardList.id}`);
+    navigate(`/diary/${diaryId}/write/${diaryBoardId}`);
   }
 
-  // const bg = useColorModeValue("white", "gray.800");
+  const bg = useColorModeValue("white", "gray.800");
   const hoverBg = useColorModeValue("gray.100", "gray.700");
 
   return (
     <>
-      <Box mb={5}></Box>
-      <Center>
+      <Center mb={10}>
         <Heading>다이어리 목록</Heading>
       </Center>
-      <Box>
-        {memberInfo && <Button onClick={handleWriteClick}>글쓰기</Button>}
-      </Box>
-      <Box>
-        {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
-        {diaryBoardList.length > 0 && (
-          <Table>
-            <Thead>
+
+      <Center mb={5}>
+        <Box w="full" maxW="1200px">
+          {memberInfo.access && (
+            <Button onClick={handleWriteClick} mb={5} colorScheme="teal">
+              글쓰기
+            </Button>
+          )}
+          <Table boxShadow="lg" borderRadius="md" bg={bg}>
+            <Thead bg={useColorModeValue("gray.200", "gray.700")}>
               <Tr>
-                <Th>N번째 일기</Th>
-                <Th>내용</Th>
-                <Th>who?</Th>
-                <Th>작성일자</Th>
+                <Th textAlign="center">N번째 일기</Th>
+                <Th textAlign="center">제목</Th>
+                <Th textAlign="center">작성자</Th>
               </Tr>
             </Thead>
             <Tbody>
+              {diaryBoardList.length === 0 && (
+                <Tr>
+                  <Td colSpan="3" textAlign="center">
+                    조회 결과가 없습니다.
+                  </Td>
+                </Tr>
+              )}
               {diaryBoardList.map((diaryBoard) => (
                 <Tr
                   key={diaryBoard.id}
@@ -125,17 +139,13 @@ export function DiaryBoardList() {
                     )}
                   </Td>
                   <Td textAlign="center">{diaryBoard.writer}</Td>
-                  <Td>
-                    {" "}
-                    <span style={{ color: "red" }} />
-                    {format(new Date(diaryBoard.inserted), "yyyy.MM.dd")}
-                  </Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
-        )}
-      </Box>
+        </Box>
+      </Center>
+
       <Pagination
         pageInfo={pageInfo}
         pageNumbers={pageNumbers}

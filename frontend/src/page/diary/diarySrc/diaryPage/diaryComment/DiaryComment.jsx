@@ -1,12 +1,11 @@
 import { Box, Spinner } from "@chakra-ui/react";
-import { DiaryCommentComponent } from "./DiaryCommentComponent.jsx";
+import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
+import { DiaryCommentList } from "./DiaryCommentList.jsx";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import {extractUserIdFromDiaryId, generateDiaryId} from "../../../../../util/util.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import {DiaryCommentWrite} from "./DiaryCommentWrite.jsx";
-import {DiaryCommentList} from "./DiaryCommentList.jsx";
 
 export function DiaryComment() {
   const { id } = useParams();
@@ -22,7 +21,7 @@ export function DiaryComment() {
           params: { diaryId },
         });
         setDiaryCommentList(res.data);
-        console.log("Comments fetched:", res.data)
+        console.log("Comments fetched:", res.data);
       } catch (err) {
         console.error("Error fetching comments:", err);
       } finally {
@@ -30,7 +29,7 @@ export function DiaryComment() {
       }
     };
     fetchComments();
-  }, [id, memberInfo.id,]);
+  }, [id, memberInfo.id]);
 
   const handleCommentAdded = (newComment) => {
     setDiaryCommentList((prevList) => [newComment, ...prevList]); // 새로운 댓글을 맨 위에 추가
@@ -44,9 +43,11 @@ export function DiaryComment() {
     <Box>
       {/*{Number(memberInfo.id) === Number(diaryCommentList.id)?(*/}
       {/*<DiaryCommentWrite onCommentAdded={handleCommentAdded} diaryCommentList={diaryCommentList}/>):null}*/}
-      <DiaryCommentWrite onCommentAdded={handleCommentAdded} diaryCommentList={diaryCommentList}/>
+      <DiaryCommentWrite
+        onCommentAdded={handleCommentAdded}
+        diaryCommentList={diaryCommentList}
+      />
       <DiaryCommentList diaryCommentList={diaryCommentList} />
     </Box>
   );
 }
-//테스트 완료

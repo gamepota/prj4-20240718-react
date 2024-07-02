@@ -40,6 +40,7 @@ import { PlaceLocal } from "./page/place/PlaceLocal.jsx";
 import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceMap2 } from "./page/place/PlaceMap2.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
+import { DiaryCommentEdit } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentEdit.jsx";
 
 const App = () => {
   const [selectedCtprvnCd, setSelectedCtprvnCd] = useState(null);
@@ -82,12 +83,14 @@ const App = () => {
             // 다이어리 하위 경로 설정
             { index: true, element: <DiaryHomeMain /> }, // 다이어리 메인페이지 렌더링
             { path: "write/:id", element: <DiaryBoardWrite /> }, // 다이어리 쓰기
-            { path: "list/:id", element: <DiaryBoardList /> }, // 다이어리 목록
+            { path: "list", element: <DiaryBoardList /> }, // 다이어리 목록
             { path: "view/:id", element: <DiaryBoardView /> }, // 다이어리 보기
             { path: "edit/:id", element: <DiaryBoardEdit /> }, // 다이어리 수정
-            { path: "comment/:id", element: <DiaryComment /> }, // 방명록
+            { path: "comment", element: <DiaryComment /> }, // 방명록
             { path: "comment/write/:id", element: <DiaryCommentWrite /> }, // 방명록 쓰기
-            { path: "comment/view/:id", element: <DiaryCommentView /> }, // 방명록 보기
+            { path: "comment/view/:id", element: <DiaryCommentView /> }, // 방명록 더보기
+            { path: "comment/list", element: <DiaryCommentView /> }, // 방명록 리스트
+            { path: "comment/edit/:id", element: <DiaryCommentEdit /> }, // 방명록 수정
             { path: "calendar", element: <DiaryCalendar /> }, // 예방접종
           ],
         },

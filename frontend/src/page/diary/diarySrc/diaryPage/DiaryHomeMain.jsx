@@ -1,17 +1,27 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
-  Badge, Box, Center, Heading, Image, SimpleGrid, Spinner, Table, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue,
+  Box,
+  Center,
+  Heading,
+  Image,
+  SimpleGrid,
+  Spinner,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {LoginContext} from "../../../../component/LoginProvider.jsx";
-
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faImages} from "@fortawesome/free-solid-svg-icons";
-import {format} from "date-fns";
+import { LoginContext } from "../../../../component/LoginProvider.jsx";
+import { format } from "date-fns";
 
 export function DiaryHomeMain() {
-  const {memberInfo} = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const [diaryBoardList, setDiaryBoardList] = useState([]);
   const [diaryCommentList, setDiaryCommentList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +33,9 @@ export function DiaryHomeMain() {
     const fetchData = async () => {
       try {
         const diaryBoardRes = await axios.get(`/api/diaryBoard/list?limit=5`);
-        const diaryCommentRes = await axios.get(`/api/diaryComment/list?limit=5`);
+        const diaryCommentRes = await axios.get(
+          `/api/diaryComment/list?limit=5`,
+        );
         setDiaryBoardList(diaryBoardRes.data.diaryBoardList || []);
         setDiaryCommentList(diaryCommentRes.data || []);
       } catch (err) {
@@ -35,23 +47,26 @@ export function DiaryHomeMain() {
     fetchData();
   }, []);
 
-  const handleBoardClick = (id) => {
+  const handleBoardClick = () => {
     const diaryId = memberInfo.id;
-    navigate(`/diary/${diaryId}/view/${id}`);
+    navigate(`/diary/${diaryId}/view`);
   };
 
-  const handleCommentClick = (id) => {
+  const handleCommentClick = () => {
     const diaryId = memberInfo.id;
-    navigate(`/diary/${diaryId}/comment/view/${id}`);
+    navigate(`/diary/${diaryId}/comment/view`);
   };
 
   if (isLoading) {
-    return (<Center mt={10}>
-        <Spinner size="xl"/>
-      </Center>);
+    return (
+      <Center mt={10}>
+        <Spinner size="xl" />
+      </Center>
+    );
   }
 
-  return (<Box>
+  return (
+    <Box>
       <Box mb={5}>
         <Image
           src="https://via.placeholder.com/1200x300"
@@ -63,11 +78,18 @@ export function DiaryHomeMain() {
       </Box>
 
       <Box mb={10}>
-        <Heading size="lg" mb={5}>최근 게시물</Heading>
-        <SimpleGrid columns={{base: 1, md: 2}} spacing={10}>
+        <Heading size="lg" mb={5}>
+          최근 게시물
+        </Heading>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
           <Box>
-            <Heading size="md" mb={3}>다이어리 게시물</Heading>
-            {diaryBoardList.length === 0 ? (<Text>조회 결과가 없습니다.</Text>) : (<Table variant="simple">
+            <Heading size="md" mb={3}>
+              다이어리 게시물
+            </Heading>
+            {diaryBoardList.length === 0 ? (
+              <Text>조회 결과가 없습니다.</Text>
+            ) : (
+              <Table variant="simple">
                 <Thead>
                   <Tr>
                     <Th>No.</Th>
@@ -77,20 +99,31 @@ export function DiaryHomeMain() {
                 </Thead>
                 <Tbody>
                   {diaryBoardList.slice(0, 5).map((diaryBoard) => (
-                    <Tr key={diaryBoard.id} onClick={() => handleBoardClick(diaryBoard.id)} _hover={{bg: hoverBg}}
-                        cursor="pointer">
+                    <Tr
+                      key={diaryBoard.id}
+                      onClick={() => handleBoardClick(diaryBoard.id)}
+                      _hover={{ bg: hoverBg }}
+                      cursor="pointer"
+                    >
                       <Td>{diaryBoard.id}</Td>
                       <Td>{diaryBoard.title}</Td>
                       <Td>
                         {format(new Date(diaryBoard.inserted), "yyyy.MM.dd")}
                       </Td>
-                    </Tr>))}
+                    </Tr>
+                  ))}
                 </Tbody>
-              </Table>)}
+              </Table>
+            )}
           </Box>
           <Box>
-            <Heading size="md" mb={3}>방명록</Heading>
-            {diaryCommentList.length === 0 ? (<Text>방명록이 없습니다.</Text>) : (<Table variant="simple">
+            <Heading size="md" mb={3}>
+              방명록
+            </Heading>
+            {diaryCommentList.length === 0 ? (
+              <Text>방명록이 없습니다.</Text>
+            ) : (
+              <Table variant="simple">
                 <Thead>
                   <Tr>
                     <Th>No.</Th>
@@ -101,19 +134,26 @@ export function DiaryHomeMain() {
                 </Thead>
                 <Tbody>
                   {diaryCommentList.slice(0, 5).map((diaryComment, index) => (
-                    <Tr key={diaryComment.id} onClick={() => handleCommentClick(diaryComment.id)} _hover={{bg: hoverBg}}
-                        cursor="pointer">
+                    <Tr
+                      key={diaryComment.id}
+                      onClick={() => handleCommentClick(diaryComment.id)}
+                      _hover={{ bg: hoverBg }}
+                      cursor="pointer"
+                    >
                       <Td>{index + 1}</Td>
                       <Td>{diaryComment.nickname}</Td>
                       <Td>{diaryComment.comment.substring(0, 20)}...</Td>
                       <Td>
                         {format(new Date(diaryComment.inserted), "yyyy.MM.dd")}
                       </Td>
-                    </Tr>))}
+                    </Tr>
+                  ))}
                 </Tbody>
-              </Table>)}
+              </Table>
+            )}
           </Box>
         </SimpleGrid>
       </Box>
-    </Box>);
+    </Box>
+  );
 }

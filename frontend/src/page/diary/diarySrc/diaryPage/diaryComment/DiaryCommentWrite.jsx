@@ -1,18 +1,10 @@
 import React, { useContext, useState } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Text,
-  Textarea,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, Text, Textarea, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryCommentWrite({ onCommentAdded }) {
   const [comment, setComment] = useState("");
@@ -39,6 +31,7 @@ export function DiaryCommentWrite({ onCommentAdded }) {
         });
         onCommentAdded(res.data); // 새로운 댓글을 추가
         setComment(""); // 입력창 초기화
+        window.location.reload(); // 페이지 새로고침
       })
       .catch((e) => {
         toast({
@@ -55,14 +48,16 @@ export function DiaryCommentWrite({ onCommentAdded }) {
   return (
     <Box>
       <Box>
-        <Text fontWeight="bold" fontSize="large">{nickname}님!</Text>
+        <Text fontWeight="bold" fontSize="large">
+          {nickname}님!
+        </Text>
       </Box>
       <Box mb={2}>
-          <Textarea
-            placeholder="방명록을 남겨보세요"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
+        <Textarea
+          placeholder="방명록을 남겨보세요"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
       </Box>
       <Button
         isLoading={loading}

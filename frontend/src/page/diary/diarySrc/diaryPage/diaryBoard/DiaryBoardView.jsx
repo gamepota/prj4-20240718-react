@@ -89,11 +89,19 @@ export function DiaryBoardView() {
 
   function handleDiaryEdit() {
     const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/edit/${id}`);
+    navigate(`/diary/${diaryId}/edit/${diaryBoard.id}`);
   }
 
   return (
-    <Box maxW="800px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">
+    <Box
+      maxW="800px"
+      mx="auto"
+      mt={10}
+      p={5}
+      boxShadow="md"
+      borderRadius="md"
+      bg="white"
+    >
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
         <Text fontSize="2xl" fontWeight="bold">
           {diaryBoard.id}번째 일기
@@ -112,14 +120,18 @@ export function DiaryBoardView() {
 
       <Box mb={6}>
         <FormControl>
-          <FormLabel fontSize="lg" fontWeight="bold">제목</FormLabel>
+          <FormLabel fontSize="lg" fontWeight="bold">
+            제목
+          </FormLabel>
           <Input value={diaryBoard.title} readOnly bg="gray.50" />
         </FormControl>
       </Box>
 
       <Box mb={6}>
         <FormControl>
-          <FormLabel fontSize="lg" fontWeight="bold">본문</FormLabel>
+          <FormLabel fontSize="lg" fontWeight="bold">
+            본문
+          </FormLabel>
           <Textarea value={diaryBoard.content} readOnly bg="gray.50" />
         </FormControl>
       </Box>
@@ -137,15 +149,24 @@ export function DiaryBoardView() {
 
       <Box mb={6}>
         <FormControl>
-          <FormLabel fontSize="lg" fontWeight="bold">작성자</FormLabel>
+          <FormLabel fontSize="lg" fontWeight="bold">
+            작성자
+          </FormLabel>
           <Input value={diaryBoard.writer} readOnly bg="gray.50" />
         </FormControl>
       </Box>
 
       <Box mb={6}>
         <FormControl>
-          <FormLabel fontSize="lg" fontWeight="bold">작성일시</FormLabel>
-          <Input type="datetime-local" value={diaryBoard.inserted} readOnly bg="gray.50" />
+          <FormLabel fontSize="lg" fontWeight="bold">
+            작성일시
+          </FormLabel>
+          <Input
+            type="datetime-local"
+            value={diaryBoard.inserted}
+            readOnly
+            bg="gray.50"
+          />
         </FormControl>
       </Box>
 

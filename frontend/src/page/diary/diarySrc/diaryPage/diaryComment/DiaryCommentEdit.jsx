@@ -17,8 +17,9 @@ import {
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryCommentEdit() {
   const { id } = useParams();
@@ -29,12 +30,14 @@ export function DiaryCommentEdit() {
   const access = memberInfo.access;
   const nickname = memberInfo.nickname;
   const isLoggedIn = Boolean(access);
+  const navigate = useNavigate();
+  const diaryId = generateDiaryId(memberInfo.id);
 
   useEffect(() => {
     axios
       .get(`/api/diaryComment/${id}`)
       .then((res) => setDiaryComment(res.data));
-  }, []);
+  }, [id]);
 
   function handleCommentSubmit() {
     axios
@@ -50,12 +53,13 @@ export function DiaryCommentEdit() {
           description: "댓글이 수정되었습니다.",
           position: "top",
         });
+        navigate(`/diary/${diaryId}/comment/view/${diaryComment.id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
           toast({
             status: "error",
-            description: "방명록이 수정되지 않았습니다.",
+            description: "댓글이 수정되지 않았습니다.",
             position: "top",
           });
         }
@@ -89,10 +93,12 @@ export function DiaryCommentEdit() {
             <FormLabel>방명록 작성글</FormLabel>
             <Textarea
               defaultValue={diaryComment.comment}
+              key={diaryComment.id}
               onChange={(e) =>
                 setDiaryComment({ ...diaryComment, comment: e.target.value })
               }
             ></Textarea>
+            <Button onClick={onOpen}>저장</Button>
           </FormControl>
         </Box>
         <Modal isOpen={isOpen} onClose={onClose}>

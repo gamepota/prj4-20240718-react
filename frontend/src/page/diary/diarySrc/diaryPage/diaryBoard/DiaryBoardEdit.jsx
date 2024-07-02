@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
   Badge,
@@ -29,11 +29,11 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import {useNavigate, useParams} from "react-router-dom";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
-import {LoginContext} from "../../../../../component/LoginProvider.jsx";
-import {generateDiaryId} from "../../../../../util/util.jsx";
+import { useNavigate, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryBoardEdit() {
   const { id } = useParams();
@@ -76,7 +76,8 @@ export function DiaryBoardEdit() {
         if (err.response.status === 400) {
           toast({
             status: "error",
-            description: "게시물이 수정되지 않았습니다. 작성한 내용을 확인해주세요.",
+            description:
+              "게시물이 수정되지 않았습니다. 작성한 내용을 확인해주세요.",
             position: "top",
           });
         }
@@ -91,7 +92,9 @@ export function DiaryBoardEdit() {
   }
 
   const fileNameList = Array.from(addFileList).map((addFile) => {
-    const duplicate = diaryBoard.fileList.some((file) => file.name === addFile.name);
+    const duplicate = diaryBoard.fileList.some(
+      (file) => file.name === addFile.name,
+    );
     return (
       <Flex key={addFile.name} justify="space-between" align="center">
         <Text fontSize="md" mr={3}>
@@ -104,26 +107,40 @@ export function DiaryBoardEdit() {
 
   function handleRemoveSwitchChange(name, checked) {
     setRemoveFileList((prevList) =>
-      checked ? [...prevList, name] : prevList.filter((item) => item !== name)
+      checked ? [...prevList, name] : prevList.filter((item) => item !== name),
     );
   }
 
   return (
-    <Box maxW="800px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">
-      <Text fontSize="x-large" mb={10}>{diaryBoard.id}번 일기 수정</Text>
+    <Box
+      maxW="800px"
+      mx="auto"
+      mt={10}
+      p={5}
+      boxShadow="md"
+      borderRadius="md"
+      bg="white"
+    >
+      <Text fontSize="x-large" mb={10}>
+        {diaryBoard.id}번 일기 수정
+      </Text>
       <Box>
         <FormControl mb={7}>
           <FormLabel>제목</FormLabel>
           <Input
             defaultValue={diaryBoard.title}
-            onChange={(e) => setDiaryBoard({ ...diaryBoard, title: e.target.value })}
+            onChange={(e) =>
+              setDiaryBoard({ ...diaryBoard, title: e.target.value })
+            }
           />
         </FormControl>
         <FormControl mb={7}>
           <FormLabel>내용</FormLabel>
           <Textarea
             defaultValue={diaryBoard.content}
-            onChange={(e) => setDiaryBoard({ ...diaryBoard, content: e.target.value })}
+            onChange={(e) =>
+              setDiaryBoard({ ...diaryBoard, content: e.target.value })
+            }
           />
         </FormControl>
         <FormControl mb={7}>
@@ -142,7 +159,11 @@ export function DiaryBoardEdit() {
                 <CardBody>
                   <Image
                     src={file.src}
-                    sx={removeFileList.includes(file.name) ? { filter: "blur(8px)" } : {}}
+                    sx={
+                      removeFileList.includes(file.name)
+                        ? { filter: "blur(8px)" }
+                        : {}
+                    }
                   />
                 </CardBody>
                 <CardFooter>
@@ -151,7 +172,9 @@ export function DiaryBoardEdit() {
                       <FontAwesomeIcon color="black" icon={faTrashCan} />
                       <Switch
                         colorScheme="red"
-                        onChange={(e) => handleRemoveSwitchChange(file.name, e.target.checked)}
+                        onChange={(e) =>
+                          handleRemoveSwitchChange(file.name, e.target.checked)
+                        }
                       />
                       <Text>{file.name}</Text>
                     </Flex>
