@@ -7,19 +7,21 @@ import {
   HStack,
   Text,
   Textarea,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { generateDiaryId } from "../../../../../util/util.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { format, isValid, parseISO } from "date-fns";
+import { generateDiaryId } from "../../../../../util/util.jsx";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryCommentList({ diaryCommentList }) {
-  const { memberInfo } = useContext(LoginContext);
   const navigate = useNavigate();
+  const toast = useToast();
+  const { memberInfo } = useContext(LoginContext);
 
   function handleViewClick(diaryCommentId) {
     const diaryId = generateDiaryId(memberInfo.id);
@@ -30,8 +32,7 @@ export function DiaryCommentList({ diaryCommentList }) {
     <Box p={5}>
       <Center mb={5}>
         <Text fontWeight="bold" fontSize="x-large">
-          {" "}
-          방명록 보기{" "}
+          방명록 보기
         </Text>
       </Center>
       {diaryCommentList.length === 0 ? (
@@ -57,7 +58,7 @@ export function DiaryCommentList({ diaryCommentList }) {
                 <CardBody>
                   <HStack justifyContent="space-between" mb={2}>
                     <HStack>
-                      <Text fontWeight="bold">No.{index + 1}</Text>
+                      <Text fontWeight="bold">No.{diaryComment.id}</Text>
                       <Text fontWeight="bold">{diaryComment.nickname}</Text>
                       <Button
                         colorScheme="teal"
