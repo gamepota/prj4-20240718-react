@@ -49,14 +49,17 @@ const PetInfoTable = ({ data }) => (
 );
 
 export const MainPage = () => {
-  const [showLogo, setShowLogo] = useState(true);
+  const [showLogo, setShowLogo] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowLogo(false);
-    }, 1000); // 1초 후 로고 페이드아웃
-
-    return () => clearTimeout(timer);
+    const isFirstVisit = !sessionStorage.getItem("visited");
+    if (isFirstVisit) {
+      setShowLogo(true);
+      sessionStorage.setItem("visited", "true");
+      setTimeout(() => {
+        setShowLogo(false);
+      }, 2000); // 2초 후 로고 페이드아웃
+    }
   }, []);
 
   const board1 = [
