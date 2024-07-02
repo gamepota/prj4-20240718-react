@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button } from "@chakra-ui/react";
 import SelectComponent from "../../SelectCompoent.jsx";
-// 오타 수정
 
 const { kakao } = window;
 
@@ -11,41 +10,37 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
   const [selectedCategories, setSelectedCategories] = useState(["HP8"]); // 기본으로 병원 검색
 
   useEffect(() => {
-    const loadKakaoMaps = () => {
+    if (window.kakao && window.kakao.maps) {
       kakao.maps.load(() => {
         initializeMap();
       });
-    };
-
-    if (!window.kakao || !window.kakao.maps) {
+    } else {
       const script = document.createElement("script");
       script.src =
-        "//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY_HERE&autoload=false&libraries=services,clusterer,drawing";
+        "//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing";
       script.async = true;
       document.head.appendChild(script);
-      script.onload = loadKakaoMaps;
-    } else {
-      loadKakaoMaps();
-    }
-  }, []); // 카테고리 변경이 아니라 맵 로딩에만 의존
 
-  useEffect(() => {
-    if (map) {
-      setCenterAndSearch();
+      script.onload = () => {
+        kakao.maps.load(() => {
+          initializeMap();
+        });
+      };
     }
-  }, [ctprvnCd, selectedCategories, map]); // 카테고리와 지역 코드에 따라 의존
+  }, [ctprvnCd]);
 
   const initializeMap = () => {
+    const kakao = window.kakao;
+
     const mapContainer = document.getElementById("place-map");
     const mapOption = {
       center: new kakao.maps.LatLng(36.2, 128.02025),
       level: 13,
     };
-    const newMap = new kakao.maps.Map(mapContainer, mapOption);
-    setMap(newMap);
-  };
 
-  const setCenterAndSearch = () => {
+    const map = new kakao.maps.Map(mapContainer, mapOption);
+    setMap(map);
+
     if (ctprvnCd) {
       const locations = {
         11: { lat: 37.5665, lng: 126.978 },
@@ -65,7 +60,6 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
         47: { lat: 36.4919, lng: 128.8889 },
         48: { lat: 35.4606, lng: 128.2132 },
         50: { lat: 33.4996, lng: 126.5312 },
-        // 나머지 지역 코드도 같은 형식으로 추가
       };
 
       const location = locations[ctprvnCd];
@@ -74,16 +68,21 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
         map.setLevel(6);
       }
     }
-    searchByCategory(); // 카테고리에 따른 검색 실행
+
+    searchByCategory(); // 기본 카테고리로 검색
   };
 
   const searchByCategory = () => {
-    if (!map || !kakao || !kakao.maps || !kakao.maps.services) {
-      console.error("Map services are not ready.");
+    if (
+      !map ||
+      !window.kakao ||
+      !window.kakao.maps ||
+      !window.kakao.maps.services
+    )
       return;
-    }
 
-    markers.forEach((marker) => marker.setMap(null)); // 기존 마커 제거
+    // 기존 마커 제거
+    markers.forEach((marker) => marker.setMap(null));
     setMarkers([]);
 
     const ps = new kakao.maps.services.Places();
@@ -93,40 +92,34 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
         category,
         (data, status) => {
           if (status === kakao.maps.services.Status.OK) {
-            processSearchResults(data);
-          } else {
-            console.error("Places search failed:", status);
+            const bounds = new kakao.maps.LatLngBounds();
+            const newMarkers = data.map((place) => {
+              const marker = new kakao.maps.Marker({
+                map,
+                position: new kakao.maps.LatLng(place.y, place.x),
+              });
+
+              const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+              kakao.maps.event.addListener(marker, "click", function () {
+                infowindow.setContent(
+                  '<div style="padding:5px;font-size:12px;">' +
+                    place.place_name +
+                    "</div>",
+                );
+                infowindow.open(map, marker);
+              });
+
+              bounds.extend(new kakao.maps.LatLng(place.y, place.x));
+              return marker;
+            });
+
+            map.setBounds(bounds);
+            setMarkers((prevMarkers) => [...prevMarkers, ...newMarkers]);
           }
         },
         { useMapBounds: true },
       );
     });
-  };
-
-  const processSearchResults = (data) => {
-    const bounds = new kakao.maps.LatLngBounds();
-    const newMarkers = data.map((place) => {
-      const marker = new kakao.maps.Marker({
-        map,
-        position: new kakao.maps.LatLng(place.y, place.x),
-      });
-
-      const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-      kakao.maps.event.addListener(marker, "click", () => {
-        infowindow.setContent(
-          '<div style="padding:5px;font-size:12px;">' +
-            place.place_name +
-            "</div>",
-        );
-        infowindow.open(map, marker);
-      });
-
-      bounds.extend(new kakao.maps.LatLng(place.y, place.x));
-      return marker;
-    });
-
-    map.setBounds(bounds);
-    setMarkers((prevMarkers) => [...prevMarkers, ...newMarkers]);
   };
 
   const handleCategoryChange = (categories) => {
@@ -149,7 +142,7 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
           onCategoryChange={handleCategoryChange}
         />
         <Button mt={2} onClick={searchByCategory}>
-          Search by Category
+          카테고리 검색
         </Button>
       </Box>
       <Box id="place-map" width="100%" height="100%" />
