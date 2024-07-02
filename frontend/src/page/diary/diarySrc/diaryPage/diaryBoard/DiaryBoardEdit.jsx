@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
   Badge,
@@ -29,10 +29,10 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import {useNavigate, useParams} from "react-router-dom";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
-import {LoginContext} from "../../../../../component/LoginProvider.jsx";
+import { useNavigate, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import {generateDiaryId} from "../../../../../util/util.jsx";
 
 export function DiaryBoardEdit() {
@@ -44,33 +44,31 @@ export function DiaryBoardEdit() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { memberInfo } = useContext(LoginContext);
-  const access = memberInfo?.access;
-  const nickname = memberInfo?.nickname;
-  const isLoggedIn = Boolean(access);
-  const diaryId = generateDiaryId(memberInfo.id);
+  const nickname = memberInfo?.nickname || "";
 
   useEffect(() => {
     axios.get(`/api/diaryBoard/${id}`).then((res) => setDiaryBoard(res.data));
   }, [id]);
 
-  function handleClickSave() {
+  const handleClickSave = () => {
+    const formData = new FormData();
+    formData.append("id", diaryBoard.id);
+    formData.append("title", diaryBoard.title);
+    formData.append("content", diaryBoard.content);
+    formData.append("nickname", memberInfo.nickname);
+    formData.append("memberId", memberInfo.id);
+    removeFileList.forEach((file) => formData.append("removeFileList", file));
+    Array.from(addFileList).forEach((file) => formData.append("addFileList", file));
+
     axios
-      .putForm(`/api/diaryBoard/edit`, {
-        id: diaryBoard.id,
-        title: diaryBoard.title,
-        content: diaryBoard.content,
-        nickname: memberInfo.nickname,
-        removeFileList,
-        addFileList,
-        memberId: memberInfo.id,
-      })
+      .put("/api/diaryBoard/edit", formData, { headers: { 'Content-Type': 'multipart/form-data' } })
       .then(() => {
         toast({
           status: "success",
           description: `${diaryBoard.id}번 게시물이 수정되었습니다.`,
           position: "top",
         });
-        navigate(`/diary/${diaryId}/view/${diaryBoard.id}`);
+        navigate(`/diary/${generateDiaryId(memberInfo.id)}/view/${diaryBoard.id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
@@ -84,10 +82,20 @@ export function DiaryBoardEdit() {
       .finally(() => {
         onClose();
       });
-  }
+  };
 
   if (diaryBoard === null) {
     return <Spinner />;
+  }
+
+  const isOwner = diaryBoard.writer === nickname;
+
+  if (!isOwner) {
+    return (
+      <Box maxW="800px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">
+        <Text fontSize="x-large" mb={10}>수정 권한이 없습니다.</Text>
+      </Box>
+    );
   }
 
   const fileNameList = Array.from(addFileList).map((addFile) => {
@@ -102,11 +110,11 @@ export function DiaryBoardEdit() {
     );
   });
 
-  function handleRemoveSwitchChange(name, checked) {
+  const handleRemoveSwitchChange = (name, checked) => {
     setRemoveFileList((prevList) =>
       checked ? [...prevList, name] : prevList.filter((item) => item !== name)
     );
-  }
+  };
 
   return (
     <Box maxW="800px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">

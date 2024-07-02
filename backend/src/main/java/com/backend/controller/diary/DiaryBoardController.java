@@ -45,8 +45,9 @@ public class DiaryBoardController {
     @GetMapping("list")
     public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(value = "type", required = false) String searchType,
-                                    @RequestParam(value = "keyword", defaultValue = "") String keyword) {
-        return service.list(page, searchType, keyword);
+                                    @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                    @RequestParam(value = "memberId", required = false) Integer memberId) {
+	    return service.list(page, searchType, keyword, memberId);
 
     }
 

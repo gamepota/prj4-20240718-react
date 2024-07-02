@@ -5,7 +5,9 @@ import {
   Box,
   Button,
   Center,
+  Container,
   Flex,
+  Heading,
   Image,
   Input,
   Menu,
@@ -14,6 +16,7 @@ import {
   MenuList,
   Select,
   SimpleGrid,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -21,22 +24,23 @@ import {
   Thead,
   Tr,
   useColorModeValue,
+  Text,
 } from "@chakra-ui/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faMagnifyingGlass, faBookOpen } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "../../component/Pagination.jsx";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [pageAmount, setPageAmount] = useState(30);
   const [pageInfo, setPageInfo] = useState({});
   const [boardType, setBoardType] = useState("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchType, setSearchType] = useState("전체");
   const [selectedBoardId, setSelectedBoardId] = useState(null);
-  const [boards, setBoards] = useState([]);
   const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
@@ -49,9 +53,11 @@ export function BoardList() {
       .then((res) => {
         setBoardList(res.data.boardList);
         setPageInfo(res.data.pageInfo);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
+        setIsLoading(false);
       });
     setSearchType("전체");
     setSearchKeyword("");
@@ -112,126 +118,26 @@ export function BoardList() {
   const bg = useColorModeValue("white", "gray.800");
   const hoverBg = useColorModeValue("gray.100", "gray.700");
 
-  return (
-    <>
-      <Center>
-        <Flex
-          maxW={"500px"}
-          flexDirection={"column"}
-          alignItems={"center"}
-          gap={6}
-        >
-          <Box>
-            <Menu textAlign={"center"} m={"auto"} fontSize={"2xl"}>
-              {({ isOpen }) => (
-                <>
-                  <MenuButton
-                    as={Button}
-                    rightIcon={
-                      isOpen ? (
-                        <span>
-                          <ChevronDownIcon />
-                        </span>
-                      ) : (
-                        <span>
-                          <ChevronUpIcon />
-                        </span>
-                      )
-                    }
-                    bg={"gray.700"}
-                    color={"white"}
-                    fontWeight={"bold"}
-                    _hover={{ bg: "gray.800" }}
-                    size={"lg"}
-                    p={6}
-                  >
-                    {`${boardType} 게시판`}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("전체")}
-                    >
-                      전체 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("자유")}
-                    >
-                      자유 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("사진 공유")}
-                    >
-                      사진 공유 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("질문/답변")}
-                    >
-                      질문/답변 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() =>
-                        handleClickBoardTypeButton("반려동물 건강")
-                      }
-                    >
-                      반려동물 건강 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("훈련/교육")}
-                    >
-                      훈련/교육 게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("리뷰")}
-                    >
-                      리뷰게시판
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClickBoardTypeButton("이벤트/모임")}
-                    >
-                      이벤트/모임 게시판
-                    </MenuItem>
-                  </MenuList>
-                </>
-              )}
-            </Menu>
-          </Box>
+  if (isLoading) {
+    return (
+      <Center mt={10}>
+        <Spinner size="xl" />
+      </Center>
+    );
+  }
 
-          <Box>
-            <Menu textAlign={"center"} fontSize={"lg"}>
-              {({ isOpen }) => (
-                <>
-                  <MenuButton
-                    as={Button}
-                    rightIcon={isOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
-                    colorScheme={"blue"}
-                    size={"md"}
-                  >
-                    {`게시글 (${pageAmount})개씩 보기`}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem onClick={() => handlePageSizeChange(10)}>
-                      10개씩 보기
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePageSizeChange(30)}>
-                      30개씩 보기
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePageSizeChange(50)}>
-                      50개씩 보기
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePageSizeChange(100)}>
-                      100개씩 보기
-                    </MenuItem>
-                  </MenuList>
-                </>
-              )}
-            </Menu>
-          </Box>
+  return (
+    <Container maxW="container.xl" py={10}>
+      <Center mt={10}>
+        <Flex p={4} borderRadius="md" alignItems="center">
+          <FontAwesomeIcon icon={faBookOpen} size="2x" />
+          <Heading as="h1" size="xl" ml={2}>
+            {boardType} 게시판
+          </Heading>
         </Flex>
       </Center>
-
-      <Center>
-        <Box mb={10}></Box>
-        <Box mb={10}>
+      <Center mt={10}>
+        <Box mb={10} w="100%" px={5}>
           {boardType === "반려동물 정보" ? (
             <SimpleGrid columns={[1, 2, 3]} spacing={10}>
               {boardList.map((board) => (
@@ -244,18 +150,21 @@ export function BoardList() {
                   cursor="pointer"
                   onClick={() => handleBoardClick(board.id)}
                   _hover={{ bg: "gray.200" }}
+                  bg={bg}
                 >
                   {/* 썸네일 추가 부분 */}
                   {board.fileList && board.fileList.length > 0 && (
                     <Box mb={2}>
-                      <Image src={board.fileList[0].src} alt="썸네일" />
+                      <Image src={board.fileList[0].src} alt="썸네일" borderRadius="md" />
                     </Box>
                   )}
 
-                  <Box fontWeight="bold" as="h4" fontSize="xl">
+                  <Box fontWeight="bold" as="h4" fontSize="xl" mb={2}>
                     {board.title}
                   </Box>
-                  <Box>{board.writer}</Box>
+                  <Box fontSize="sm" color="gray.600" mb={2}>
+                    {board.writer}
+                  </Box>
                   <Box>
                     {board.numberOfImages > 0 && (
                       <Badge ml={2}>
@@ -263,11 +172,9 @@ export function BoardList() {
                         <FontAwesomeIcon icon={faImage} />
                       </Badge>
                     )}
-                    {board.numberOfComments > 0 && (
-                      <span> [{board.numberOfComments}]</span>
-                    )}
+                    {board.numberOfComments > 0 && <span> [{board.numberOfComments}]</span>}
                   </Box>
-                  <Box>
+                  <Box mt={2} fontSize="sm" color="gray.500">
                     <span>추천수: {board.numberOfLikes}</span>
                     <span>조회수: {board.views}</span>
                   </Box>
@@ -275,30 +182,36 @@ export function BoardList() {
               ))}
             </SimpleGrid>
           ) : (
-            <Table boxShadow="lg" borderRadius="10">
+            <Table borderRadius="10" bg={bg}>
               <Thead>
                 <Tr>
-                  <Th textAlign={"center"}>게시판 종류</Th>
-                  <Th>게시글ID</Th>
-                  <Th w={500} textAlign="center">
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                    게시판 종류
+                  </Th>
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                    게시글ID
+                  </Th>
+                  <Th w={500} textAlign="center" fontSize="lg" fontWeight="bold">
                     제목
                   </Th>
-                  <Th>작성자</Th>
-                  <Th>추천수</Th>
-                  <Th>조회수</Th>
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                    작성자
+                  </Th>
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                    추천수
+                  </Th>
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                    조회수
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {boardList.map((board) => (
-                  <Tr key={board.id}>
+                  <Tr key={board.id} _hover={{ bg: hoverBg }}>
                     <Td textAlign="center">
                       <span
-                        onClick={() =>
-                          handleClickBoardTypeButton(board.boardType)
-                        }
-                        style={{
-                          cursor: "pointer",
-                        }}
+                        onClick={() => handleClickBoardTypeButton(board.boardType)}
+                        style={{ cursor: "pointer" }}
                       >
                         {board.boardType}
                       </span>
@@ -310,9 +223,10 @@ export function BoardList() {
                       }}
                       cursor="pointer"
                       _hover={{
-                        bgColor: "gray.200",
+                        bg: "gray.200",
                       }}
                       bg={board.id === selectedBoardId ? "gray.200" : ""}
+                      textAlign="center"
                     >
                       {board.title}
                       {board.numberOfImages > 0 && (
@@ -321,11 +235,9 @@ export function BoardList() {
                           <FontAwesomeIcon icon={faImage} />
                         </Badge>
                       )}
-                      {board.numberOfComments > 0 && (
-                        <span> [{board.numberOfComments}]</span>
-                      )}
+                      {board.numberOfComments > 0 && <span> [{board.numberOfComments}]</span>}
                     </Td>
-                    <Td>{board.writer}</Td>
+                    <Td textAlign="center">{board.writer}</Td>
                     <Td textAlign="center">{board.numberOfLikes}</Td>
                     <Td textAlign="center">{board.views}</Td>
                   </Tr>
@@ -335,18 +247,11 @@ export function BoardList() {
           )}
         </Box>
       </Center>
-      <Pagination
-        pageInfo={pageInfo}
-        pageNumbers={pageNumbers}
-        handlePageButtonClick={handlePageButtonClick}
-      />
+      <Pagination pageInfo={pageInfo} pageNumbers={pageNumbers} handlePageButtonClick={handlePageButtonClick} />
       <Center mb={10}>
-        <Flex gap={1}>
+        <Flex gap={1} alignItems="center">
           <Box>
-            <Select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-            >
+            <Select value={searchType} onChange={(e) => setSearchType(e.target.value)} bg={bg}>
               <option value="전체">전체</option>
               <option value="글">글</option>
               <option value="작성자">작성자</option>
@@ -371,6 +276,33 @@ export function BoardList() {
           </Box>
         </Flex>
       </Center>
-    </>
+
+      <Center>
+        <Flex maxW={"500px"} flexDirection={"column"} alignItems={"center"} gap={6}>
+          <Box>
+            <Menu textAlign={"center"} fontSize={"lg"}>
+              {({ isOpen }) => (
+                <>
+                  <MenuButton
+                    as={Button}
+                    rightIcon={isOpen ? <ChevronDownIcon /> : <ChevronDownIcon />}
+                    colorScheme={"blue"}
+                    size={"md"}
+                  >
+                    {`게시글 (${pageAmount})개씩 보기`}
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem onClick={() => handlePageSizeChange(10)}>10개씩 보기</MenuItem>
+                    <MenuItem onClick={() => handlePageSizeChange(30)}>30개씩 보기</MenuItem>
+                    <MenuItem onClick={() => handlePageSizeChange(50)}>50개씩 보기</MenuItem>
+                    <MenuItem onClick={() => handlePageSizeChange(100)}>100개씩 보기</MenuItem>
+                  </MenuList>
+                </>
+              )}
+            </Menu>
+          </Box>
+        </Flex>
+      </Center>
+    </Container>
   );
 }

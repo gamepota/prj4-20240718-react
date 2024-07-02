@@ -1,9 +1,12 @@
 // utils.js
+// id => diaryId 변환
 export function generateDiaryId(userId) {
   return `DIARY-${userId * 17}-ID`; // 간단한 문자열 변환
 }
 
-
+// diaryId => id 변환
 export function extractUserIdFromDiaryId(diaryId) {
-  return parseInt(diaryId.split('-')[1]) / 17; // userId 추출
+  if (!diaryId) return null;
+  const parts = diaryId.split("-");
+  return parts.length === 3 ? Number(parts[1]/17) : null;
 }

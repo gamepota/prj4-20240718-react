@@ -44,7 +44,6 @@ export function DiaryBoardView() {
     axios
       .get(`/api/diaryBoard/${id}`)
       .then((res) => {
-        console.log(res.data);
         setDiaryBoard(res.data);
       })
       .catch((err) => {
@@ -57,11 +56,11 @@ export function DiaryBoardView() {
           navigate(`/diary/${diaryId}/list`);
         }
       });
-  }, [id]);
+  }, [id, navigate, toast, diaryId]);
 
-  function handleClickRemove() {
+  const handleClickRemove = () => {
     axios
-      .delete("/api/diaryBoard/" + diaryBoard.id, { params })
+      .delete(`/api/diaryBoard/${diaryBoard.id}`, { params })
       .then(() => {
         toast({
           status: "success",
@@ -77,20 +76,18 @@ export function DiaryBoardView() {
           position: "top",
         });
       })
-      .finally(() => {
-        onClose();
-      });
-    console.log(diaryBoard.id);
-  }
+      .finally(onClose);
+  };
+
+  const handleDiaryEdit = () => {
+    navigate(`/diary/${diaryId}/edit/${id}`);
+  };
 
   if (diaryBoard === null) {
     return <Spinner />;
   }
 
-  function handleDiaryEdit() {
-    const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/edit/${id}`);
-  }
+  const isOwner = diaryBoard.writer === nickname;
 
   return (
     <Box maxW="800px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">
@@ -98,7 +95,7 @@ export function DiaryBoardView() {
         <Text fontSize="2xl" fontWeight="bold">
           {diaryBoard.id}번째 일기
         </Text>
-        {isLoggedIn && (
+        {isOwner && (
           <Flex gap={2}>
             <Button onClick={handleDiaryEdit} colorScheme="purple">
               수정

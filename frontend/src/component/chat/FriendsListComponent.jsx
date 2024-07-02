@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import Draggable from "react-draggable"; // react-draggable 임포트
 import { Box, Button, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
 import { ChatIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -67,88 +68,90 @@ export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { 
 
   return (
     <VStack>
-      <Box
-        position="fixed"
-        bottom="20px"
-        right="20px"
-        borderWidth="1px"
-        borderRadius="md"
-        p="4"
-        bg="white"
-        boxShadow="md"
-        width="300px"
-        h={isMinimized ? "auto" : "400px"}
-        overflow="auto"
-      >
+      <Draggable>
         <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          position="sticky"
-          top="0"
+          position="fixed"
+          bottom="20px"
+          right="20px"
+          borderWidth="1px"
+          borderRadius="md"
+          p="4"
           bg="white"
-          zIndex="1"
-          borderBottomWidth="1px"
-          p={2}
-          h="50px"
+          boxShadow="md"
+          width="300px"
+          h={isMinimized ? "auto" : "400px"}
+          overflow="auto"
         >
-          <Text fontSize="xl" fontWeight="bold">친구 리스트</Text>
-          <IconButton
-            icon={isMinimized ? <FontAwesomeIcon icon={faPlus} /> : <MinusIcon />}
-            size="sm"
-            onClick={toggleMinimize}
-            aria-label={isMinimized ? "Expand List" : "Minimize List"}
-          />
-        </Box>
-        {isLoading ? (
-          <Box p={4}>
-            <Text>Loading...</Text>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            position="sticky"
+            top="0"
+            bg="white"
+            zIndex="1"
+            borderBottomWidth="1px"
+            p={2}
+            h="50px"
+          >
+            <Text fontSize="xl" fontWeight="bold">친구 리스트</Text>
+            <IconButton
+              icon={isMinimized ? <FontAwesomeIcon icon={faPlus} /> : <MinusIcon />}
+              size="sm"
+              onClick={toggleMinimize}
+              aria-label={isMinimized ? "Expand List" : "Minimize List"}
+            />
           </Box>
-        ) : (
-          !isMinimized && (
-            <Box mt="4">
-              <VStack align="start" spacing={3}>
-                {friends.length === 0 ? (
-                  <Text>친구가 없습니다.</Text>
-                ) : (
-                  friends.map((friend, index) => (
-                    <HStack key={index} spacing={3} width="100%" justifyContent="space-between">
-                      <HStack spacing={2}>
-                        <Box as="span" borderRadius="full" bg={friend.online ? "green.400" : "gray.400"} boxSize="10px" />
-                        <Text>{friend.nickname}</Text>
-                        {newMessages[friend.id] && <Box as="span" borderRadius="full" bg="red.400" boxSize="8px" />} {/* 새로운 메시지 여부 표시 */}
-                      </HStack>
-                      <HStack spacing={1}>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => navigate(`/diary/${generateDiaryId(friend.id)}`)}
-                        >
-                          <FontAwesomeIcon icon={faHouse} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => onSelectFriend({ nickname: friend.nickname, id: friend.id })}
-                        >
-                          <ChatIcon />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => deleteFriend(friend.id)}
-                        >
-                          <DeleteIcon />
-                        </Button>
-                      </HStack>
-                    </HStack>
-                  ))
-                )}
-              </VStack>
+          {isLoading ? (
+            <Box p={4}>
+              <Text>Loading...</Text>
             </Box>
-          )
-        )}
-      </Box>
+          ) : (
+            !isMinimized && (
+              <Box mt="4">
+                <VStack align="start" spacing={3}>
+                  {friends.length === 0 ? (
+                    <Text>친구가 없습니다.</Text>
+                  ) : (
+                    friends.map((friend, index) => (
+                      <HStack key={index} spacing={3} width="100%" justifyContent="space-between">
+                        <HStack spacing={2}>
+                          <Box as="span" borderRadius="full" bg={friend.online ? "green.400" : "gray.400"} boxSize="10px" />
+                          <Text>{friend.nickname}</Text>
+                          {newMessages[friend.id] && <Box as="span" borderRadius="full" bg="red.400" boxSize="8px" />} {/* 새로운 메시지 여부 표시 */}
+                        </HStack>
+                        <HStack spacing={1}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => navigate(`/diary/${generateDiaryId(friend.id)}`)}
+                          >
+                            <FontAwesomeIcon icon={faHouse} />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => onSelectFriend({ nickname: friend.nickname, id: friend.id })}
+                          >
+                            <ChatIcon />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => deleteFriend(friend.id)}
+                          >
+                            <DeleteIcon />
+                          </Button>
+                        </HStack>
+                      </HStack>
+                    ))
+                  )}
+                </VStack>
+              </Box>
+            )
+          )}
+        </Box>
+      </Draggable>
     </VStack>
   );
 };

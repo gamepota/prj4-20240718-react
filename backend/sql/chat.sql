@@ -95,3 +95,8 @@ VALUES (28, 34, 'testerkjh', 'testkjh');
 ALTER TABLE friends ADD UNIQUE INDEX unique_member_friend (member_id, friend_id);
 
 DESC diary_profile;
+
+DROP TABLE test;
+
+DELETE FROM refresh_token
+WHERE id = 555;

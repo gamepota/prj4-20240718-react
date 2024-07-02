@@ -1,42 +1,29 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Center,
-  Flex,
-  Heading,
-  Input,
-  Select,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useColorModeValue,
-} from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
+import { Box, Button, Center, Flex, Heading, Input, Select, Table, Tbody, Td, Th, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImages, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { generateDiaryId } from "../../../../../util/util.jsx";
+import { extractUserIdFromDiaryId, generateDiaryId } from "../../../../../util/util.jsx";
 import Pagination from "../../../../../component/Pagination.jsx";
 import { format } from "date-fns";
 
 export function DiaryBoardList() {
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const [diaryBoardList, setDiaryBoardList] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const diaryId = useParams().diaryId;
+  const isOwner = Number(memberInfo?.id) === Number(extractUserIdFromDiaryId(diaryId));
 
   useEffect(() => {
-    axios.get(`/api/diaryBoard/list?${searchParams}`).then((res) => {
-      // 변경된 부분
+    const params = new URLSearchParams(searchParams);
+    params.set("memberId", extractUserIdFromDiaryId(diaryId));
+    axios.get(`/api/diaryBoard/list?${params.toString()}`).then((res) => {
       setDiaryBoardList(res.data.diaryBoardList);
       setPageInfo(res.data.pageInfo);
     });
@@ -52,7 +39,7 @@ export function DiaryBoardList() {
     if (keywordParam) {
       setSearchKeyword(keywordParam);
     }
-  }, [searchParams]);
+  }, [searchParams, diaryId]);
 
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
@@ -63,13 +50,15 @@ export function DiaryBoardList() {
     const params = new URLSearchParams(searchParams);
     params.set("type", searchType);
     params.set("keyword", searchKeyword);
-    navigate(`/api/diaryBoard/list?${params.toString()}`); // 변경된 부분
+    params.set("memberId", extractUserIdFromDiaryId(diaryId));
+    navigate(`/api/diaryBoard/list?${params.toString()}`);
   }
 
   function handlePageButtonClick(pageNumber) {
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNumber);
-    navigate(`/api/diaryBoard/list?${params.toString()}`); // 변경된 부분
+    params.set("memberId", extractUserIdFromDiaryId(diaryId));
+    navigate(`/api/diaryBoard/list?${params.toString()}`);
   }
 
   function handleSelectedDiaryBoard(id) {
@@ -79,10 +68,9 @@ export function DiaryBoardList() {
 
   function handleWriteClick() {
     const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/write/${diaryBoardList.id}`);
+    navigate(`/diary/${diaryId}/write`);
   }
 
-  // const bg = useColorModeValue("white", "gray.800");
   const hoverBg = useColorModeValue("gray.100", "gray.700");
 
   return (
@@ -92,7 +80,7 @@ export function DiaryBoardList() {
         <Heading>다이어리 목록</Heading>
       </Center>
       <Box>
-        {memberInfo && <Button onClick={handleWriteClick}>글쓰기</Button>}
+        {isOwner && <Button onClick={handleWriteClick}>글쓰기</Button>}
       </Box>
       <Box>
         {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}

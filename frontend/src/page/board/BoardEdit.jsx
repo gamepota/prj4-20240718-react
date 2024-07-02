@@ -142,9 +142,9 @@ export function BoardEdit() {
   };
 
   return (
-    <Box maxW="800px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10} bg="gray.50">
-      <Text fontSize="2xl" fontWeight="bold" mb={6}>{id}번 게시물 수정</Text>
-      <Box>
+    <Box maxW="1000px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10} bg="white">
+      <Box p={4} bg="gray.100" borderRadius="md" boxShadow="md" mb={4}>
+        <Text fontSize="2xl" fontWeight="bold" mb={6}>{id}번 게시물 수정</Text>
         <FormControl mb={4}>
           <FormLabel>제목</FormLabel>
           <Input
