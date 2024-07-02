@@ -8,13 +8,15 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
   const mapRef = useRef(null);
+  const boundsRef = useRef(null);
 
   useEffect(() => {
     if (window.kakao && window.kakao.maps) {
       initializeMap();
     } else {
       const script = document.createElement("script");
-      script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing`;
+      script.src =
+        "//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing";
       script.async = true;
       document.head.appendChild(script);
 
@@ -30,56 +32,213 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     const mapContainer = mapRef.current;
     const mapOption = {
       center: new kakao.maps.LatLng(36.2, 128.02025),
-      level: 13, // 기본 확대 레벨 설정
+      level: 6, // 기본 확대 레벨 설정
     };
 
     const map = new kakao.maps.Map(mapContainer, mapOption);
     setMap(map);
 
     if (ctprvnCd) {
-      // Center the map based on the ctprvnCd
-      const locations = {
-        11: { lat: 37.5665, lng: 126.978 }, // 서울특별시
-        26: { lat: 35.1796, lng: 129.0756 }, // 부산광역시
-        27: { lat: 35.8714, lng: 128.6014 }, // 대구광역시
-        28: { lat: 37.4563, lng: 126.7052 }, // 인천광역시
-        29: { lat: 35.1595, lng: 126.8526 }, // 광주광역시
-        30: { lat: 36.3504, lng: 127.3845 }, // 대전광역시
-        31: { lat: 35.539, lng: 129.3114 }, // 울산광역시
-        36: { lat: 36.4801, lng: 127.289 }, // 세종특별자치시
-        41: { lat: 37.4138, lng: 127.5183 }, // 경기도
-        42: { lat: 37.8228, lng: 128.1555 }, // 강원도
-        43: { lat: 36.635, lng: 127.4914 }, // 충청북도
-        44: { lat: 36.5184, lng: 126.8007 }, // 충청남도
-        45: { lat: 35.7175, lng: 127.153 }, // 전라북도
-        46: { lat: 34.816, lng: 126.4629 }, // 전라남도
-        47: { lat: 36.4919, lng: 128.8889 }, // 경상북도
-        48: { lat: 35.4606, lng: 128.2132 }, // 경상남도
-        50: { lat: 33.4996, lng: 126.5312 }, // 제주특별자치도
-        // Add other regions as necessary
-      };
+      // 특정 지역의 범위를 설정합니다.
+      const bounds = getBoundsForRegion(ctprvnCd);
+      if (bounds) {
+        map.setBounds(bounds);
+        boundsRef.current = bounds;
 
-      const location = locations[ctprvnCd];
-      if (location) {
-        map.setCenter(new kakao.maps.LatLng(location.lat, location.lng));
-        map.setLevel(6); // 공통 확대 레벨 설정
+        // 지도 이동이 끝났을 때 이벤트
+        kakao.maps.event.addListener(map, "dragend", checkBounds);
+        // 확대 또는 축소 시 이벤트
+        kakao.maps.event.addListener(map, "zoom_changed", checkBounds);
+
+        const polygonPath = getPathForRegion(ctprvnCd);
+        const polygon = new kakao.maps.Polygon({
+          map: map,
+          path: polygonPath,
+          strokeWeight: 3,
+          strokeColor: "#39f",
+          strokeOpacity: 0.8,
+          fillColor: "#39f",
+          fillOpacity: 0.7,
+        });
+
+        kakao.maps.event.addListener(polygon, "click", () => {
+          searchPlaces("동물병원", bounds); // '동물병원'을 검색
+        });
       }
     }
   };
 
-  const searchPlaces = (keyword) => {
+  const getBoundsForRegion = (ctprvnCd) => {
+    const kakao = window.kakao;
+
+    const regions = {
+      11: [
+        // 서울특별시
+        new kakao.maps.LatLng(37.701, 127.183),
+        new kakao.maps.LatLng(37.47, 126.835),
+      ],
+      26: [
+        // 부산광역시
+        new kakao.maps.LatLng(35.321, 129.248),
+        new kakao.maps.LatLng(35.085, 128.899),
+      ],
+      27: [
+        // 대구광역시
+        new kakao.maps.LatLng(35.954, 128.668),
+        new kakao.maps.LatLng(35.817, 128.523),
+      ],
+      28: [
+        // 인천광역시
+        new kakao.maps.LatLng(37.595, 126.8),
+        new kakao.maps.LatLng(37.366, 126.56),
+      ],
+      29: [
+        // 광주광역시
+        new kakao.maps.LatLng(35.22, 126.955),
+        new kakao.maps.LatLng(35.05, 126.8),
+      ],
+      30: [
+        // 대전광역시
+        new kakao.maps.LatLng(36.437, 127.499),
+        new kakao.maps.LatLng(36.267, 127.297),
+      ],
+      31: [
+        // 울산광역시
+        new kakao.maps.LatLng(35.6, 129.44),
+        new kakao.maps.LatLng(35.4, 129.21),
+      ],
+      36: [
+        // 세종특별자치시
+        new kakao.maps.LatLng(36.601, 127.356),
+        new kakao.maps.LatLng(36.466, 127.223),
+      ],
+      41: [
+        // 경기도
+        new kakao.maps.LatLng(38.274, 127.537),
+        new kakao.maps.LatLng(36.756, 126.574),
+      ],
+      42: [
+        // 강원도
+        new kakao.maps.LatLng(38.52, 129.272),
+        new kakao.maps.LatLng(37.018, 127.589),
+      ],
+      43: [
+        // 충청북도
+        new kakao.maps.LatLng(37.103, 128.212),
+        new kakao.maps.LatLng(36.128, 127.318),
+      ],
+      44: [
+        // 충청남도
+        new kakao.maps.LatLng(36.914, 127.496),
+        new kakao.maps.LatLng(36.013, 126.377),
+      ],
+      45: [
+        // 전라북도
+        new kakao.maps.LatLng(36.097, 127.391),
+        new kakao.maps.LatLng(35.291, 126.533),
+      ],
+      46: [
+        // 전라남도
+        new kakao.maps.LatLng(35.321, 127.371),
+        new kakao.maps.LatLng(34.055, 126.074),
+      ],
+      47: [
+        // 경상북도
+        new kakao.maps.LatLng(37.586, 129.261),
+        new kakao.maps.LatLng(35.635, 127.664),
+      ],
+      48: [
+        // 경상남도
+        new kakao.maps.LatLng(35.806, 128.966),
+        new kakao.maps.LatLng(34.583, 127.418),
+      ],
+      50: [
+        // 제주특별자치도
+        new kakao.maps.LatLng(33.556, 126.98),
+        new kakao.maps.LatLng(33.12, 126.162),
+      ],
+    };
+
+    if (regions[ctprvnCd]) {
+      const [sw, ne] = regions[ctprvnCd];
+      return new kakao.maps.LatLngBounds(sw, ne);
+    }
+    return null;
+  };
+
+  const getPathForRegion = (ctprvnCd) => {
+    const kakao = window.kakao;
+
+    const regionPaths = {
+      11: [
+        // 서울특별시 예시 경로 (실제 경로는 다를 수 있습니다)
+        new kakao.maps.LatLng(37.64, 126.9),
+        new kakao.maps.LatLng(37.67, 127.05),
+        new kakao.maps.LatLng(37.7, 127.02),
+        new kakao.maps.LatLng(37.65, 126.9),
+      ],
+      26: [
+        // 부산광역시 예시 경로 (실제 경로는 다를 수 있습니다)
+        new kakao.maps.LatLng(35.1, 128.9),
+        new kakao.maps.LatLng(35.2, 129.1),
+        new kakao.maps.LatLng(35.3, 128.95),
+        new kakao.maps.LatLng(35.15, 128.85),
+      ],
+      // 다른 지역들도 동일하게 설정합니다.
+    };
+
+    return regionPaths[ctprvnCd] || [];
+  };
+
+  const checkBounds = () => {
+    const kakao = window.kakao;
+    const bounds = boundsRef.current;
+    if (!bounds) return;
+
+    const center = map.getCenter();
+
+    if (!bounds.contain(center)) {
+      const sw = bounds.getSouthWest();
+      const ne = bounds.getNorthEast();
+
+      let x = center.getLng();
+      let y = center.getLat();
+
+      if (x < sw.getLng()) x = sw.getLng();
+      if (x > ne.getLng()) x = ne.getLng();
+      if (y < sw.getLat()) y = sw.getLat();
+      if (y > ne.getLat()) y = ne.getLat();
+
+      map.setCenter(new kakao.maps.LatLng(y, x));
+    }
+
+    // 줌 레벨 제한
+    if (map.getLevel() < 6) {
+      map.setLevel(6);
+    }
+  };
+
+  const searchPlaces = (keyword, bounds) => {
     const kakao = window.kakao;
     const ps = new kakao.maps.services.Places();
+
+    const searchOption = {
+      bounds: bounds,
+    };
 
     if (!keyword.replace(/^\s+|\s+$/g, "")) {
       alert("키워드를 입력해주세요!");
       return false;
     }
 
-    ps.keywordSearch(keyword, placesSearchCB);
+    ps.keywordSearch(
+      keyword,
+      (data, status) => placesSearchCB(data, status, bounds),
+      searchOption,
+    );
   };
 
-  const placesSearchCB = (data, status) => {
+  const placesSearchCB = (data, status, bounds) => {
     const kakao = window.kakao;
     if (status === kakao.maps.services.Status.OK) {
       displayPlaces(data);
@@ -92,7 +251,6 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
 
   const displayPlaces = (places) => {
     const kakao = window.kakao;
-    const bounds = new kakao.maps.LatLngBounds();
 
     // 기존 마커 제거
     markers.forEach((marker) => marker.setMap(null));
@@ -101,7 +259,6 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     const newMarkers = places.map((place, index) => {
       const position = new kakao.maps.LatLng(place.y, place.x);
       const marker = addMarker(position, index);
-      bounds.extend(position);
 
       // 마커와 검색 결과 항목에 이벤트 등록
       kakao.maps.event.addListener(marker, "mouseover", () => {
@@ -116,7 +273,6 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     });
 
     setMarkers(newMarkers);
-    map.setBounds(bounds);
   };
 
   const addMarker = (position, idx) => {
