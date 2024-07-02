@@ -16,14 +16,14 @@ public interface DiaryBoardMapper {
     public int insert(DiaryBoard diaryBoard);
 
     @Select("""
-                SELECT
-                d.id,
-                d.title,
-    						d.inserted,
-                m.nickname writer
-                FROM diary d JOIN member m ON d.member_id = m.id
-                ORDER BY d.id DESC
-            """)
+                  SELECT
+                  d.id,
+                  d.title,
+            d.inserted,
+                  m.nickname writer
+                  FROM diary d JOIN member m ON d.member_id = m.id
+                  ORDER BY d.id DESC
+              """)
     List<DiaryBoard> selectAll();
 
     @Select("""
@@ -66,17 +66,20 @@ public interface DiaryBoardMapper {
                 JOIN member m ON d.member_id = m.id
                 LEFT JOIN diary_file f ON d.id = f.diary_id
                 <where>
+                <if test="memberId != null">
+                    d.member_id = #{memberId}
+                </if>
                 <if test="searchType != null">
-                <bind name="pattern" value="'%' + keyword + '%'"/>
-                <if test="searchType == 'all'">
-                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
-                </if>
-                <if test="searchType == 'text'">
-                    (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
-                </if>
-                <if test="searchType == 'nickname'">
-                    m.nickname LIKE #{pattern}
-                </if>
+                    <bind name="pattern" value="'%' + keyword + '%'"/>
+                    <if test="searchType == 'all'">
+                        (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                    </if>
+                    <if test="searchType == 'text'">
+                        (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
+                    </if>
+                    <if test="searchType == 'nickname'">
+                        m.nickname LIKE #{pattern}
+                    </if>
                 </if>
                 </where>
                 GROUP BY d.id
@@ -84,13 +87,16 @@ public interface DiaryBoardMapper {
                 LIMIT #{offset}, 10
                 </script>
             """)
-    List<DiaryBoard> selectAllPaging(@Param("offset") Integer offset, @Param("searchType") String searchType, @Param("keyword") String keyword);
+    List<DiaryBoard> selectAllPaging(@Param("offset") Integer offset, @Param("searchType") String searchType, @Param("keyword") String keyword, @Param("memberId") Integer memberId);
 
     @Select("""
                 <script>
                 SELECT COUNT(d.id)
                 FROM diary d JOIN member m ON d.member_id = m.id
                 <where>
+                <if test="memberId != null">
+                    d.member_id = #{memberId}
+                </if>
                 <if test="searchType != null">
                     <bind name="pattern" value="'%' + keyword + '%'" />
                     <if test="searchType == 'all'">
@@ -106,7 +112,7 @@ public interface DiaryBoardMapper {
                 </where>
                 </script>
             """)
-    Integer countAllWithSearch(@Param("searchType") String searchType, @Param("keyword") String keyword);
+    Integer countAllWithSearch(@Param("searchType") String searchType, @Param("keyword") String keyword, @Param("memberId") Integer memberId);
 
     @Insert("""
                 INSERT INTO diary_file(diary_id, name)
