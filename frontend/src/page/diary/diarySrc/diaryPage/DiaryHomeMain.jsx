@@ -36,10 +36,18 @@ export function DiaryHomeMain() {
         const diaryCommentRes = await axios.get(
           `/api/diaryComment/list?limit=5`,
         );
+
+        console.log("diaryBoardRes:", diaryBoardRes.data);
+        console.log("diaryCommentRes:", diaryCommentRes.data);
+
         setDiaryBoardList(diaryBoardRes.data.diaryBoardList || []);
-        setDiaryCommentList(diaryCommentRes.data || []);
+        setDiaryCommentList(
+          Array.isArray(diaryCommentRes.data.comments)
+            ? diaryCommentRes.data.comments
+            : [],
+        );
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("데이터를 가져오는 중 오류 발생:", err);
       } finally {
         setIsLoading(false);
       }
@@ -47,13 +55,11 @@ export function DiaryHomeMain() {
     fetchData();
   }, []);
 
-  const handleBoardClick = () => {
-    const diaryId = memberInfo.id;
+  const handleBoardClick = (diaryId) => {
     navigate(`/diary/${diaryId}/view`);
   };
 
-  const handleCommentClick = () => {
-    const diaryId = memberInfo.id;
+  const handleCommentClick = (diaryId) => {
     navigate(`/diary/${diaryId}/comment/view`);
   };
 
