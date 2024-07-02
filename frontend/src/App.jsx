@@ -77,8 +77,8 @@ const App = () => {
           children: [
             // 다이어리 하위 경로 설정
             { index: true, element: <DiaryHomeMain /> }, // 다이어리 메인페이지 렌더링
-            { path: "write/:id", element: <DiaryBoardWrite /> }, // 다이어리 쓰기
-            { path: "list", element: <DiaryBoardList /> }, // 다이어리 목록
+            { path: "write/", element: <DiaryBoardWrite /> }, // 다이어리 쓰기
+            { path: "list/", element: <DiaryBoardList /> }, // 다이어리 목록
             { path: "view/:id", element: <DiaryBoardView /> }, // 다이어리 보기
             { path: "edit/:id", element: <DiaryBoardEdit /> }, // 다이어리 수정
             { path: "comment/:id", element: <DiaryComment /> }, // 방명록

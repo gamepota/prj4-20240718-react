@@ -1,8 +1,8 @@
-// BoardView.jsx
 import {
   Badge,
   Box,
   Button,
+  Container,
   Flex,
   Image,
   Popover,
@@ -128,15 +128,15 @@ export function BoardView() {
   const handleDiaryView = () => {
     const diaryId = generateDiaryId(selectedWriterId);
     const url = `/diary/${diaryId}`;
-    const windowFeatures = "width=1400,height=800";
+    const windowFeatures = "width=1531,height=864";
     window.open(url, "_blank", windowFeatures);
   };
 
   return (
-    <Box maxW="800px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10}>
-      <Box p={4} bg="gray.100" borderRadius="md" boxShadow="md" mb={4}>
-        <Flex justify="space-between" align="center" mb={2}>
-          <Box fontWeight="bold" fontSize="xl">
+    <Container maxW="container.xl" py={10}>
+      <Box p={6} borderWidth="1px" borderRadius="md" bg="white" mb={6}>
+        <Flex justify="space-between" align="center" mb={4}>
+          <Box fontWeight="bold" fontSize="2xl">
             {board.title}
           </Box>
           <Flex align="center">
@@ -168,11 +168,10 @@ export function BoardView() {
           </Flex>
         </Flex>
         <Flex justify="space-between" align="center">
-          <Box>조회수: {board.views}</Box>
           <Box>추천수: {like.count}</Box>
         </Flex>
       </Box>
-      <Box p={4} bg="white" borderRadius="md" boxShadow="md">
+      <Box p={6} borderWidth="1px" borderRadius="md" bg="white">
         {board.fileList &&
           board.fileList.map((file) => (
             <Box key={file.name} mb={3}>
@@ -181,7 +180,7 @@ export function BoardView() {
           ))}
         {board.content}
       </Box>
-      <Flex mb={4} align="center">
+      <Flex mt={4} mb={4} align="center">
         <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
           <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
             {like.like ? (
@@ -219,9 +218,12 @@ export function BoardView() {
           </Box>
         )}
       </Flex>
-      <BoardCommentComponent boardId={board.id} />
+      <Box fontSize={"large"} color="gray.500">조회수: {board.views}</Box>
+      <Box mt={4}>
+        <BoardCommentComponent boardId={board.id} />
+      </Box>
       {(memberId === board.memberId || memberId == 1) && (
-        <Flex justify="flex-end">
+        <Flex justify="flex-end" mt={4}>
           <Button
             colorScheme="purple"
             onClick={() => navigate(`/board/edit/${id}`)}
@@ -245,7 +247,7 @@ export function BoardView() {
         boardId={board.id}
         memberId={params.memberId}
       />
-    </Box>
+    </Container>
   );
 }
 

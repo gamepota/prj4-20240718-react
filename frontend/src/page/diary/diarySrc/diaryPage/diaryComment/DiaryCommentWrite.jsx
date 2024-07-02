@@ -1,76 +1,53 @@
-import React, { useContext, useState } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Text,
-  Textarea,
-  useToast,
-} from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Button, Textarea, useToast } from "@chakra-ui/react";
 import axios from "axios";
-import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { generateDiaryId } from "../../../../../util/util.jsx";
+import { useParams } from "react-router-dom";
 
 export function DiaryCommentWrite({ onCommentAdded }) {
   const [comment, setComment] = useState("");
-  const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const { memberInfo } = useContext(LoginContext);
-  const nickname = memberInfo.nickname;
-  const diaryId = generateDiaryId(memberInfo.id);
+  const { id } = useParams();
 
-  const handleDiaryCommentSubmitClick = () => {
-    setLoading(true);
-    axios
-      .post("/api/diaryComment/add", {
-        diaryId,
-        nickname,
-        memberId: memberInfo.id,
-        comment,
-      })
-      .then((res) => {
-        toast({
-          status: "success",
-          position: "top",
-          description: "방명록이 등록되었습니다.",
-        });
-        onCommentAdded(res.data); // 새로운 댓글을 추가
-        setComment(""); // 입력창 초기화
-      })
-      .catch((e) => {
-        toast({
-          status: "error",
-          position: "top",
-          description: "방명록 등록 중 오류가 발생했습니다.",
-        });
-      })
-      .finally(() => setLoading(false));
+  const handleCommentSubmit = async () => {
+    if (!comment.trim()) {
+      toast({
+        description: "댓글 내용을 입력해주세요.",
+        status: "warning",
+        position: "top",
+      });
+      return;
+    }
+
+    try {
+      const diaryId = generateDiaryId(id);
+      const res = await axios.post(`/api/diaryComment/add`, { diaryId, comment });
+      onCommentAdded(res.data);
+      setComment("");
+      toast({
+        description: "댓글이 추가되었습니다.",
+        status: "success",
+        position: "top",
+      });
+    } catch (err) {
+      console.error("Error adding comment:", err);
+      toast({
+        description: "댓글 추가 중 오류가 발생했습니다.",
+        status: "error",
+        position: "top",
+      });
+    }
   };
 
-  let disableSaveButton = comment.trim().length === 0;
-
   return (
-    <Box>
-      <Box>
-        <Text fontWeight="bold" fontSize="large">{nickname}님!</Text>
-      </Box>
-      <Box mb={2}>
-          <Textarea
-            placeholder="방명록을 남겨보세요"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-      </Box>
-      <Button
-        isLoading={loading}
-        isDisabled={disableSaveButton}
-        colorScheme={"blue"}
-        onClick={handleDiaryCommentSubmitClick}
-      >
-        <FontAwesomeIcon icon={faPaperPlane} />
+    <Box my={5}>
+      <Textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="댓글을 입력하세요..."
+      />
+      <Button mt={2} colorScheme="blue" onClick={handleCommentSubmit}>
+        댓글 추가
       </Button>
     </Box>
   );

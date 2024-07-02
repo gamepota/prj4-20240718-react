@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Box, Button, Tooltip } from "@chakra-ui/react";
+import { Box, Button, Tooltip, Avatar, Flex, Textarea } from "@chakra-ui/react";
 import { BoardCommentWrite } from "./BoardCommentWrite.jsx";
 import { BoardCommentList } from "./BoardCommentList.jsx";
 import { LoginContext } from "../LoginProvider.jsx";
@@ -30,7 +30,7 @@ export function BoardCommentComponent({ boardId }) {
           colorScheme="blue"
           isDisabled={!memberInfo}
         >
-          {showCommentWrite ? "댓글 작성 취소" : "댓글 작성"}
+          {showCommentWrite ? "댓글 취소" : "댓글 달기"}
         </Button>
       </Tooltip>
 

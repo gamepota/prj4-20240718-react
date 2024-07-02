@@ -6,16 +6,17 @@ import {
   Button,
   Card,
   CardBody,
+  Center,
   FormControl,
   FormLabel,
   Input,
   Spinner,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
   VStack,
   HStack,
-  Text, Center,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateDiaryId } from "../../../../../util/util.jsx";
@@ -28,8 +29,6 @@ export function DiaryCommentView() {
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
-  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
-  const params = memberId ? { memberId } : {};
   const { onOpen, onClose, isOpen } = useDisclosure();
   const diaryId = generateDiaryId(memberInfo.id);
 
@@ -41,7 +40,7 @@ export function DiaryCommentView() {
         if (err.response.status === 404) {
           toast({
             status: "info",
-            description: "해당 게시물이 존재하지 않습니다.",
+            description: "해당 댓글이 존재하지 않습니다.",
             position: "top",
           });
           navigate(`/diary/${diaryId}/comment/list`);
@@ -51,11 +50,11 @@ export function DiaryCommentView() {
 
   function handleClickRemove() {
     axios
-      .delete(`/api/diaryComment/${diaryComment.id}`, { params })
+      .delete(`/api/diaryComment/${diaryComment.id}`, { params: { memberId: memberInfo.id } })
       .then(() => {
         toast({
           status: "success",
-          description: "삭제가 완료되었습니다.",
+          description: "댓글이 삭제되었습니다.",
           position: "top",
         });
         navigate(`/diary/${diaryId}/comment/list`);
@@ -63,7 +62,7 @@ export function DiaryCommentView() {
       .catch(() => {
         toast({
           status: "error",
-          description: "삭제 중 오류가 발생하였습니다.",
+          description: "댓글 삭제 중 오류가 발생했습니다.",
           position: "top",
         });
       })
@@ -86,34 +85,27 @@ export function DiaryCommentView() {
         <Card w="100%" variant="outline">
           <CardBody>
             <VStack spacing={4} align="stretch">
-              <Box>
-                <Text fontWeight="bold" fontSize="2xl" color="teal.500">
-                  방명록
-                </Text>
-              </Box>
-              <Box>
-                <Text fontWeight="bold" fontSize="lg" color="gray.600">
-                  {diaryComment.nickname} 님이 남긴 방명록이에요!
-                </Text>
-              </Box>
-              <Box>
-                <FormControl>
-                  <FormLabel fontWeight="bold">방명록</FormLabel>
-                  <Textarea value={diaryComment.comment} readOnly />
-                </FormControl>
-              </Box>
-              <Box>
-                <FormControl>
-                  <FormLabel fontWeight="bold">작성일시</FormLabel>
-                  <Input type="datetime-local" value={diaryComment.inserted} readOnly />
-                </FormControl>
-              </Box>
-              <HStack spacing={4} justifyContent="flex-end">
-                <Button colorScheme="purple">수정</Button>
-                <Button colorScheme="red" onClick={handleClickRemove}>
-                  삭제
-                </Button>
-              </HStack>
+              <Text fontWeight="bold" fontSize="2xl" color="teal.500">
+                방명록
+              </Text>
+              <Text fontWeight="bold" fontSize="lg" color="gray.600">
+                {diaryComment.nickname} 님이 남긴 방명록
+              </Text>
+              <FormControl>
+                <FormLabel fontWeight="bold">방명록</FormLabel>
+                <Textarea value={diaryComment.comment} readOnly />
+              </FormControl>
+              <FormControl>
+                <FormLabel fontWeight="bold">작성일시</FormLabel>
+                <Input type="datetime-local" value={diaryComment.inserted} readOnly />
+              </FormControl>
+              {isLoggedIn && (
+                <HStack spacing={4} justifyContent="flex-end">
+                  <Button colorScheme="red" onClick={onOpen}>
+                    삭제
+                  </Button>
+                </HStack>
+              )}
             </VStack>
           </CardBody>
         </Card>

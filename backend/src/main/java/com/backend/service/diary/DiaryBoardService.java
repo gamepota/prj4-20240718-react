@@ -88,10 +88,14 @@ public class DiaryBoardService {
         return true;
     }
 
+    public Map<String, Object> list(Integer page, String searchType, String keyword, Integer memberId) {
+        Map<String, Object> pageInfo = new HashMap<>();
 
-    public Map<String, Object> list(Integer page, String searchType, String keyword) {
-        Map pageInfo = new HashMap();
-        Integer countAll = mapper.countAllWithSearch(searchType, keyword);
+        System.out.println("searchType = " + searchType);
+        System.out.println("keyword = " + keyword);
+        System.out.println("memberId = " + memberId);
+
+        Integer countAll = mapper.countAllWithSearch(searchType, keyword, memberId);
 
         Integer offset = (page - 1) * 10;
         Integer lastPageNumber = (countAll - 1) / 10 + 1;
@@ -114,8 +118,7 @@ public class DiaryBoardService {
         pageInfo.put("lastPageNumber", lastPageNumber);
         pageInfo.put("leftPageNumber", leftPageNumber);
         pageInfo.put("rightPageNumber", rightPageNumber);
-        return Map.of("pageInfo", pageInfo, "diaryBoardList", mapper.selectAllPaging(offset, searchType, keyword));
-
+        return Map.of("pageInfo", pageInfo, "diaryBoardList", mapper.selectAllPaging(offset, searchType, keyword, memberId));
     }
 
     public void remove(Integer id) {
@@ -185,7 +188,6 @@ public class DiaryBoardService {
         for (S3Object object : listResponse.contents()) {
             System.out.println("object.key() = " + object.key());
         }
-
 
         DiaryBoard diaryBoard = mapper.selectById(id);
         List<String> fileNames = mapper.selectFileNameByDiaryId(id);

@@ -1,9 +1,9 @@
-import { Box, Spinner } from "@chakra-ui/react";
-import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
-import { DiaryCommentList } from "./DiaryCommentList.jsx";
+import { Box, Spinner, Center } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
+import { DiaryCommentList } from "./DiaryCommentList.jsx";
 
 export function DiaryCommentComponent({ diaryId }) {
   const { memberInfo } = useContext(LoginContext);
@@ -31,7 +31,11 @@ export function DiaryCommentComponent({ diaryId }) {
   };
 
   if (isLoading) {
-    return <Spinner />;
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    );
   }
 
   return (

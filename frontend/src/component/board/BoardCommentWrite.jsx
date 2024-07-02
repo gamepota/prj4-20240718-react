@@ -33,7 +33,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
     return;
   }
   return (
-    <Flex gap={2}>
+    <Flex gap={2} mb={10}>
       <Box flex={1}>
         <Textarea
           // isDisabled={!account.isLoggedIn()}
@@ -45,7 +45,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
       <Box>
         <Tooltip
           label="로그인 하세요"
-          // isDisabled={account.isLoggedIn()}
+          isDisabled={memberId}
           placement="bottom"
         >
           <Button
