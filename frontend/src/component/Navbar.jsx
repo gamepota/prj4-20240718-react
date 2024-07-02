@@ -18,8 +18,8 @@ import axios from "axios";
 import { generateDiaryId } from "../util/util.jsx";
 import BoardMenu from "./BoardMenu.jsx";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import {faPencil} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -88,7 +88,7 @@ export function Navbar() {
         >
           <Img src={"/img/petmily-logo.png"} w="100%" h="auto" />
         </Box>
-          <BoardMenu isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+        <BoardMenu isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
         {isLargerThan768 && (
           <>
             <Box
@@ -109,7 +109,7 @@ export function Navbar() {
               fontWeight="medium"
               onClick={() => navigate("/board/list?boardType=반려동물 정보")}
             >
-              반려동물 정보
+              반려인 가이드
             </Box>
             <Box
               _hover={{ cursor: "pointer", bgColor: "gray.200" }}
@@ -119,7 +119,7 @@ export function Navbar() {
               fontWeight="medium"
               onClick={() => navigate("/aichat")}
             >
-              AI 수의사
+              닥터 AI
             </Box>
           </>
         )}
@@ -228,11 +228,15 @@ export function Navbar() {
                   동물병원 찾기
                 </MenuItem>
                 <MenuItem
-                  onClick={() => navigate("/board/list?boardType=반려동물 정보")}
+                  onClick={() =>
+                    navigate("/board/list?boardType=반려동물 정보")
+                  }
                 >
                   반려동물 정보
                 </MenuItem>
-                <MenuItem onClick={() => navigate("/aichat")}>AI 수의사</MenuItem>
+                <MenuItem onClick={() => navigate("/aichat")}>
+                  AI 수의사
+                </MenuItem>
                 {isLoggedIn ? (
                   <>
                     <MenuItem
