@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -12,56 +12,33 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Spacer,
   Textarea,
   useToast,
+  Heading,
+  Text,
+  Container,
+  Select,
+  IconButton,
+  Spacer
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from "@chakra-ui/icons";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [writer, setWriter] = useState("");
   const [files, setFiles] = useState([]);
   const [invisibledText, setInvisibledText] = useState(true);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [boardType, setBoardType] = useState("자유");
   const navigate = useNavigate();
   const location = useLocation();
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
   const params = memberId ? { memberId } : {};
   const toast = useToast();
-
-  // const onDrop = useCallback(
-  //   (acceptedFiles) => {
-  //     files.reduce((acc, file) => acc + file.size, 0);
-  //     let hasOversizedFile = false;
-  //
-  //     acceptedFiles.forEach((file) => {
-  //       if (file.size > 10 * 1024 * 1024) {
-  //         hasOversizedFile = true;
-  //       }
-  //     });
-  //     if (totalSize > 10 * 1024 * 1024 || hasOversizedFile) {
-  //       setDisableSaveButton(true);
-  //       setInvisibledText(false);
-  //     } else {
-  //       setDisableSaveButton(false);
-  //       setInvisibledText(true);
-  //       setFiles([...files, ...acceptedFiles]);
-  //     }
-  //   },
-  //   [files],
-  // );
-  //
-  // const { getRootProps, getInputProps, isDragActive } = useDropzone({
-  //   onDrop,
-  //   accept: "image/*",
-  // });
 
   function handleSaveClick() {
     axios
@@ -80,7 +57,7 @@ export function BoardWrite() {
       });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!memberInfo) {
       toast({
         title: "로그인 회원만 가능합니다",
@@ -133,32 +110,24 @@ export function BoardWrite() {
     return <Box />;
   }
   return (
-    <Center>
-      <Box
-        maxW={"500px"}
-        w={"100%"}
-        p={4}
-        boxShadow={"md"}
-        borderRadius={"md"}
-        mt={10}
-      >
-        <Box>
-          <Box>
-            <FormControl>
-              <FormLabel>작성자</FormLabel>
-              <Input readOnly value={memberInfo.nickname} />
-            </FormControl>
-          </Box>
-          <FormControl>
-            <FormLabel>제목</FormLabel>
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            ></Input>
-          </FormControl>
-        </Box>
-        <Box>카테고리 선택</Box>
-        <Flex>
+    <Container maxW="container.md" py={10}>
+      <Box p={6} borderWidth="1px" borderRadius="md" bg="white">
+        <Heading as="h2" size="lg" mb={6} textAlign="center">
+          게시물 작성
+        </Heading>
+        <FormControl mb={4}>
+          <FormLabel>작성자</FormLabel>
+          <Input readOnly value={memberInfo.nickname} />
+        </FormControl>
+        <FormControl mb={4}>
+          <FormLabel>제목</FormLabel>
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </FormControl>
+        <FormControl mb={4}>
+          <FormLabel>카테고리 선택</FormLabel>
           <Menu>
             {({ isOpen }) => (
               <>
@@ -172,7 +141,7 @@ export function BoardWrite() {
                   _active={{ bg: "teal.700" }}
                   size="lg"
                   p={4}
-                  width="300"
+                  width="100%"
                 >
                   {`${boardType} 게시판`}
                 </MenuButton>
@@ -207,50 +176,37 @@ export function BoardWrite() {
               </>
             )}
           </Menu>
-          <Spacer />
-          <Box>
-            <Button>반려동물 정보 글쓰기</Button>
-          </Box>
-        </Flex>
-        <Box>
-          <FormControl>
-            <FormLabel>내용</FormLabel>
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            ></Textarea>
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>파일</FormLabel>
-            <Input
-              multiple
-              type="file"
-              accept="image/*"
-              onChange={handleChange}
-            ></Input>
-            {!invisibledText && (
-              <FormHelperText color="red.500">
-                총 용량은 100MB, 한 파일은 10MB를 초과할 수 없습니다.
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Box>
-        <Box>
+        </FormControl>
+        <FormControl mb={4}>
+          <FormLabel>내용</FormLabel>
+          <Textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </FormControl>
+        <FormControl mb={4}>
+          <FormLabel>파일</FormLabel>
+          <Input
+            multiple
+            type="file"
+            accept="image/*"
+            onChange={handleChange}
+          />
+          {!invisibledText && (
+            <FormHelperText color="red.500">
+              총 용량은 100MB, 한 파일은 100MB를 초과할 수 없습니다.
+            </FormHelperText>
+          )}
+        </FormControl>
+        <Box mb={4}>
           <ul>{fileNameList}</ul>
         </Box>
-
-        <Box>
-          <Button
-            colorScheme={"blue"}
-            onClick={handleSaveClick}
-            isDisabled={disableSaveButton}
-          >
+        <Flex justify="flex-end" gap={3}>
+          <Button colorScheme="blue" onClick={handleSaveClick} isDisabled={disableSaveButton}>
             저장
           </Button>
-        </Box>
+        </Flex>
       </Box>
-    </Center>
+    </Container>
   );
 }

@@ -16,17 +16,17 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
-  Switch,
   Text,
   Textarea,
   useDisclosure,
   useToast,
+  IconButton,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function BoardEdit() {
@@ -107,10 +107,14 @@ export function BoardEdit() {
     );
   });
 
-  const handleRemoveSwitchChange = (name, checked) => {
-    setRemoveFileList((prevList) =>
-      checked ? [...prevList, name] : prevList.filter((item) => item !== name)
-    );
+  const handleRemoveFile = (name) => {
+    setRemoveFileList((prevList) => {
+      if (prevList.includes(name)) {
+        return prevList.filter((item) => item !== name);
+      } else {
+        return [...prevList, name];
+      }
+    });
   };
 
   const handleChange = (e) => {
@@ -143,7 +147,7 @@ export function BoardEdit() {
 
   return (
     <Box maxW="1000px" m="auto" p={6} boxShadow="lg" borderRadius="md" mt={10} bg="white">
-      <Box p={4} bg="gray.100" borderRadius="md" boxShadow="md" mb={4}>
+      <Box p={4} bg="white" borderRadius="md" boxShadow="md" mb={4}>
         <Text fontSize="2xl" fontWeight="bold" mb={6}>{id}번 게시물 수정</Text>
         <FormControl mb={4}>
           <FormLabel>제목</FormLabel>
@@ -162,16 +166,9 @@ export function BoardEdit() {
         <Box mb={4}>
           {board.fileList &&
             board.fileList.map((file) => (
-              <Box border="1px solid gray" borderRadius="md" p={3} mb={3} key={file.name}>
-                <Flex justify="space-between" align="center">
-                  <Flex align="center">
-                    <FontAwesomeIcon icon={faTrashCan} style={{ marginRight: "8px" }} />
-                    <Switch
-                      onChange={(e) => handleRemoveSwitchChange(file.name, e.target.checked)}
-                    />
-                    <Text ml={3}>{file.name}</Text>
-                  </Flex>
-                  <Box>
+              <Box border="1px solid gray" borderRadius="md" p={3} mb={3} key={file.name} position="relative">
+                <Flex align="center">
+                  <Box position="relative">
                     <Image
                       boxSize="100px"
                       objectFit="cover"
@@ -182,8 +179,19 @@ export function BoardEdit() {
                         removeFileList.includes(file.name) ? { filter: "blur(8px)" } : {}
                       }
                     />
+                    <IconButton
+                      icon={<FontAwesomeIcon icon={faTimes} />}
+                      variant="unstyled"
+                      size="sm"
+                      color="red.500"
+                      position="absolute"
+                      top={-1}
+                      right={-1}
+                      onClick={() => handleRemoveFile(file.name)}
+                    />
                   </Box>
                 </Flex>
+                <Text>{file.name}</Text>
               </Box>
             ))}
         </Box>

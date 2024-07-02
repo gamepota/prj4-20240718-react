@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Badge,
   Box,
   Button,
@@ -37,6 +38,8 @@ export function BoardView() {
     count: 0,
   });
   const [isLikeProcessing, setIsLikeProcessing] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+
   const {
     isOpen: isOpenDelete,
     onOpen: onOpenDelete,
@@ -62,9 +65,10 @@ export function BoardView() {
       .then((res) => {
         setBoard(res.data.board);
         setLike(res.data.like);
+        fetchProfileImage(res.data.board.memberId);
       })
       .catch((err) => {
-        if (err.response.status === 404) {
+        if (err.response && err.response.status === 404) {
           toast({
             status: "info",
             description: "해당 게시물이 존재하지 않습니다",
@@ -75,8 +79,14 @@ export function BoardView() {
       });
   }, [id]);
 
-  if (board === null) {
-    return <Spinner />;
+  async function fetchProfileImage(memberId) {
+    try {
+      const res = await axios.get(`/api/member/${memberId}`);
+      setProfileImage(res.data.imageUrl);
+      console.log("Fetched profileImage=", res.data.imageUrl);
+    } catch (error) {
+      console.error("Error fetching profile image:", error);
+    }
   }
 
   const handleClickRemove = () => {
@@ -132,6 +142,10 @@ export function BoardView() {
     window.open(url, "_blank", windowFeatures);
   };
 
+  if (board === null) {
+    return <Spinner />;
+  }
+
   return (
     <Container maxW="container.xl" py={10}>
       <Box p={6} borderWidth="1px" borderRadius="md" bg="white" mb={6}>
@@ -145,15 +159,35 @@ export function BoardView() {
             </Box>
             <Popover>
               <PopoverTrigger>
-                <Badge
-                  cursor="pointer"
-                  color="blue.600"
-                  onClick={() =>
-                    handleWriterClick(board.writer, board.memberId)
-                  }
-                >
-                  {board.writer}
-                </Badge>
+                <Box display="flex" alignItems="center">
+                  {profileImage ? (
+                    <Image
+                      src={profileImage}
+                      boxSize="40px"
+                      borderRadius="full"
+                      mr={2}
+                      sx={{ cursor: "pointer" }}
+                      onClick={handleDiaryView}
+                    />
+                  ) : (
+                    <Avatar
+                      name={board.writer}
+                      size="sm"
+                      mr={2}
+                      sx={{ cursor: "pointer" }}
+                      onClick={handleDiaryView}
+                    />
+                  )}
+                  <Badge
+                    cursor="pointer"
+                    color="blue.600"
+                    onClick={() =>
+                      handleWriterClick(board.writer, board.memberId)
+                    }
+                  >
+                    {board.writer}
+                  </Badge>
+                </Box>
               </PopoverTrigger>
               <PopoverContent>
                 <PopoverArrow />
@@ -196,46 +230,52 @@ export function BoardView() {
           </Box>
         )}
         <Spacer />
-        <Button
-          onClick={() => {
-            if (!memberInfo) {
-              toast({
-                description: "로그인 해주시길 바랍니다",
-                duration: 5000,
-                position: "top",
-                isClosable: "true",
-              });
-            } else {
-              onOpenReport();
-            }
-          }}
-        >
-          신고
-        </Button>
-        {isLikeProcessing && (
-          <Box ml={2}>
-            <Spinner size="sm" />
-          </Box>
-        )}
+        <Flex align="center">
+          {(memberId === board.memberId || memberId === 1) && (
+            <>
+              <Button
+                colorScheme="purple"
+                onClick={() => navigate(`/board/edit/${id}`)}
+                mr={2}
+              >
+                수정
+              </Button>
+              <Button mr={2} colorScheme="red" onClick={onOpenDelete}>
+                삭제
+              </Button>
+            </>
+          )}
+          <Button
+            display={memberId === board.memberId ? "none" : "block"}
+            onClick={() => {
+              if (!memberInfo) {
+                toast({
+                  description: "로그인 해주시길 바랍니다",
+                  duration: 5000,
+                  position: "top",
+                  isClosable: true,
+                });
+              } else {
+                onOpenReport();
+              }
+            }}
+          >
+            신고
+          </Button>
+          {isLikeProcessing && (
+            <Box ml={2}>
+              <Spinner size="sm" />
+            </Box>
+          )}
+        </Flex>
       </Flex>
-      <Box fontSize={"large"} color="gray.500">조회수: {board.views}</Box>
+      <Box fontSize={"large"} color="gray.500">
+        조회수: {board.views}
+      </Box>
       <Box mt={4}>
         <BoardCommentComponent boardId={board.id} />
       </Box>
-      {(memberId === board.memberId || memberId == 1) && (
-        <Flex justify="flex-end" mt={4}>
-          <Button
-            colorScheme="purple"
-            onClick={() => navigate(`/board/edit/${id}`)}
-            mr={2}
-          >
-            수정
-          </Button>
-          <Button colorScheme="red" onClick={onOpenDelete}>
-            삭제
-          </Button>
-        </Flex>
-      )}
+
       <DeleteConfirmationModal
         isOpen={isOpenDelete}
         onClose={onCloseDelete}
@@ -250,5 +290,3 @@ export function BoardView() {
     </Container>
   );
 }
-
-export default BoardView;

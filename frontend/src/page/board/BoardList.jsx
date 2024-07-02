@@ -136,6 +136,11 @@ export function BoardList() {
           </Heading>
         </Flex>
       </Center>
+      <Box textAlign="center" mt={5} mb={10}>
+        <Text fontSize="lg" color="gray.600">
+          여기에서 최신 게시물을 확인하세요.
+        </Text>
+      </Box>
       <Center mt={10}>
         <Box mb={10} w="100%" px={5}>
           {boardType === "반려동물 정보" ? (
@@ -154,8 +159,15 @@ export function BoardList() {
                 >
                   {/* 썸네일 추가 부분 */}
                   {board.fileList && board.fileList.length > 0 && (
-                    <Box mb={2}>
-                      <Image src={board.fileList[0].src} alt="썸네일" borderRadius="md" />
+                    <Box mb={2} width="100%" height="200px" overflow="hidden">
+                      <Image
+                        src={board.fileList[0].src}
+                        alt="썸네일"
+                        borderRadius="md"
+                        width="100%"
+                        height="100%"
+                        objectFit="cover"
+                      />
                     </Box>
                   )}
 
@@ -182,25 +194,25 @@ export function BoardList() {
               ))}
             </SimpleGrid>
           ) : (
-            <Table borderRadius="10" bg={bg}>
-              <Thead>
+            <Table variant="simple" borderWidth="1px" borderRadius="lg" overflow="hidden">
+              <Thead bg={useColorModeValue("gray.100", "gray.700")}>
                 <Tr>
-                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
                     게시판 종류
                   </Th>
-                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
                     게시글ID
                   </Th>
-                  <Th w={500} textAlign="center" fontSize="lg" fontWeight="bold">
+                  <Th w={500} textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
                     제목
                   </Th>
-                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
                     작성자
                   </Th>
-                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
                     추천수
                   </Th>
-                  <Th textAlign="center" fontSize="lg" fontWeight="bold">
+                  <Th textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
                     조회수
                   </Th>
                 </Tr>
@@ -208,7 +220,7 @@ export function BoardList() {
               <Tbody>
                 {boardList.map((board) => (
                   <Tr key={board.id} _hover={{ bg: hoverBg }}>
-                    <Td textAlign="center">
+                    <Td textAlign="center" py={3}>
                       <span
                         onClick={() => handleClickBoardTypeButton(board.boardType)}
                         style={{ cursor: "pointer" }}
@@ -216,7 +228,9 @@ export function BoardList() {
                         {board.boardType}
                       </span>
                     </Td>
-                    <Td textAlign="center">{board.id}</Td>
+                    <Td textAlign="center" py={3}>
+                      {board.id}
+                    </Td>
                     <Td
                       onClick={() => {
                         handleBoardClick(board.id);
@@ -227,6 +241,7 @@ export function BoardList() {
                       }}
                       bg={board.id === selectedBoardId ? "gray.200" : ""}
                       textAlign="center"
+                      py={3}
                     >
                       {board.title}
                       {board.numberOfImages > 0 && (
@@ -237,9 +252,15 @@ export function BoardList() {
                       )}
                       {board.numberOfComments > 0 && <span> [{board.numberOfComments}]</span>}
                     </Td>
-                    <Td textAlign="center">{board.writer}</Td>
-                    <Td textAlign="center">{board.numberOfLikes}</Td>
-                    <Td textAlign="center">{board.views}</Td>
+                    <Td textAlign="center" py={3}>
+                      {board.writer}
+                    </Td>
+                    <Td textAlign="center" py={3}>
+                      {board.numberOfLikes}
+                    </Td>
+                    <Td textAlign="center" py={3}>
+                      {board.views}
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>

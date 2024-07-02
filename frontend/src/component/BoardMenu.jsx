@@ -95,14 +95,6 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
           >
             이벤트/모임 게시판
           </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigate("/board/list?boardType=반려동물 정보");
-              onClose();
-            }}
-          >
-            반려동물 정보 게시판
-          </MenuItem>
           {memberInfo && memberInfo.id === 1 && (
             <MenuItem
               onClick={() => {
