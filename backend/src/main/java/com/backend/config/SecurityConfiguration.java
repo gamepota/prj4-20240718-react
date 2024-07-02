@@ -2,6 +2,7 @@ package com.backend.config;
 
 import com.backend.mapper.member.LoginCheckMapper;
 import com.backend.mapper.member.RefreshMapper;
+import com.backend.oauth2.CustomSuccessHandler;
 import com.backend.security.CustomLoginFilter;
 import com.backend.security.CustomLogoutFilter;
 import com.backend.security.JWTFilter;
@@ -36,13 +37,15 @@ public class SecurityConfiguration {
     private final RefreshMapper refreshMapper;
     private final LoginCheckMapper loginCheckMapper;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomSuccessHandler customSuccessHandler;
 
-    public SecurityConfiguration(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshMapper refreshMapper, LoginCheckMapper loginCheckMapper, CustomOAuth2UserService customOAuth2UserService) {
+    public SecurityConfiguration(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshMapper refreshMapper, LoginCheckMapper loginCheckMapper, CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.refreshMapper = refreshMapper;
         this.loginCheckMapper = loginCheckMapper;
         this.customOAuth2UserService = customOAuth2UserService;
+        this.customSuccessHandler = customSuccessHandler;
     }
 
     @Bean
@@ -80,26 +83,29 @@ public class SecurityConfiguration {
 
         // csrf disable
         http.csrf((auth) -> auth.disable());
+
         // form login disable
         http.formLogin((auth) -> auth.disable());
+
         // http basic disable
         http.httpBasic((auth) -> auth.disable());
+
+        // 필터 추가
+        http.addFilterBefore(new JWTFilter(jwtUtil), CustomLoginFilter.class);
+        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshMapper, loginCheckMapper), LogoutFilter.class);
+        http.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshMapper, loginCheckMapper), UsernamePasswordAuthenticationFilter.class);
+
         //oauth2
         http.oauth2Login((oauth2) -> oauth2
                 .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-                        .userService(customOAuth2UserService)));
+                        .userService(customOAuth2UserService)).successHandler(customSuccessHandler));
+
         // 경로별 권한
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/reissue").permitAll()
                 .anyRequest().authenticated());
-
-
-        // 필터 추가
-        http.addFilterBefore(new JWTFilter(jwtUtil), CustomLoginFilter.class);
-        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshMapper, loginCheckMapper), LogoutFilter.class);
-        http.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshMapper, loginCheckMapper), UsernamePasswordAuthenticationFilter.class);
 
         // 세션 설정
         http.sessionManagement((session) -> session

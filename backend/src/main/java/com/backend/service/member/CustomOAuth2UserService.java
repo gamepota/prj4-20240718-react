@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -29,7 +31,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = null;
         if (registrationId.equals("naver")) {
-
+            System.out.println("equal naver! oAuth2Response = " + oAuth2Response);
             oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
         } else {
 
@@ -37,16 +39,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
-
+        System.out.println("username = " + username);
         // 사용자 정보를 조회
-        Member existMember = memberMapper.selectByUsername(username);
+        Member existMember = memberMapper.selectByUsername(oAuth2Response.getUsername());
 
         if (existMember == null) {
             // 사용자 정보가 존재하지 않으면 새로 생성
             Member newMember = new Member();
-            newMember.setUsername(username);
-            newMember.setEmail(oAuth2Response.getEmail());
             newMember.setName(oAuth2Response.getName());
+            newMember.setUsername(oAuth2Response.getUsername());
+            newMember.setNickname(username);
+            newMember.setPassword("default");
+            newMember.setGender("male");
+            newMember.setNationality("default");
+            newMember.setBirthDate(LocalDate.now());
+            newMember.setPhoneNumber("default");
+            newMember.setPostcode(1234);
+            newMember.setMainAddress("default");
+            newMember.setDetailedAddress("default");
+            newMember.setInserted(LocalDate.now().atStartOfDay());
             newMember.setRole(Role.USER);
 
             memberMapper.insertMember(newMember);
@@ -55,11 +66,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             oAuth2Member.setUsername(username);
             oAuth2Member.setName(oAuth2Response.getName());
             oAuth2Member.setRole(Role.USER.name());
-
+            System.out.println("if - oAuth2Member.getUsername() = " + oAuth2Member.getUsername());
             return new CustomOAuth2User(oAuth2Member);
         } else {
             // 사용자 정보가 존재하면 업데이트
-            existMember.setEmail(oAuth2Response.getEmail());
+            existMember.setUsername(oAuth2Response.getUsername());
             existMember.setName(oAuth2Response.getName());
 
             memberMapper.updateMember(existMember);
@@ -68,7 +79,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             oAuth2Member.setUsername(existMember.getUsername());
             oAuth2Member.setName(oAuth2Response.getName());
             oAuth2Member.setRole(existMember.getRole().name());
-
+            System.out.println("else - oAuth2Member.getUsername() = " + oAuth2Member.getUsername());
 
             return new CustomOAuth2User(oAuth2Member);
         }

@@ -1,6 +1,8 @@
 package com.backend.security;
 
 import com.backend.domain.member.Member;
+import com.backend.domain.member.OAuth2Member;
+import com.backend.oauth2.CustomOAuth2User;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,6 +32,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // 토큰이 없다면 다음 필터로 넘김
         if (accessToken == null) {
+            System.out.println("token null");
             filterChain.doFilter(request, response);
             return;
         }
@@ -70,14 +73,22 @@ public class JWTFilter extends OncePerRequestFilter {
         member.setPassword("password");
         member.setTokenRole(role);
 
+        // oAuth2Member 에 값 set
+        OAuth2Member oAuth2Member = new OAuth2Member();
+        oAuth2Member.setUsername(username);
+        oAuth2Member.setRole(role);
+
         // UserDetails 에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
+        CustomOAuth2User customOAuth2User = new CustomOAuth2User(oAuth2Member);
 
         // spring security 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        Authentication authToken2 = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
 
         // 세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authToken2);
 
         filterChain.doFilter(request, response);
     }
