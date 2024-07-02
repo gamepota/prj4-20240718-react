@@ -41,6 +41,7 @@ import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceMap2 } from "./page/place/PlaceMap2.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
 import { DiaryCommentEdit } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentEdit.jsx";
+import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
 
 const App = () => {
   const [selectedCtprvnCd, setSelectedCtprvnCd] = useState(null);
@@ -89,7 +90,7 @@ const App = () => {
             { path: "comment", element: <DiaryComment /> }, // 방명록
             { path: "comment/write/:id", element: <DiaryCommentWrite /> }, // 방명록 쓰기
             { path: "comment/view/:id", element: <DiaryCommentView /> }, // 방명록 더보기
-            { path: "comment/list", element: <DiaryCommentView /> }, // 방명록 리스트
+            { path: "comment/list", element: <DiaryCommentList /> }, // 방명록 리스트
             { path: "comment/edit/:id", element: <DiaryCommentEdit /> }, // 방명록 수정
             { path: "calendar", element: <DiaryCalendar /> }, // 예방접종
           ],

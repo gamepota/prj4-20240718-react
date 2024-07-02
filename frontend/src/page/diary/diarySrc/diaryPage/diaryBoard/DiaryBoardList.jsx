@@ -1,5 +1,5 @@
+import React, { useContext, useEffect, useState } from "react";
 import {
-  Badge,
   Box,
   Button,
   Center,
@@ -15,14 +15,17 @@ import {
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImages, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import {
+  extractUserIdFromDiaryId,
+  generateDiaryId,
+} from "../../../../../util/util.jsx";
 import Pagination from "../../../../../component/Pagination.jsx";
-import { generateDiaryId } from "../../../../../util/util.jsx";
+import { format } from "date-fns";
 
 export function DiaryBoardList() {
   const { memberInfo } = useContext(LoginContext);
@@ -30,23 +33,22 @@ export function DiaryBoardList() {
   const [pageInfo, setPageInfo] = useState({});
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
-
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const diaryId = useParams().diaryId;
+  const isOwner =
+    Number(memberInfo?.id) === Number(extractUserIdFromDiaryId(diaryId));
 
   useEffect(() => {
-    console.log("Search Params:", searchParams.toString());
+    const params = new URLSearchParams(searchParams);
+    params.set("memberId", extractUserIdFromDiaryId(diaryId));
+    axios.get(`/api/diaryBoard/list?${params.toString()}`).then((res) => {
+      setDiaryBoardList(res.data.diaryBoardList);
+      setPageInfo(res.data.pageInfo);
+    });
 
-    axios
-      .get(`/api/diaryBoard/list?${searchParams.toString()}`)
-      .then((res) => {
-        console.log("API Response:", res.data);
-        setDiaryBoardList(res.data.diaryBoardList);
-        setPageInfo(res.data.pageInfo);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    setSearchType("all");
+    setSearchKeyword("");
 
     const typeParam = searchParams.get("type");
     const keywordParam = searchParams.get("keyword");
@@ -56,7 +58,7 @@ export function DiaryBoardList() {
     if (keywordParam) {
       setSearchKeyword(keywordParam);
     }
-  }, [searchParams.toString()]);
+  }, [searchParams, diaryId]);
 
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
@@ -64,63 +66,52 @@ export function DiaryBoardList() {
   }
 
   function handleSearchClick() {
-    const params = new URLSearchParams({
-      type: searchType,
-      keyword: searchKeyword,
-    });
-    setSearchParams(params);
-    navigate(`/?${params.toString()}`);
+    const params = new URLSearchParams(searchParams);
+    params.set("type", searchType);
+    params.set("keyword", searchKeyword);
+    params.set("memberId", extractUserIdFromDiaryId(diaryId));
+    navigate(`/api/diaryBoard/list?${params.toString()}`);
   }
 
   function handlePageButtonClick(pageNumber) {
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNumber);
-    setSearchParams(params);
-    navigate(`/?${params.toString()}`);
+    params.set("memberId", extractUserIdFromDiaryId(diaryId));
+    navigate(`/api/diaryBoard/list?${params.toString()}`);
   }
 
-  function handleSelectedDiaryBoard(diaryBoardId) {
+  function handleSelectedDiaryBoard(id) {
     const diaryId = generateDiaryId(memberInfo.id);
-    return () => navigate(`/diary/${diaryId}/view/${diaryBoardId}`);
+    return () => navigate(`/diary/${diaryId}/view/${id}`);
   }
 
-  function handleWriteClick(diaryBoardId) {
+  function handleWriteClick() {
     const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/write/${diaryBoardId}`);
+    navigate(`/diary/${diaryId}/write`);
   }
 
-  const bg = useColorModeValue("white", "gray.800");
   const hoverBg = useColorModeValue("gray.100", "gray.700");
 
   return (
     <>
-      <Center mb={10}>
+      <Box mb={5}></Box>
+      <Center>
         <Heading>다이어리 목록</Heading>
       </Center>
-
-      <Center mb={5}>
-        <Box w="full" maxW="1200px">
-          {memberInfo.access && (
-            <Button onClick={handleWriteClick} mb={5} colorScheme="teal">
-              글쓰기
-            </Button>
-          )}
-          <Table boxShadow="lg" borderRadius="md" bg={bg}>
-            <Thead bg={useColorModeValue("gray.200", "gray.700")}>
+      <Box>{isOwner && <Button onClick={handleWriteClick}>글쓰기</Button>}</Box>
+      <Box>
+        {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
+        {diaryBoardList.length > 0 && (
+          <Table>
+            <Thead>
               <Tr>
-                <Th textAlign="center">N번째 일기</Th>
-                <Th textAlign="center">제목</Th>
-                <Th textAlign="center">작성자</Th>
+                <Th>N번째 일기</Th>
+                <Th>내용</Th>
+                <Th>who?</Th>
+                <Th>작성일자</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {diaryBoardList.length === 0 && (
-                <Tr>
-                  <Td colSpan="3" textAlign="center">
-                    조회 결과가 없습니다.
-                  </Td>
-                </Tr>
-              )}
               {diaryBoardList.map((diaryBoard) => (
                 <Tr
                   key={diaryBoard.id}
@@ -139,13 +130,17 @@ export function DiaryBoardList() {
                     )}
                   </Td>
                   <Td textAlign="center">{diaryBoard.writer}</Td>
+                  <Td>
+                    {" "}
+                    <span style={{ color: "red" }} />
+                    {format(new Date(diaryBoard.inserted), "yyyy.MM.dd")}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
-        </Box>
-      </Center>
-
+        )}
+      </Box>
       <Pagination
         pageInfo={pageInfo}
         pageNumbers={pageNumbers}
