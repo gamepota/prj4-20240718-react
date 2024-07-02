@@ -86,10 +86,10 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         // 토큰 생성
         String access = jwtUtil.createJwt("access", username, role, 600000L); // 10분
-        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 24시간
+        String refresh = jwtUtil.createJwt("refresh", username, role, 3600000L); // 1시간
 
         // 토큰 저장
-        addRefreshEntity(username, refresh, 86400000L);
+        addRefreshEntity(username, refresh, 3600000L);
         response.addCookie(createCookie("refresh", refresh));
         try {
             if (request.getRequestURI().equals("/api/member/login")) {
