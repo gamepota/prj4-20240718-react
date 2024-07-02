@@ -48,7 +48,7 @@ export function DiaryCommentView() {
           navigate(`/diary/${diaryId}/comment`);
         }
       });
-  }, [id]);
+  }, [id, navigate, toast, diaryId]);
 
   function handleClickRemove() {
     axios
@@ -73,17 +73,16 @@ export function DiaryCommentView() {
       });
   }
 
+  function handleCommentEdit() {
+    navigate(`/diary/${diaryId}/comment/edit/${id}`);
+  }
+
   if (diaryComment === null) {
     return (
       <Center>
         <Spinner size="xl" />
       </Center>
     );
-  }
-
-  function handleCommentEdit() {
-    const diaryId = generateDiaryId(memberInfo.id);
-    navigate(`/diary/${diaryId}/comment/edit/${diaryComment.id}`);
   }
 
   return (

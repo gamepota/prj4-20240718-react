@@ -4,7 +4,7 @@ import { DiaryCommentList } from "./DiaryCommentList.jsx";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { generateDiaryId } from "../../../../../util/util.jsx";
+import { extractUserIdFromDiaryId } from "../../../../../util/util.jsx";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryComment() {
@@ -12,9 +12,11 @@ export function DiaryComment() {
   const [diaryCommentList, setDiaryCommentList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { memberInfo } = useContext(LoginContext);
+  const diaryId = useParams().diaryId;
+  const isOwner =
+    Number(memberInfo?.id) === Number(extractUserIdFromDiaryId(diaryId));
 
   useEffect(() => {
-    const diaryId = generateDiaryId(memberInfo.id);
     const fetchComments = async () => {
       try {
         const res = await axios.get(`/api/diaryComment/list`, {

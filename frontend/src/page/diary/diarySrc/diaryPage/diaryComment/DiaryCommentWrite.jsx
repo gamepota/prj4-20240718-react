@@ -12,6 +12,8 @@ export function DiaryCommentWrite({ onCommentAdded }) {
   const toast = useToast();
   const { memberInfo } = useContext(LoginContext);
   const nickname = memberInfo.nickname;
+
+  //diaryId가 유효한지 확인
   const diaryId = generateDiaryId(memberInfo.id);
 
   const handleDiaryCommentSubmitClick = () => {

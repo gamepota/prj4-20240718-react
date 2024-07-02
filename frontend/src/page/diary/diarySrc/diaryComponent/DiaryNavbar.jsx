@@ -77,7 +77,7 @@ export function DiaryNavbar() {
         </Box>
         <Box>
           <Button
-            onClick={() => navigate(`/diary/${diaryId}/comment/${friendId}`)}
+            onClick={() => navigate(`/diary/${diaryId}/comment`)}
             cursor={"pointer"}
             _hover={{
               bg: "blue.200",
@@ -97,17 +97,19 @@ export function DiaryNavbar() {
             내 다이어리
           </Button>
         </Box>
-        <Box>
-          <Button
-            onClick={() => navigate(`/diary/${diaryId}/calendar`)}
-            cursor={"pointer"}
-            _hover={{
-              bg: "blue.200",
-            }}
-          >
-            기록
-          </Button>
-        </Box>
+        {isOwnDiary && (
+          <Box>
+            <Button
+              onClick={() => navigate(`/diary/${diaryId}/calendar`)}
+              cursor={"pointer"}
+              _hover={{
+                bg: "blue.200",
+              }}
+            >
+              기록
+            </Button>
+          </Box>
+        )}
 
         {!isFriend && !isOwnDiary && (
           <Box>
