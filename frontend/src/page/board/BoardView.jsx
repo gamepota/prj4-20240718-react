@@ -68,7 +68,7 @@ export function BoardView() {
         fetchProfileImage(res.data.board.memberId);
       })
       .catch((err) => {
-        if (err.response.status === 404) {
+        if (err.response && err.response.status === 404) {
           toast({
             status: "info",
             description: "해당 게시물이 존재하지 않습니다",
@@ -87,77 +87,79 @@ export function BoardView() {
     } catch (error) {
       console.error("Error fetching profile image:", error);
     }
+  }
 
-    if (board === null) {
-      return <Spinner />;
-    }
-
-    const handleClickRemove = () => {
-      axios
-        .delete(`/api/board/${board.id}`, { params })
-        .then(() => {
-          toast({
-            status: "success",
-            description: `${id}번 게시물이 삭제되었습니다`,
-            position: "top",
-            duration: 10,
-          });
-          navigate(`/`);
-        })
-        .catch(() => {
-          toast({
-            status: "error",
-            description: "잘못된 삭제 명령입니다",
-            position: "top",
-            duration: 10,
-          });
-        })
-        .finally(onCloseDelete);
-    };
-
-    const handleClickLike = () => {
-      if (!memberInfo) {
-        return;
-      }
-      setIsLikeProcessing(true);
-      axios
-        .put("/api/board/like", { boardId: board.id, memberId: memberInfo.id })
-        .then((res) => {
-          setLike(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setIsLikeProcessing(false);
+  const handleClickRemove = () => {
+    axios
+      .delete(`/api/board/${board.id}`, { params })
+      .then(() => {
+        toast({
+          status: "success",
+          description: `${id}번 게시물이 삭제되었습니다`,
+          position: "top",
+          duration: 10,
         });
-    };
+        navigate(`/`);
+      })
+      .catch(() => {
+        toast({
+          status: "error",
+          description: "잘못된 삭제 명령입니다",
+          position: "top",
+          duration: 10,
+        });
+      })
+      .finally(onCloseDelete);
+  };
 
-    const handleWriterClick = (writer, writerId) => {
-      setSelectedWriter(writer);
-      setSelectedWriterId(writerId);
-    };
+  const handleClickLike = () => {
+    if (!memberInfo) {
+      return;
+    }
+    setIsLikeProcessing(true);
+    axios
+      .put("/api/board/like", { boardId: board.id, memberId: memberInfo.id })
+      .then((res) => {
+        setLike(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLikeProcessing(false);
+      });
+  };
 
-    const handleDiaryView = () => {
-      const diaryId = generateDiaryId(selectedWriterId);
-      const url = `/diary/${diaryId}`;
-      const windowFeatures = "width=1531,height=864";
-      window.open(url, "_blank", windowFeatures);
-    };
+  const handleWriterClick = (writer, writerId) => {
+    setSelectedWriter(writer);
+    setSelectedWriterId(writerId);
+  };
 
-    return (
-      <Container maxW="container.xl" py={10}>
-        <Box p={6} borderWidth="1px" borderRadius="md" bg="white" mb={6}>
-          <Flex justify="space-between" align="center" mb={4}>
-            <Box fontWeight="bold" fontSize="2xl">
-              {board.title}
+  const handleDiaryView = () => {
+    const diaryId = generateDiaryId(selectedWriterId);
+    const url = `/diary/${diaryId}`;
+    const windowFeatures = "width=1531,height=864";
+    window.open(url, "_blank", windowFeatures);
+  };
+
+  if (board === null) {
+    return <Spinner />;
+  }
+
+  return (
+    <Container maxW="container.xl" py={10}>
+      <Box p={6} borderWidth="1px" borderRadius="md" bg="white" mb={6}>
+        <Flex justify="space-between" align="center" mb={4}>
+          <Box fontWeight="bold" fontSize="2xl">
+            {board.title}
+          </Box>
+          <Flex align="center">
+            <Box fontSize="sm" color="gray.600" mr={2}>
+              {new Date(board.inserted).toLocaleString()}
             </Box>
-            <Flex align="center">
-              <Box fontSize="sm" color="gray.600" mr={2}>
-                {new Date(board.inserted).toLocaleString()}
-              </Box>
-              <Popover>
-                <PopoverTrigger>
+            <Popover>
+              <PopoverTrigger>
+                <Box display="flex" alignItems="center">
                   {profileImage ? (
                     <Image
                       src={profileImage}
@@ -185,102 +187,102 @@ export function BoardView() {
                   >
                     {board.writer}
                   </Badge>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <PopoverArrow />
-                  <PopoverCloseButton />
-                  <PopoverBody>
-                    <Button colorScheme="blue" onClick={handleDiaryView}>
-                      작성자 다이어리 보기
-                    </Button>
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
-            </Flex>
+                </Box>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverBody>
+                  <Button colorScheme="blue" onClick={handleDiaryView}>
+                    작성자 다이어리 보기
+                  </Button>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
           </Flex>
-          <Flex justify="space-between" align="center">
-            <Box>추천수: {like.count}</Box>
-          </Flex>
-        </Box>
-        <Box p={6} borderWidth="1px" borderRadius="md" bg="white">
-          {board.fileList &&
-            board.fileList.map((file) => (
-              <Box key={file.name} mb={3}>
-                <Image src={file.src} alt={file.name} borderRadius="md" />
-              </Box>
-            ))}
-          {board.content}
-        </Box>
-        <Flex mt={4} mb={4} align="center">
-          <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
-            <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
-              {like.like ? (
-                <FontAwesomeIcon icon={fullHeart} />
-              ) : (
-                <FontAwesomeIcon icon={emptyHeart} />
-              )}
-            </Box>
-          </Tooltip>
-          {like.count > 0 && (
-            <Box mx={3} fontSize="3xl">
-              {like.count}
-            </Box>
-          )}
-          <Spacer />
-          <Button
-            onClick={() => {
-              if (!memberInfo) {
-                toast({
-                  description: "로그인 해주시길 바랍니다",
-                  duration: 5000,
-                  position: "top",
-                  isClosable: "true",
-                });
-              } else {
-                onOpenReport();
-              }
-            }}
-          >
-            신고
-          </Button>
-          {isLikeProcessing && (
-            <Box ml={2}>
-              <Spinner size="sm" />
-            </Box>
-          )}
         </Flex>
-        <Box fontSize={"large"} color="gray.500">
-          조회수: {board.views}
-        </Box>
-        <Box mt={4}>
-          <BoardCommentComponent boardId={board.id} />
-        </Box>
-        {(memberId === board.memberId || memberId == 1) && (
-          <Flex justify="flex-end" mt={4}>
-            <Button
-              colorScheme="purple"
-              onClick={() => navigate(`/board/edit/${id}`)}
-              mr={2}
-            >
-              수정
-            </Button>
-            <Button colorScheme="red" onClick={onOpenDelete}>
-              삭제
-            </Button>
-          </Flex>
+        <Flex justify="space-between" align="center">
+          <Box>추천수: {like.count}</Box>
+        </Flex>
+      </Box>
+      <Box p={6} borderWidth="1px" borderRadius="md" bg="white">
+        {board.fileList &&
+          board.fileList.map((file) => (
+            <Box key={file.name} mb={3}>
+              <Image src={file.src} alt={file.name} borderRadius="md" />
+            </Box>
+          ))}
+        {board.content}
+      </Box>
+      <Flex mt={4} mb={4} align="center">
+        <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
+          <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
+            {like.like ? (
+              <FontAwesomeIcon icon={fullHeart} />
+            ) : (
+              <FontAwesomeIcon icon={emptyHeart} />
+            )}
+          </Box>
+        </Tooltip>
+        {like.count > 0 && (
+          <Box mx={3} fontSize="3xl">
+            {like.count}
+          </Box>
         )}
-        <DeleteConfirmationModal
-          isOpen={isOpenDelete}
-          onClose={onCloseDelete}
-          onClickRemove={handleClickRemove}
-        />
-        <ReportModal
-          isOpen={isOpenReport}
-          onClose={onCloseReport}
-          boardId={board.id}
-          memberId={params.memberId}
-        />
-      </Container>
-    );
-  }
+        <Spacer />
+        <Button
+          onClick={() => {
+            if (!memberInfo) {
+              toast({
+                description: "로그인 해주시길 바랍니다",
+                duration: 5000,
+                position: "top",
+                isClosable: true,
+              });
+            } else {
+              onOpenReport();
+            }
+          }}
+        >
+          신고
+        </Button>
+        {isLikeProcessing && (
+          <Box ml={2}>
+            <Spinner size="sm" />
+          </Box>
+        )}
+      </Flex>
+      <Box fontSize={"large"} color="gray.500">
+        조회수: {board.views}
+      </Box>
+      <Box mt={4}>
+        <BoardCommentComponent boardId={board.id} />
+      </Box>
+      {(memberId === board.memberId || memberId === 1) && (
+        <Flex justify="flex-end" mt={4}>
+          <Button
+            colorScheme="purple"
+            onClick={() => navigate(`/board/edit/${id}`)}
+            mr={2}
+          >
+            수정
+          </Button>
+          <Button colorScheme="red" onClick={onOpenDelete}>
+            삭제
+          </Button>
+        </Flex>
+      )}
+      <DeleteConfirmationModal
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        onClickRemove={handleClickRemove}
+      />
+      <ReportModal
+        isOpen={isOpenReport}
+        onClose={onCloseReport}
+        boardId={board.id}
+        memberId={params.memberId}
+      />
+    </Container>
+  );
 }
