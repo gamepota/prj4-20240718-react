@@ -131,6 +131,14 @@ public class MemberController {
         return ResponseEntity.ok(tempPassword);
     }
 
+    // OAuth
+    @GetMapping("/info")
+    public ResponseEntity<Map<String, Object>> info(@RequestParam("username") String username) {
+        System.out.println("username = " + username);
+
+        return ResponseEntity.ok(service.getMemberInfo(username));
+    }
+
     // 다이어리 ID 검증
     @GetMapping("/validateDiaryId/{diaryId}")
     public ResponseEntity<Map<String, Object>> validateDiaryId(@PathVariable String diaryId) {

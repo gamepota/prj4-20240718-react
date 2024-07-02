@@ -185,6 +185,14 @@ public class MemberService {
         return result;
     }
 
+    // OAuth
+    public Map<String, Object> getMemberInfo(String username) {
+        Member member = memberMapper.selectByUsername(username);
+        Map<String, Object> map = new HashMap<>();
+        map.put("member", member);
+        return map;
+    }
+
     // diary ID 유효성 검증
     public Member getMemberByDiaryId(String diaryId) {
         try {

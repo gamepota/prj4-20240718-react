@@ -14,7 +14,7 @@ public interface MemberMapper {
             VALUES (#{name}, #{username}, #{nickname}, #{password}, #{gender}, #{nationality}, #{birthDate}, #{phoneNumber}, #{postcode}, #{mainAddress}, #{detailedAddress})
             """
     )
-    public int signup(Member member);
+    int signup(Member member);
 
     @Select("""
             SELECT *
@@ -86,8 +86,8 @@ public interface MemberMapper {
 
     // OAuth2
     @Insert("""
-            INSERT INTO member(username, name, role)
-            VALUES (#{username}, #{name}, #{role})
+            INSERT INTO member(name, username, nickname, password, gender, nationality, birth_date, phone_number, postcode, main_address, detailed_address)
+            VALUES (#{name}, #{username}, #{nickname}, #{password}, #{gender}, #{nationality}, #{birthDate}, #{phoneNumber}, #{postcode}, #{mainAddress}, #{detailedAddress})
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertMember(Member member);
