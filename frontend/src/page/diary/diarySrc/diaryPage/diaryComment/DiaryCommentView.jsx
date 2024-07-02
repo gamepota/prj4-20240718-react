@@ -9,6 +9,7 @@ import {
   Center,
   FormControl,
   FormLabel,
+  HStack,
   Input,
   Spinner,
   Text,
@@ -16,7 +17,7 @@ import {
   useDisclosure,
   useToast,
   VStack,
-  HStack,
+
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateDiaryId } from "../../../../../util/util.jsx";
@@ -29,6 +30,8 @@ export function DiaryCommentView() {
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
+  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const params = memberId ? { memberId } : {};
   const { onOpen, onClose, isOpen } = useDisclosure();
   const diaryId = generateDiaryId(memberInfo.id);
 
@@ -43,21 +46,21 @@ export function DiaryCommentView() {
             description: "해당 댓글이 존재하지 않습니다.",
             position: "top",
           });
-          navigate(`/diary/${diaryId}/comment/list`);
+          navigate(`/diary/${diaryId}/comment`);
         }
       });
-  }, [id]);
+  }, [id, navigate, toast, diaryId]);
 
   function handleClickRemove() {
     axios
-      .delete(`/api/diaryComment/${diaryComment.id}`, { params: { memberId: memberInfo.id } })
+      .delete(`/api/diaryComment/${diaryComment.id}`, { params })
       .then(() => {
         toast({
           status: "success",
           description: "댓글이 삭제되었습니다.",
           position: "top",
         });
-        navigate(`/diary/${diaryId}/comment/list`);
+        navigate(`/diary/${diaryId}/comment`);
       })
       .catch(() => {
         toast({
@@ -69,6 +72,10 @@ export function DiaryCommentView() {
       .finally(() => {
         onClose();
       });
+  }
+
+  function handleCommentEdit() {
+    navigate(`/diary/${diaryId}/comment/edit/${id}`);
   }
 
   if (diaryComment === null) {
@@ -85,27 +92,40 @@ export function DiaryCommentView() {
         <Card w="100%" variant="outline">
           <CardBody>
             <VStack spacing={4} align="stretch">
-              <Text fontWeight="bold" fontSize="2xl" color="teal.500">
-                방명록
-              </Text>
-              <Text fontWeight="bold" fontSize="lg" color="gray.600">
-                {diaryComment.nickname} 님이 남긴 방명록
-              </Text>
-              <FormControl>
-                <FormLabel fontWeight="bold">방명록</FormLabel>
-                <Textarea value={diaryComment.comment} readOnly />
-              </FormControl>
-              <FormControl>
-                <FormLabel fontWeight="bold">작성일시</FormLabel>
-                <Input type="datetime-local" value={diaryComment.inserted} readOnly />
-              </FormControl>
-              {isLoggedIn && (
-                <HStack spacing={4} justifyContent="flex-end">
-                  <Button colorScheme="red" onClick={onOpen}>
-                    삭제
-                  </Button>
-                </HStack>
-              )}
+              <Box>
+                <Text fontWeight="bold" fontSize="2xl" color="teal.500">
+                  방명록
+                </Text>
+              </Box>
+              <Box>
+                <Text fontWeight="bold" fontSize="lg" color="gray.600">
+                  {diaryComment.nickname} 님이 남긴 방명록이에요!
+                </Text>
+              </Box>
+              <Box>
+                <FormControl>
+                  <FormLabel fontWeight="bold">방명록</FormLabel>
+                  <Textarea value={diaryComment.comment} readOnly />
+                </FormControl>
+              </Box>
+              <Box>
+                <FormControl>
+                  <FormLabel fontWeight="bold">작성일시</FormLabel>
+                  <Input
+                    type="datetime-local"
+                    value={diaryComment.inserted}
+                    readOnly
+                  />
+                </FormControl>
+              </Box>
+              <HStack spacing={4} justifyContent="flex-end">
+                <Button colorScheme="purple" onClick={handleCommentEdit}>
+                  수정
+                </Button>
+                <Button colorScheme="red" onClick={handleClickRemove}>
+                  삭제
+                </Button>
+              </HStack>
             </VStack>
           </CardBody>
         </Card>

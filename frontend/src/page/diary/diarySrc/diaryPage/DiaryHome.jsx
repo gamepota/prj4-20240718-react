@@ -26,14 +26,19 @@ export function DiaryHome() {
   const [isValidDiaryId, setIsValidDiaryId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [ownerNickname, setOwnerNickname] = useState("");
-  const [ownerId, setOwnerId] = useState(null);
-  const [profileData, setProfileData] = useState({ statusMessage: "", introduction: "" });
+  const [ownerId, setOwnerId] = useState(null); // 다이어리 주인의 ID 상태 추가
+  const [profileData, setProfileData] = useState({
+    statusMessage: "",
+    introduction: "",
+  });
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const validateDiaryId = async () => {
       try {
-        const response = await axios.get(`/api/member/validateDiaryId/${diaryId}`);
+        const response = await axios.get(
+          `/api/member/validateDiaryId/${diaryId}`,
+        );
         setIsValidDiaryId(response.data.isValid);
         if (response.data.isValid) {
           setOwnerNickname(response.data.nickname);
@@ -50,6 +55,7 @@ export function DiaryHome() {
     validateDiaryId();
   }, [diaryId]);
 
+  // ownerId 변경 감지를 위한 useEffect 추가
   useEffect(() => {
     if (ownerId) {
       fetchDiaryProfile(ownerId);
@@ -60,9 +66,13 @@ export function DiaryHome() {
     try {
       const response = await axios.get(`/api/diaryBoard/profile/${ownerId}`);
       const { status_message, introduction } = response.data;
-      setProfileData({ statusMessage: status_message || "", introduction: introduction || "" });
+      setProfileData({
+        statusMessage: status_message || "",
+        introduction: introduction || "",
+      });
     } catch (error) {
       if (error.response && error.response.status === 404) {
+        // 프로필이 존재하지 않는 경우 기본값 설정
         setProfileData({ statusMessage: "", introduction: "" });
       } else {
         console.error("Error fetching diary profile:", error);
@@ -74,14 +84,19 @@ export function DiaryHome() {
     const data = {
       ownerId: extractUserIdFromDiaryId(diaryId),
       status_message: profileData.statusMessage,
-      introduction: profileData.introduction
+      introduction: profileData.introduction,
     };
 
     try {
-      const checkProfileResponse = await axios.get(`/api/diaryBoard/profile/${ownerId}`);
+      // 프로필 존재 여부 확인
+      const checkProfileResponse = await axios.get(
+        `/api/diaryBoard/profile/${ownerId}`,
+      );
       if (checkProfileResponse.status === 200) {
+        // 프로필이 존재하면 PUT 요청
         await axios.put(`/api/diaryBoard/profile/${ownerId}`, data);
       } else {
+        // 프로필이 존재하지 않으면 POST 요청
         await axios.post(`/api/diaryBoard/profile`, data);
       }
 
@@ -89,6 +104,7 @@ export function DiaryHome() {
       setIsEditing(false);
     } catch (error) {
       if (error.response && error.response.status === 404) {
+        // 프로필이 존재하지 않으면 POST 요청
         await axios.post(`/api/diaryBoard/profile`, data);
         console.log("Profile created successfully.");
         setIsEditing(false);

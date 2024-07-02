@@ -1,22 +1,25 @@
-import { Box, Spinner, Center } from "@chakra-ui/react";
+import { Box, Spinner } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { generateDiaryId } from "../../../../../util/util.jsx";
+import { extractUserIdFromDiaryId } from "../../../../../util/util.jsx";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
-import { DiaryCommentList } from "./DiaryCommentList.jsx";
+import {DiaryCommentWrite} from "./DiaryCommentWrite.jsx";
+import {DiaryCommentList} from "./DiaryCommentList.jsx";
 
 export function DiaryComment() {
   const { id } = useParams();
   const [diaryCommentList, setDiaryCommentList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { memberInfo } = useContext(LoginContext);
+  const diaryId = useParams().diaryId;
+  const isOwner =
+    Number(memberInfo?.id) === Number(extractUserIdFromDiaryId(diaryId));
 
   useEffect(() => {
+    const diaryId = generateDiaryId(memberInfo.id);
     const fetchComments = async () => {
       try {
-        const diaryId = generateDiaryId(memberInfo.id);
         const res = await axios.get(`/api/diaryComment/list`, {
           params: { diaryId },
         });
@@ -45,7 +48,12 @@ export function DiaryComment() {
 
   return (
     <Box>
-      <DiaryCommentWrite onCommentAdded={handleCommentAdded} />
+      {/*{Number(memberInfo.id) === Number(diaryCommentList.id)?(*/}
+      {/*<DiaryCommentWrite onCommentAdded={handleCommentAdded} diaryCommentList={diaryCommentList}/>):null}*/}
+      <DiaryCommentWrite
+        onCommentAdded={handleCommentAdded}
+        diaryCommentList={diaryCommentList}
+      />
       <DiaryCommentList diaryCommentList={diaryCommentList} />
     </Box>
   );

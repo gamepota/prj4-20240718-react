@@ -1,11 +1,30 @@
+import {
+  Badge,
+  Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Input,
+  Select,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Button, Center, Flex, Heading, Input, Select, Table, Tbody, Td, Th, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImages, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { extractUserIdFromDiaryId, generateDiaryId } from "../../../../../util/util.jsx";
+import {
+  extractUserIdFromDiaryId,
+  generateDiaryId,
+} from "../../../../../util/util.jsx";
 import Pagination from "../../../../../component/Pagination.jsx";
 import { format } from "date-fns";
 
@@ -18,7 +37,8 @@ export function DiaryBoardList() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const diaryId = useParams().diaryId;
-  const isOwner = Number(memberInfo?.id) === Number(extractUserIdFromDiaryId(diaryId));
+  const isOwner =
+    Number(memberInfo?.id) === Number(extractUserIdFromDiaryId(diaryId));
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);

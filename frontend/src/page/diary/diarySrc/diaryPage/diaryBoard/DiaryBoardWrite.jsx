@@ -20,7 +20,10 @@ import {
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { extractUserIdFromDiaryId, generateDiaryId } from "../../../../../util/util.jsx";
+import {
+  extractUserIdFromDiaryId,
+  generateDiaryId,
+} from "../../../../../util/util.jsx";
 
 export function DiaryBoardWrite() {
   const [title, setTitle] = useState("");
@@ -82,14 +85,23 @@ export function DiaryBoardWrite() {
       .finally(() => setLoading(false));
   };
 
-  const disableSaveButton = title.trim().length === 0 || content.trim().length === 0;
+  const disableSaveButton =
+    title.trim().length === 0 || content.trim().length === 0;
 
   if (!isLoggedIn) {
     return <Spinner />;
   }
 
   return (
-    <Box maxW="800px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">
+    <Box
+      maxW="800px"
+      mx="auto"
+      mt={10}
+      p={5}
+      boxShadow="md"
+      borderRadius="md"
+      bg="white"
+    >
       <Heading mb={10}>글 작성</Heading>
       <FormControl mb={7}>
         <FormLabel>작성자</FormLabel>
@@ -101,7 +113,10 @@ export function DiaryBoardWrite() {
       </FormControl>
       <FormControl mb={7}>
         <FormLabel>본문</FormLabel>
-        <Textarea value={content} onChange={(e) => setContent(e.target.value)} />
+        <Textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
       </FormControl>
       <FormControl mb={7}>
         <FormLabel>파일</FormLabel>

@@ -19,29 +19,24 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryCommentEdit() {
   const { id } = useParams();
   const [diaryComment, setDiaryComment] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const { memberInfo } = useContext(LoginContext);
+  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const access = memberInfo.access;
+  const nickname = memberInfo.nickname;
+  const isLoggedIn = Boolean(access);
   const navigate = useNavigate();
+  const diaryId = generateDiaryId(memberInfo.id);
 
   useEffect(() => {
     axios
       .get(`/api/diaryComment/${id}`)
-      .then((res) => setDiaryComment(res.data))
-      .catch((err) => {
-        if (err.response && err.response.status === 404) {
-          toast({
-            status: "info",
-            description: "해당 댓글이 존재하지 않습니다.",
-            position: "top",
-          });
-          navigate("/path/to/redirect"); // 존재하지 않는 경우 리디렉션할 경로 설정
-        }
-      });
+      .then((res) => setDiaryComment(res.data));
   }, [id]);
 
   function handleCommentSubmit() {
@@ -58,13 +53,13 @@ export function DiaryCommentEdit() {
           description: "댓글이 수정되었습니다.",
           position: "top",
         });
-        navigate(`/path/to/comment/view/${diaryComment.id}`); // 수정 완료 후 리디렉션할 경로 설정
+        navigate(`/diary/${diaryId}/comment/view/${diaryComment.id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
           toast({
             status: "error",
-            description: "방명록이 수정되지 않았습니다.",
+            description: "댓글이 수정되지 않았습니다.",
             position: "top",
           });
         }
@@ -90,22 +85,30 @@ export function DiaryCommentEdit() {
         </Text>
       </Box>
       <Box>
-        <FormControl mb={7}>
-          <FormLabel>작성자</FormLabel>
-          <Input value={memberInfo.nickname} readOnly />
-        </FormControl>
-        <FormControl mb={7}>
-          <FormLabel>방명록 작성글</FormLabel>
-          <Textarea
-            defaultValue={diaryComment.comment}
-            onChange={(e) =>
-              setDiaryComment({ ...diaryComment, comment: e.target.value })
-            }
-          />
-        </FormControl>
-        <Button colorScheme="blue" onClick={onOpen}>
-          저장
-        </Button>
+        <Box mb={7}>
+          <FormControl>
+            <FormLabel>작성자</FormLabel>
+            <Input
+              defaultValue={memberInfo.nickname}
+              onChange={(e) =>
+                setMemberInfo({ ...memberInfo, nickname: e.target.value })
+              }
+            />
+          </FormControl>
+        </Box>
+        <Box mb={7}>
+          <FormControl>
+            <FormLabel>방명록 작성글</FormLabel>
+            <Textarea
+              defaultValue={diaryComment.comment}
+              key={diaryComment.id}
+              onChange={(e) =>
+                setDiaryComment({ ...diaryComment, comment: e.target.value })
+              }
+            ></Textarea>
+            <Button onClick={onOpen}>저장</Button>
+          </FormControl>
+        </Box>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>

@@ -32,6 +32,8 @@ import { DiaryBoardEdit } from "./page/diary/diarySrc/diaryPage/diaryBoard/Diary
 import { DiaryComment } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryComment.jsx";
 import { DiaryCommentWrite } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentWrite.jsx";
 import { DiaryCommentView } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentView.jsx";
+import { DiaryCommentList } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentList.jsx";
+import { DiaryCommentEdit } from "./page/diary/diarySrc/diaryPage/diaryComment/DiaryCommentEdit.jsx";
 import DiaryCalendar from "./page/diary/diarySrc/diaryPage/diaryCalendar/DiaryCalendar.jsx";
 
 // Place
@@ -77,13 +79,15 @@ const App = () => {
           children: [
             // 다이어리 하위 경로 설정
             { index: true, element: <DiaryHomeMain /> }, // 다이어리 메인페이지 렌더링
-            { path: "write/", element: <DiaryBoardWrite /> }, // 다이어리 쓰기
-            { path: "list/", element: <DiaryBoardList /> }, // 다이어리 목록
+            { path: "write", element: <DiaryBoardWrite /> }, // 다이어리 쓰기
+            { path: "list", element: <DiaryBoardList /> }, // 다이어리 목록
             { path: "view/:id", element: <DiaryBoardView /> }, // 다이어리 보기
             { path: "edit/:id", element: <DiaryBoardEdit /> }, // 다이어리 수정
-            { path: "comment/:id", element: <DiaryComment /> }, // 방명록
-            { path: "comment/write/:id", element: <DiaryCommentWrite /> }, // 방명록 쓰기
-            { path: "comment/view/:id", element: <DiaryCommentView /> }, // 방명록 보기
+            { path: "comment", element: <DiaryComment /> }, // 방명록
+            { path: "comment/write", element: <DiaryCommentWrite /> }, // 방명록 쓰기
+            { path: "comment/view/:id", element: <DiaryCommentView /> }, // 방명록 더보기
+            { path: "comment/list", element: <DiaryCommentList /> }, // 방명록 리스트
+            { path: "comment/edit/:id", element: <DiaryCommentEdit /> }, // 방명록 수정
             { path: "calendar", element: <DiaryCalendar /> }, // 예방접종
           ],
         },
