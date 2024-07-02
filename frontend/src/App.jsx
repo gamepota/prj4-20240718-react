@@ -3,8 +3,6 @@ import { ChakraProvider, theme } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./page/Home.jsx";
 import { MainPage } from "./page/MainPage.jsx";
-import { LoginProvider } from "./component/LoginProvider.jsx";
-import KakaoMap from "./KakaoMap.jsx";
 import { AIChat } from "./component/chat/AIChat.jsx";
 
 // Member
@@ -14,6 +12,7 @@ import { MemberFind } from "./page/member/MemberFind.jsx";
 import { MemberPage } from "./page/member/MemberPage.jsx";
 import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
+import { LoginProvider } from "./component/LoginProvider.jsx";
 
 // Board
 import { BoardWrite } from "./page/board/BoardWrite.jsx";
@@ -40,6 +39,7 @@ import { PlaceLocal } from "./page/place/PlaceLocal.jsx";
 import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceMap2 } from "./page/place/PlaceMap2.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
+import KakaoMap from "./KakaoMap.jsx";
 
 const App = () => {
   const [selectedCtprvnCd, setSelectedCtprvnCd] = useState(null);
@@ -49,10 +49,6 @@ const App = () => {
       element: <Home />,
       children: [
         { index: true, element: <MainPage /> }, // 메인페이지 렌더링
-        {
-          path: "kakao-map",
-          element: <KakaoMap onPolygonSelect={setSelectedCtprvnCd} />,
-        }, // KakaoMap 경로 설정
         { path: "aichat", element: <AIChat /> }, // 챗봇 기능
 
         // Member
@@ -100,6 +96,10 @@ const App = () => {
           element: <PlaceMap2 ctprvnCd={selectedCtprvnCd} />,
         }, // 지도 보기 경로 설정
         { path: "place/:id", element: <PlaceReview /> }, // 병원 정보 보기
+        {
+          path: "kakao-map",
+          element: <KakaoMap onPolygonSelect={setSelectedCtprvnCd} />,
+        }, // KakaoMap 경로 설정
       ],
     },
   ]);
