@@ -32,7 +32,7 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
   function handleRemoveClick() {
     setIsProcessing(true);
     axios
-      .delete("/api/hospitalComments/remove", {
+      .delete("/api/hospitalComment/remove", {
         data: { id: comment.id },
       })
       .then(() => {
