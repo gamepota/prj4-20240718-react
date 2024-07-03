@@ -117,7 +117,7 @@ public class BoardService {
 
             countByBoardType = mapper.selectAllCount();
         } else {
-            System.out.println("이것은 서비스의 boardType = " + boardType);
+//            System.out.println("이것은 서비스의 boardType = " + boardType);
             countByBoardType = mapper.selectByBoardType(boardType, searchType, keyword);
         }
 
@@ -143,22 +143,22 @@ public class BoardService {
 
         // 각각의 Board 객체에 fileList 추가
         for (Board board : boardList) {
-            System.out.println("Board ID: " + board.getId());
+//            System.out.println("Board ID: " + board.getId());
 
             // getFileImageByboardId 메서드 호출
             String firstImageName = mapper.getFileImageByboardId(board.getId().toString());
-            System.out.println("File Name: " + firstImageName);
+//            System.out.println("File Name: " + firstImageName);
 
             if (firstImageName != null) {
                 String thumbnailUrl = srcPrefix + "board/" + board.getId() + "/" + firstImageName;
 
-                System.out.println("First Image Name: " + firstImageName);
-                System.out.println("Thumbnail URL: " + thumbnailUrl);
+//                System.out.println("First Image Name: " + firstImageName);
+//                System.out.println("Thumbnail URL: " + thumbnailUrl);
 
                 List<BoardFile> files = Collections.singletonList(new BoardFile(firstImageName, thumbnailUrl));
                 board.setFileList(files);
 
-                System.out.println("Updated FileList: " + board.getFileList());
+//                System.out.println("Updated FileList: " + board.getFileList());
             }
         }
 
@@ -293,7 +293,7 @@ public class BoardService {
             throw new IllegalArgumentException("Invalid boardId or memberId format");
         }
 
-        System.out.println("이것은 서비스의 req = " + req);
+//        System.out.println("이것은 서비스의 req = " + req);
 
         // 이미 했으면
         int count = mapper.deleteLikeByBoardIdAndMemberId(boardId, memberId);
@@ -379,7 +379,7 @@ public class BoardService {
 
             countByBoardType = mapper.selectAllCountWithReportBoard();
         } else {
-            System.out.println("이것은 서비스의 boardType = " + boardType);
+//            System.out.println("이것은 서비스의 boardType = " + boardType);
             countByBoardType = mapper.selectByBoardTypeWithReportBoard(boardType, searchType, keyword);
         }
 

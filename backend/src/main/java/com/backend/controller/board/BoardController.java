@@ -49,7 +49,7 @@ public class BoardController {
                                     @RequestParam(defaultValue = "전체") String searchType,
                                     @RequestParam(defaultValue = "") String keyword) throws Exception {
 //        System.out.println("page = " + page);
-        System.out.println("이것은 서비스의 searchType = " + searchType);
+//        System.out.println("이것은 서비스의 searchType = " + searchType);
         return service.list(page, pageAmount, offsetReset, session, boardType, searchType, keyword);
     }
 
