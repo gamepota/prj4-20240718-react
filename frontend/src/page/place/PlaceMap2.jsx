@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Spacer } from "@chakra-ui/react";
 import SelectComponent from "../../SelectCompoent.jsx";
+import { useNavigate } from "react-router-dom";
 
 export const PlaceMap2 = ({ ctprvnCd }) => {
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(["HP8"]); // 기본으로 병원 검색
-
+  const navigate = useNavigate();
   useEffect(() => {
     const initializeMap = () => {
       const { kakao } = window;
@@ -83,10 +84,6 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     )
       return;
 
-    // 기존 마커 제거
-    markers.forEach((marker) => marker.setMap(null));
-    setMarkers([]);
-
     const ps = new kakao.maps.services.Places();
     const bounds = new kakao.maps.LatLngBounds();
 
@@ -128,16 +125,23 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     setSelectedCategories(categories);
   };
 
+  function GotoHospitalHandler() {
+    navigate("/place/1");
+  }
+
   return (
     <Box position="relative" width="100%" height="500px">
       <Box
         position="absolute"
-        top="10px"
-        left="10px"
+        top="50%" // 상단에서 50%의 위치에 놓임 (중앙에 가깝게)
+        left="0" // 왼쪽 가장자리에 위치
+        transform="translateY(-50%)" // Y축 기준 중앙 정렬
         zIndex="10"
-        background="white"
+        background="rgba(255, 255, 255, 0.8)" // 반투명 흰색 배경
         p={4}
         boxShadow="md"
+        width="200px" // 박스의 너비 설정
+        height="400px"
       >
         <SelectComponent
           selectedCategories={selectedCategories}
@@ -146,6 +150,8 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
         <Button mt={2} onClick={() => searchByCategory(map)}>
           카테고리 검색
         </Button>
+        <Spacer />
+        <Button onClick={GotoHospitalHandler}>추천 병원 바로 가기</Button>
       </Box>
       <Box id="place-map" width="100%" height="100%" />
     </Box>
