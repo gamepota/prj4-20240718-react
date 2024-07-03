@@ -62,7 +62,7 @@ public class HospitalCommentController {
 
     }
 
-    @PutMapping("rating")
+    @PostMapping("rating")
     public ResponseEntity rating(@RequestBody StarRating starRating) {
 
         if (service.validate2(starRating)) {

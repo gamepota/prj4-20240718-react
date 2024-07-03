@@ -7,6 +7,5 @@ public class StarRating {
     private Integer id;
     private Integer hospitalId;
     private Integer memberId;
-    private Integer commentId;
     private Integer rate;
 }

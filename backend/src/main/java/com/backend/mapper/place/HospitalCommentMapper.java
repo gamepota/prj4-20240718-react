@@ -45,8 +45,8 @@ public interface HospitalCommentMapper {
 
     @Insert("""
                         INSERT INTO star_rating
-            (hospital_id, member_id, comment_id, rate)
-                        VALUES (#{hospitalId}, #{memberId}, #{commentId}, #{rate})
-                        """)
+            (hospital_id, member_id,  rate)
+                        VALUES (#{hospitalId}, #{memberId}, #{rate})
+            """)
     int insertOnRating(StarRating starRating);
 }

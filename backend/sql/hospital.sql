@@ -49,7 +49,10 @@ CREATE TABLE star_rating
     id          INT PRIMARY KEY AUTO_INCREMENT,
     hospital_id INT NOT NULL,
     member_id   INT NOT NULL REFERENCES member (id),
-    comment_id  INT NOT NULL REFERENCES hospital_comment (id),
     rate        INT NOT NULL
 
 );
+DROP TABLE star_rating;
+DELETE
+FROM star_rating
+WHERE hospital_id = 1;

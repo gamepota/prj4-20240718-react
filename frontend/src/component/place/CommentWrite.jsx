@@ -31,11 +31,12 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
 
       await axios.post("/api/hospitalComment/rating", {
         hospitalId,
-        rating: ratingIndex,
-        username: memberInfo.username,
+        rate: ratingIndex,
+        memberId: memberInfo.id,
       });
 
       setComment("");
+      setRatingIndex(1); // 별점 초기화
       toast({
         description: "댓글이 등록되었습니다.",
         position: "top",
@@ -50,6 +51,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
     } finally {
       setIsProcessing(false);
       setComment("");
+      setRatingIndex(1); // 별점 초기화
     }
   }
 
