@@ -64,7 +64,7 @@ public class BoardService {
 
     public boolean validate(Board board) throws Exception {
         return board.getTitle() != null && !board.getTitle().isBlank() &&
-                board.getContent() != null && !board.getContent().isBlank();
+               board.getContent() != null && !board.getContent().isBlank();
     }
 
     public Map<String, Object> list(Integer page, Integer pageAmount, Boolean offsetReset, HttpSession session, String boardType,
@@ -413,5 +413,9 @@ public class BoardService {
                     image.put("imageUrl", srcPrefix + "board/" + id + "/" + imageUrl);
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<Board> getGuideBoards() {
+        return mapper.selectGuideBoards();
     }
 }

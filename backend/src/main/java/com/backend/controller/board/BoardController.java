@@ -178,5 +178,10 @@ public class BoardController {
         List<Map<String, Object>> topLikedImages = service.getTopLikedImages();
         return ResponseEntity.ok(topLikedImages);
     }
-}
 
+    @GetMapping("/guide")
+    public ResponseEntity<List<Board>> getGuideBoards() {
+        List<Board> guideBoards = service.getGuideBoards();
+        return ResponseEntity.ok(guideBoards);
+    }
+}
