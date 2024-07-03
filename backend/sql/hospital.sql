@@ -42,3 +42,14 @@ ALTER TABLE hospital_comment
 DELETE
 FROM hospital_comment
 WHERE hospital_id = 1;
+
+# 별점 테이블
+CREATE TABLE star_rating
+(
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    hospital_id INT NOT NULL,
+    member_id   INT NOT NULL REFERENCES member (id),
+    comment_id  INT NOT NULL REFERENCES hospital_comment (id),
+    rate        INT NOT NULL
+
+);

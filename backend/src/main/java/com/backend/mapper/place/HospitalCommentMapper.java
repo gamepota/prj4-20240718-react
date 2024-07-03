@@ -1,6 +1,7 @@
 package com.backend.mapper.place;
 
 import com.backend.domain.place.HospitalComment;
+import com.backend.domain.place.StarRating;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -42,5 +43,10 @@ public interface HospitalCommentMapper {
             """)
     int update(HospitalComment hospitalComment);
 
-
+    @Insert("""
+                        INSERT INTO star_rating
+            (hospital_id, member_id, comment_id, rate)
+                        VALUES (#{hospitalId}, #{memberId}, #{commentId}, #{rate})
+                        """)
+    int insertOnRating(StarRating starRating);
 }

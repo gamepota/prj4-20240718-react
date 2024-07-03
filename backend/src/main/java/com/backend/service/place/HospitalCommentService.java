@@ -1,6 +1,7 @@
 package com.backend.service.place;
 
 import com.backend.domain.place.HospitalComment;
+import com.backend.domain.place.StarRating;
 import com.backend.mapper.place.HospitalCommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -53,6 +54,18 @@ public class HospitalCommentService {
 
     public void edit(HospitalComment hospitalComment) {
         mapper.update(hospitalComment);
+    }
+
+    public void rating(StarRating starRating) {
+        mapper.insertOnRating(starRating);
+    }
+
+    public boolean validate2(StarRating starRating) {
+        if (starRating == null) {
+            return false;
+        }
+
+        return true;
     }
 }
 
