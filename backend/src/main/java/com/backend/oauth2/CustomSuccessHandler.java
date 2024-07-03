@@ -1,5 +1,7 @@
 package com.backend.oauth2;
 
+import com.backend.domain.member.RefreshEntity;
+import com.backend.mapper.member.RefreshMapper;
 import com.backend.security.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -11,6 +13,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -18,10 +21,22 @@ import java.util.Iterator;
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTUtil jwtUtil;
+    private final RefreshMapper refreshMapper;
 
-    public CustomSuccessHandler(JWTUtil jwtUtil) {
+    public CustomSuccessHandler(JWTUtil jwtUtil, RefreshMapper refreshMapper) {
 
         this.jwtUtil = jwtUtil;
+        this.refreshMapper = refreshMapper;
+    }
+
+    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+        Timestamp expiration = new Timestamp(System.currentTimeMillis() + expiredMs); // 현재 시간 + 만료 시간으로 Timestamp 생성
+        RefreshEntity refreshEntity = new RefreshEntity();
+        refreshEntity.setUsername(username);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(expiration); // Timestamp 객체 설정
+
+        refreshMapper.insertbyRefresh(refreshEntity);
     }
 
     @Override
@@ -38,9 +53,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = auth.getAuthority();
 
         // 토큰 생성
-        String token = jwtUtil.createJwt("token", username, role, 36000000L); // 10시간
-        response.addCookie(createCookie("token", token));
-        String redirectUrl = "http://localhost:5173/member/oauth/login?username=" + username + "&token=" + token;
+        String access = jwtUtil.createJwt("access", username, role, 600000L); // 10분
+        String token = jwtUtil.createJwt("refresh", username, role, 36000000L); // 10시간
+
+        // 토큰 저장
+        addRefreshEntity(username, token, 36000000L);
+        response.addCookie(createCookie("refresh", token));
+        String redirectUrl = "http://localhost:5173/member/oauth/login?username=" + username + "&token=" + access;
 
         response.sendRedirect(redirectUrl);
     }

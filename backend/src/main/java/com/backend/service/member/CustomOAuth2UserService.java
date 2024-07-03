@@ -48,7 +48,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member newMember = new Member();
             newMember.setName(oAuth2Response.getName());
             newMember.setUsername(oAuth2Response.getUsername());
-            newMember.setNickname(username);
+            newMember.setNickname(oAuth2Response.getName());
             newMember.setPassword("default");
             newMember.setGender("male");
             newMember.setNationality("default");
