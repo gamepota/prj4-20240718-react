@@ -37,9 +37,10 @@ public class HospitalCommentController {
     }
 
     @DeleteMapping("remove")
-    public ResponseEntity remove(@RequestBody HospitalComment hospitalComment,
-                                 Authentication authentication) {
-        if (service.hasAccess(hospitalComment, authentication)) {
+    public ResponseEntity remove(@RequestBody HospitalComment hospitalComment
+    ) {
+        if (service.hasAccess(hospitalComment)) {
+            System.out.println("컨트롤러의 comment = " + hospitalComment);
             service.remove(hospitalComment);
             return ResponseEntity.ok().build();
         } else {
@@ -59,4 +60,6 @@ public class HospitalCommentController {
 
 
     }
+
+
 }

@@ -42,13 +42,9 @@ public class HospitalCommentService {
         mapper.deleteById(hospitalComment.getId());
     }
 
-    public boolean hasAccess(HospitalComment hospitalComment, Authentication authentication) {
+    public boolean hasAccess(HospitalComment hospitalComment) {
         HospitalComment db = mapper.selectById(hospitalComment.getId());
         if (db == null) {
-            return false;
-        }
-
-        if (authentication.getName().equals(db.getMemberId().toString())) {
             return false;
         }
 
@@ -58,5 +54,7 @@ public class HospitalCommentService {
     public void edit(HospitalComment hospitalComment) {
         mapper.update(hospitalComment);
     }
+
+
 }
 

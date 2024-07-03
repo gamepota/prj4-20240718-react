@@ -11,7 +11,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
   const [ratingIndex, setRatingIndex] = useState(1);
   const toast = useToast();
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  const access = memberInfo.access;
+  const access = memberInfo ? memberInfo.access : null; // access가 없는 경우를 처리
   const isLoggedIn = Boolean(access);
 
   if (!memberInfo) {
@@ -27,15 +27,11 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
         comment,
         memberId: memberInfo.id,
         nickname: memberInfo.nickname,
-      });
-
-      await axios.post("/api/hospitalComment/rating", {
-        hospitalId,
-        rating: ratingIndex,
-        username: memberInfo.username,
+        rate: ratingIndex,
       });
 
       setComment("");
+      setRatingIndex(1); // 별점 초기화
       toast({
         description: "댓글이 등록되었습니다.",
         position: "top",
@@ -50,6 +46,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
     } finally {
       setIsProcessing(false);
       setComment("");
+      setRatingIndex(1); // 별점 초기화
     }
   }
 

@@ -10,6 +10,8 @@ CREATE TABLE hospital
 
 );
 
+
+
 INSERT INTO hospital(name, address, call_number)
 VALUES ('서울 성윤모 병원', '서울특별시 성북구 이대로 111', '02-1111-1111');
 
@@ -24,6 +26,16 @@ CREATE TABLE hospital_comment
     nickname    VARCHAR(255) NOT NULL REFERENCES member (nickname)
 );
 
+CREATE TABLE hospital_comment
+(
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    hospital_id INT          NOT NULL,
+    member_id   INT          NOT NULL REFERENCES member (id),
+    comment     VARCHAR(500) NOT NULL,
+    rate        INT          NOT NULL,
+    inserted    DATETIME     NOT NULL DEFAULT NOW(),
+    nickname    VARCHAR(255) NOT NULL REFERENCES member (nickname)
+);
 
 SELECT *
 FROM hospital_comment;
@@ -41,4 +53,18 @@ ALTER TABLE hospital_comment
 
 DELETE
 FROM hospital_comment
+WHERE hospital_id = 1;
+
+# 별점 테이블
+CREATE TABLE star_rating
+(
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    hospital_id INT NOT NULL,
+    member_id   INT NOT NULL REFERENCES member (id),
+    rate        INT NOT NULL
+
+);
+DROP TABLE star_rating;
+DELETE
+FROM star_rating
 WHERE hospital_id = 1;

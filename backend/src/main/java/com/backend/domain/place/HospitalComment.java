@@ -9,6 +9,7 @@ public class HospitalComment {
     private Integer id;
     private Integer hospitalId;
     private Integer memberId;
+    private Integer rate;
     private String comment;
     private String username;
     private LocalDate inserted;

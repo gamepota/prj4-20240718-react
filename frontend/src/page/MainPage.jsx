@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import KakaoMap2 from "../KakaoMap2.jsx";
+import { useNavigate } from "react-router-dom";
 
 const podiumMargins = {
   1: "0px",
@@ -127,6 +128,11 @@ export const MainPage = () => {
   const [popularBoards, setPopularBoards] = useState([]);
   const [topLikedImages, setTopLikedImages] = useState([]);
   const [showLogo, setShowLogo] = useState(false);
+  const navigate = useNavigate(); // useNavigate 훅 사용
+
+  const handleMapClick = () => {
+    navigate("place-map3"); // 클릭 시 원하는 경로로 이동
+  };
 
   useEffect(() => {
     const fetchLatestBoards = async () => {
@@ -266,7 +272,13 @@ export const MainPage = () => {
         </Text>
       </Flex>
       <Flex justify="center">
-        <Box mx={"auto"} w={"100%"} maxW={"600px"} h={"400px"}>
+        <Box
+          mx={"auto"}
+          w={"100%"}
+          maxW={"600px"}
+          h={"400px"}
+          onClick={handleMapClick}
+        >
           <KakaoMap2 />
         </Box>
       </Flex>

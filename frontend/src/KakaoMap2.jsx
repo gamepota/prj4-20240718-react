@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 
-const KakaoMap2 = () => {
+const KakaoMap2 = ({ width = "600px", height = "400px" }) => {
   const kakaoMaps = useRef(null);
   const [map, setMap] = useState(null);
 
   const getKakao = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
-        const mapContainer = document.getElementById("map");
+        const mapContainer = kakaoMaps.current;
         if (!map) {
           const mapOptions = {
             center: new window.kakao.maps.LatLng(
@@ -25,7 +25,7 @@ const KakaoMap2 = () => {
             position.coords.longitude,
           );
 
-          const marker = new window.kakao.maps.Marker({
+          new window.kakao.maps.Marker({
             map: map,
             position: myPosition,
             draggable: false, // 마커 드래그 비활성화
@@ -47,7 +47,7 @@ const KakaoMap2 = () => {
       <Box
         id="map"
         ref={kakaoMaps}
-        style={{ width: "600px", height: "400px", border: "1px solid #ccc" }}
+        style={{ width, height, border: "1px solid #ccc" }}
       ></Box>
     </Flex>
   );
