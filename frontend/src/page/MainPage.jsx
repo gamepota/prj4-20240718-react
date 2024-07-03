@@ -152,7 +152,7 @@ const PetInfoTable = ({ data, onRowClick }) => {
   );
 };
 
-const MainPage = () => {
+export const MainPage = () => {
   const [latestBoards, setLatestBoards] = useState([]);
   const [popularBoards, setPopularBoards] = useState([]);
   const [topLikedImages, setTopLikedImages] = useState([]);
