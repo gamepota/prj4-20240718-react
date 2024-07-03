@@ -180,8 +180,8 @@ public class BoardController {
     }
 
     @GetMapping("/guide")
-    public ResponseEntity<List<Board>> getGuideBoards() {
-        List<Board> guideBoards = service.getGuideBoards();
+    public ResponseEntity<List<Map<String, Object>>> getGuideBoards() {
+        List<Map<String, Object>> guideBoards = service.getGuideBoards();
         return ResponseEntity.ok(guideBoards);
     }
 }

@@ -386,7 +386,6 @@ public interface BoardMapper {
             """)
     List<Board> selectPopularBoards();
 
-    // BoardMapper.java
     @Select("""
                 SELECT\s
                  b.id,\s
@@ -413,23 +412,36 @@ public interface BoardMapper {
     List<Map<String, Object>> selectTopLikedImages();
 
     @Select("""
-                SELECT b.id,
-                       b.title,
-                       m.nickname AS writer,
-                       b.board_type,
-                       b.views,
-                       b.member_id,
-                       COUNT(DISTINCT f.name) AS number_of_images,
-                       (SELECT COUNT(*) FROM board_like l WHERE l.board_id = b.id) AS number_of_likes,
-                       COUNT(DISTINCT c.id) AS number_of_comments
-                FROM board b
-                JOIN member m ON b.member_id = m.id
-                LEFT JOIN board_file f ON b.id = f.board_id
-                LEFT JOIN board_comment c ON b.id = c.board_id
-                WHERE b.board_type = '반려동물 정보'
-                GROUP BY b.id, b.title, m.nickname, b.board_type, b.views, b.member_id
-                ORDER BY b.inserted DESC
-                LIMIT 3
+                SELECT 
+                    b.id,
+                    b.title,
+                    b.content,
+                    m.nickname AS writer,
+                    bf.name AS imageUrl,
+                    COUNT(bl.board_id) AS numberOfLikes,
+                    COUNT(DISTINCT c.id) AS numberOfComments,
+                    b.views,
+                    b.board_type,
+                    COUNT(DISTINCT f.name) AS number_of_images
+                FROM 
+                    board b
+                JOIN 
+                    member m ON b.member_id = m.id
+                LEFT JOIN 
+                    board_file bf ON b.id = bf.board_id
+                LEFT JOIN 
+                    board_like bl ON b.id = bl.board_id
+                LEFT JOIN 
+                    board_comment c ON b.id = c.board_id
+                LEFT JOIN 
+                    board_file f ON b.id = f.board_id
+                WHERE 
+                    b.board_type = '반려동물 정보'
+                GROUP BY 
+                    b.id, b.title, b.content, m.nickname, bf.name, b.views, b.board_type
+                ORDER BY 
+                    b.inserted DESC
+                LIMIT 4
             """)
-    List<Board> selectGuideBoards();
+    List<Map<String, Object>> selectGuideBoards();
 }

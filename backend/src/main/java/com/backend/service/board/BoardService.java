@@ -415,7 +415,14 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    public List<Board> getGuideBoards() {
-        return mapper.selectGuideBoards();
+    public List<Map<String, Object>> getGuideBoards() {
+        List<Map<String, Object>> GuideBoards = mapper.selectGuideBoards();
+        return GuideBoards.stream()
+                .peek(image -> {
+                    String imageUrl = (String) image.get("imageUrl");
+                    Integer id = (Integer) image.get("id");
+                    image.put("imageUrl", srcPrefix + "board/" + id + "/" + imageUrl);
+                })
+                .collect(Collectors.toList());
     }
 }
