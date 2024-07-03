@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import { format } from "date-fns";
+import { generateDiaryId } from "../../../../util/util.jsx";
 
 export function DiaryHomeMain() {
   const { memberInfo } = useContext(LoginContext);
@@ -55,12 +56,14 @@ export function DiaryHomeMain() {
     fetchData();
   }, []);
 
-  const handleBoardClick = (diaryId) => {
-    navigate(`/diary/${diaryId}/view`);
+  const handleBoardClick = (id) => {
+    const diaryId = generateDiaryId(memberInfo.id);
+    return () => navigate(`/diary/${diaryId}/view/${id}`);
   };
 
-  const handleCommentClick = (diaryId) => {
-    navigate(`/diary/${diaryId}/comment/view`);
+  const handleCommentClick = (id) => {
+    const diaryId = generateDiaryId(memberInfo.id);
+    return () => navigate(`/diary/${diaryId}/comment/view/${id}`);
   };
 
   if (isLoading) {

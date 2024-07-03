@@ -7,7 +7,6 @@ import {
   HStack,
   Text,
   Textarea,
-  useToast,
   VStack,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
@@ -20,12 +19,11 @@ import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
 export function DiaryCommentList({ diaryCommentList }) {
   const navigate = useNavigate();
-  const toast = useToast();
   const { memberInfo } = useContext(LoginContext);
 
-  function handleViewClick(diaryCommentId) {
+  function handleViewClick(id) {
     const diaryId = generateDiaryId(memberInfo.id);
-    return () => navigate(`/diary/${diaryId}/comment/view/${diaryCommentId}`);
+    return () => navigate(`/diary/${diaryId}/comment/view/${id}`);
   }
 
   return (

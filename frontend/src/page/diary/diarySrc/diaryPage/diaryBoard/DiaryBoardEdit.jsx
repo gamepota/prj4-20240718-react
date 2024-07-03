@@ -1,18 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
-  Badge,
   Box,
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Flex,
   FormControl,
   FormLabel,
-  Heading,
-  Image,
   Input,
   Modal,
   ModalBody,
@@ -21,25 +13,20 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
-  Stack,
-  StackDivider,
-  Switch,
   Text,
   Textarea,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryBoardEdit() {
   const { id } = useParams();
   const [diaryBoard, setDiaryBoard] = useState(null);
-  const [removeFileList, setRemoveFileList] = useState([]);
-  const [addFileList, setAddFileList] = useState([]);
+  // const [removeFileList, setRemoveFileList] = useState([]);
+  // const [addFileList, setAddFileList] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -57,10 +44,10 @@ export function DiaryBoardEdit() {
     formData.append("content", diaryBoard.content);
     formData.append("nickname", memberInfo.nickname);
     formData.append("memberId", memberInfo.id);
-    removeFileList.forEach((file) => formData.append("removeFileList", file));
-    Array.from(addFileList).forEach((file) =>
-      formData.append("addFileList", file),
-    );
+    // removeFileList.forEach((file) => formData.append("removeFileList", file));
+    // Array.from(addFileList).forEach((file) =>
+    //   formData.append("addFileList", file),
+    // );
 
     axios
       .put("/api/diaryBoard/edit", formData, {
@@ -115,25 +102,25 @@ export function DiaryBoardEdit() {
     );
   }
 
-  const fileNameList = Array.from(addFileList).map((addFile) => {
-    const duplicate = diaryBoard.fileList.some(
-      (file) => file.name === addFile.name,
-    );
-    return (
-      <Flex key={addFile.name} justify="space-between" align="center">
-        <Text fontSize="md" mr={3}>
-          {addFile.name}
-        </Text>
-        {duplicate && <Badge colorScheme="red">override</Badge>}
-      </Flex>
-    );
-  });
+  // const fileNameList = Array.from(addFileList).map((addFile) => {
+  //   const duplicate = diaryBoard.fileList.some(
+  //     (file) => file.name === addFile.name,
+  //   );
+  //   return (
+  //     <Flex key={addFile.name} justify="space-between" align="center">
+  //       <Text fontSize="md" mr={3}>
+  //         {addFile.name}
+  //       </Text>
+  //       {duplicate && <Badge colorScheme="red">override</Badge>}
+  //     </Flex>
+  //   );
+  // });
 
-  const handleRemoveSwitchChange = (name, checked) => {
-    setRemoveFileList((prevList) =>
-      checked ? [...prevList, name] : prevList.filter((item) => item !== name),
-    );
-  };
+  // const handleRemoveSwitchChange = (name, checked) => {
+  //   setRemoveFileList((prevList) =>
+  //     checked ? [...prevList, name] : prevList.filter((item) => item !== name),
+  //   );
+  // };
 
   return (
     <Box
@@ -167,61 +154,61 @@ export function DiaryBoardEdit() {
             }
           />
         </FormControl>
-        <FormControl mb={7}>
-          <FormLabel>파일</FormLabel>
-          <Input
-            multiple
-            type="file"
-            accept="image/*"
-            onChange={(e) => setAddFileList(e.target.files)}
-          />
-        </FormControl>
-        {diaryBoard.fileList && (
-          <Box mb={7}>
-            {diaryBoard.fileList.map((file) => (
-              <Card key={file.name} m={3} boxShadow="md">
-                <CardBody>
-                  <Image
-                    src={file.src}
-                    sx={
-                      removeFileList.includes(file.name)
-                        ? { filter: "blur(8px)" }
-                        : {}
-                    }
-                  />
-                </CardBody>
-                <CardFooter>
-                  <Flex align="center" justify="space-between">
-                    <Flex align="center" gap={3}>
-                      <FontAwesomeIcon color="black" icon={faTrashCan} />
-                      <Switch
-                        colorScheme="red"
-                        onChange={(e) =>
-                          handleRemoveSwitchChange(file.name, e.target.checked)
-                        }
-                      />
-                      <Text>{file.name}</Text>
-                    </Flex>
-                  </Flex>
-                </CardFooter>
-              </Card>
-            ))}
-          </Box>
-        )}
-        {fileNameList.length > 0 && (
-          <Box mb={7}>
-            <Card>
-              <CardHeader>
-                <Heading size="md">선택된 파일 목록</Heading>
-              </CardHeader>
-              <CardBody>
-                <Stack divider={<StackDivider />} spacing={4}>
-                  {fileNameList}
-                </Stack>
-              </CardBody>
-            </Card>
-          </Box>
-        )}
+        {/*<FormControl mb={7}>*/}
+        {/*  <FormLabel>파일</FormLabel>*/}
+        {/*  <Input*/}
+        {/*    multiple*/}
+        {/*    type="file"*/}
+        {/*    accept="image/*"*/}
+        {/*    onChange={(e) => setAddFileList(e.target.files)}*/}
+        {/*  />*/}
+        {/*</FormControl>*/}
+        {/*{diaryBoard.fileList && (*/}
+        {/*  <Box mb={7}>*/}
+        {/*    {diaryBoard.fileList.map((file) => (*/}
+        {/*      <Card key={file.name} m={3} boxShadow="md">*/}
+        {/*        <CardBody>*/}
+        {/*          <Image*/}
+        {/*            src={file.src}*/}
+        {/*            sx={*/}
+        {/*              removeFileList.includes(file.name)*/}
+        {/*                ? { filter: "blur(8px)" }*/}
+        {/*                : {}*/}
+        {/*            }*/}
+        {/*          />*/}
+        {/*        </CardBody>*/}
+        {/*        <CardFooter>*/}
+        {/*          <Flex align="center" justify="space-between">*/}
+        {/*            <Flex align="center" gap={3}>*/}
+        {/*              <FontAwesomeIcon color="black" icon={faTrashCan} />*/}
+        {/*              <Switch*/}
+        {/*                colorScheme="red"*/}
+        {/*                onChange={(e) =>*/}
+        {/*                  handleRemoveSwitchChange(file.name, e.target.checked)*/}
+        {/*                }*/}
+        {/*              />*/}
+        {/*              <Text>{file.name}</Text>*/}
+        {/*            </Flex>*/}
+        {/*          </Flex>*/}
+        {/*        </CardFooter>*/}
+        {/*      </Card>*/}
+        {/*    ))}*/}
+        {/*  </Box>*/}
+        {/*)}*/}
+        {/*{fileNameList.length > 0 && (*/}
+        {/*  <Box mb={7}>*/}
+        {/*    <Card>*/}
+        {/*      <CardHeader>*/}
+        {/*        <Heading size="md">선택된 파일 목록</Heading>*/}
+        {/*      </CardHeader>*/}
+        {/*      <CardBody>*/}
+        {/*        <Stack divider={<StackDivider />} spacing={4}>*/}
+        {/*          {fileNameList}*/}
+        {/*        </Stack>*/}
+        {/*      </CardBody>*/}
+        {/*    </Card>*/}
+        {/*  </Box>*/}
+        {/*)}*/}
         <FormControl mb={7}>
           <FormLabel>작성자</FormLabel>
           <Input defaultValue={diaryBoard.writer} readOnly />

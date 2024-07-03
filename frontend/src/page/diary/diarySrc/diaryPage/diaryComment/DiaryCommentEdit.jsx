@@ -34,6 +34,7 @@ export function DiaryCommentEdit() {
   const isLoggedIn = Boolean(access);
   const navigate = useNavigate();
   const diaryId = generateDiaryId(memberInfo.id);
+  console.log(diaryComment.id);
 
   useEffect(() => {
     axios
@@ -55,7 +56,7 @@ export function DiaryCommentEdit() {
           description: "댓글이 수정되었습니다.",
           position: "top",
         });
-        navigate(`/diary/${diaryId}/comment/view/${diaryComment.id}`);
+        navigate(`/diary/${diaryId}/comment/view/${id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {

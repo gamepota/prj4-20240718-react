@@ -27,7 +27,7 @@ export function DiaryComment() {
     const fetchComments = async (page) => {
       try {
         const res = await axios.get(`/api/diaryComment/list`, {
-          params: { diaryId, page, pageSize: 10 },
+          params: { id, page, pageSize: 5 },
         });
         setDiaryCommentList(res.data.comments);
         setTotalPages(res.data.totalPages);

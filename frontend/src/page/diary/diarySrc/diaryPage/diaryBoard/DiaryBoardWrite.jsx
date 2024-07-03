@@ -35,7 +35,6 @@ export function DiaryBoardWrite() {
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
-  const { id } = useParams();
   const username = memberInfo?.nickname || "";
 
   // diaryId가 유효한지 확인

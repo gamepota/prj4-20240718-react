@@ -1,5 +1,5 @@
+import React, { useContext, useEffect, useState } from "react";
 import {
-  Badge,
   Box,
   Button,
   Center,
@@ -15,9 +15,8 @@ import {
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImages, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
@@ -59,7 +58,7 @@ export function DiaryBoardList() {
     if (keywordParam) {
       setSearchKeyword(keywordParam);
     }
-  }, [searchParams, diaryId]);
+  }, [searchParams]);
 
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
@@ -67,18 +66,24 @@ export function DiaryBoardList() {
   }
 
   function handleSearchClick() {
+    // 현재 URL의 쿼리 파라미터를 가져옵니다.
     const params = new URLSearchParams(searchParams);
+
+    // 새로운 파라미터를 설정합니다.
     params.set("type", searchType);
     params.set("keyword", searchKeyword);
     params.set("memberId", extractUserIdFromDiaryId(diaryId));
-    navigate(`/api/diaryBoard/list?${params.toString()}`);
+
+    // 수정된 쿼리 파라미터로 페이지를 이동합니다.
+    console.log(params.toString());
+    navigate(`?${params.toString()}`);
   }
 
   function handlePageButtonClick(pageNumber) {
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNumber);
     params.set("memberId", extractUserIdFromDiaryId(diaryId));
-    navigate(`/api/diaryBoard/list?${params.toString()}`);
+    navigate(`?${params.toString()}`);
   }
 
   function handleSelectedDiaryBoard(id) {
@@ -99,9 +104,7 @@ export function DiaryBoardList() {
       <Center>
         <Heading>다이어리 목록</Heading>
       </Center>
-      <Box>
-        {isOwner && <Button onClick={handleWriteClick}>글쓰기</Button>}
-      </Box>
+      <Box>{isOwner && <Button onClick={handleWriteClick}>글쓰기</Button>}</Box>
       <Box>
         {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
         {diaryBoardList.length > 0 && (
@@ -109,7 +112,7 @@ export function DiaryBoardList() {
             <Thead>
               <Tr>
                 <Th>N번째 일기</Th>
-                <Th>내용</Th>
+                <Th>제목</Th>
                 <Th>who?</Th>
                 <Th>작성일자</Th>
               </Tr>
@@ -122,17 +125,17 @@ export function DiaryBoardList() {
                   cursor="pointer"
                   onClick={handleSelectedDiaryBoard(diaryBoard.id)}
                 >
-                  <Td textAlign="center">{diaryBoard.id}</Td>
-                  <Td textAlign="center">
+                  <Td>{diaryBoard.id}</Td>
+                  <Td>
                     {diaryBoard.title}
-                    {diaryBoard.numberOfImages > 0 && (
-                      <Badge ml={2} colorScheme="teal">
-                        <FontAwesomeIcon icon={faImages} />
-                        {diaryBoard.numberOfImages}
-                      </Badge>
-                    )}
+                    {/*{diaryBoard.numberOfImages > 0 && (*/}
+                    {/*  <Badge ml={2} colorScheme="teal">*/}
+                    {/*    <FontAwesomeIcon icon={faImages} />*/}
+                    {/*    {diaryBoard.numberOfImages}*/}
+                    {/*  </Badge>*/}
+                    {/*)}*/}
                   </Td>
-                  <Td textAlign="center">{diaryBoard.writer}</Td>
+                  <Td>{diaryBoard.writer}</Td>
                   <Td>
                     {" "}
                     <span style={{ color: "red" }} />
@@ -160,7 +163,7 @@ export function DiaryBoardList() {
               _hover={{ boxShadow: "lg" }}
             >
               <option value="all">전체</option>
-              <option value="text">글</option>
+              <option value="text">제목</option>
               <option value="nickname">작성자</option>
             </Select>
           </Box>

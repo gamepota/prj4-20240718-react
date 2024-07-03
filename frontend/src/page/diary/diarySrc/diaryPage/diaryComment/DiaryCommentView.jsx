@@ -17,7 +17,6 @@ import {
   useDisclosure,
   useToast,
   VStack,
-
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateDiaryId } from "../../../../../util/util.jsx";
@@ -53,7 +52,7 @@ export function DiaryCommentView() {
 
   function handleClickRemove() {
     axios
-      .delete(`/api/diaryComment/${diaryComment.id}`, { params })
+      .delete(`/api/diaryComment/${id}`, { params })
       .then(() => {
         toast({
           status: "success",
