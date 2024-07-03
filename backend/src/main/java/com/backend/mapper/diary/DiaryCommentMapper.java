@@ -10,8 +10,8 @@ public interface DiaryCommentMapper {
 
     @Insert("""
             INSERT INTO diaryComment
-            (member_id,comment,nickname)
-            VALUES (#{memberId},#{comment},#{nickname})
+            (member_id, comment, nickname)
+            VALUES (#{memberId}, #{comment}, #{nickname})
             """)
     int diaryCommentInsert(DiaryComment diaryComment);
 
@@ -27,13 +27,11 @@ public interface DiaryCommentMapper {
             """)
     List<DiaryComment> selectByDiaryId();
 
-
     @Delete("""
             DELETE FROM diaryComment
             WHERE id = #{id}
             """)
     int deleteById(Integer id);
-
 
     @Select("""
                 SELECT *
@@ -59,11 +57,10 @@ public interface DiaryCommentMapper {
     @Select("""
             SELECT *
             FROM diaryComment
-            ORDER BY id ASC
+            ORDER BY inserted DESC
             LIMIT #{limit} OFFSET #{offset}
             """)
     List<DiaryComment> selectAll(@Param("limit") int limit, @Param("offset") int offset);
-
 
     @Select("""
             SELECT COUNT(*)
