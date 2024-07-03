@@ -8,15 +8,35 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
   const [markers, setMarkers] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(["HP8"]); // 기본으로 병원 검색
   const navigate = useNavigate();
+
   useEffect(() => {
+    const loadKakaoMapScript = () => {
+      const existingScript = document.getElementById("kakao-map-script");
+      if (!existingScript) {
+        const script = document.createElement("script");
+        script.id = "kakao-map-script";
+        script.src =
+          "//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing&autoload=false";
+        script.async = true;
+        document.head.appendChild(script);
+        script.onload = () => {
+          kakao.maps.load(initializeMap);
+        };
+      } else {
+        kakao.maps.load(initializeMap);
+      }
+    };
+
     const initializeMap = () => {
-      const { kakao } = window;
+      if (!window.kakao || !window.kakao.maps) {
+        console.error("Kakao maps is not loaded yet!");
+        return;
+      }
       const mapContainer = document.getElementById("place-map");
       const mapOption = {
         center: new kakao.maps.LatLng(36.2, 128.02025),
         level: 13,
       };
-
       const map = new kakao.maps.Map(mapContainer, mapOption);
       setMap(map);
 
@@ -40,7 +60,6 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
           48: { lat: 35.4606, lng: 128.2132 },
           50: { lat: 33.4996, lng: 126.5312 },
         };
-
         const location = locations[ctprvnCd];
         if (location) {
           map.setCenter(new kakao.maps.LatLng(location.lat, location.lng));
@@ -51,28 +70,7 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
       searchByCategory(map); // 기본 카테고리로 검색
     };
 
-    const loadKakaoMapScript = () => {
-      const script = document.createElement("script");
-      script.src =
-        "//dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&libraries=services,clusterer,drawing";
-      script.async = true;
-      script.onload = () => {
-        if (window.kakao && window.kakao.maps) {
-          window.kakao.maps.load(() => {
-            initializeMap();
-          });
-        }
-      };
-      document.head.appendChild(script);
-    };
-
-    if (window.kakao && window.kakao.maps) {
-      window.kakao.maps.load(() => {
-        initializeMap();
-      });
-    } else {
-      loadKakaoMapScript();
-    }
+    loadKakaoMapScript();
   }, [ctprvnCd]);
 
   const searchByCategory = (map) => {
@@ -81,8 +79,9 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
       !window.kakao ||
       !window.kakao.maps ||
       !window.kakao.maps.services
-    )
+    ) {
       return;
+    }
 
     const ps = new kakao.maps.services.Places();
     const bounds = new kakao.maps.LatLngBounds();
@@ -133,14 +132,14 @@ export const PlaceMap2 = ({ ctprvnCd }) => {
     <Box position="relative" width="100%" height="500px">
       <Box
         position="absolute"
-        top="50%" // 상단에서 50%의 위치에 놓임 (중앙에 가깝게)
-        left="0" // 왼쪽 가장자리에 위치
-        transform="translateY(-50%)" // Y축 기준 중앙 정렬
+        top="50%"
+        left="0"
+        transform="translateY(-50%)"
         zIndex="10"
-        background="rgba(255, 255, 255, 0.8)" // 반투명 흰색 배경
+        background="rgba(255, 255, 255, 0.8)"
         p={4}
         boxShadow="md"
-        width="200px" // 박스의 너비 설정
+        width="200px"
         height="400px"
       >
         <SelectComponent
