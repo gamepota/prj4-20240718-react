@@ -8,6 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Stack,
   Textarea,
   useDisclosure,
   useToast,
@@ -25,72 +26,72 @@ export function CommentEdit({
   isProcessing,
 }) {
   const [commentText, setCommentText] = useState(comment.comment);
+  const { onClose, onOpen, isOpen } = useDisclosure();
   const toast = useToast();
-  const { isOpen, onClose, onOpen } = useDisclosure();
-
+  // console.log(comment);
   function handleCommentSubmit() {
     setIsProcessing(true);
     axios
       .put("/api/hospitalComment/edit", {
         id: comment.id,
-        comment: commentText,
+        boardComment: commentText,
       })
       .then(() => {
         toast({
-          status: "success",
-          description: `댓글이 수정되었습니다.`,
+          description: "댓글이 수정되었습니다.",
           position: "top",
+          status: "success",
         });
       })
-      .catch((err) => {
-        if (err.response.status === 400) {
-          toast({
-            status: "error",
-            description: `댓글이 수정 되지 않았습니다. 작성한 내용을 확인해주세요.`,
-            position: "top",
-          });
-        }
-      })
+      .catch(() => {})
       .finally(() => {
         setIsProcessing(false);
         setIsEditing(false);
-        onClose();
       });
   }
 
   return (
     <Flex>
-      <Box flex={1}>
+      <Box flex={1} mr={3}>
         <Textarea
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
         />
       </Box>
-      <Box>
+      <Stack>
         <Button
+          size={"sm"}
           variant="outline"
           colorScheme={"gray"}
           onClick={() => setIsEditing(false)}
         >
           <FontAwesomeIcon icon={faXmark} />
         </Button>
-        <Button onClick={onOpen} variant="outline" colorSchme={"blue"}>
+        <Button
+          size={"sm"}
+          isLoading={isProcessing}
+          onClick={onOpen}
+          variant="outline"
+          colorScheme={"blue"}
+        >
           <FontAwesomeIcon icon={faPaperPlane} />
         </Button>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader></ModalHeader>
-            <ModalBody>저장하시겠습니까?</ModalBody>
-            <ModalFooter>
-              <Button onClick={onClose}>취소</Button>
-              <Button onClick={handleCommentSubmit} colorScheme={"blue"}>
-                확인
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </Box>
+      </Stack>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>수정 확인</ModalHeader>
+          <ModalBody>댓글을 저장하시겠습니까?</ModalBody>
+          <ModalFooter>
+            <Button mr={2} colorScheme={"gray"} onClick={onClose}>
+              취소
+            </Button>
+            <Button colorScheme={"blue"} onClick={handleCommentSubmit}>
+              확인
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Flex>
   );
 }

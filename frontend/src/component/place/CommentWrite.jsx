@@ -11,7 +11,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
   const [ratingIndex, setRatingIndex] = useState(1);
   const toast = useToast();
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
-  const access = memberInfo.access;
+  const access = memberInfo ? memberInfo.access : null; // access가 없는 경우를 처리
   const isLoggedIn = Boolean(access);
 
   if (!memberInfo) {
