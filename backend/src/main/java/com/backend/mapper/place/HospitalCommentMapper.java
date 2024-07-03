@@ -38,7 +38,7 @@ public interface HospitalCommentMapper {
 
     @Update("""
             UPDATE hospital_comment
-            SET comment= #{comment}
+            SET comment= #{comment}, rate = #{rate}
             WHERE id = #{id}
             """)
     int update(HospitalComment hospitalComment);

@@ -19,6 +19,7 @@ import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { LoginContext } from "../LoginProvider.jsx";
+import { StarRating } from "./StarRating.jsx";
 
 export function CommentEdit({
   comment,
@@ -29,6 +30,7 @@ export function CommentEdit({
   const [commentText, setCommentText] = useState(comment.comment);
   const { onClose, onOpen, isOpen } = useDisclosure();
   const toast = useToast();
+  const [ratingIndex, setRatingIndex] = useState(1);
   const { memberInfo } = useContext(LoginContext);
   const isLoggedIn = Boolean(memberInfo && memberInfo.access);
 
@@ -38,6 +40,7 @@ export function CommentEdit({
       .put("/api/hospitalComment/edit", {
         id: comment.id,
         comment: commentText,
+        rate: ratingIndex,
       })
       .then(() => {
         toast({
@@ -66,6 +69,7 @@ export function CommentEdit({
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
         />
+        <StarRating ratingIndex={ratingIndex} setRatingIndex={setRatingIndex} />
       </Box>
       <Stack>
         <Button
