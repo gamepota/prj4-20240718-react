@@ -4,6 +4,7 @@ import {
   Badge,
   Box,
   Button,
+  Fade,
   Flex,
   Image,
   Input,
@@ -19,8 +20,8 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { StarIcon } from "@chakra-ui/icons";
-import { faFire, faImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFire } from "@fortawesome/free-solid-svg-icons";
 import KakaoMap2 from "../KakaoMap2.jsx";
 
 const podiumMargins = {
@@ -92,7 +93,6 @@ const PetProfile = ({ imgSrc, rank }) => {
         position="absolute"
         top="10px"
         left="10px"
-        bg={badgeColors[rank]}
         color="black"
         fontWeight="bold"
         borderRadius="full"
@@ -102,8 +102,7 @@ const PetProfile = ({ imgSrc, rank }) => {
         alignItems="center"
         justifyContent="center"
         fontSize="1.2rem"
-        boxShadow="0px 4px 6px rgba(0, 0, 0, 0.3), inset 0px -1px 1px rgba(255, 255, 255, 0.2)"
-        background={`radial-gradient(circle, ${badgeColors[rank]} 50%, rgba(255, 255, 255, 0.5) 100%)`}
+        {...badgeStyles[rank]}
         zIndex={2}
       >
         {rank}
@@ -120,43 +119,12 @@ const PetProfile = ({ imgSrc, rank }) => {
   );
 };
 
-const PetInfoTable = ({ data, onRowClick }) => {
-  const tableHeaderBg = useColorModeValue("gray.200", "gray.700");
-  const rowHoverBg = useColorModeValue("gray.100", "gray.600");
-
-  return (
-    <Table variant="simple" size="md" borderRadius="md">
-      <Thead bg={tableHeaderBg}>
-        <Tr>
-          <Th>No.</Th>
-          <Th>Title</Th>
-          <Th>Writer</Th>
-          <Th>Likes</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {data.map((row, index) => (
-          <Tr
-            key={index}
-            _hover={{ bg: rowHoverBg }}
-            onClick={() => onRowClick(row.id)}
-          >
-            <Td>{index + 1}</Td>
-            <Td>{row.title}</Td>
-            <Td>{row.writer}</Td>
-            <Td>{row.numberOfLikes}</Td>
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
-  );
-};
-
 export const MainPage = () => {
   const [latestBoards, setLatestBoards] = useState([]);
   const [popularBoards, setPopularBoards] = useState([]);
   const [topLikedImages, setTopLikedImages] = useState([]);
   const [guideBoards, setGuideBoards] = useState([]);
+  const [showLogo, setShowLogo] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
@@ -174,6 +142,7 @@ export const MainPage = () => {
     const fetchLatestBoards = async () => {
       try {
         const res = await axios.get("/api/board/latest");
+        console.log("Latest Boards:", res.data);
         setLatestBoards(res.data);
       } catch (error) {
         console.error("Error fetching latest boards:", error);
@@ -183,6 +152,7 @@ export const MainPage = () => {
     const fetchPopularBoards = async () => {
       try {
         const res = await axios.get("/api/board/popular");
+        console.log("Popular Boards:", res.data);
         setPopularBoards(res.data);
       } catch (error) {
         console.error("Error fetching popular boards:", error);
@@ -192,6 +162,7 @@ export const MainPage = () => {
     const fetchTopLikedImages = async () => {
       try {
         const res = await axios.get("/api/board/topLikedImages");
+        console.log("Top Liked Images:", res.data);
         setTopLikedImages(res.data);
       } catch (error) {
         console.error("Error fetching top liked images:", error);
@@ -201,6 +172,7 @@ export const MainPage = () => {
     const fetchGuideBoards = async () => {
       try {
         const res = await axios.get("/api/board/guide");
+        console.log("Guide Boards:", res.data);
         setGuideBoards(res.data);
       } catch (error) {
         console.error("Error fetching guide boards:", error);
@@ -211,6 +183,15 @@ export const MainPage = () => {
     fetchPopularBoards();
     fetchTopLikedImages();
     fetchGuideBoards();
+
+    const isFirstVisit = !sessionStorage.getItem("visited");
+    if (isFirstVisit) {
+      setShowLogo(true);
+      sessionStorage.setItem("visited", "true");
+      setTimeout(() => {
+        setShowLogo(false);
+      }, 2000); // 2초 후 로고 페이드아웃
+    }
   }, []);
 
   const bg = useColorModeValue("white", "gray.800");
@@ -218,9 +199,24 @@ export const MainPage = () => {
 
   return (
     <Box p={4} maxW="1200px" mx="auto">
+      <Fade in={showLogo} unmountOnExit>
+        <Flex
+          justify="center"
+          align="center"
+          position="absolute"
+          top="0"
+          left="0"
+          w="100%"
+          h="100vh"
+          bg="#F8F8FF"
+          zIndex="1000"
+        >
+          <Image src="/img/petmily-logo.png" w="25%" />
+        </Flex>
+      </Fade>
       <Box textAlign="center" mt={8}>
         <Box mt={10} mb={5}>
-          <Text>반려인의, 반려인에 의한, 반려인을 위한 커뮤니티</Text>
+          <Text>반려인들을 위한 커뮤니티, 펫밀리</Text>
         </Box>
         <Image src="/img/petmily-logo.png" w="20%" mx="auto" mb={4} />
         <Flex justifyContent="center" mb={8}>
@@ -263,41 +259,22 @@ export const MainPage = () => {
       </Text>
 
       <Flex justify="space-evenly" align="center" mb={12}>
-        {topLikedImages.slice(0, 3).map((img, index) => (
-          <Flex
-            direction="column"
-            justify="center"
-            alignItems="center"
-            m={4}
-            key={index}
-          >
-            <Image
-              src={img.imageUrl}
-              borderRadius="full"
-              boxSize="150px"
-              mb={2}
-              zIndex={1}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "/img/default-image.png"; // 기본 이미지 경로
-              }}
-            />
-            <Badge
-              colorScheme={
-                index === 0 ? "yellow" : index === 1 ? "gray" : "brown"
-              }
-              fontSize="1.2rem"
-              boxShadow="0px 4px 6px rgba(0, 0, 0, 0.3)"
-              borderRadius="full"
-              px={4}
-              py={1}
-            >
-              {index + 1}
-            </Badge>
-          </Flex>
-        ))}
+        <Flex direction="column" justify="center" alignItems="center" m={4}>
+          {topLikedImages[1] && (
+            <PetProfile key={1} imgSrc={topLikedImages[1].imageUrl} rank={2} />
+          )}
+        </Flex>
+        <Flex direction="column" justify="center" alignItems="center" m={4}>
+          {topLikedImages[0] && (
+            <PetProfile key={0} imgSrc={topLikedImages[0].imageUrl} rank={1} />
+          )}
+        </Flex>
+        <Flex direction="column" justify="center" alignItems="center" m={4}>
+          {topLikedImages[2] && (
+            <PetProfile key={2} imgSrc={topLikedImages[2].imageUrl} rank={3} />
+          )}
+        </Flex>
       </Flex>
-
       <Flex justify="space-around" mb={8} wrap="wrap" gap={8}>
         <Box
           flex="1"
@@ -315,64 +292,38 @@ export const MainPage = () => {
               New
             </Text>
           </Flex>
-          <SimpleGrid columns={1} spacing={4}>
-            {latestBoards.slice(0, 3).map((board) => (
-              <Box
-                key={board.id}
-                borderWidth="1px"
-                borderRadius="lg"
-                overflow="hidden"
-                p={4}
-                cursor="pointer"
-                onClick={() => navigate(`/board/${board.id}`)}
-                _hover={{ bg: "gray.200" }}
-                bg={bg}
-                display="flex"
-                alignItems="center"
-              >
-                {board.fileList && board.fileList.length > 0 && (
-                  <Box mb={2} width="100px" height="100px" overflow="hidden">
-                    <Image
-                      src={board.fileList[0].src}
-                      alt="썸네일"
-                      borderRadius="md"
-                      width="100%"
-                      height="100%"
-                      objectFit="cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "/img/default-image.png"; // 기본 이미지 경로
-                      }}
-                    />
-                  </Box>
-                )}
-                <Box ml={4}>
-                  <Box fontWeight="bold" as="h4" fontSize="lg" mb={2}>
-                    {board.title}
-                  </Box>
-                  <Box fontSize="sm" color="gray.600" mb={2}>
-                    {board.writer}
-                  </Box>
-                  <Box>
-                    {board.number_of_images > 0 && (
-                      <Badge ml={2}>
-                        {board.number_of_images}
-                        <FontAwesomeIcon icon={faImage} />
-                      </Badge>
-                    )}
-                    {board.number_of_comments > 0 && (
-                      <span> [{board.number_of_comments}]</span>
-                    )}
-                  </Box>
-                  <Box mt={2} fontSize="sm" color="gray.500">
-                    <span>추천수: {board.number_of_likes}</span>
-                    <span>조회수: {board.views}</span>
-                  </Box>
-                </Box>
-              </Box>
-            ))}
-          </SimpleGrid>
+          <Table
+            variant="simple"
+            borderWidth="1px"
+            borderRadius="lg"
+            overflow="hidden"
+          >
+            <Thead bg={useColorModeValue("gray.100", "gray.700")}>
+              <Tr>
+                <Th textAlign="center">제목</Th>
+                <Th textAlign="center">작성자</Th>
+                <Th textAlign="center">추천수</Th>
+                <Th textAlign="center">조회수</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {latestBoards.slice(0, 5).map((board) => (
+                <Tr
+                  key={board.id}
+                  cursor="pointer"
+                  _hover={{ bg: hoverBg }}
+                  onClick={() => navigate(`/board/${board.id}`)}
+                >
+                  <Td textAlign="center">{board.title}</Td>
+                  <Td textAlign="center">{board.writer}</Td>
+                  <Td textAlign="center">{board.number_of_likes}</Td>
+                  <Td textAlign="center">{board.views}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
         </Box>
+
         <Box
           flex="1"
           minW="300px"
@@ -394,63 +345,36 @@ export const MainPage = () => {
               Hot
             </Text>
           </Flex>
-          <SimpleGrid columns={1} spacing={4}>
-            {popularBoards.slice(0, 3).map((board) => (
-              <Box
-                key={board.id}
-                borderWidth="1px"
-                borderRadius="lg"
-                overflow="hidden"
-                p={4}
-                cursor="pointer"
-                onClick={() => navigate(`/board/${board.id}`)}
-                _hover={{ bg: "gray.200" }}
-                bg={bg}
-                display="flex"
-                alignItems="center"
-              >
-                {board.fileList && board.fileList.length > 0 && (
-                  <Box mb={2} width="100px" height="100px" overflow="hidden">
-                    <Image
-                      src={board.fileList[0].src}
-                      alt="썸네일"
-                      borderRadius="md"
-                      width="100%"
-                      height="100%"
-                      objectFit="cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "/img/default-image.png"; // 기본 이미지 경로
-                      }}
-                    />
-                  </Box>
-                )}
-                <Box ml={4}>
-                  <Box fontWeight="bold" as="h4" fontSize="lg" mb={2}>
-                    {board.title}
-                  </Box>
-                  <Box fontSize="sm" color="gray.600" mb={2}>
-                    {board.writer}
-                  </Box>
-                  <Box>
-                    {board.number_of_images > 0 && (
-                      <Badge ml={2}>
-                        {board.number_of_images}
-                        <FontAwesomeIcon icon={faImage} />
-                      </Badge>
-                    )}
-                    {board.number_of_comments > 0 && (
-                      <span> [{board.number_of_comments}]</span>
-                    )}
-                  </Box>
-                  <Box mt={2} fontSize="sm" color="gray.500">
-                    <span>추천수: {board.number_of_likes}</span>
-                    <span>조회수: {board.views}</span>
-                  </Box>
-                </Box>
-              </Box>
-            ))}
-          </SimpleGrid>
+          <Table
+            variant="simple"
+            borderWidth="1px"
+            borderRadius="lg"
+            overflow="hidden"
+          >
+            <Thead bg={useColorModeValue("gray.100", "gray.700")}>
+              <Tr>
+                <Th textAlign="center">제목</Th>
+                <Th textAlign="center">작성자</Th>
+                <Th textAlign="center">추천수</Th>
+                <Th textAlign="center">조회수</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {popularBoards.slice(0, 5).map((board) => (
+                <Tr
+                  key={board.id}
+                  cursor="pointer"
+                  _hover={{ bg: hoverBg }}
+                  onClick={() => navigate(`/board/${board.id}`)}
+                >
+                  <Td textAlign="center">{board.title}</Td>
+                  <Td textAlign="center">{board.writer}</Td>
+                  <Td textAlign="center">{board.number_of_likes}</Td>
+                  <Td textAlign="center">{board.views}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
         </Box>
       </Flex>
 
@@ -508,10 +432,10 @@ export const MainPage = () => {
                 display="flex"
                 alignItems="center"
               >
-                {board.fileList && board.fileList.length > 0 && (
+                {board.imageUrl && (
                   <Box mb={2} width="100px" height="100px" overflow="hidden">
                     <Image
-                      src={board.fileList[0].src}
+                      src={board.imageUrl}
                       alt="썸네일"
                       borderRadius="md"
                       width="100%"
@@ -528,23 +452,23 @@ export const MainPage = () => {
                   <Box fontWeight="bold" as="h4" fontSize="lg" mb={2}>
                     {board.title}
                   </Box>
+                  <Box
+                    fontWeight="medium"
+                    as="h4"
+                    fontSize="lg"
+                    mb={2}
+                    maxW="300px" // 최대 너비 설정
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    {board.content}
+                  </Box>
                   <Box fontSize="sm" color="gray.600" mb={2}>
                     {board.writer}
                   </Box>
-                  <Box>
-                    {board.number_of_images > 0 && (
-                      <Badge ml={2}>
-                        {board.number_of_images}
-                        <FontAwesomeIcon icon={faImage} />
-                      </Badge>
-                    )}
-                    {board.number_of_comments > 0 && (
-                      <span> [{board.number_of_comments}]</span>
-                    )}
-                  </Box>
                   <Box mt={2} fontSize="sm" color="gray.500">
-                    <span>추천수: {board.number_of_likes}</span>
-                    <span>조회수: {board.views}</span>
+                    <span>추천수: {board.numberOfLikes}</span>
                   </Box>
                 </Box>
               </Box>

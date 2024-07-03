@@ -44,14 +44,14 @@ const beat = keyframes`
 `;
 
 const HeartIcon = styled(FontAwesomeIcon)`
-    font-size: 1.5rem;
-    color: ${(props) => (props.liked ? "red" : "inherit")};
-    ${(props) =>
-            props.liked &&
-            css`
-                animation: ${beat} 0.3s;
-            `}
-    cursor: pointer;
+  font-size: 1.5rem;
+  color: ${(props) => (props.liked ? "red" : "inherit")};
+  ${(props) =>
+    props.liked &&
+    css`
+      animation: ${beat} 0.3s;
+    `}
+  cursor: pointer;
 `;
 
 export function BoardView() {
@@ -123,7 +123,7 @@ export function BoardView() {
           position: "top",
           duration: 10,
         });
-        navigate(`/`);
+        navigate(`/board/list`);
       })
       .catch(() => {
         toast({
@@ -176,7 +176,7 @@ export function BoardView() {
         mb={4}
         onClick={() =>
           navigate(
-            `/board/list?boardType=${localStorage.getItem("currentBoardType")}`
+            `/board/list?boardType=${localStorage.getItem("currentBoardType")}`,
           )
         }
       >

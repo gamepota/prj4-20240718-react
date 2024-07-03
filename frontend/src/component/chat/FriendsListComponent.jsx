@@ -1,24 +1,32 @@
-import React, { useState, useEffect, useContext } from "react";
-import Draggable from "react-draggable"; // react-draggable 임포트
-import { Box, Button, HStack, IconButton, Text, VStack, Avatar, Image, Flex } from "@chakra-ui/react";
+import React, { useContext, useEffect, useState } from "react";
+import Draggable from "react-draggable";
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  HStack,
+  IconButton,
+  Image,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { ChatIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { LoginContext } from '../LoginProvider.jsx';
-import { generateDiaryId } from "../../util/util"; // 다이어리 ID 생성 함수 임포트
+import axios from "axios";
+import { LoginContext } from "../LoginProvider.jsx";
+import { generateDiaryId } from "../../util/util";
 
-export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { // newMessages prop 추가 및 기본값 설정
+export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => {
   const [friends, setFriends] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [isMinimized, setIsMinimized] = useState(true);
 
   const { memberInfo } = useContext(LoginContext);
-  const memberId = memberInfo ? memberInfo.id : null; // ID 사용
-  console.log("LoginContext:", memberInfo); // 로그 추가
-  console.log("Member ID:", memberId); // 로그 추가
+  const memberId = memberInfo ? memberInfo.id : null;
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
@@ -26,60 +34,62 @@ export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { 
 
   const fetchFriends = async () => {
     if (memberId) {
-      console.log(`Fetching friends for member ID: ${memberId}`);
       try {
         const response = await axios.get(`/api/friends/${memberId}`);
         const friendsData = response.data;
 
-        // 친구들의 프로필 이미지를 가져오는 로직 추가
-        const friendsWithImages = await Promise.all(friendsData.map(async (friend) => {
-          try {
-            const profileResponse = await axios.get(`/api/member/${friend.id}`);
-            return {
-              ...friend,
-              profileImage: profileResponse.data.imageUrl,
-            };
-          } catch (error) {
-            console.error("Error fetching profile image:", error);
-            return {
-              ...friend,
-              profileImage: null,
-            };
-          }
-        }));
+        const friendsWithImages = await Promise.all(
+          friendsData.map(async (friend) => {
+            try {
+              const profileResponse = await axios.get(
+                `/api/member/${friend.id}`,
+              );
+              return {
+                ...friend,
+                profileImage: profileResponse.data.imageUrl,
+              };
+            } catch (error) {
+              console.error("Error fetching profile image:", error);
+              return {
+                ...friend,
+                profileImage: null,
+              };
+            }
+          }),
+        );
 
         setFriends(friendsWithImages);
       } catch (error) {
         console.error("There was an error fetching the friends!", error);
       } finally {
-        setIsLoading(false); // 로딩 상태를 false로 설정
+        setIsLoading(false);
       }
     } else {
-      setIsLoading(true); // memberId가 null일 때 로딩 상태로 설정
+      setIsLoading(true);
     }
   };
 
   const deleteFriend = (friendId) => {
     if (memberId) {
-      axios.delete(`/api/friends/delete`, { params: { memberId, friendId } })
-        .then(response => {
-          console.log('Friend deleted:', response.data);
-          fetchFriends(); // 삭제 후 친구 목록 갱신
+      axios
+        .delete(`/api/friends/delete`, { params: { memberId, friendId } })
+        .then((response) => {
+          fetchFriends();
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("There was an error deleting the friend!", error);
         });
     }
   };
 
   useEffect(() => {
-    fetchFriends(); // 컴포넌트가 마운트될 때 친구 목록을 한 번 가져옴
+    fetchFriends();
 
     const intervalId = setInterval(() => {
-      fetchFriends(); // 30초마다 친구 목록을 갱신
+      fetchFriends();
     }, 30000);
 
-    return () => clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 클리어
+    return () => clearInterval(intervalId);
   }, [memberId]);
 
   return (
@@ -110,9 +120,13 @@ export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { 
             p={2}
             h="50px"
           >
-            <Text fontSize="xl" fontWeight="bold">친구 리스트</Text>
+            <Text fontSize="xl" fontWeight="bold">
+              친구 리스트
+            </Text>
             <IconButton
-              icon={isMinimized ? <FontAwesomeIcon icon={faPlus} /> : <MinusIcon />}
+              icon={
+                isMinimized ? <FontAwesomeIcon icon={faPlus} /> : <MinusIcon />
+              }
               size="sm"
               onClick={toggleMinimize}
               aria-label={isMinimized ? "Expand List" : "Minimize List"}
@@ -130,18 +144,27 @@ export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { 
                     <Text>친구가 없습니다.</Text>
                   ) : (
                     friends.map((friend, index) => (
-                      <Flex key={index} width="100%" justifyContent="space-between" alignItems="center">
+                      <Flex
+                        key={index}
+                        width="100%"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
                         <HStack spacing={2}>
                           <Box position="relative">
                             {friend.profileImage ? (
                               <Image
                                 borderRadius="full"
-                                boxSize="40px"
+                                boxSize="35px"
                                 src={friend.profileImage}
                                 alt={`${friend.nickname}의 프로필 이미지`}
                               />
                             ) : (
-                              <Avatar name={friend.nickname} size="sm" />
+                              <Avatar
+                                name={friend.nickname}
+                                size="sm"
+                                boxSize="35px"
+                              />
                             )}
                             <Box
                               position="absolute"
@@ -154,26 +177,41 @@ export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { 
                             />
                           </Box>
                           <Text
-                            maxW="100px" // 최대 너비 설정
+                            maxW="100px"
                             whiteSpace="nowrap"
                             overflow="hidden"
-                            textOverflow="ellipsis">
+                            textOverflow="ellipsis"
+                          >
                             {friend.nickname}
                           </Text>
-                          {newMessages[friend.id] && <Box as="span" borderRadius="full" bg="red.400" boxSize="8px" />} {/* 새로운 메시지 여부 표시 */}
+                          {newMessages[friend.id] && (
+                            <Box
+                              as="span"
+                              borderRadius="full"
+                              bg="red.400"
+                              boxSize="8px"
+                            />
+                          )}
                         </HStack>
                         <HStack spacing={1}>
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => navigate(`/diary/${generateDiaryId(friend.id)}`)}
+                            onClick={() =>
+                              navigate(`/diary/${generateDiaryId(friend.id)}`)
+                            }
                           >
                             <FontAwesomeIcon icon={faHouse} />
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => onSelectFriend({ nickname: friend.nickname, id: friend.id })}
+                            onClick={() =>
+                              onSelectFriend({
+                                nickname: friend.nickname,
+                                id: friend.id,
+                              })
+                            }
                           >
                             <ChatIcon />
                           </Button>

@@ -179,6 +179,11 @@ export function BoardWrite() {
                   <MenuItem onClick={() => setBoardType("이벤트/모임")}>
                     이벤트/모임 게시판
                   </MenuItem>
+                  {Number(memberInfo.id) === 1 && (
+                    <MenuItem onClick={() => setBoardType("반려동물 정보")}>
+                      반려동물 정보 게시판
+                    </MenuItem>
+                  )}
                 </MenuList>
               </>
             )}
