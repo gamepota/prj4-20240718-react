@@ -11,7 +11,7 @@ import {
   useDisclosure,
   useMediaQuery,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -25,11 +25,24 @@ export function Navbar() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
+  const [searchQuery, setSearchQuery] = useState("");
   const { memberInfo, setMemberInfo } = useContext(LoginContext);
   const access = memberInfo?.access || null;
   const nickname = memberInfo?.nickname || null;
   const isLoggedIn = Boolean(access);
   const diaryId = isLoggedIn ? generateDiaryId(memberInfo.id) : null;
+  const handleMouseEnter = () => {
+    onOpen();
+  };
+
+  const handleMouseLeave = () => {
+    onClose();
+  };
+  function handleSearchClick() {
+    const searchParams = new URLSearchParams();
+    searchParams.append("keyword", searchQuery);
+    navigate(`board/list?${searchParams.toString()}`);
+  }
 
   const handleLogout = async () => {
     try {
@@ -132,24 +145,29 @@ export function Navbar() {
               _hover={{ bgColor: "purple.200" }}
               fontSize="md"
               fontWeight="medium"
+              onClick={() => navigate("/board/write")}
             >
               새 글쓰기
             </Button>
-            <Flex alignItems="center">
+            <Flex>
               <Input
                 type="text"
                 placeholder="통합 검색"
                 borderRadius="md"
                 borderColor="gray.300"
-                fontSize="md"
-                size="md"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearchClick();
+                  }
+                }}
               />
               <Button
                 bgColor="purple.100"
                 _hover={{ bgColor: "purple.200" }}
                 ml={2}
-                fontSize="md"
-                fontWeight="medium"
+                onClick={handleSearchClick}
               >
                 검색
               </Button>

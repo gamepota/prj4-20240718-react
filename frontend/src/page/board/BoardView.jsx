@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Badge,
   Box,
   Button,
@@ -37,6 +38,8 @@ export function BoardView() {
     count: 0,
   });
   const [isLikeProcessing, setIsLikeProcessing] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+
   const {
     isOpen: isOpenDelete,
     onOpen: onOpenDelete,
@@ -62,9 +65,10 @@ export function BoardView() {
       .then((res) => {
         setBoard(res.data.board);
         setLike(res.data.like);
+        fetchProfileImage(res.data.board.memberId);
       })
       .catch((err) => {
-        if (err.response.status === 404) {
+        if (err.response && err.response.status === 404) {
           toast({
             status: "info",
             description: "해당 게시물이 존재하지 않습니다",
@@ -75,8 +79,14 @@ export function BoardView() {
       });
   }, [id]);
 
-  if (board === null) {
-    return <Spinner />;
+  async function fetchProfileImage(memberId) {
+    try {
+      const res = await axios.get(`/api/member/${memberId}`);
+      setProfileImage(res.data.imageUrl);
+      console.log("Fetched profileImage=", res.data.imageUrl);
+    } catch (error) {
+      console.error("Error fetching profile image:", error);
+    }
   }
 
   const handleClickRemove = () => {
@@ -132,6 +142,10 @@ export function BoardView() {
     window.open(url, "_blank", windowFeatures);
   };
 
+  if (board === null) {
+    return <Spinner />;
+  }
+
   return (
     <Container maxW="container.xl" py={10}>
       <Box p={6} borderWidth="1px" borderRadius="md" bg="white" mb={6}>
@@ -145,15 +159,39 @@ export function BoardView() {
             </Box>
             <Popover>
               <PopoverTrigger>
-                <Badge
-                  cursor="pointer"
-                  color="blue.600"
-                  onClick={() =>
-                    handleWriterClick(board.writer, board.memberId)
-                  }
-                >
-                  {board.writer}
-                </Badge>
+                <Box display="flex" alignItems="center">
+                  {profileImage ? (
+                    <Image
+                      src={profileImage}
+                      boxSize="40px"
+                      borderRadius="full"
+                      mr={2}
+                      sx={{ cursor: "pointer" }}
+                      onClick={() =>
+                        handleWriterClick(board.writer, board.memberId)
+                      }
+                    />
+                  ) : (
+                    <Avatar
+                      name={board.writer}
+                      size="sm"
+                      mr={2}
+                      sx={{ cursor: "pointer" }}
+                      onClick={() =>
+                        handleWriterClick(board.writer, board.memberId)
+                      }
+                    />
+                  )}
+                  <Badge
+                    cursor="pointer"
+                    color="blue.600"
+                    onClick={() =>
+                      handleWriterClick(board.writer, board.memberId)
+                    }
+                  >
+                    {board.writer}
+                  </Badge>
+                </Box>
               </PopoverTrigger>
               <PopoverContent>
                 <PopoverArrow />
@@ -203,7 +241,7 @@ export function BoardView() {
                 description: "로그인 해주시길 바랍니다",
                 duration: 5000,
                 position: "top",
-                isClosable: "true",
+                isClosable: true,
               });
             } else {
               onOpenReport();
@@ -218,11 +256,13 @@ export function BoardView() {
           </Box>
         )}
       </Flex>
-      <Box fontSize={"large"} color="gray.500">조회수: {board.views}</Box>
+      <Box fontSize={"large"} color="gray.500">
+        조회수: {board.views}
+      </Box>
       <Box mt={4}>
         <BoardCommentComponent boardId={board.id} />
       </Box>
-      {(memberId === board.memberId || memberId == 1) && (
+      {(memberId === board.memberId || memberId === 1) && (
         <Flex justify="flex-end" mt={4}>
           <Button
             colorScheme="purple"
@@ -250,5 +290,3 @@ export function BoardView() {
     </Container>
   );
 }
-
-export default BoardView;

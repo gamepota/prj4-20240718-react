@@ -1,24 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import {
+  Avatar,
   Box,
   Button,
   Center,
+  Flex,
+  HStack,
+  Image,
   Input,
   Spinner,
   Text,
   Textarea,
   VStack,
-  Image,
-  HStack,
-  Flex,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { DiaryNavbar } from "../diaryComponent/DiaryNavbar.jsx";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
 import { FriendAddButton } from "../../../../component/FriendAddButton.jsx";
-import { extractUserIdFromDiaryId, generateDiaryId } from "../../../../util/util.jsx";
+import { extractUserIdFromDiaryId } from "../../../../util/util.jsx";
 
 export function DiaryHome() {
   const { memberInfo } = useContext(LoginContext);
@@ -27,12 +27,13 @@ export function DiaryHome() {
   const [isLoading, setIsLoading] = useState(true);
   const [ownerNickname, setOwnerNickname] = useState("");
   const [ownerId, setOwnerId] = useState(null); // 다이어리 주인의 ID 상태 추가
+  const [profileImage, setProfileImage] = useState(null);
+
   const [profileData, setProfileData] = useState({
     statusMessage: "",
     introduction: "",
   });
   const [isEditing, setIsEditing] = useState(false);
-
   useEffect(() => {
     const validateDiaryId = async () => {
       try {
@@ -43,6 +44,7 @@ export function DiaryHome() {
         if (response.data.isValid) {
           setOwnerNickname(response.data.nickname);
           setOwnerId(response.data.ownerId);
+          // fetchProfileImage 호출 제거
         }
       } catch (error) {
         console.error("Error validating diary ID:", error);
@@ -54,6 +56,14 @@ export function DiaryHome() {
 
     validateDiaryId();
   }, [diaryId]);
+
+  // ownerId 변경 감지를 위한 useEffect 수정
+  useEffect(() => {
+    if (ownerId) {
+      console.log("ownerId updated:", ownerId);
+      fetchProfileImage(ownerId);
+    }
+  }, [ownerId]);
 
   // ownerId 변경 감지를 위한 useEffect 추가
   useEffect(() => {
@@ -113,6 +123,20 @@ export function DiaryHome() {
       }
     }
   };
+  async function fetchProfileImage(ownerId) {
+    if (!ownerId) {
+      console.log("ownerId is not set yet");
+      return;
+    }
+    try {
+      console.log("Fetching profile image for ownerId:", ownerId);
+      const res = await axios.get(`/api/member/${ownerId}`);
+      console.log("Response from server:", res.data);
+      setProfileImage(res.data.imageUrl);
+    } catch (error) {
+      console.error("Error fetching profile image:", error.response || error);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -153,11 +177,7 @@ export function DiaryHome() {
           display="flex"
           position="relative"
         >
-          <Flex
-            w="100%"
-            h="100%"
-            flexDirection="row"
-          >
+          <Flex w="100%" h="100%" flexDirection="row">
             <VStack
               w="30%"
               h="100%"
@@ -171,26 +191,40 @@ export function DiaryHome() {
                 {ownerNickname}님의 미니홈피
               </Text>
               <Box>
-                <Image
-                  borderRadius="full"
-                  boxSize="150px"
-                  src="https://bit.ly/dan-abramov"
-                  alt="Profile Image"
-                />
+                {profileImage ? (
+                  <Image
+                    borderRadius="full"
+                    boxSize="150px"
+                    src={profileImage}
+                    alt="Profile Image"
+                  />
+                ) : (
+                  <Avatar name={ownerNickname} size={"sm"} mr={2} />
+                )}
               </Box>
 
               {isEditing ? (
                 <>
                   <Input
                     value={profileData.statusMessage}
-                    onChange={(e) => setProfileData({ ...profileData, statusMessage: e.target.value })}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        statusMessage: e.target.value,
+                      })
+                    }
                     placeholder="상태메시지를 입력하세요"
                     size="sm"
                     h="30px"
                   />
                   <Textarea
                     value={profileData.introduction}
-                    onChange={(e) => setProfileData({ ...profileData, introduction: e.target.value })}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        introduction: e.target.value,
+                      })
+                    }
                     placeholder="자기소개를 입력하세요"
                     size="sm"
                     height="250px"
@@ -198,7 +232,11 @@ export function DiaryHome() {
                     maxLength={255}
                   />
                   <HStack spacing={2} alignSelf="flex-end">
-                    <Button colorScheme="teal" size="sm" onClick={handleSaveProfileData}>
+                    <Button
+                      colorScheme="teal"
+                      size="sm"
+                      onClick={handleSaveProfileData}
+                    >
                       저장
                     </Button>
                   </HStack>
@@ -206,9 +244,18 @@ export function DiaryHome() {
               ) : (
                 <>
                   <Text>{profileData.statusMessage}</Text>
-                  <Textarea value={profileData.introduction || "자기소개가 없습니다."} fontSize="sm" h="250px" readOnly />
+                  <Textarea
+                    value={profileData.introduction || "자기소개가 없습니다."}
+                    fontSize="sm"
+                    h="250px"
+                    readOnly
+                  />
                   <HStack spacing={2} alignSelf="flex-end">
-                    <Button colorScheme="teal" size="sm" onClick={() => setIsEditing(true)}>
+                    <Button
+                      colorScheme="teal"
+                      size="sm"
+                      onClick={() => setIsEditing(true)}
+                    >
                       수정
                     </Button>
                   </HStack>

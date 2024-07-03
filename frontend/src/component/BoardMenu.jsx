@@ -1,9 +1,15 @@
 import React, { useContext } from "react";
-import { Menu, MenuButton, MenuItem, MenuList, Button, Box } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import {LoginContext} from "./LoginProvider.jsx";
-import {ChevronDownIcon, ChevronUpIcon} from "@chakra-ui/icons";
-
+import { LoginContext } from "./LoginProvider.jsx";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
 const BoardMenu = ({ isOpen, onOpen, onClose }) => {
   const navigate = useNavigate();
@@ -20,7 +26,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
       <Menu isOpen={isOpen}>
         <MenuButton
           as={Button}
-          rightIcon={isOpen ? <ChevronDownIcon/> : <ChevronUpIcon />}
+          rightIcon={isOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
           bg="purple.100"
           _hover={{ cursor: "pointer", bgColor: "purple.200" }}
           color="black"
@@ -103,7 +109,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
           >
             반려동물 정보 게시판
           </MenuItem>
-          {memberInfo && memberInfo.id === 1 && (
+          {memberInfo && memberInfo.id == 1 && (
             <MenuItem
               onClick={() => {
                 navigate("/board/list/report");
@@ -117,6 +123,6 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
       </Menu>
     </Box>
   );
-}
+};
 
 export default BoardMenu;
