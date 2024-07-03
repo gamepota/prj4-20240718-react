@@ -74,7 +74,11 @@ export function DiaryCommentView() {
   }
 
   function handleCommentEdit() {
-    navigate(`/diary/${diaryId}/comment/edit/${id}`);
+    if (id !== null) {
+      navigate(`/diary/${diaryId}/comment/edit/${id}`);
+    } else {
+      console.error("ID is null, cannot navigate.");
+    }
   }
 
   if (diaryComment === null) {

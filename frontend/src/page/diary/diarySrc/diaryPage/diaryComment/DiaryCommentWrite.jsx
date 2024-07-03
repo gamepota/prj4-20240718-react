@@ -5,14 +5,17 @@ import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { generateDiaryId } from "../../../../../util/util.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { useParams } from "react-router-dom";
 
 export function DiaryCommentWrite({ onCommentAdded }) {
   const [comment, setComment] = useState("");
+  const [diaryComment, setDiaryComment] = useState(null);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const { memberInfo } = useContext(LoginContext);
   const nickname = memberInfo.nickname;
-
+  const { id } = useParams();
+  console.log(id);
   //diaryId가 유효한지 확인
   const diaryId = generateDiaryId(memberInfo.id);
 
@@ -21,6 +24,7 @@ export function DiaryCommentWrite({ onCommentAdded }) {
     axios
       .post("/api/diaryComment/add", {
         diaryId,
+        id,
         nickname,
         memberId: memberInfo.id,
         comment,

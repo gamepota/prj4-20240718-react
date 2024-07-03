@@ -28,24 +28,30 @@ export function DiaryCommentEdit() {
   const [diaryComment, setDiaryComment] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const access = memberInfo.access;
   const nickname = memberInfo.nickname;
   const isLoggedIn = Boolean(access);
   const navigate = useNavigate();
   const diaryId = generateDiaryId(memberInfo.id);
-  console.log(diaryComment.id);
 
   useEffect(() => {
     axios
       .get(`/api/diaryComment/${id}`)
-      .then((res) => setDiaryComment(res.data));
-  }, [id]);
+      .then((res) => setDiaryComment(res.data))
+      .catch((err) => {
+        toast({
+          status: "error",
+          description: "댓글을 불러오는 중 오류가 발생했습니다.",
+          position: "top",
+        });
+      });
+  }, [id, toast, navigate]);
 
   function handleCommentSubmit() {
     axios
       .put(`/api/diaryComment/edit`, {
-        id: diaryComment.id,
+        id: diaryComment.id, // 수정할 댓글의 ID 사용
         nickname: memberInfo.nickname,
         comment: diaryComment.comment,
         memberId: memberInfo.id,
@@ -99,25 +105,22 @@ export function DiaryCommentEdit() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input
-              defaultValue={memberInfo.nickname}
-              onChange={(e) =>
-                setMemberInfo({ ...memberInfo, nickname: e.target.value })
-              }
-            />
+            <Input value={memberInfo.nickname} readOnly />
           </FormControl>
         </Box>
         <Box mb={7}>
           <FormControl>
             <FormLabel>방명록 작성글</FormLabel>
             <Textarea
-              defaultValue={diaryComment.comment}
+              value={diaryComment.comment}
               key={diaryComment.id}
               onChange={(e) =>
                 setDiaryComment({ ...diaryComment, comment: e.target.value })
               }
             ></Textarea>
-            <Button onClick={onOpen}>저장</Button>
+            <Button onClick={onOpen} mt={4}>
+              저장
+            </Button>
           </FormControl>
         </Box>
         <Modal isOpen={isOpen} onClose={onClose}>
