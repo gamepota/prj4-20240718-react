@@ -18,20 +18,19 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { format, isValid, parseISO } from "date-fns";
 
 export function DiaryCommentList({ diaryCommentList }) {
-  const { memberInfo } = useContext(LoginContext);
   const navigate = useNavigate();
+  const { memberInfo } = useContext(LoginContext);
 
-  function handleViewClick(diaryCommentId) {
+  function handleViewClick(id) {
     const diaryId = generateDiaryId(memberInfo.id);
-    return () => navigate(`/diary/${diaryId}/comment/view/${diaryCommentId}`);
+    return () => navigate(`/diary/${diaryId}/comment/view/${id}`);
   }
 
   return (
     <Box p={5}>
       <Center mb={5}>
         <Text fontWeight="bold" fontSize="x-large">
-          {" "}
-          방명록 보기{" "}
+          방명록 보기
         </Text>
       </Center>
       {diaryCommentList.length === 0 ? (
@@ -57,7 +56,7 @@ export function DiaryCommentList({ diaryCommentList }) {
                 <CardBody>
                   <HStack justifyContent="space-between" mb={2}>
                     <HStack>
-                      <Text fontWeight="bold">No.{index + 1}</Text>
+                      <Text fontWeight="bold">No.{diaryComment.id}</Text>
                       <Text fontWeight="bold">{diaryComment.nickname}</Text>
                       <Button
                         colorScheme="teal"

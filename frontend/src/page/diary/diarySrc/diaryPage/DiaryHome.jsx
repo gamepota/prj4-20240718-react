@@ -19,6 +19,7 @@ import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
 import { FriendAddButton } from "../../../../component/FriendAddButton.jsx";
 import { extractUserIdFromDiaryId } from "../../../../util/util.jsx";
+import { DiaryProvider } from "../diaryComponent/DiaryContext.jsx";
 
 export function DiaryHome() {
   const { memberInfo } = useContext(LoginContext);
@@ -34,6 +35,7 @@ export function DiaryHome() {
     introduction: "",
   });
   const [isEditing, setIsEditing] = useState(false);
+
   useEffect(() => {
     const validateDiaryId = async () => {
       try {
@@ -157,137 +159,139 @@ export function DiaryHome() {
   }
 
   return (
-    <Center bg="gray.100" minH="100vh">
-      <Flex
-        w="100%"
-        h="100%"
-        p={6}
-        bg="white"
-        boxShadow="lg"
-        borderRadius="md"
-        position="relative"
-        overflow="hidden"
-      >
-        <Box
-          w="1300px"
-          h="800px"
-          border="2px solid #ccc"
+    <DiaryProvider>
+      <Center bg="gray.100" minH="100vh">
+        <Flex
+          w="100%"
+          h="100%"
+          p={6}
+          bg="white"
+          boxShadow="lg"
           borderRadius="md"
-          overflow="hidden"
-          display="flex"
           position="relative"
+          overflow="hidden"
         >
-          <Flex w="100%" h="100%" flexDirection="row">
-            <VStack
-              w="30%"
-              h="100%"
-              bg="white"
-              borderRight="2px solid #ccc"
-              p={4}
-              spacing={4}
-              alignItems="center"
-            >
-              <Text fontSize="xl" fontWeight="bold">
-                {ownerNickname}님의 미니홈피
-              </Text>
-              <Box>
-                {profileImage ? (
-                  <Image
-                    borderRadius="full"
-                    boxSize="150px"
-                    src={profileImage}
-                    alt="Profile Image"
-                  />
-                ) : (
-                  <Avatar name={ownerNickname} size={"sm"} mr={2} />
-                )}
-              </Box>
-
-              {isEditing ? (
-                <>
-                  <Input
-                    value={profileData.statusMessage}
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        statusMessage: e.target.value,
-                      })
-                    }
-                    placeholder="상태메시지를 입력하세요"
-                    size="sm"
-                    h="30px"
-                  />
-                  <Textarea
-                    value={profileData.introduction}
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        introduction: e.target.value,
-                      })
-                    }
-                    placeholder="자기소개를 입력하세요"
-                    size="sm"
-                    height="250px"
-                    bg="white"
-                    maxLength={255}
-                  />
-                  <HStack spacing={2} alignSelf="flex-end">
-                    <Button
-                      colorScheme="teal"
-                      size="sm"
-                      onClick={handleSaveProfileData}
-                    >
-                      저장
-                    </Button>
-                  </HStack>
-                </>
-              ) : (
-                <>
-                  <Text>{profileData.statusMessage}</Text>
-                  <Textarea
-                    value={profileData.introduction || "자기소개가 없습니다."}
-                    fontSize="sm"
-                    h="250px"
-                    readOnly
-                  />
-                  <HStack spacing={2} alignSelf="flex-end">
-                    <Button
-                      colorScheme="teal"
-                      size="sm"
-                      onClick={() => setIsEditing(true)}
-                    >
-                      수정
-                    </Button>
-                  </HStack>
-                </>
-              )}
-            </VStack>
-            <Box w="70%" h="100%" position="relative">
-              <Box
-                w="100%"
+          <Box
+            w="1300px"
+            h="800px"
+            border="2px solid #ccc"
+            borderRadius="md"
+            overflow="hidden"
+            display="flex"
+            position="relative"
+          >
+            <Flex w="100%" h="100%" flexDirection="row">
+              <VStack
+                w="25%"
                 h="100%"
-                border="1px solid #ccc"
-                borderRadius="md"
-                overflowY="auto"
                 bg="white"
-                position="absolute"
-                top={0}
-                left={0}
+                borderRight="2px solid #ccc"
+                p={4}
+                spacing={4}
+                alignItems="center"
               >
-                <Outlet />
+                <Text fontSize="xl" fontWeight="bold">
+                  {ownerNickname}님의 미니홈피
+                </Text>
+                <Box>
+                  {profileImage ? (
+                    <Image
+                      borderRadius="full"
+                      boxSize="150px"
+                      src={profileImage}
+                      alt="Profile Image"
+                    />
+                  ) : (
+                    <Avatar name={ownerNickname} size={"sm"} mr={2} />
+                  )}
+                </Box>
+
+                {isEditing ? (
+                  <>
+                    <Input
+                      value={profileData.statusMessage}
+                      onChange={(e) =>
+                        setProfileData({
+                          ...profileData,
+                          statusMessage: e.target.value,
+                        })
+                      }
+                      placeholder="상태메시지를 입력하세요"
+                      size="sm"
+                      h="30px"
+                    />
+                    <Textarea
+                      value={profileData.introduction}
+                      onChange={(e) =>
+                        setProfileData({
+                          ...profileData,
+                          introduction: e.target.value,
+                        })
+                      }
+                      placeholder="자기소개를 입력하세요"
+                      size="sm"
+                      height="250px"
+                      bg="white"
+                      maxLength={255}
+                    />
+                    <HStack spacing={2} alignSelf="flex-end">
+                      <Button
+                        colorScheme="teal"
+                        size="sm"
+                        onClick={handleSaveProfileData}
+                      >
+                        저장
+                      </Button>
+                    </HStack>
+                  </>
+                ) : (
+                  <>
+                    <Text>{profileData.statusMessage}</Text>
+                    <Textarea
+                      value={profileData.introduction || "자기소개가 없습니다."}
+                      fontSize="sm"
+                      h="250px"
+                      readOnly
+                    />
+                    <HStack spacing={2} alignSelf="flex-end">
+                      <Button
+                        colorScheme="teal"
+                        size="sm"
+                        onClick={() => setIsEditing(true)}
+                      >
+                        수정
+                      </Button>
+                    </HStack>
+                  </>
+                )}
+              </VStack>
+              <Box ml={1} w="75%" h="100%" position="relative">
+                <Box
+                  w="100%"
+                  h="100%"
+                  border="1px solid #ccc"
+                  borderRadius="md"
+                  overflowY="auto"
+                  bg="white"
+                  position="absolute"
+                  top={0}
+                  left={0}
+                >
+                  <Outlet />
+                </Box>
               </Box>
-            </Box>
-          </Flex>
-          {ownerId && memberInfo && Number(memberInfo.id) !== ownerId && (
-            <Box position="absolute" bottom="10px" right="10px">
-              <FriendAddButton friendId={ownerId} />
-            </Box>
-          )}
-        </Box>
-        <Box ml={-2}>
-          <DiaryNavbar />
-        </Box>
-      </Flex>
-    </Center>
+            </Flex>
+            {ownerId && memberInfo && Number(memberInfo.id) !== ownerId && (
+              <Box position="absolute" bottom="10px" right="10px">
+                <FriendAddButton friendId={ownerId} />
+              </Box>
+            )}
+          </Box>
+          <Box ml={-2}>
+            <DiaryNavbar />
+          </Box>
+        </Flex>
+      </Center>
+    </DiaryProvider>
   );
 }

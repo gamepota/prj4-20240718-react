@@ -11,7 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +36,19 @@ public class DiaryCommentService {
 
     }
 
-    public List<DiaryComment> list() {
-        return mapper.selectAll();
+    public Map<String, Object> list(int page, int pageSize) {
+        int totalComments = mapper.countAllComments();
+        int totalPages = (int) Math.ceil((double) totalComments / pageSize);
+        int offset = (page - 1) * pageSize;
+
+        List<DiaryComment> comments = mapper.selectAll(pageSize, offset);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("comments", comments);
+        result.put("totalPages", totalPages);
+        result.put("currentPage", page);
+
+        return result;
     }
 
     public void diaryDelete(Integer id) {

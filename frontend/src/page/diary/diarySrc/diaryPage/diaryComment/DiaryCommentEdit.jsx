@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   FormControl,
   FormLabel,
   Input,
@@ -11,6 +12,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
@@ -26,23 +28,31 @@ export function DiaryCommentEdit() {
   const [diaryComment, setDiaryComment] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const { memberInfo, setMemberInfo } = useContext(LoginContext);
+  const { memberInfo } = useContext(LoginContext);
   const access = memberInfo.access;
   const nickname = memberInfo.nickname;
   const isLoggedIn = Boolean(access);
   const navigate = useNavigate();
   const diaryId = generateDiaryId(memberInfo.id);
+  console.log(diaryComment.id);
 
   useEffect(() => {
     axios
       .get(`/api/diaryComment/${id}`)
-      .then((res) => setDiaryComment(res.data));
-  }, [id]);
+      .then((res) => setDiaryComment(res.data))
+      .catch((err) => {
+        toast({
+          status: "error",
+          description: "댓글을 불러오는 중 오류가 발생했습니다.",
+          position: "top",
+        });
+      });
+  }, [id, toast, navigate]);
 
   function handleCommentSubmit() {
     axios
       .put(`/api/diaryComment/edit`, {
-        id: diaryComment.id,
+        id: diaryComment.id, // 수정할 댓글의 ID 사용
         nickname: memberInfo.nickname,
         comment: diaryComment.comment,
         memberId: memberInfo.id,
@@ -53,7 +63,7 @@ export function DiaryCommentEdit() {
           description: "댓글이 수정되었습니다.",
           position: "top",
         });
-        navigate(`/diary/${diaryId}/comment/view/${diaryComment.id}`);
+        navigate(`/diary/${diaryId}/comment/view/${id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
@@ -78,7 +88,15 @@ export function DiaryCommentEdit() {
   }
 
   return (
-    <Box maxW="600px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">
+    <Box
+      maxW="600px"
+      mx="auto"
+      mt={10}
+      p={5}
+      boxShadow="md"
+      borderRadius="md"
+      bg="white"
+    >
       <Box mb={10}>
         <Text fontSize="xl" fontWeight="bold">
           방명록 수정
@@ -88,25 +106,22 @@ export function DiaryCommentEdit() {
         <Box mb={7}>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input
-              defaultValue={memberInfo.nickname}
-              onChange={(e) =>
-                setMemberInfo({ ...memberInfo, nickname: e.target.value })
-              }
-            />
+            <Input value={memberInfo.nickname} readOnly />
           </FormControl>
         </Box>
         <Box mb={7}>
           <FormControl>
             <FormLabel>방명록 작성글</FormLabel>
             <Textarea
-              defaultValue={diaryComment.comment}
+              value={diaryComment.comment}
               key={diaryComment.id}
               onChange={(e) =>
                 setDiaryComment({ ...diaryComment, comment: e.target.value })
               }
             ></Textarea>
-            <Button onClick={onOpen}>저장</Button>
+            <Button onClick={onOpen} mt={4}>
+              저장
+            </Button>
           </FormControl>
         </Box>
         <Modal isOpen={isOpen} onClose={onClose}>

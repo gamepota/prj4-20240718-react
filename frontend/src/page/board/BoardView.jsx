@@ -1,6 +1,5 @@
 import {
-  Avatar,
-  Badge,
+  Avatar, Badge,
   Box,
   Button,
   Container,
@@ -21,6 +20,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import styled, { keyframes, css } from "styled-components";
 import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
@@ -29,6 +29,29 @@ import { LoginContext } from "../../component/LoginProvider.jsx";
 import { generateDiaryId } from "../../util/util.jsx";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ReportModal from "./ReportModal";
+
+const beat = keyframes`
+    0% {
+        transform: scale(1);
+    }
+    20% {
+        transform: scale(1.1);
+    }
+    40% {
+        transform: scale(1);
+    }
+`;
+
+const HeartIcon = styled(FontAwesomeIcon)`
+    font-size: 1.5rem;
+    color: ${(props) => (props.liked ? "red" : "inherit")};
+    ${(props) =>
+            props.liked &&
+            css`
+      animation: ${beat} 0.3s;
+    `}
+    cursor: pointer;
+`;
 
 export function BoardView() {
   const { id } = useParams();
@@ -148,6 +171,9 @@ export function BoardView() {
 
   return (
     <Container maxW="container.xl" py={10}>
+      <Button onClick={() => navigate(`/board/list?boardType=${board.boardType}`)}>
+        게시판으로 돌아가기
+      </Button>
       <Box p={6} borderWidth="1px" borderRadius="md" bg="white" mb={6}>
         <Flex justify="space-between" align="center" mb={4}>
           <Box fontWeight="bold" fontSize="2xl">
@@ -167,9 +193,7 @@ export function BoardView() {
                       borderRadius="full"
                       mr={2}
                       sx={{ cursor: "pointer" }}
-                      onClick={() =>
-                        handleWriterClick(board.writer, board.memberId)
-                      }
+                      onClick={handleDiaryView}
                     />
                   ) : (
                     <Avatar
@@ -177,9 +201,7 @@ export function BoardView() {
                       size="sm"
                       mr={2}
                       sx={{ cursor: "pointer" }}
-                      onClick={() =>
-                        handleWriterClick(board.writer, board.memberId)
-                      }
+                      onClick={handleDiaryView}
                     />
                   )}
                   <Badge
@@ -220,41 +242,56 @@ export function BoardView() {
       </Box>
       <Flex mt={4} mb={4} align="center">
         <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
-          <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
-            {like.like ? (
-              <FontAwesomeIcon icon={fullHeart} />
-            ) : (
-              <FontAwesomeIcon icon={emptyHeart} />
-            )}
-          </Box>
+          <HeartIcon
+            icon={like.like ? fullHeart : emptyHeart}
+            liked={like.like}
+            onClick={handleClickLike}
+          />
         </Tooltip>
         {like.count > 0 && (
-          <Box mx={3} fontSize="3xl">
+          <Box mx={3} fontSize="2xl">
             {like.count}
           </Box>
         )}
         <Spacer />
-        <Button
-          onClick={() => {
-            if (!memberInfo) {
-              toast({
-                description: "로그인 해주시길 바랍니다",
-                duration: 5000,
-                position: "top",
-                isClosable: true,
-              });
-            } else {
-              onOpenReport();
-            }
-          }}
-        >
-          신고
-        </Button>
-        {isLikeProcessing && (
-          <Box ml={2}>
-            <Spinner size="sm" />
-          </Box>
-        )}
+        <Flex align="center">
+          {(memberId === board.memberId || memberId === 1) && (
+            <>
+              <Button
+                colorScheme="purple"
+                onClick={() => navigate(`/board/edit/${id}`)}
+                mr={2}
+              >
+                수정
+              </Button>
+              <Button mr={2} colorScheme="red" onClick={onOpenDelete}>
+                삭제
+              </Button>
+            </>
+          )}
+          <Button
+            display={memberId === board.memberId ? "none" : "block"}
+            onClick={() => {
+              if (!memberInfo) {
+                toast({
+                  description: "로그인 해주시길 바랍니다",
+                  duration: 5000,
+                  position: "top",
+                  isClosable: true,
+                });
+              } else {
+                onOpenReport();
+              }
+            }}
+          >
+            신고
+          </Button>
+          {isLikeProcessing && (
+            <Box ml={2}>
+              <Spinner size="sm" />
+            </Box>
+          )}
+        </Flex>
       </Flex>
       <Box fontSize={"large"} color="gray.500">
         조회수: {board.views}
@@ -262,20 +299,7 @@ export function BoardView() {
       <Box mt={4}>
         <BoardCommentComponent boardId={board.id} />
       </Box>
-      {(memberId === board.memberId || memberId === 1) && (
-        <Flex justify="flex-end" mt={4}>
-          <Button
-            colorScheme="purple"
-            onClick={() => navigate(`/board/edit/${id}`)}
-            mr={2}
-          >
-            수정
-          </Button>
-          <Button colorScheme="red" onClick={onOpenDelete}>
-            삭제
-          </Button>
-        </Flex>
-      )}
+
       <DeleteConfirmationModal
         isOpen={isOpenDelete}
         onClose={onCloseDelete}
@@ -290,3 +314,5 @@ export function BoardView() {
     </Container>
   );
 }
+
+export default BoardView;

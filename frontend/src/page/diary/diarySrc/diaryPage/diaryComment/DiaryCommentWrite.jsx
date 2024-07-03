@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Box, Button, Text, Textarea, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import { generateDiaryId } from "../../../../../util/util.jsx";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,9 +12,7 @@ export function DiaryCommentWrite({ onCommentAdded }) {
   const toast = useToast();
   const { memberInfo } = useContext(LoginContext);
   const nickname = memberInfo.nickname;
-
-  //diaryId가 유효한지 확인
-  const diaryId = generateDiaryId(memberInfo.id);
+  const { diaryId } = useParams(); // 수정: diaryId를 useParams로 가져옴
 
   const handleDiaryCommentSubmitClick = () => {
     setLoading(true);

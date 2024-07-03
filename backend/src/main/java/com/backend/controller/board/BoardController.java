@@ -160,5 +160,19 @@ public class BoardController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/latest")
+    public ResponseEntity<List<Board>> getLatestBoards() {
+        List<Board> latestBoards = service.getLatestBoards();
+        return ResponseEntity.ok(latestBoards);
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<Board>> getPopularBoards() {
+        List<Board> popularBoards = service.getPopularBoards();
+        return ResponseEntity.ok(popularBoards);
+    }
+
+
 }
 

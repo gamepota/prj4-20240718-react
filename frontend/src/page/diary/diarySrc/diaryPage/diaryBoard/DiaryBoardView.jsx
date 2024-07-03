@@ -4,12 +4,9 @@ import axios from "axios";
 import {
   Box,
   Button,
-  Card,
-  CardBody,
   Flex,
   FormControl,
   FormLabel,
-  Image,
   Input,
   Modal,
   ModalBody,
@@ -25,9 +22,11 @@ import {
 } from "@chakra-ui/react";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { generateDiaryId } from "../../../../../util/util.jsx";
+import { DiaryContext } from "../../diaryComponent/DiaryContext.jsx";
 
 export function DiaryBoardView() {
-  const { id } = useParams();
+  const { id, number } = useParams();
+  const { diaryBoardList } = useContext(DiaryContext);
   const [diaryBoard, setDiaryBoard] = useState(null);
   const { memberInfo } = useContext(LoginContext);
   const nickname = memberInfo?.nickname || null;
@@ -44,6 +43,7 @@ export function DiaryBoardView() {
     axios
       .get(`/api/diaryBoard/${id}`)
       .then((res) => {
+        console.log("data:", res.data); // 서버 응답 데이터 확인
         setDiaryBoard(res.data);
       })
       .catch((err) => {
@@ -89,6 +89,9 @@ export function DiaryBoardView() {
 
   const isOwner = diaryBoard.writer === nickname;
 
+  const diaryIndex = diaryBoardList.findIndex((item) => item.id === Number(id));
+  const diaryNumber = diaryBoardList.length - diaryIndex;
+
   return (
     <Box
       maxW="800px"
@@ -101,7 +104,7 @@ export function DiaryBoardView() {
     >
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
         <Text fontSize="2xl" fontWeight="bold">
-          {diaryBoard.id}번째 일기
+          {diaryNumber}번째 일기
         </Text>
         {isOwner && (
           <Flex gap={2}>
@@ -133,16 +136,16 @@ export function DiaryBoardView() {
         </FormControl>
       </Box>
 
-      <Box mb={6}>
-        {diaryBoard.fileList &&
-          diaryBoard.fileList.map((file) => (
-            <Card m={3} key={file.name} boxShadow="md">
-              <CardBody>
-                <Image w="100%" src={file.src} borderRadius="md" />
-              </CardBody>
-            </Card>
-          ))}
-      </Box>
+      {/*<Box mb={6}>*/}
+      {/*  {diaryBoard.fileList &&*/}
+      {/*    diaryBoard.fileList.map((file) => (*/}
+      {/*      <Card m={3} key={file.name} boxShadow="md">*/}
+      {/*        <CardBody>*/}
+      {/*          <Image w="100%" src={file.src} borderRadius="md" />*/}
+      {/*        </CardBody>*/}
+      {/*      </Card>*/}
+      {/*    ))}*/}
+      {/*</Box>*/}
 
       <Box mb={6}>
         <FormControl>

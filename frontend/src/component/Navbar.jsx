@@ -44,6 +44,12 @@ export function Navbar() {
     navigate(`board/list?${searchParams.toString()}`);
   }
 
+  function handleSearchClick() {
+    const searchParams = new URLSearchParams();
+    searchParams.append("keyword", searchQuery);
+    navigate(`board/list?${searchParams.toString()}`);
+  }
+
   const handleLogout = async () => {
     try {
       const formData = new FormData();

@@ -1,14 +1,17 @@
-import React, {useContext, useEffect, useState} from "react";
-import {Box, Button, VStack} from "@chakra-ui/react";
-import {useNavigate, useParams} from "react-router-dom";
-import {LoginContext} from "../../../../component/LoginProvider.jsx";
+import React, { useContext, useEffect, useState } from "react";
+import { Button, VStack } from "@chakra-ui/react";
+import { useNavigate, useParams } from "react-router-dom";
+import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
-import {extractUserIdFromDiaryId, generateDiaryId} from "../../../../util/util";
+import {
+  extractUserIdFromDiaryId,
+  generateDiaryId,
+} from "../../../../util/util";
 
 export function DiaryNavbar() {
   const navigate = useNavigate();
-  const {memberInfo} = useContext(LoginContext);
-  const {diaryId} = useParams();
+  const { memberInfo } = useContext(LoginContext);
+  const { diaryId } = useParams();
   const friendId = extractUserIdFromDiaryId(diaryId);
   const [isFriend, setIsFriend] = useState(false);
   const [isOwnDiary, setIsOwnDiary] = useState(false);
@@ -72,7 +75,7 @@ export function DiaryNavbar() {
         홈
       </Button>
       <Button
-        onClick={() => navigate(`/diary/${diaryId}/comment/${friendId}`)}
+        onClick={() => navigate(`/diary/${diaryId}/comment`)}
         cursor={"pointer"}
         w="100%"
         _hover={{
@@ -89,25 +92,30 @@ export function DiaryNavbar() {
           bgColor: "blue.200",
         }}
       >
-        내 다이어리
+        일기장
       </Button>
-      <Button
-        onClick={() => navigate(`/diary/${diaryId}/calendar`)}
-        cursor={"pointer"}
-        w="100%"
-        _hover={{
-          bg: "blue.200",
-        }}
-      >
-        기록
-      </Button>
+      {isOwnDiary && (
+        <Button
+          onClick={() => navigate(`/diary/${diaryId}/calendar`)}
+          cursor={"pointer"}
+          w="100%"
+          _hover={{
+            bg: "blue.200",
+          }}
+        >
+          기록
+        </Button>
+      )}
       {!isFriend && !isOwnDiary && (
         <Button size="sm" onClick={addFriend} w="100%">
           친구 추가
         </Button>
       )}
       {!isOwnDiary && (
-        <Button onClick={() => navigate(`/diary/${generateDiaryId(memberInfo.id)}`)} w="100%">
+        <Button
+          onClick={() => navigate(`/diary/${generateDiaryId(memberInfo.id)}`)}
+          w="100%"
+        >
           내 미니홈피 가기
         </Button>
       )}

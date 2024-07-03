@@ -19,10 +19,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import { format } from "date-fns";
+import { generateDiaryId } from "../../../../util/util.jsx";
+import { DiaryContext } from "../diaryComponent/DiaryContext.jsx";
 
 export function DiaryHomeMain() {
   const { memberInfo } = useContext(LoginContext);
-  const [diaryBoardList, setDiaryBoardList] = useState([]);
+  const { diaryBoardList, setDiaryBoardList } = useContext(DiaryContext); // DiaryContext 사용
   const [diaryCommentList, setDiaryCommentList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -36,25 +38,31 @@ export function DiaryHomeMain() {
         const diaryCommentRes = await axios.get(
           `/api/diaryComment/list?limit=5`,
         );
+
+        console.log("diaryBoardRes:", diaryBoardRes.data);
+        console.log("diaryCommentRes:", diaryCommentRes.data);
+
         setDiaryBoardList(diaryBoardRes.data.diaryBoardList || []);
-        setDiaryCommentList(diaryCommentRes.data || []);
+        setDiaryCommentList(
+          Array.isArray(diaryCommentRes.data.comments)
+            ? diaryCommentRes.data.comments
+            : [],
+        );
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("데이터를 가져오는 중 오류 발생:", err);
       } finally {
         setIsLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [memberInfo.id, setDiaryBoardList]);
 
-  const handleBoardClick = () => {
-    const diaryId = memberInfo.id;
-    navigate(`/diary/${diaryId}/view`);
+  const handleBoardClick = (id) => {
+    navigate(`/diary/${generateDiaryId(memberInfo.id)}/view/${id}`);
   };
 
   const handleCommentClick = () => {
-    const diaryId = memberInfo.id;
-    navigate(`/diary/${diaryId}/comment/view`);
+    navigate(`/diary/${generateDiaryId(memberInfo.id)}/comment/list`);
   };
 
   if (isLoading) {
@@ -67,15 +75,18 @@ export function DiaryHomeMain() {
 
   return (
     <Box>
+      <Center>
       <Box mb={5}>
         <Image
-          src="https://via.placeholder.com/1200x300"
+          src="../../../../../public/img/diary_main_minimi.jpg"
           alt="Diary Banner"
           width="100%"
+          h="auto"
           borderRadius="md"
           boxShadow="md"
         />
       </Box>
+      </Center>
 
       <Box mb={10}>
         <Heading size="lg" mb={5}>
@@ -84,7 +95,7 @@ export function DiaryHomeMain() {
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
           <Box>
             <Heading size="md" mb={3}>
-              다이어리 게시물
+              일기장
             </Heading>
             {diaryBoardList.length === 0 ? (
               <Text>조회 결과가 없습니다.</Text>
@@ -92,22 +103,24 @@ export function DiaryHomeMain() {
               <Table variant="simple">
                 <Thead>
                   <Tr>
-                    <Th>No.</Th>
+                    <Th w="10%">No.</Th>
                     <Th>제목</Th>
-                    <Th>작성일</Th>
+                    <Th>내용</Th>
+                    <Th w="20%">작성일</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {diaryBoardList.slice(0, 5).map((diaryBoard) => (
+                  {diaryBoardList.slice(0, 5).map((diaryBoard, index) => (
                     <Tr
                       key={diaryBoard.id}
                       onClick={() => handleBoardClick(diaryBoard.id)}
                       _hover={{ bg: hoverBg }}
                       cursor="pointer"
                     >
-                      <Td>{diaryBoard.id}</Td>
-                      <Td>{diaryBoard.title}</Td>
-                      <Td>
+                      <Td fontSize="sm">{diaryBoardList.length - index}</Td>
+                      <Td fontSize="sm" maxW="100px" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">{diaryBoard.title}</Td>
+                      <Td fontSize="sm" maxW="100px" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">{diaryBoard.content}</Td>
+                      <Td fontSize="sm">
                         {format(new Date(diaryBoard.inserted), "yyyy.MM.dd")}
                       </Td>
                     </Tr>
@@ -126,24 +139,28 @@ export function DiaryHomeMain() {
               <Table variant="simple">
                 <Thead>
                   <Tr>
-                    <Th>No.</Th>
+                    <Th w="10%">No.</Th>
                     <Th>닉네임</Th>
                     <Th>내용</Th>
-                    <Th>작성일</Th>
+                    <Th w="20%">작성일</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {diaryCommentList.slice(0, 5).map((diaryComment, index) => (
                     <Tr
                       key={diaryComment.id}
-                      onClick={() => handleCommentClick(diaryComment.id)}
+                      onClick={() => handleCommentClick()}
                       _hover={{ bg: hoverBg }}
                       cursor="pointer"
                     >
-                      <Td>{index + 1}</Td>
-                      <Td>{diaryComment.nickname}</Td>
-                      <Td>{diaryComment.comment.substring(0, 20)}...</Td>
-                      <Td>
+                      <Td fontSize="sm">{index + 1}</Td>
+                      <Td fontSize="sm" maxW="100px" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+                        {diaryComment.nickname}
+                      </Td>
+                      <Td fontSize="sm" maxW="200px" whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+                        {diaryComment.comment.substring(0, 20)}
+                      </Td>
+                      <Td fontSize="sm">
                         {format(new Date(diaryComment.inserted), "yyyy.MM.dd")}
                       </Td>
                     </Tr>

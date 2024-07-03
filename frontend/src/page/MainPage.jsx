@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Fade,
+  Center, Fade,
   Flex,
   Image,
   Table,
@@ -13,6 +13,7 @@ import {
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
+import axios from "axios";
 import KakaoMap2 from "../KakaoMap2.jsx";
 
 const PetProfile = ({ name, imgSrc }) => (
@@ -29,8 +30,9 @@ const PetInfoTable = ({ data }) => (
     <Thead bg={useColorModeValue("gray.200", "gray.700")}>
       <Tr>
         <Th>No.</Th>
-        <Th>Name</Th>
-        <Th>Value</Th>
+        <Th>Title</Th>
+        <Th>Writer</Th>
+        <Th>Likes</Th>
       </Tr>
     </Thead>
     <Tbody>
@@ -39,9 +41,10 @@ const PetInfoTable = ({ data }) => (
           key={index}
           _hover={{ bg: useColorModeValue("gray.100", "gray.600") }}
         >
-          <Td>{row.no}</Td>
-          <Td>{row.name}</Td>
-          <Td>{row.value}</Td>
+          <Td>{index + 1}</Td>
+          <Td>{row.title}</Td>
+          <Td>{row.writer}</Td>
+          <Td>{row.number_of_likes}</Td>
         </Tr>
       ))}
     </Tbody>
@@ -49,9 +52,32 @@ const PetInfoTable = ({ data }) => (
 );
 
 export const MainPage = () => {
+  const [latestBoards, setLatestBoards] = useState([]);
+  const [popularBoards, setPopularBoards] = useState([]);
   const [showLogo, setShowLogo] = useState(false);
 
   useEffect(() => {
+    const fetchLatestBoards = async () => {
+      try {
+        const res = await axios.get("/api/board/latest");
+        setLatestBoards(res.data);
+      } catch (error) {
+        console.error("Error fetching latest boards:", error);
+      }
+    };
+
+    const fetchPopularBoards = async () => {
+      try {
+        const res = await axios.get("/api/board/popular");
+        setPopularBoards(res.data);
+      } catch (error) {
+        console.error("Error fetching popular boards:", error);
+      }
+    };
+
+    fetchLatestBoards();
+    fetchPopularBoards();
+
     const isFirstVisit = !sessionStorage.getItem("visited");
     if (isFirstVisit) {
       setShowLogo(true);
@@ -61,22 +87,6 @@ export const MainPage = () => {
       }, 2000); // 2초 후 로고 페이드아웃
     }
   }, []);
-
-  const board1 = [
-    { no: 1, name: "안녕", value: "나야" },
-    { no: 2, name: "잘 지내", value: "내 사랑 안녕" },
-    { no: 3, name: "얍얍", value: "캐스터네츠" },
-    { no: 4, name: "하늘을 나는", value: "다람쥐" },
-    { no: 5, name: "뱅뱅뱅", value: "빵야빵야빵야" },
-  ];
-
-  const board2 = [
-    { no: 1, name: "신촌을", value: "못가" },
-    { no: 2, name: "한 번을", value: "못가" },
-    { no: 3, name: "두 번을", value: "못가" },
-    { no: 4, name: "세 번을", value: "못가" },
-    { no: 5, name: "네 번을", value: "못가" },
-  ];
 
   return (
     <Box p={4} maxW="1200px" mx="auto">
@@ -109,15 +119,15 @@ export const MainPage = () => {
       <Flex justify="space-around" mb={8} wrap="wrap" gap={8}>
         <Box flex="1" minW="300px">
           <Text fontSize="lg" fontWeight="bold" mb={2}>
-            아무 말 게시판
+            최신 게시물
           </Text>
-          <PetInfoTable data={board1} />
+          <PetInfoTable data={latestBoards} />
         </Box>
         <Box flex="1" minW="300px">
           <Text fontSize="lg" fontWeight="bold" mb={2}>
-            아무 노래 게시판
+            인기 게시물
           </Text>
-          <PetInfoTable data={board2} />
+          <PetInfoTable data={popularBoards} />
         </Box>
       </Flex>
       <Flex justify="center" p={4} mb={8}>

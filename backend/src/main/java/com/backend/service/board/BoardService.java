@@ -418,4 +418,12 @@ public class BoardService {
         response.put("reports", reports);
         return response;
     }
+
+    public List<Board> getLatestBoards() {
+        return mapper.selectLatestBoards();
+    }
+
+    public List<Board> getPopularBoards() {
+        return mapper.selectPopularBoards();
+    }
 }
