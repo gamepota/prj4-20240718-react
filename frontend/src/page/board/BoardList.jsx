@@ -20,16 +20,20 @@ import {
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
   useColorModeValue,
-  Text,
 } from "@chakra-ui/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage, faMagnifyingGlass, faBookOpen } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookOpen,
+  faImage,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
 import Pagination from "../../component/Pagination.jsx";
 
 export function BoardList() {
@@ -45,10 +49,16 @@ export function BoardList() {
 
   const navigate = useNavigate();
 
+  // useEffect 훅을 하나로 통합
   useEffect(() => {
     const boardTypeParam = searchParams.get("boardType") || "전체";
+    const searchTypeParam = searchParams.get("searchType") || "전체";
+    const keywordParam = searchParams.get("keyword") || "";
+
     setBoardType(boardTypeParam);
-    localStorage.setItem("currentBoardType", boardTypeParam); // Save to localStorage
+    setSearchType(searchTypeParam);
+    setSearchKeyword(keywordParam);
+    localStorage.setItem("currentBoardType", boardTypeParam);
 
     axios
       .get(`/api/board/list?${searchParams}`)
@@ -61,56 +71,45 @@ export function BoardList() {
         console.error("Error fetching data:", error);
         setIsLoading(false);
       });
-    setSearchType("전체");
-    setSearchKeyword("");
-
-    const searchTypeParam = searchParams.get("searchType");
-    const keywordParam = searchParams.get("keyword");
-    if (searchTypeParam) {
-      setSearchType(searchTypeParam);
-    }
-    if (keywordParam) {
-      setSearchKeyword(keywordParam);
-    }
   }, [searchParams]);
 
-  function handlePageSizeChange(number) {
+  const handlePageSizeChange = (number) => {
     setPageAmount(number);
     searchParams.set("pageAmount", number);
     searchParams.set("offsetReset", true);
     navigate(`?${searchParams}`);
-  }
+  };
 
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
     pageNumbers.push(i);
   }
 
-  function handlePageButtonClick(pageNumber) {
+  const handlePageButtonClick = (pageNumber) => {
     searchParams.set("page", pageNumber);
     searchParams.set("offsetReset", false);
     navigate(`?${searchParams}`);
-  }
+  };
 
-  function handleClickBoardTypeButton(boardType) {
+  const handleClickBoardTypeButton = (boardType) => {
     searchParams.set("offsetReset", true);
     setBoardType(boardType);
     searchParams.set("boardType", boardType);
-    localStorage.setItem("currentBoardType", boardType); // Save to localStorage
+    localStorage.setItem("currentBoardType", boardType);
     navigate(`?${searchParams}`);
-  }
+  };
 
-  function handleBoardClick(boardId) {
+  const handleBoardClick = (boardId) => {
     navigate(`/board/${boardId}`);
-  }
+  };
 
-  function handleSearchClick() {
+  const handleSearchClick = () => {
     searchParams.set("searchType", searchType);
     searchParams.set("keyword", searchKeyword);
     searchParams.set("offsetReset", true);
 
     navigate(`?${searchParams}`);
-  }
+  };
 
   const bg = useColorModeValue("white", "gray.800");
   const hoverBg = useColorModeValue("gray.100", "gray.700");
@@ -154,7 +153,6 @@ export function BoardList() {
                   _hover={{ bg: "gray.200" }}
                   bg={bg}
                 >
-                  {/* 썸네일 추가 부분 */}
                   {board.fileList && board.fileList.length > 0 && (
                     <Box mb={2} width="100%" height="200px" overflow="hidden">
                       <Image
@@ -181,7 +179,9 @@ export function BoardList() {
                         <FontAwesomeIcon icon={faImage} />
                       </Badge>
                     )}
-                    {board.numberOfComments > 0 && <span> [{board.numberOfComments}]</span>}
+                    {board.numberOfComments > 0 && (
+                      <span> [{board.numberOfComments}]</span>
+                    )}
                   </Box>
                   <Box mt={2} fontSize="sm" color="gray.500">
                     <span>추천수: {board.numberOfLikes}</span>
@@ -191,7 +191,12 @@ export function BoardList() {
               ))}
             </SimpleGrid>
           ) : (
-            <Table variant="simple" borderWidth="1px" borderRadius="lg" overflow="hidden">
+            <Table
+              variant="simple"
+              borderWidth="1px"
+              borderRadius="lg"
+              overflow="hidden"
+            >
               <Thead bg={useColorModeValue("gray.100", "gray.700")}>
                 <Tr>
                   <Th textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
@@ -200,7 +205,13 @@ export function BoardList() {
                   <Th textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
                     게시글ID
                   </Th>
-                  <Th w={500} textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
+                  <Th
+                    w={500}
+                    textAlign="center"
+                    fontSize="lg"
+                    fontWeight="bold"
+                    py={4}
+                  >
                     제목
                   </Th>
                   <Th textAlign="center" fontSize="lg" fontWeight="bold" py={4}>
@@ -219,7 +230,9 @@ export function BoardList() {
                   <Tr key={board.id} _hover={{ bg: hoverBg }}>
                     <Td textAlign="center" py={3}>
                       <span
-                        onClick={() => handleClickBoardTypeButton(board.boardType)}
+                        onClick={() =>
+                          handleClickBoardTypeButton(board.boardType)
+                        }
                         style={{ cursor: "pointer" }}
                       >
                         {board.boardType}
@@ -247,7 +260,9 @@ export function BoardList() {
                           <FontAwesomeIcon icon={faImage} />
                         </Badge>
                       )}
-                      {board.numberOfComments > 0 && <span> [{board.numberOfComments}]</span>}
+                      {board.numberOfComments > 0 && (
+                        <span> [{board.numberOfComments}]</span>
+                      )}
                     </Td>
                     <Td textAlign="center" py={3}>
                       {board.writer}
@@ -265,11 +280,19 @@ export function BoardList() {
           )}
         </Box>
       </Center>
-      <Pagination pageInfo={pageInfo} pageNumbers={pageNumbers} handlePageButtonClick={handlePageButtonClick} />
+      <Pagination
+        pageInfo={pageInfo}
+        pageNumbers={pageNumbers}
+        handlePageButtonClick={handlePageButtonClick}
+      />
       <Center mb={10}>
         <Flex gap={1} alignItems="center">
           <Box>
-            <Select value={searchType} onChange={(e) => setSearchType(e.target.value)} bg={bg}>
+            <Select
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value)}
+              bg={bg}
+            >
               <option value="전체">전체</option>
               <option value="글">글</option>
               <option value="작성자">작성자</option>
@@ -296,24 +319,39 @@ export function BoardList() {
       </Center>
 
       <Center>
-        <Flex maxW={"500px"} flexDirection={"column"} alignItems={"center"} gap={6}>
+        <Flex
+          maxW={"500px"}
+          flexDirection={"column"}
+          alignItems={"center"}
+          gap={6}
+        >
           <Box>
             <Menu textAlign={"center"} fontSize={"lg"}>
               {({ isOpen }) => (
                 <>
                   <MenuButton
                     as={Button}
-                    rightIcon={isOpen ? <ChevronDownIcon /> : <ChevronDownIcon />}
+                    rightIcon={
+                      isOpen ? <ChevronDownIcon /> : <ChevronDownIcon />
+                    }
                     colorScheme={"blue"}
                     size={"md"}
                   >
                     {`게시글 (${pageAmount})개씩 보기`}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem onClick={() => handlePageSizeChange(10)}>10개씩 보기</MenuItem>
-                    <MenuItem onClick={() => handlePageSizeChange(30)}>30개씩 보기</MenuItem>
-                    <MenuItem onClick={() => handlePageSizeChange(50)}>50개씩 보기</MenuItem>
-                    <MenuItem onClick={() => handlePageSizeChange(100)}>100개씩 보기</MenuItem>
+                    <MenuItem onClick={() => handlePageSizeChange(10)}>
+                      10개씩 보기
+                    </MenuItem>
+                    <MenuItem onClick={() => handlePageSizeChange(30)}>
+                      30개씩 보기
+                    </MenuItem>
+                    <MenuItem onClick={() => handlePageSizeChange(50)}>
+                      50개씩 보기
+                    </MenuItem>
+                    <MenuItem onClick={() => handlePageSizeChange(100)}>
+                      100개씩 보기
+                    </MenuItem>
                   </MenuList>
                 </>
               )}
