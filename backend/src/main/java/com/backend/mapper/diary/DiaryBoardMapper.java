@@ -56,40 +56,38 @@ public interface DiaryBoardMapper {
     int update(DiaryBoard diaryBoard);
 
     @Select("""
-                 <script>
-                 SELECT d.id,
-                        d.title,
-                        m.nickname writer,
-                        d.content,
-                        d.inserted,
-                        COUNT(DISTINCT f.name) AS number_of_images
-                 FROM diary d
-                 JOIN member m ON d.member_id = m.id
-                 LEFT JOIN diary_file f ON d.id = f.diary_id
-                 <where>
-                     <if test="memberId != null">
-                         d.member_id = #{memberId}
-                     </if>
-                     <if test="searchType != null and keyword != null">
-                         <bind name="pattern" value="'%' + keyword + '%'"/>
-                         <choose>
-                             <when test="searchType == 'text'">
-                                 AND (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
-                             </when>
-                             <when test="searchType == 'nickname'">
-                                 AND m.nickname LIKE #{pattern}
-                             </when>
-                             <otherwise>
-                                 AND (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
-                             </otherwise>
-                         </choose>
-                     </if>
-                 </where>
-                 GROUP BY d.id
-                 ORDER BY d.id DESC
-                 LIMIT #{offset}, 10
-                 </script>
-             """)
+                <script>
+                SELECT d.id,
+                       d.title,
+                       m.nickname writer,
+                       d.inserted,
+                       d.content
+                FROM diary d
+                JOIN member m ON d.member_id = m.id
+                <where>
+                    <if test="memberId != null">
+                        d.member_id = #{memberId}
+                    </if>
+                    <if test="searchType != null and keyword != null">
+                        <bind name="pattern" value="'%' + keyword + '%'"/>
+                        <choose>
+                            <when test="searchType == 'text'">
+                                AND (d.title LIKE #{pattern} OR d.content LIKE #{pattern})
+                            </when>
+                            <when test="searchType == 'nickname'">
+                                AND m.nickname LIKE #{pattern}
+                            </when>
+                            <otherwise>
+                                AND (d.title LIKE #{pattern} OR d.content LIKE #{pattern} OR m.nickname LIKE #{pattern})
+                            </otherwise>
+                        </choose>
+                    </if>
+                </where>
+                GROUP BY d.id
+                ORDER BY d.id DESC
+                LIMIT #{offset}, 10
+                </script>
+            """)
     List<DiaryBoard> selectAllPaging(Integer offset, String searchType, String keyword, Integer memberId);
 
     @Select("""

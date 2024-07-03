@@ -1,5 +1,4 @@
 import {
-  Badge,
   Box,
   Button,
   Center,
@@ -22,9 +21,12 @@ import axios from "axios";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { DiaryContext } from "../../diaryComponent/DiaryContext.jsx";
-import Pagination from "../../../../../component/Pagination.jsx";
 import { format } from "date-fns";
-import {extractUserIdFromDiaryId, generateDiaryId} from "../../../../../util/util.jsx";
+import {
+  extractUserIdFromDiaryId,
+  generateDiaryId,
+} from "../../../../../util/util.jsx";
+import Pagination from "../../../../../component/Pagination.jsx";
 
 export function DiaryBoardList() {
   const { memberInfo } = useContext(LoginContext);
@@ -85,7 +87,7 @@ export function DiaryBoardList() {
     navigate(`?${params.toString()}`);
   }
 
-  function handleSelectedDiaryBoard(id, number) {
+  function handleSelectedDiaryBoard(id) {
     return () => navigate(`/diary/${diaryId}/view/${id}`);
   }
 
@@ -102,9 +104,7 @@ export function DiaryBoardList() {
       <Center>
         <Heading>다이어리 목록</Heading>
       </Center>
-      <Box>
-        {isOwner && <Button onClick={handleWriteClick}>글쓰기</Button>}
-      </Box>
+      <Box>{isOwner && <Button onClick={handleWriteClick}>글쓰기</Button>}</Box>
       <Box>
         {diaryBoardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
         {diaryBoardList.length > 0 && (
@@ -113,7 +113,6 @@ export function DiaryBoardList() {
               <Tr>
                 <Th textAlign="center">N번째 일기</Th>
                 <Th textAlign="center">제목</Th>
-                <Th textAlign="center">내용</Th>
                 <Th textAlign="center">작성일자</Th>
               </Tr>
             </Thead>
@@ -123,7 +122,10 @@ export function DiaryBoardList() {
                   key={diaryBoard.id}
                   _hover={{ bg: hoverBg }}
                   cursor="pointer"
-                  onClick={handleSelectedDiaryBoard(diaryBoard.id, diaryBoardList.length - index)}
+                  onClick={handleSelectedDiaryBoard(
+                    diaryBoard.id,
+                    diaryBoardList.length - index,
+                  )}
                 >
                   <Td w="10%" textAlign="center">
                     {diaryBoardList.length - index}
@@ -137,7 +139,9 @@ export function DiaryBoardList() {
                     {/*  </Badge>*/}
                     {/*)}*/}
                   </Td>
-                  <Td w="50%" textAlign="center">{diaryBoard.content}</Td>
+                  {/*<Td w="50%" textAlign="center">*/}
+                  {/*  {diaryBoard.content}*/}
+                  {/*</Td>*/}
                   <Td w="10%" textAlign="center">
                     {format(new Date(diaryBoard.inserted), "yyyy.MM.dd")}
                   </Td>
