@@ -33,6 +33,11 @@ export function CommentComponent({ hospitalId }) {
           {showCommentWrite ? "댓글 취소" : "댓글 달기"}
         </Button>
       </Tooltip>
+      <CommentList
+        hospitalId={hospitalId}
+        setIsProcessing={setIsProcessing}
+        isProcessing={isProcessing}
+      />
 
       {showCommentWrite && memberInfo && (
         <CommentWrite
@@ -43,12 +48,6 @@ export function CommentComponent({ hospitalId }) {
           memberId={memberId}
         />
       )}
-
-      <CommentList
-        hospitalId={hospitalId}
-        setIsProcessing={setIsProcessing}
-        isProcessing={isProcessing}
-      />
     </Box>
   );
 }
