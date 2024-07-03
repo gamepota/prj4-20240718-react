@@ -1,5 +1,6 @@
 import {
-  Avatar, Badge,
+  Avatar,
+  Badge,
   Box,
   Button,
   Container,
@@ -20,7 +21,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import styled, { keyframes, css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
@@ -43,14 +44,14 @@ const beat = keyframes`
 `;
 
 const HeartIcon = styled(FontAwesomeIcon)`
-    font-size: 1.5rem;
-    color: ${(props) => (props.liked ? "red" : "inherit")};
-    ${(props) =>
-            props.liked &&
-            css`
+  font-size: 1.5rem;
+  color: ${(props) => (props.liked ? "red" : "inherit")};
+  ${(props) =>
+    props.liked &&
+    css`
       animation: ${beat} 0.3s;
     `}
-    cursor: pointer;
+  cursor: pointer;
 `;
 
 export function BoardView() {
@@ -171,7 +172,9 @@ export function BoardView() {
 
   return (
     <Container maxW="container.xl" py={10}>
-      <Button onClick={() => navigate(`/board/list?boardType=${board.boardType}`)}>
+      <Button
+        onClick={() => navigate(`/board/list?boardType=${board.boardType}`)}
+      >
         게시판으로 돌아가기
       </Button>
       <Box p={6} borderWidth="1px" borderRadius="md" bg="white" mb={6}>
@@ -193,7 +196,6 @@ export function BoardView() {
                       borderRadius="full"
                       mr={2}
                       sx={{ cursor: "pointer" }}
-                      onClick={handleDiaryView}
                     />
                   ) : (
                     <Avatar
@@ -201,7 +203,6 @@ export function BoardView() {
                       size="sm"
                       mr={2}
                       sx={{ cursor: "pointer" }}
-                      onClick={handleDiaryView}
                     />
                   )}
                   <Badge

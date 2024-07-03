@@ -2,7 +2,10 @@ import { Box, Center, Spinner } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { extractUserIdFromDiaryId } from "../../../../../util/util.jsx";
+import {
+  extractUserIdFromDiaryId,
+  generateDiaryId,
+} from "../../../../../util/util.jsx";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { DiaryCommentWrite } from "./DiaryCommentWrite.jsx";
 import { DiaryCommentList } from "./DiaryCommentList.jsx";
