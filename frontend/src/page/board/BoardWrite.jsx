@@ -1,8 +1,8 @@
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
   Center,
-  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -11,9 +11,8 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Spacer,
-  Textarea,
   Text,
+  Textarea,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -86,7 +85,6 @@ export function BoardWrite() {
       }
       totalSize += file.size;
     });
-  };
 
     if (totalSize > 100 * 1024 * 1024 || hasOversizedFile) {
       setDisableSaveButton(true);
