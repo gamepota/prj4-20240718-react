@@ -48,6 +48,8 @@ export function BoardList() {
   useEffect(() => {
     const boardTypeParam = searchParams.get("boardType") || "전체";
     setBoardType(boardTypeParam);
+    localStorage.setItem("currentBoardType", boardTypeParam); // Save to localStorage
+
     axios
       .get(`/api/board/list?${searchParams}`)
       .then((res) => {
@@ -94,17 +96,12 @@ export function BoardList() {
     searchParams.set("offsetReset", true);
     setBoardType(boardType);
     searchParams.set("boardType", boardType);
+    localStorage.setItem("currentBoardType", boardType); // Save to localStorage
     navigate(`?${searchParams}`);
   }
 
   function handleBoardClick(boardId) {
-    axios
-      .get(`/api/board/${boardId}`)
-      .then(() => {})
-      .finally(() => {
-        setSelectedBoardId(boardId);
-        navigate(`/board/${boardId}`);
-      });
+    navigate(`/board/${boardId}`);
   }
 
   function handleSearchClick() {

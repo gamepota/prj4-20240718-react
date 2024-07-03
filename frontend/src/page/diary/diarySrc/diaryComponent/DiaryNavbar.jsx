@@ -72,7 +72,7 @@ export function DiaryNavbar() {
         홈
       </Button>
       <Button
-        onClick={() => navigate(`/diary/${diaryId}/comment/${friendId}`)}
+        onClick={() => navigate(`/diary/${diaryId}/comment`)}
         cursor={"pointer"}
         w="100%"
         _hover={{
@@ -89,7 +89,7 @@ export function DiaryNavbar() {
           bgColor: "blue.200",
         }}
       >
-        내 다이어리
+        일기장
       </Button>
       <Button
         onClick={() => navigate(`/diary/${diaryId}/calendar`)}

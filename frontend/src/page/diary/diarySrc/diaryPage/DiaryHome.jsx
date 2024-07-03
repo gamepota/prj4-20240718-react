@@ -1,24 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import {
+  Avatar,
   Box,
   Button,
   Center,
+  Flex,
+  HStack,
+  Image,
   Input,
   Spinner,
   Text,
   Textarea,
   VStack,
-  Image,
-  HStack,
-  Flex,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { DiaryNavbar } from "../diaryComponent/DiaryNavbar.jsx";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
 import { FriendAddButton } from "../../../../component/FriendAddButton.jsx";
-import { extractUserIdFromDiaryId, generateDiaryId } from "../../../../util/util.jsx";
+import { extractUserIdFromDiaryId } from "../../../../util/util.jsx";
+import { DiaryProvider } from "../diaryComponent/DiaryContext.jsx";
 
 export function DiaryHome() {
   const { memberInfo } = useContext(LoginContext);
@@ -27,6 +28,8 @@ export function DiaryHome() {
   const [isLoading, setIsLoading] = useState(true);
   const [ownerNickname, setOwnerNickname] = useState("");
   const [ownerId, setOwnerId] = useState(null); // 다이어리 주인의 ID 상태 추가
+  const [profileImage, setProfileImage] = useState(null);
+
   const [profileData, setProfileData] = useState({
     statusMessage: "",
     introduction: "",
@@ -43,6 +46,7 @@ export function DiaryHome() {
         if (response.data.isValid) {
           setOwnerNickname(response.data.nickname);
           setOwnerId(response.data.ownerId);
+          // fetchProfileImage 호출 제거
         }
       } catch (error) {
         console.error("Error validating diary ID:", error);
@@ -54,6 +58,14 @@ export function DiaryHome() {
 
     validateDiaryId();
   }, [diaryId]);
+
+  // ownerId 변경 감지를 위한 useEffect 수정
+  useEffect(() => {
+    if (ownerId) {
+      console.log("ownerId updated:", ownerId);
+      fetchProfileImage(ownerId);
+    }
+  }, [ownerId]);
 
   // ownerId 변경 감지를 위한 useEffect 추가
   useEffect(() => {
@@ -113,6 +125,20 @@ export function DiaryHome() {
       }
     }
   };
+  async function fetchProfileImage(ownerId) {
+    if (!ownerId) {
+      console.log("ownerId is not set yet");
+      return;
+    }
+    try {
+      console.log("Fetching profile image for ownerId:", ownerId);
+      const res = await axios.get(`/api/member/${ownerId}`);
+      console.log("Response from server:", res.data);
+      setProfileImage(res.data.imageUrl);
+    } catch (error) {
+      console.error("Error fetching profile image:", error.response || error);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -133,114 +159,139 @@ export function DiaryHome() {
   }
 
   return (
-    <Center bg="gray.100" minH="100vh">
-      <Flex
-        w="100%"
-        h="100%"
-        p={6}
-        bg="white"
-        boxShadow="lg"
-        borderRadius="md"
-        position="relative"
-        overflow="hidden"
-      >
-        <Box
-          w="1300px"
-          h="800px"
-          border="2px solid #ccc"
+    <DiaryProvider>
+      <Center bg="gray.100" minH="100vh">
+        <Flex
+          w="100%"
+          h="100%"
+          p={6}
+          bg="white"
+          boxShadow="lg"
           borderRadius="md"
-          overflow="hidden"
-          display="flex"
           position="relative"
+          overflow="hidden"
         >
-          <Flex
-            w="100%"
-            h="100%"
-            flexDirection="row"
+          <Box
+            w="1300px"
+            h="800px"
+            border="2px solid #ccc"
+            borderRadius="md"
+            overflow="hidden"
+            display="flex"
+            position="relative"
           >
-            <VStack
-              w="30%"
-              h="100%"
-              bg="white"
-              borderRight="2px solid #ccc"
-              p={4}
-              spacing={4}
-              alignItems="center"
-            >
-              <Text fontSize="xl" fontWeight="bold">
-                {ownerNickname}님의 미니홈피
-              </Text>
-              <Box>
-                <Image
-                  borderRadius="full"
-                  boxSize="150px"
-                  src="https://bit.ly/dan-abramov"
-                  alt="Profile Image"
-                />
-              </Box>
-
-              {isEditing ? (
-                <>
-                  <Input
-                    value={profileData.statusMessage}
-                    onChange={(e) => setProfileData({ ...profileData, statusMessage: e.target.value })}
-                    placeholder="상태메시지를 입력하세요"
-                    size="sm"
-                    h="30px"
-                  />
-                  <Textarea
-                    value={profileData.introduction}
-                    onChange={(e) => setProfileData({ ...profileData, introduction: e.target.value })}
-                    placeholder="자기소개를 입력하세요"
-                    size="sm"
-                    height="250px"
-                    bg="white"
-                    maxLength={255}
-                  />
-                  <HStack spacing={2} alignSelf="flex-end">
-                    <Button colorScheme="teal" size="sm" onClick={handleSaveProfileData}>
-                      저장
-                    </Button>
-                  </HStack>
-                </>
-              ) : (
-                <>
-                  <Text>{profileData.statusMessage}</Text>
-                  <Textarea value={profileData.introduction || "자기소개가 없습니다."} fontSize="sm" h="250px" readOnly />
-                  <HStack spacing={2} alignSelf="flex-end">
-                    <Button colorScheme="teal" size="sm" onClick={() => setIsEditing(true)}>
-                      수정
-                    </Button>
-                  </HStack>
-                </>
-              )}
-            </VStack>
-            <Box w="70%" h="100%" position="relative">
-              <Box
-                w="100%"
+            <Flex w="100%" h="100%" flexDirection="row">
+              <VStack
+                w="25%"
                 h="100%"
-                border="1px solid #ccc"
-                borderRadius="md"
-                overflowY="auto"
                 bg="white"
-                position="absolute"
-                top={0}
-                left={0}
+                borderRight="2px solid #ccc"
+                p={4}
+                spacing={4}
+                alignItems="center"
               >
-                <Outlet />
+                <Text fontSize="xl" fontWeight="bold">
+                  {ownerNickname}님의 미니홈피
+                </Text>
+                <Box>
+                  {profileImage ? (
+                    <Image
+                      borderRadius="full"
+                      boxSize="150px"
+                      src={profileImage}
+                      alt="Profile Image"
+                    />
+                  ) : (
+                    <Avatar name={ownerNickname} size={"sm"} mr={2} />
+                  )}
+                </Box>
+
+                {isEditing ? (
+                  <>
+                    <Input
+                      value={profileData.statusMessage}
+                      onChange={(e) =>
+                        setProfileData({
+                          ...profileData,
+                          statusMessage: e.target.value,
+                        })
+                      }
+                      placeholder="상태메시지를 입력하세요"
+                      size="sm"
+                      h="30px"
+                    />
+                    <Textarea
+                      value={profileData.introduction}
+                      onChange={(e) =>
+                        setProfileData({
+                          ...profileData,
+                          introduction: e.target.value,
+                        })
+                      }
+                      placeholder="자기소개를 입력하세요"
+                      size="sm"
+                      height="250px"
+                      bg="white"
+                      maxLength={255}
+                    />
+                    <HStack spacing={2} alignSelf="flex-end">
+                      <Button
+                        colorScheme="teal"
+                        size="sm"
+                        onClick={handleSaveProfileData}
+                      >
+                        저장
+                      </Button>
+                    </HStack>
+                  </>
+                ) : (
+                  <>
+                    <Text>{profileData.statusMessage}</Text>
+                    <Textarea
+                      value={profileData.introduction || "자기소개가 없습니다."}
+                      fontSize="sm"
+                      h="250px"
+                      readOnly
+                    />
+                    <HStack spacing={2} alignSelf="flex-end">
+                      <Button
+                        colorScheme="teal"
+                        size="sm"
+                        onClick={() => setIsEditing(true)}
+                      >
+                        수정
+                      </Button>
+                    </HStack>
+                  </>
+                )}
+              </VStack>
+              <Box ml={1} w="75%" h="100%" position="relative">
+                <Box
+                  w="100%"
+                  h="100%"
+                  border="1px solid #ccc"
+                  borderRadius="md"
+                  overflowY="auto"
+                  bg="white"
+                  position="absolute"
+                  top={0}
+                  left={0}
+                >
+                  <Outlet />
+                </Box>
               </Box>
-            </Box>
-          </Flex>
-          {ownerId && memberInfo && Number(memberInfo.id) !== ownerId && (
-            <Box position="absolute" bottom="10px" right="10px">
-              <FriendAddButton friendId={ownerId} />
-            </Box>
-          )}
-        </Box>
-        <Box ml={-2}>
-          <DiaryNavbar />
-        </Box>
-      </Flex>
-    </Center>
+            </Flex>
+            {ownerId && memberInfo && Number(memberInfo.id) !== ownerId && (
+              <Box position="absolute" bottom="10px" right="10px">
+                <FriendAddButton friendId={ownerId} />
+              </Box>
+            )}
+          </Box>
+          <Box ml={-2}>
+            <DiaryNavbar />
+          </Box>
+        </Flex>
+      </Center>
+    </DiaryProvider>
   );
 }

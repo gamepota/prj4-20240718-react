@@ -20,17 +20,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImages, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import {
-  extractUserIdFromDiaryId,
-  generateDiaryId,
-} from "../../../../../util/util.jsx";
-import Pagination from "../../../../../component/Pagination.jsx";
+import { extractUserIdFromDiaryId, generateDiaryId } from "../../../../../util/util.jsx";
 import { format } from "date-fns";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { DiaryContext } from "../../diaryComponent/DiaryContext.jsx";
+import Pagination from "../../../../../component/Pagination.jsx";
 
 export function DiaryBoardList() {
   const { memberInfo } = useContext(LoginContext);
-  const [diaryBoardList, setDiaryBoardList] = useState([]);
+  const { diaryBoardList, setDiaryBoardList } = useContext(DiaryContext); // DiaryContext 사용
   const [pageInfo, setPageInfo] = useState({});
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -59,7 +57,7 @@ export function DiaryBoardList() {
     if (keywordParam) {
       setSearchKeyword(keywordParam);
     }
-  }, [searchParams, diaryId]);
+  }, [searchParams, diaryId, setDiaryBoardList]);
 
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
@@ -81,8 +79,7 @@ export function DiaryBoardList() {
     navigate(`/api/diaryBoard/list?${params.toString()}`);
   }
 
-  function handleSelectedDiaryBoard(id) {
-    const diaryId = generateDiaryId(memberInfo.id);
+  function handleSelectedDiaryBoard(id, number) {
     return () => navigate(`/diary/${diaryId}/view/${id}`);
   }
 
@@ -108,22 +105,24 @@ export function DiaryBoardList() {
           <Table>
             <Thead>
               <Tr>
-                <Th>N번째 일기</Th>
-                <Th>내용</Th>
-                <Th>who?</Th>
-                <Th>작성일자</Th>
+                <Th textAlign="center">N번째 일기</Th>
+                <Th textAlign="center">제목</Th>
+                <Th textAlign="center">내용</Th>
+                <Th textAlign="center">작성일자</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {diaryBoardList.map((diaryBoard) => (
+              {diaryBoardList.map((diaryBoard, index) => (
                 <Tr
                   key={diaryBoard.id}
                   _hover={{ bg: hoverBg }}
                   cursor="pointer"
-                  onClick={handleSelectedDiaryBoard(diaryBoard.id)}
+                  onClick={handleSelectedDiaryBoard(diaryBoard.id, diaryBoardList.length - index)}
                 >
-                  <Td textAlign="center">{diaryBoard.id}</Td>
-                  <Td textAlign="center">
+                  <Td w="10%" textAlign="center">
+                    {diaryBoardList.length - index}
+                  </Td>
+                  <Td w="30%" textAlign="center">
                     {diaryBoard.title}
                     {diaryBoard.numberOfImages > 0 && (
                       <Badge ml={2} colorScheme="teal">
@@ -132,10 +131,8 @@ export function DiaryBoardList() {
                       </Badge>
                     )}
                   </Td>
-                  <Td textAlign="center">{diaryBoard.writer}</Td>
-                  <Td>
-                    {" "}
-                    <span style={{ color: "red" }} />
+                  <Td w="50%" textAlign="center">{diaryBoard.content}</Td>
+                  <Td w="10%" textAlign="center">
                     {format(new Date(diaryBoard.inserted), "yyyy.MM.dd")}
                   </Td>
                 </Tr>

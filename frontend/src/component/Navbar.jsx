@@ -31,13 +31,7 @@ export function Navbar() {
   const nickname = memberInfo?.nickname || null;
   const isLoggedIn = Boolean(access);
   const diaryId = isLoggedIn ? generateDiaryId(memberInfo.id) : null;
-  const handleMouseEnter = () => {
-    onOpen();
-  };
 
-  const handleMouseLeave = () => {
-    onClose();
-  };
   function handleSearchClick() {
     const searchParams = new URLSearchParams();
     searchParams.append("keyword", searchQuery);

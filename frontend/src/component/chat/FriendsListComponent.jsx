@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import Draggable from "react-draggable"; // react-draggable 임포트
-import { Box, Button, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, HStack, IconButton, Text, VStack, Avatar, Image, Flex } from "@chakra-ui/react";
 import { ChatIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -24,20 +24,36 @@ export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { 
     setIsMinimized(!isMinimized);
   };
 
-  const fetchFriends = () => {
+  const fetchFriends = async () => {
     if (memberId) {
       console.log(`Fetching friends for member ID: ${memberId}`);
-      axios.get(`/api/friends/${memberId}`)
-        .then(response => {
-          console.log('Fetched friends:', response.data);
-          setFriends(response.data);
-        })
-        .catch(error => {
-          console.error("There was an error fetching the friends!", error);
-        })
-        .finally(() => {
-          setIsLoading(false); // 로딩 상태를 false로 설정
-        });
+      try {
+        const response = await axios.get(`/api/friends/${memberId}`);
+        const friendsData = response.data;
+
+        // 친구들의 프로필 이미지를 가져오는 로직 추가
+        const friendsWithImages = await Promise.all(friendsData.map(async (friend) => {
+          try {
+            const profileResponse = await axios.get(`/api/member/${friend.id}`);
+            return {
+              ...friend,
+              profileImage: profileResponse.data.imageUrl,
+            };
+          } catch (error) {
+            console.error("Error fetching profile image:", error);
+            return {
+              ...friend,
+              profileImage: null,
+            };
+          }
+        }));
+
+        setFriends(friendsWithImages);
+      } catch (error) {
+        console.error("There was an error fetching the friends!", error);
+      } finally {
+        setIsLoading(false); // 로딩 상태를 false로 설정
+      }
     } else {
       setIsLoading(true); // memberId가 null일 때 로딩 상태로 설정
     }
@@ -114,10 +130,36 @@ export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { 
                     <Text>친구가 없습니다.</Text>
                   ) : (
                     friends.map((friend, index) => (
-                      <HStack key={index} spacing={3} width="100%" justifyContent="space-between">
+                      <Flex key={index} width="100%" justifyContent="space-between" alignItems="center">
                         <HStack spacing={2}>
-                          <Box as="span" borderRadius="full" bg={friend.online ? "green.400" : "gray.400"} boxSize="10px" />
-                          <Text>{friend.nickname}</Text>
+                          <Box position="relative">
+                            {friend.profileImage ? (
+                              <Image
+                                borderRadius="full"
+                                boxSize="40px"
+                                src={friend.profileImage}
+                                alt={`${friend.nickname}의 프로필 이미지`}
+                              />
+                            ) : (
+                              <Avatar name={friend.nickname} size="sm" />
+                            )}
+                            <Box
+                              position="absolute"
+                              top="0"
+                              right="0"
+                              boxSize="10px"
+                              borderRadius="full"
+                              bg={friend.online ? "green.400" : "gray.400"}
+                              border="2px solid white"
+                            />
+                          </Box>
+                          <Text
+                            maxW="100px" // 최대 너비 설정
+                            whiteSpace="nowrap"
+                            overflow="hidden"
+                            textOverflow="ellipsis">
+                            {friend.nickname}
+                          </Text>
                           {newMessages[friend.id] && <Box as="span" borderRadius="full" bg="red.400" boxSize="8px" />} {/* 새로운 메시지 여부 표시 */}
                         </HStack>
                         <HStack spacing={1}>
@@ -143,7 +185,7 @@ export const FriendsListComponent = ({ onSelectFriend, newMessages = {} }) => { 
                             <DeleteIcon />
                           </Button>
                         </HStack>
-                      </HStack>
+                      </Flex>
                     ))
                   )}
                 </VStack>

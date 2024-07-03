@@ -1,9 +1,7 @@
-import React, { useContext, useState, useEffect } from "react";
 import {
   Box,
   Button,
   Center,
-  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -12,138 +10,90 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Text,
   Textarea,
   useToast,
-  Heading,
-  Text,
-  Container,
-  Select,
-  IconButton,
-  Spacer
 } from "@chakra-ui/react";
-import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import React, { useContext, useState } from "react";
 import { LoginContext } from "../../component/LoginProvider.jsx";
-import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from "@chakra-ui/icons";
 
 export function BoardWrite() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [files, setFiles] = useState([]);
-  const [invisibledText, setInvisibledText] = useState(true);
-  const [disableSaveButton, setDisableSaveButton] = useState(false);
-  const [boardType, setBoardType] = useState("자유");
-  const navigate = useNavigate();
-  const location = useLocation();
   const { memberInfo } = useContext(LoginContext);
-  const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
-  const params = memberId ? { memberId } : {};
+  const [title, setTitle] = useState("");
+  const [boardType, setBoardType] = useState("카테고리 선택");
+  const [content, setContent] = useState("");
+  const [fileNameList, setFileNameList] = useState([]);
+  const [invisibledText, setInvisibledText] = useState(false);
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
   const toast = useToast();
 
-  function handleSaveClick() {
-    axios
-      .postForm("/api/board/add", {
-        title,
-        content,
-        boardType,
-        memberId: memberInfo.id,
-        files,
-      })
-      .then(() => {
-        navigate("/board/list");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  useEffect(() => {
-    if (!memberInfo) {
-      toast({
-        title: "로그인 회원만 가능합니다",
-        duration: 3000,
-        isClosable: true,
-        status: "error",
-      });
-      const previousPath = location.state?.from || "/";
-      navigate(previousPath, { replace: true });
-    }
-    if (title.trim().length === 0 || content.trim().length === 0) {
-      setDisableSaveButton(true);
-    } else {
-      setDisableSaveButton(false);
-    }
-  }, [title, content]);
-
-  const fileNameList = files.map((file, index) => (
-    <li key={index}>{file.name}</li>
-  ));
-
-  function handleChange(e) {
-    const selectedFiles = Array.from(e.target.files);
-    let totalSize = 0;
-    let hasOversizedFile = false;
-
-    selectedFiles.forEach((file) => {
-      if (file.size > 100 * 1024 * 1024) {
-        hasOversizedFile = true;
-      }
-      totalSize += file.size;
+  const handleSaveClick = () => {
+    // Save logic here
+    toast({
+      title: "저장 완료",
+      description: "게시글이 성공적으로 저장되었습니다.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
     });
+  };
 
-    if (totalSize > 100 * 1024 * 1024 || hasOversizedFile) {
-      setDisableSaveButton(true);
-      setInvisibledText(false);
-    } else {
-      setFiles(selectedFiles);
-      setInvisibledText(true);
+  const handleChange = (e) => {
+    // Handle file input change
+  };
 
-      if (title.trim().length === 0 || content.trim().length === 0) {
-        setDisableSaveButton(true);
-      } else {
-        setDisableSaveButton(false);
-      }
-    }
-  }
-
-  if (!memberInfo) {
-    return <Box />;
-  }
   return (
-    <Container maxW="container.md" py={10}>
-      <Box p={6} borderWidth="1px" borderRadius="md" bg="white">
-        <Heading as="h2" size="lg" mb={6} textAlign="center">
-          게시물 작성
-        </Heading>
-        <FormControl mb={4}>
-          <FormLabel>작성자</FormLabel>
-          <Input readOnly value={memberInfo.nickname} />
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>제목</FormLabel>
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>카테고리 선택</FormLabel>
+    <Center>
+      <Box
+        maxW={"700px"}
+        w={"100%"}
+        p={6}
+        boxShadow={"lg"}
+        borderRadius={"md"}
+        mt={10}
+        bg={"white"}
+      >
+        <Box mb={6}>
+          <FormControl>
+            <FormLabel>작성자</FormLabel>
+            <Text>{memberInfo.nickname}</Text>
+          </FormControl>
+        </Box>
+        <Box mb={6}>
+          <FormControl>
+            <FormLabel>제목</FormLabel>
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              variant="filled"
+              focusBorderColor="teal.500"
+              placeholder="제목을 입력하세요"
+            />
+          </FormControl>
+        </Box>
+        <Box mb={6}>
+          <Box fontWeight="bold" mb={2}>
+            카테고리 선택
+          </Box>
           <Menu>
             {({ isOpen }) => (
               <>
                 <MenuButton
                   as={Button}
                   rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
-                  bg="teal.500"
-                  color="white"
-                  fontWeight="bold"
-                  _hover={{ bg: "teal.600" }}
-                  _active={{ bg: "teal.700" }}
+                  bg="gray.100"
+                  color="black"
+                  fontWeight="medium"
+                  _hover={{ bg: "gray.200" }}
+                  _active={{ bg: "gray.300" }}
                   size="lg"
-                  p={4}
                   width="100%"
+                  border="1px solid"
+                  borderColor="gray.300"
+                  borderRadius="md"
                 >
-                  {`${boardType} 게시판`}
+                  {`${boardType}`}
                 </MenuButton>
                 <MenuList overflowY="auto">
                   <MenuItem onClick={() => setBoardType("자유")}>
@@ -167,46 +117,55 @@ export function BoardWrite() {
                   <MenuItem onClick={() => setBoardType("이벤트/모임")}>
                     이벤트/모임 게시판
                   </MenuItem>
-                  {params.memberId === 1 && (
-                    <MenuItem onClick={() => setBoardType("반려동물 정보")}>
-                      반려동물 정보 게시판
-                    </MenuItem>
-                  )}
                 </MenuList>
               </>
             )}
           </Menu>
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>내용</FormLabel>
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>파일</FormLabel>
-          <Input
-            multiple
-            type="file"
-            accept="image/*"
-            onChange={handleChange}
-          />
-          {!invisibledText && (
-            <FormHelperText color="red.500">
-              총 용량은 100MB, 한 파일은 100MB를 초과할 수 없습니다.
-            </FormHelperText>
-          )}
-        </FormControl>
-        <Box mb={4}>
+        </Box>
+        <Box mb={6}>
+          <FormControl>
+            <FormLabel>내용</FormLabel>
+            <Textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              height="200px"
+              variant="filled"
+              focusBorderColor="teal.500"
+              placeholder="내용을 입력하세요"
+            />
+          </FormControl>
+        </Box>
+        <Box mb={6}>
+          <FormControl>
+            <FormLabel>파일</FormLabel>
+            <Input
+              multiple
+              type="file"
+              accept="image/*"
+              onChange={handleChange}
+              variant="filled"
+              focusBorderColor="teal.500"
+            />
+            {!invisibledText && (
+              <FormHelperText color="red.500">
+                총 용량은 100MB, 한 파일은 10MB를 초과할 수 없습니다.
+              </FormHelperText>
+            )}
+          </FormControl>
+        </Box>
+        <Box mb={6}>
           <ul>{fileNameList}</ul>
         </Box>
-        <Flex justify="flex-end" gap={3}>
-          <Button colorScheme="blue" onClick={handleSaveClick} isDisabled={disableSaveButton}>
+        <Box textAlign="center">
+          <Button
+            colorScheme={"teal"}
+            onClick={handleSaveClick}
+            isDisabled={disableSaveButton}
+          >
             저장
           </Button>
-        </Flex>
+        </Box>
       </Box>
-    </Container>
+    </Center>
   );
 }

@@ -1,26 +1,19 @@
+import React, {useContext, useEffect, useState} from "react";
 import {
-  Avatar,
-  Badge,
+  Avatar, Badge,
   Box,
   Button,
   Container,
   Flex,
-  Image,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverTrigger,
-  Spacer,
+  Image, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Spacer,
   Spinner,
   Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import styled, { keyframes, css } from "styled-components";
 import { BoardCommentComponent } from "../../component/board/BoardCommentComponent.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
@@ -29,6 +22,29 @@ import { LoginContext } from "../../component/LoginProvider.jsx";
 import { generateDiaryId } from "../../util/util.jsx";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ReportModal from "./ReportModal";
+
+const beat = keyframes`
+    0% {
+        transform: scale(1);
+    }
+    20% {
+        transform: scale(1.1);
+    }
+    40% {
+        transform: scale(1);
+    }
+`;
+
+const HeartIcon = styled(FontAwesomeIcon)`
+    font-size: 1.5rem;
+    color: ${(props) => (props.liked ? "red" : "inherit")};
+    ${(props) =>
+            props.liked &&
+            css`
+      animation: ${beat} 0.3s;
+    `}
+    cursor: pointer;
+`;
 
 export function BoardView() {
   const { id } = useParams();
@@ -83,7 +99,6 @@ export function BoardView() {
     try {
       const res = await axios.get(`/api/member/${memberId}`);
       setProfileImage(res.data.imageUrl);
-      console.log("Fetched profileImage=", res.data.imageUrl);
     } catch (error) {
       console.error("Error fetching profile image:", error);
     }
@@ -148,6 +163,9 @@ export function BoardView() {
 
   return (
     <Container maxW="container.xl" py={10}>
+      <Button onClick={() => navigate(`/board/list?boardType=${board.boardType}`)}>
+        게시판으로 돌아가기
+      </Button>
       <Box p={6} borderWidth="1px" borderRadius="md" bg="white" mb={6}>
         <Flex justify="space-between" align="center" mb={4}>
           <Box fontWeight="bold" fontSize="2xl">
@@ -216,16 +234,14 @@ export function BoardView() {
       </Box>
       <Flex mt={4} mb={4} align="center">
         <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
-          <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
-            {like.like ? (
-              <FontAwesomeIcon icon={fullHeart} />
-            ) : (
-              <FontAwesomeIcon icon={emptyHeart} />
-            )}
-          </Box>
+          <HeartIcon
+            icon={like.like ? fullHeart : emptyHeart}
+            liked={like.like}
+            onClick={handleClickLike}
+          />
         </Tooltip>
         {like.count > 0 && (
-          <Box mx={3} fontSize="3xl">
+          <Box mx={3} fontSize="2xl">
             {like.count}
           </Box>
         )}
@@ -290,3 +306,5 @@ export function BoardView() {
     </Container>
   );
 }
+
+export default BoardView;

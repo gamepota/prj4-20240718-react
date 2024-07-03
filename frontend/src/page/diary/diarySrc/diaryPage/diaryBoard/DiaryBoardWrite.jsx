@@ -20,10 +20,7 @@ import {
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
-import {
-  extractUserIdFromDiaryId,
-  generateDiaryId,
-} from "../../../../../util/util.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 
 export function DiaryBoardWrite() {
   const [title, setTitle] = useState("");
@@ -35,19 +32,9 @@ export function DiaryBoardWrite() {
   const isLoggedIn = Boolean(access);
   const toast = useToast();
   const navigate = useNavigate();
-  const { id } = useParams();
   const username = memberInfo?.nickname || "";
 
-  // diaryId가 유효한지 확인
   const diaryId = generateDiaryId(memberInfo.id);
-  useEffect(() => {
-    try {
-      extractUserIdFromDiaryId(diaryId);
-    } catch (error) {
-      console.error("Invalid diaryId:", error.message);
-      // 오류 처리 로직 추가
-    }
-  }, [diaryId]);
 
   const handleSaveClick = () => {
     setLoading(true);

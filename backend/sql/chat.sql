@@ -99,4 +99,4 @@ DESC diary_profile;
 DROP TABLE test;
 
 DELETE FROM refresh_token
-WHERE id = 555;
+WHERE id BETWEEN 554 AND 588;

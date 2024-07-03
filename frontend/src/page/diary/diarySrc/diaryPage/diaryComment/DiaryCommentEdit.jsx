@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   FormControl,
   FormLabel,
   Input,
@@ -11,6 +12,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
@@ -32,6 +34,7 @@ export function DiaryCommentEdit() {
   const isLoggedIn = Boolean(access);
   const navigate = useNavigate();
   const diaryId = generateDiaryId(memberInfo.id);
+  console.log(diaryComment.id);
 
   useEffect(() => {
     axios
@@ -53,7 +56,7 @@ export function DiaryCommentEdit() {
           description: "댓글이 수정되었습니다.",
           position: "top",
         });
-        navigate(`/diary/${diaryId}/comment/view/${diaryComment.id}`);
+        navigate(`/diary/${diaryId}/comment/view/${id}`);
       })
       .catch((err) => {
         if (err.response.status === 400) {
@@ -78,7 +81,15 @@ export function DiaryCommentEdit() {
   }
 
   return (
-    <Box maxW="600px" mx="auto" mt={10} p={5} boxShadow="md" borderRadius="md" bg="white">
+    <Box
+      maxW="600px"
+      mx="auto"
+      mt={10}
+      p={5}
+      boxShadow="md"
+      borderRadius="md"
+      bg="white"
+    >
       <Box mb={10}>
         <Text fontSize="xl" fontWeight="bold">
           방명록 수정
