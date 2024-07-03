@@ -115,7 +115,7 @@ export function Navbar() {
               p={2}
               borderRadius="md"
               fontSize="md"
-              fontWeight="medium"
+              fontWeight="bold"
               onClick={() => navigate("/place/map")}
             >
               동물병원 찾기
@@ -125,7 +125,7 @@ export function Navbar() {
               p={2}
               borderRadius="md"
               fontSize="md"
-              fontWeight="medium"
+              fontWeight="bold"
               onClick={() => navigate("/board/list?boardType=반려동물 정보")}
             >
               반려인 가이드
@@ -135,7 +135,7 @@ export function Navbar() {
               p={2}
               borderRadius="md"
               fontSize="md"
-              fontWeight="medium"
+              fontWeight="bold"
               onClick={() => navigate("/aichat")}
             >
               닥터 AI
@@ -150,7 +150,7 @@ export function Navbar() {
               bgColor="purple.100"
               _hover={{ bgColor: "purple.200" }}
               fontSize="md"
-              fontWeight="medium"
+              fontWeight="bold"
               onClick={() => navigate("/board/write")}
             >
               새 글쓰기
@@ -173,6 +173,7 @@ export function Navbar() {
                 bgColor="purple.100"
                 _hover={{ bgColor: "purple.200" }}
                 ml={2}
+                fontWeight="bold"
                 onClick={handleSearchClick}
               >
                 검색
@@ -185,7 +186,7 @@ export function Navbar() {
                   p={2}
                   borderRadius="md"
                   fontSize="md"
-                  fontWeight="medium"
+                  fontWeight="bold"
                   onClick={() => navigate(`/member/page/${memberInfo.id}`)}
                 >
                   {nickname}님
@@ -195,7 +196,7 @@ export function Navbar() {
                   p={2}
                   borderRadius="md"
                   fontSize="md"
-                  fontWeight="medium"
+                  fontWeight="bold"
                   onClick={handleOpenDiary}
                 >
                   다이어리
@@ -206,7 +207,7 @@ export function Navbar() {
                   p={2}
                   borderRadius="md"
                   fontSize="md"
-                  fontWeight="medium"
+                  fontWeight="bold"
                   onClick={handleLogout}
                 >
                   로그아웃
@@ -219,7 +220,7 @@ export function Navbar() {
                 p={2}
                 borderRadius="md"
                 fontSize="md"
-                fontWeight="medium"
+                fontWeight="bold"
                 onClick={() => navigate("/member/login")}
               >
                 로그인
@@ -232,7 +233,7 @@ export function Navbar() {
               bgColor="purple.100"
               _hover={{ bgColor: "purple.200" }}
               fontSize="md"
-              fontWeight="medium"
+              fontWeight="bold"
               onClick={() => navigate("/board/write")}
             >
               <FontAwesomeIcon icon={faPencil} />
@@ -242,37 +243,43 @@ export function Navbar() {
                 as={Button}
                 rightIcon={<ChevronDownIcon />}
                 fontSize="md"
-                fontWeight="medium"
+                fontWeight="bold"
               >
                 메뉴
               </MenuButton>
               <MenuList>
-                <MenuItem onClick={() => navigate("/")}>홈</MenuItem>
-                <MenuItem onClick={() => navigate("/place/map")}>
+                <MenuItem fontWeight="bold" onClick={() => navigate("/")}>홈</MenuItem>
+                <MenuItem fontWeight="bold" onClick={() => navigate("/place/map")}>
                   동물병원 찾기
                 </MenuItem>
                 <MenuItem
+                  fontWeight="bold"
                   onClick={() =>
                     navigate("/board/list?boardType=반려동물 정보")
                   }
                 >
                   반려동물 정보
                 </MenuItem>
-                <MenuItem onClick={() => navigate("/aichat")}>
+                <MenuItem
+                  fontWeight="bold"
+                  onClick={() => navigate("/aichat")}>
                   AI 수의사
                 </MenuItem>
                 {isLoggedIn ? (
                   <>
                     <MenuItem
+                      fontWeight="bold"
                       onClick={() => navigate(`/member/page/${memberInfo.id}`)}
                     >
                       {nickname}님
                     </MenuItem>
-                    <MenuItem onClick={handleOpenDiary}>다이어리</MenuItem>
-                    <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
+                    <MenuItem fontWeight="bold" onClick={handleOpenDiary}>다이어리</MenuItem>
+                    <MenuItem fontWeight="bold" onClick={handleLogout}>로그아웃</MenuItem>
                   </>
                 ) : (
-                  <MenuItem onClick={() => navigate("/member/login")}>
+                  <MenuItem
+                    fontWeight="bold"
+                    onClick={() => navigate("/member/login")}>
                     로그인
                   </MenuItem>
                 )}

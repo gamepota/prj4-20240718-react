@@ -44,14 +44,14 @@ const beat = keyframes`
 `;
 
 const HeartIcon = styled(FontAwesomeIcon)`
-  font-size: 1.5rem;
-  color: ${(props) => (props.liked ? "red" : "inherit")};
-  ${(props) =>
-    props.liked &&
-    css`
-      animation: ${beat} 0.3s;
-    `}
-  cursor: pointer;
+    font-size: 1.5rem;
+    color: ${(props) => (props.liked ? "red" : "inherit")};
+    ${(props) =>
+            props.liked &&
+            css`
+                animation: ${beat} 0.3s;
+            `}
+    cursor: pointer;
 `;
 
 export function BoardView() {
@@ -173,9 +173,10 @@ export function BoardView() {
   return (
     <Container maxW="container.xl" py={10}>
       <Button
+        mb={4}
         onClick={() =>
           navigate(
-            `/board/list?boardType=${localStorage.getItem("currentBoardType")}`,
+            `/board/list?boardType=${localStorage.getItem("currentBoardType")}`
           )
         }
       >
