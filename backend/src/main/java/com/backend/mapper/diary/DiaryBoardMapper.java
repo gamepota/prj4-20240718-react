@@ -60,11 +60,9 @@ public interface DiaryBoardMapper {
                 SELECT d.id,
                        d.title,
                        m.nickname writer,
-                       d.inserted,
-                       COUNT(DISTINCT f.name) AS number_of_images
+                       d.inserted
                 FROM diary d
                 JOIN member m ON d.member_id = m.id
-                LEFT JOIN diary_file f ON d.id = f.diary_id
                 <where>
                     <if test="memberId != null">
                         d.member_id = #{memberId}
