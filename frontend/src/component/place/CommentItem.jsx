@@ -27,6 +27,7 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { memberInfo } = useContext(LoginContext);
   const memberId = memberInfo && memberInfo.id ? parseInt(memberInfo.id) : null;
+  const isLoggedIn = Boolean(memberInfo && memberInfo.access); // 로그인 상태를 Boolean 값으로 판단
 
   function handleRemoveClick() {
     setIsProcessing(true);
@@ -65,7 +66,7 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
           </Text>
         </Box>
         <Spacer />
-        {memberId === comment.memberId && (
+        {memberId && ( // 로그인 상태이고 사용자 ID가 일치할 때만 표시
           <Flex>
             <Button
               size="sm"

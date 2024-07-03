@@ -16,8 +16,9 @@ import {
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
+import { LoginContext } from "../LoginProvider.jsx";
 
 export function CommentEdit({
   comment,
@@ -28,13 +29,15 @@ export function CommentEdit({
   const [commentText, setCommentText] = useState(comment.comment);
   const { onClose, onOpen, isOpen } = useDisclosure();
   const toast = useToast();
-  // console.log(comment);
+  const { memberInfo } = useContext(LoginContext);
+  const isLoggedIn = Boolean(memberInfo && memberInfo.access);
+
   function handleCommentSubmit() {
     setIsProcessing(true);
     axios
       .put("/api/hospitalComment/edit", {
         id: comment.id,
-        boardComment: commentText,
+        comment: commentText,
       })
       .then(() => {
         toast({
@@ -42,11 +45,17 @@ export function CommentEdit({
           position: "top",
           status: "success",
         });
+        setIsEditing(false);
       })
-      .catch(() => {})
+      .catch(() => {
+        toast({
+          description: "댓글 수정에 실패했습니다.",
+          status: "error",
+          position: "top",
+        });
+      })
       .finally(() => {
         setIsProcessing(false);
-        setIsEditing(false);
       });
   }
 
@@ -67,15 +76,18 @@ export function CommentEdit({
         >
           <FontAwesomeIcon icon={faXmark} />
         </Button>
-        <Button
-          size={"sm"}
-          isLoading={isProcessing}
-          onClick={onOpen}
-          variant="outline"
-          colorScheme={"blue"}
-        >
-          <FontAwesomeIcon icon={faPaperPlane} />
-        </Button>
+        {/* 로그인 상태일 때만 수정 확인 버튼을 표시 */}
+        {isLoggedIn && (
+          <Button
+            size={"sm"}
+            isLoading={isProcessing}
+            onClick={onOpen}
+            variant="outline"
+            colorScheme={"blue"}
+          >
+            <FontAwesomeIcon icon={faPaperPlane} />
+          </Button>
+        )}
       </Stack>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

@@ -14,6 +14,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import KakaoMap2 from "../KakaoMap2.jsx";
+import { useNavigate } from "react-router-dom";
 
 const PetProfile = ({ name, imgSrc }) => (
   <Box textAlign="center" m={4}>
@@ -50,6 +51,11 @@ const PetInfoTable = ({ data }) => (
 
 export const MainPage = () => {
   const [showLogo, setShowLogo] = useState(false);
+  const navigate = useNavigate(); // useNavigate 훅 사용
+
+  const handleMapClick = () => {
+    navigate("place-map3"); // 클릭 시 원하는 경로로 이동
+  };
 
   useEffect(() => {
     const isFirstVisit = !sessionStorage.getItem("visited");
@@ -126,7 +132,13 @@ export const MainPage = () => {
         </Text>
       </Flex>
       <Flex justify="center">
-        <Box mx={"auto"} w={"100%"} maxW={"600px"} h={"400px"}>
+        <Box
+          mx={"auto"}
+          w={"100%"}
+          maxW={"600px"}
+          h={"400px"}
+          onClick={handleMapClick}
+        >
           <KakaoMap2 />
         </Box>
       </Flex>

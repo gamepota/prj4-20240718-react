@@ -40,6 +40,7 @@ import DiaryCalendar from "./page/diary/diarySrc/diaryPage/diaryCalendar/DiaryCa
 import { PlaceLocal } from "./page/place/PlaceLocal.jsx";
 import { PlaceMap } from "./page/place/PlaceMap.jsx";
 import { PlaceMap2 } from "./page/place/PlaceMap2.jsx";
+import { PlaceMap3 } from "./page/place/PlaceMap3.jsx";
 import { PlaceReview } from "./page/place/PlaceReview.jsx";
 import KakaoMap from "./KakaoMap.jsx";
 
@@ -104,6 +105,7 @@ const App = () => {
           path: "kakao-map",
           element: <KakaoMap onPolygonSelect={setSelectedCtprvnCd} />,
         }, // KakaoMap 경로 설정
+        { path: "place-map3", element: <PlaceMap3 /> },
       ],
     },
   ]);
