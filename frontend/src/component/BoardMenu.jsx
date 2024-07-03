@@ -8,9 +8,8 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import {LoginContext} from "./LoginProvider.jsx";
-import {ChevronDownIcon, ChevronUpIcon} from "@chakra-ui/icons";
-
+import { LoginContext } from "./LoginProvider.jsx";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
 const BoardMenu = ({ isOpen, onOpen, onClose }) => {
   const navigate = useNavigate();
@@ -110,7 +109,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
           >
             이벤트/모임 게시판
           </MenuItem>
-          {memberInfo && memberInfo.id === 1 && (
+          {memberInfo && Number(memberInfo.id) === 1 && (
             <MenuItem
               size="md"
               onClick={() => {
@@ -125,6 +124,6 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
       </Menu>
     </Box>
   );
-}
+};
 
 export default BoardMenu;

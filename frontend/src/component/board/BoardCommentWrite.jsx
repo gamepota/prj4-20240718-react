@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Box, Button, Flex, Textarea, Tooltip } from "@chakra-ui/react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { LoginContext } from "../LoginProvider.jsx";
 
 export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
@@ -27,6 +27,7 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
         setIsProcessing(false);
       });
   }
+
   // console.log(account);
 
   if (!memberInfo) {
@@ -43,21 +44,15 @@ export function BoardCommentWrite({ boardId, isProcessing, setIsProcessing }) {
         />
       </Box>
       <Box>
-        <Tooltip
-          label="로그인 하세요"
-          isDisabled={memberId}
-          placement="bottom"
-        >
+        <Tooltip label="로그인 하세요" isDisabled={memberId} placement="bottom">
           <Button
             h={"100%"}
-            // isDisabled={
-            //   boardComment.trim().length === 0 || !account.isLoggedIn()
-            // }
+            w="80px"
             isLoading={isProcessing}
             onClick={handleBoardCommentSubmitClick}
             colorScheme={"blue"}
           >
-            <FontAwesomeIcon icon={faPaperPlane} />
+            <FontAwesomeIcon icon={faPencil} />
           </Button>
         </Tooltip>
       </Box>

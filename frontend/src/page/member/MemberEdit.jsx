@@ -281,6 +281,7 @@ export function MemberEdit(props) {
           <FormControl isRequired>
             <InputGroup>
               <Input
+                mb={2}
                 placeholder={"이메일"}
                 value={username}
                 readOnly
@@ -291,6 +292,7 @@ export function MemberEdit(props) {
           <FormControl isRequired>
             <InputGroup>
               <Input
+                mb={2}
                 placeholder={"닉네임"}
                 value={nickname}
                 readOnly={isNicknameConfirmed} // 닉네임 확인 후 readOnly 설정
@@ -337,6 +339,7 @@ export function MemberEdit(props) {
           <FormControl>
             <InputGroup>
               <Input
+                mb={2}
                 placeholder="비밀번호"
                 value={password}
                 type={showPassword ? "text" : "password"}
@@ -444,6 +447,7 @@ export function MemberEdit(props) {
           </Flex>
           <FormControl isRequired>
             <Input
+              mb={2}
               placeholder="이름"
               value={name}
               onChange={handleNameChange}
@@ -457,6 +461,7 @@ export function MemberEdit(props) {
           </FormControl>
           <FormControl isRequired>
             <Input
+              mb={2}
               placeholder="생년월일 8자리 ( YYYYMMDD )"
               value={birthDate}
               onChange={handleBirthDateChange}
@@ -470,6 +475,7 @@ export function MemberEdit(props) {
           </FormControl>
           <FormControl isRequired>
             <Input
+              mb={2}
               placeholder="연락처 ( '-' 제외하고 입력 )"
               type="tel"
               value={phoneNumber}
@@ -486,13 +492,18 @@ export function MemberEdit(props) {
           <FormControl isRequired>
             <Flex>
               <Flex width={"80%"} direction={"column"}>
-                <Input readOnly value={postcode} placeholder="우편번호" />
-                <Input readOnly value={mainAddress} placeholder="주소" />
+                <Input
+                  mb={2}
+                  readOnly
+                  value={postcode}
+                  placeholder="우편번호"
+                />
+                <Input mb={2} readOnly value={mainAddress} placeholder="주소" />
               </Flex>
               <Box>
                 <Button
                   _hover={{ bgColor: "purple.500 ", color: "white" }}
-                  height={"100%"}
+                  height={"90%"}
                   onClick={openPostcodePopup}
                 >
                   주소 검색

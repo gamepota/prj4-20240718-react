@@ -9,7 +9,9 @@ import {
   FormLabel,
   Input,
   Spinner,
+  Text,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -65,42 +67,44 @@ export function MemberFind() {
   return (
     <Center mt={5}>
       <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
-        <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
-          비밀번호 찾기
-        </Box>
-        <Box>
+        <VStack spacing={4} align="stretch">
+          <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb={6}>
+            비밀번호 찾기
+          </Text>
           {error && (
-            <Alert status="error" mb={4}>
+            <Alert status="error" borderRadius="md">
               <AlertIcon />
               {error}
             </Alert>
           )}
           {successMessage && (
-            <Alert status="success" mb={4}>
+            <Alert status="success" borderRadius="md">
               <AlertIcon />
               {successMessage}
             </Alert>
           )}
-          <FormControl mb={4}>
+          <FormControl>
             <FormLabel>이메일</FormLabel>
             <Input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="이메일을 입력하세요"
               onKeyPress={handleKeyPress}
+              variant="filled"
+              focusBorderColor="purple.500"
             />
           </FormControl>
-          <Box mt={5}>
-            <Button
-              width={"100%"}
-              _hover={{ bgColor: "purple.500", color: "white" }}
-              onClick={handleFindPassword}
-              isLoading={isLoading}
-            >
-              {isLoading ? <Spinner size="sm" /> : "비밀번호 찾기"}
-            </Button>
-          </Box>
-        </Box>
+          <Button
+            mt={4}
+            colorScheme="purple"
+            width="full"
+            onClick={handleFindPassword}
+            isLoading={isLoading}
+            _hover={{ bg: "purple.400" }}
+          >
+            {isLoading ? <Spinner size="sm" /> : "비밀번호 찾기"}
+          </Button>
+        </VStack>
       </Box>
     </Center>
   );

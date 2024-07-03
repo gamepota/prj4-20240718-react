@@ -17,7 +17,6 @@ import {
 import { DiaryNavbar } from "../diaryComponent/DiaryNavbar.jsx";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
-import { FriendAddButton } from "../../../../component/FriendAddButton.jsx";
 import { extractUserIdFromDiaryId } from "../../../../util/util.jsx";
 import { DiaryProvider } from "../diaryComponent/DiaryContext.jsx";
 
@@ -125,6 +124,7 @@ export function DiaryHome() {
       }
     }
   };
+
   async function fetchProfileImage(ownerId) {
     if (!ownerId) {
       console.log("ownerId is not set yet");
@@ -165,7 +165,7 @@ export function DiaryHome() {
           w="100%"
           h="100%"
           p={6}
-          bg="white"
+          bg="purple.100"
           boxShadow="lg"
           borderRadius="md"
           position="relative"
@@ -179,6 +179,7 @@ export function DiaryHome() {
             overflow="hidden"
             display="flex"
             position="relative"
+            bg="white"
           >
             <Flex w="100%" h="100%" flexDirection="row">
               <VStack
@@ -276,16 +277,15 @@ export function DiaryHome() {
                   position="absolute"
                   top={0}
                   left={0}
+                  pt={5}
+                  pb={5}
+                  pr={10}
+                  pl={10}
                 >
                   <Outlet />
                 </Box>
               </Box>
             </Flex>
-            {ownerId && memberInfo && Number(memberInfo.id) !== ownerId && (
-              <Box position="absolute" bottom="10px" right="10px">
-                <FriendAddButton friendId={ownerId} />
-              </Box>
-            )}
           </Box>
           <Box ml={-2}>
             <DiaryNavbar />

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import KakaoMap from "../../KakaoMap.jsx";
-import { Box } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { PlaceMap2 } from "./PlaceMap2.jsx";
 
 export function PlaceMap() {
@@ -10,9 +10,20 @@ export function PlaceMap() {
     setSelectedCtprvnCd(ctprvnCd);
   };
 
+  const handleBackClick = () => {
+    setSelectedCtprvnCd(null);
+  };
+
   return (
-    <div className="App">
-      <Box position="relative" width="100%" height="500px">
+    <Box className="App" p={4}>
+      <Box
+        position="relative"
+        width="100%"
+        height="500px"
+        boxShadow="lg"
+        borderRadius="md"
+        overflow="hidden"
+      >
         <Box
           position="absolute"
           top="0"
@@ -32,8 +43,18 @@ export function PlaceMap() {
           display={selectedCtprvnCd ? "block" : "none"}
         >
           <PlaceMap2 ctprvnCd={selectedCtprvnCd} />
+          <Button
+            position="absolute"
+            top={4}
+            left={4}
+            colorScheme="blue"
+            onClick={handleBackClick}
+            boxShadow="md"
+          >
+            돌아가기
+          </Button>
         </Box>
       </Box>
-    </div>
+    </Box>
   );
 }

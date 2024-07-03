@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, VStack } from "@chakra-ui/react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../../../component/LoginProvider.jsx";
 import axios from "axios";
 import {
@@ -10,11 +10,13 @@ import {
 
 export function DiaryNavbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { memberInfo } = useContext(LoginContext);
   const { diaryId } = useParams();
   const friendId = extractUserIdFromDiaryId(diaryId);
   const [isFriend, setIsFriend] = useState(false);
   const [isOwnDiary, setIsOwnDiary] = useState(false);
+  const [activeButton, setActiveButton] = useState(location.pathname); // 현재 경로로 초기화
 
   useEffect(() => {
     if (memberInfo && Number(memberInfo.id) === friendId) {
@@ -55,53 +57,71 @@ export function DiaryNavbar() {
     }
   };
 
+  const handleButtonClick = (path) => {
+    setActiveButton(path);
+    navigate(path);
+  };
+
   return (
     <VStack
-      spacing={4}
-      bg="white"
+      spacing={1} // 버튼들이 약간의 간격을 두고 배치되도록 설정
+      bg="purple.100"
       p={2}
-      border="1px solid #ccc"
       borderRadius="md"
       w="100%"
     >
       <Button
-        onClick={() => navigate(`/diary/${diaryId}`)}
+        onClick={() => handleButtonClick(`/diary/${diaryId}`)}
         cursor={"pointer"}
         w="100%"
+        bg={activeButton === `/diary/${diaryId}` ? "blue.400" : "blue.200"}
         _hover={{
           bgColor: "blue.200",
         }}
+        boxShadow="md"
       >
         홈
       </Button>
       <Button
-        onClick={() => navigate(`/diary/${diaryId}/comment`)}
+        onClick={() => handleButtonClick(`/diary/${diaryId}/comment`)}
         cursor={"pointer"}
         w="100%"
+        bg={
+          activeButton === `/diary/${diaryId}/comment` ? "blue.400" : "blue.200"
+        }
         _hover={{
           bg: "blue.200",
         }}
+        boxShadow="md"
       >
         방명록
       </Button>
       <Button
-        onClick={() => navigate(`/diary/${diaryId}/list`)}
+        onClick={() => handleButtonClick(`/diary/${diaryId}/list`)}
         cursor={"pointer"}
         w="100%"
+        bg={activeButton === `/diary/${diaryId}/list` ? "blue.400" : "blue.200"}
         _hover={{
           bgColor: "blue.200",
         }}
+        boxShadow="md"
       >
         일기장
       </Button>
       {isOwnDiary && (
         <Button
-          onClick={() => navigate(`/diary/${diaryId}/calendar`)}
+          onClick={() => handleButtonClick(`/diary/${diaryId}/calendar`)}
           cursor={"pointer"}
           w="100%"
+          bg={
+            activeButton === `/diary/${diaryId}/calendar`
+              ? "blue.400"
+              : "blue.200"
+          }
           _hover={{
             bg: "blue.200",
           }}
+          boxShadow="md"
         >
           기록
         </Button>
@@ -113,8 +133,19 @@ export function DiaryNavbar() {
       )}
       {!isOwnDiary && (
         <Button
-          onClick={() => navigate(`/diary/${generateDiaryId(memberInfo.id)}`)}
+          onClick={() =>
+            handleButtonClick(`/diary/${generateDiaryId(memberInfo.id)}`)
+          }
           w="100%"
+          bg={
+            activeButton === `/diary/${generateDiaryId(memberInfo.id)}`
+              ? "blue.400"
+              : "blue.200"
+          }
+          _hover={{
+            bg: "blue.200",
+          }}
+          boxShadow="md"
         >
           내 미니홈피 가기
         </Button>

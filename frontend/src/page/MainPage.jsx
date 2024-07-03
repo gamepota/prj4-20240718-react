@@ -216,7 +216,14 @@ export const MainPage = () => {
       </Fade>
       <Box textAlign="center" mt={8}>
         <Box mt={10} mb={5}>
-          <Text>반려인들을 위한 커뮤니티, 펫밀리</Text>
+          <Text
+            fontWeight="bold"
+            fontStyle="italic"
+            fontSize="larger"
+            color="darkblue"
+          >
+            반려인의, 반려인에 의한, 반려인을 위한
+          </Text>
         </Box>
         <Image src="/img/petmily-logo.png" w="20%" mx="auto" mb={4} />
         <Flex justifyContent="center" mb={8}>
@@ -314,9 +321,17 @@ export const MainPage = () => {
                   _hover={{ bg: hoverBg }}
                   onClick={() => navigate(`/board/${board.id}`)}
                 >
-                  <Td textAlign="center">{board.title}</Td>
+                  <Td
+                    extAlign="center"
+                    maxW="200px" // 최대 너비 설정
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    {board.title}
+                  </Td>
                   <Td textAlign="center">{board.writer}</Td>
-                  <Td textAlign="center">{board.number_of_likes}</Td>
+                  <Td textAlign="center">{board.numberOfLikes}</Td>
                   <Td textAlign="center">{board.views}</Td>
                 </Tr>
               ))}
@@ -367,9 +382,17 @@ export const MainPage = () => {
                   _hover={{ bg: hoverBg }}
                   onClick={() => navigate(`/board/${board.id}`)}
                 >
-                  <Td textAlign="center">{board.title}</Td>
+                  <Td
+                    extAlign="center"
+                    maxW="200px" // 최대 너비 설정
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    {board.title}
+                  </Td>
                   <Td textAlign="center">{board.writer}</Td>
-                  <Td textAlign="center">{board.number_of_likes}</Td>
+                  <Td textAlign="center">{board.numberOfLikes}</Td>
                   <Td textAlign="center">{board.views}</Td>
                 </Tr>
               ))}

@@ -3,6 +3,9 @@ import {
   Box,
   Button,
   Center,
+  Container,
+  Flex,
+  Heading,
   Spinner,
   Table,
   Tbody,
@@ -10,6 +13,7 @@ import {
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useToast,
 } from "@chakra-ui/react";
@@ -142,73 +146,107 @@ export function MemberList() {
   }
 
   return (
-    <Center mt={5}>
-      <Box
-        w="100%"
-        maxW="1200px"
-        p={6}
-        boxShadow="lg"
-        borderRadius="md"
-        bg="white"
-      >
-        <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
-          관리자 모드
-        </Box>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>ID</Th>
-              <Th>이메일</Th>
-              <Th>닉네임</Th>
-              <Th>성별</Th>
-              <Th>생년월일</Th>
-              <Th>가입일시</Th>
-              <Th>회원 관리</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {members.map((member) => (
-              <Tr key={member.id}>
-                <Td>{member.id}</Td>
-                <Td>{member.username}</Td>
-                <Td>{member.nickname}</Td>
-                <Td>{member.gender === "male" ? "남성" : "여성"}</Td>
-                <Td>{member.birthDate}</Td>
-                <Td>{formatDate(member.inserted)}</Td>
-                <Td display={"flex"}>
-                  <Button
-                    size="sm"
-                    colorScheme="blue"
-                    onClick={() => navigate(`/member/edit/${member.id}`)}
-                    mr={2}
-                  >
-                    <FontAwesomeIcon icon={faEdit} />
-                  </Button>
-                  {member.id !== 1 && (
-                    <Button
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() => handleDeleteMember(member.id)}
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </Button>
-                  )}
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-        <Pagination
-          pageInfo={{
-            currentPageNumber: currentPage,
-            nextPageNumber: currentPage < totalPages ? currentPage + 1 : null,
-            prevPageNumber: currentPage > 1 ? currentPage - 1 : null,
-            lastPageNumber: totalPages,
-          }}
-          pageNumbers={Array.from({ length: totalPages }, (_, i) => i + 1)}
-          handlePageButtonClick={handlePageButtonClick}
-        />
+    <Container maxW="container.xl" py={10}>
+      <Center mt={10}>
+        <Flex p={4} borderRadius="md" alignItems="center">
+          <FontAwesomeIcon icon={faEdit} size="2x" />
+          <Heading as="h1" size="xl" ml={2}>
+            관리자 모드
+          </Heading>
+        </Flex>
+      </Center>
+      <Box textAlign="center" mt={5} mb={10}>
+        <Text fontSize="lg" color="gray.600">
+          회원 목록을 확인하고 관리할 수 있습니다.
+        </Text>
       </Box>
-    </Center>
+      <Center mt={10}>
+        <Box mb={10} w="100%" px={5}>
+          <Table
+            variant="simple"
+            borderWidth="1px"
+            borderRadius="lg"
+            overflow="hidden"
+          >
+            <Thead bg={"gray.100"}>
+              <Tr>
+                <Th textAlign="center">ID</Th>
+                <Th textAlign="center">이메일</Th>
+                <Th textAlign="center">닉네임</Th>
+                <Th textAlign="center">성별</Th>
+                <Th textAlign="center">생년월일</Th>
+                <Th textAlign="center">가입일시</Th>
+                <Th textAlign="center">회원 관리</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {members.map((member) => (
+                <Tr key={member.id}>
+                  <Td textAlign="center">{member.id}</Td>
+                  <Td textAlign="center">{member.username}</Td>
+                  <Td textAlign="center">{member.nickname}</Td>
+                  <Td textAlign="center">
+                    {member.gender === "male" ? "남성" : "여성"}
+                  </Td>
+                  <Td textAlign="center">{member.birthDate}</Td>
+                  <Td textAlign="center">{formatDate(member.inserted)}</Td>
+                  <Td display={"flex"} justifyContent="center">
+                    <Tooltip label="수정" aria-label="수정" hasArrow>
+                      <Button
+                        size="sm"
+                        colorScheme="blue"
+                        onClick={() => navigate(`/member/edit/${member.id}`)}
+                        mr={2}
+                      >
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          style={{
+                            color: "white",
+                            fontSize: "16px",
+                            padding: "5px",
+                            backgroundColor: "#3182CE",
+                            borderRadius: "5px",
+                          }}
+                        />
+                      </Button>
+                    </Tooltip>
+                    {member.id !== 1 && (
+                      <Tooltip label="삭제" aria-label="삭제" hasArrow>
+                        <Button
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => handleDeleteMember(member.id)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            style={{
+                              color: "white",
+                              fontSize: "16px",
+                              padding: "5px",
+                              backgroundColor: "#E53E3E",
+                              borderRadius: "5px",
+                            }}
+                          />
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      </Center>
+      <Pagination
+        pageInfo={{
+          currentPageNumber: currentPage,
+          nextPageNumber: currentPage < totalPages ? currentPage + 1 : null,
+          prevPageNumber: currentPage > 1 ? currentPage - 1 : null,
+          lastPageNumber: totalPages,
+        }}
+        pageNumbers={Array.from({ length: totalPages }, (_, i) => i + 1)}
+        handlePageButtonClick={handlePageButtonClick}
+      />
+    </Container>
   );
 }

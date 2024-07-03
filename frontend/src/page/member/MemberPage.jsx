@@ -30,7 +30,7 @@ export function MemberPage() {
 
   useEffect(() => {
     if (!memberInfo || memberInfo.id !== id) {
-      navigate("/unauthorized"); // 접근 권한이 없을 때 리디렉션할 페이지
+      navigate("/unauthorized");
       return;
     }
 
@@ -42,7 +42,7 @@ export function MemberPage() {
         setNickname(memberData.nickname);
         setProfileImage(memberData.imageUrl);
         if (memberData.profileImage) {
-          setProfileImage(memberData.profileImage); // 프로필 이미지 URL 설정
+          setProfileImage(memberData.profileImage);
           setHasProfileImage(true);
         }
       } catch (err) {
@@ -59,7 +59,6 @@ export function MemberPage() {
     fetchMemberData();
   }, [id, memberInfo, navigate]);
 
-  // 프로필 이미지 업로드
   function handleProfileImageUpload(event) {
     const file = event.target.files[0];
     if (file) {
@@ -72,7 +71,6 @@ export function MemberPage() {
     }
   }
 
-  // 프로필 이미지 삭제
   async function handleProfileImageDelete() {
     try {
       await axios.delete(`/api/member/profile/${id}`);
@@ -95,7 +93,6 @@ export function MemberPage() {
     }
   }
 
-  // 프로필 이미지 저장
   async function handleSaveProfileImage() {
     if (imageFile) {
       const formData = new FormData();
@@ -113,9 +110,7 @@ export function MemberPage() {
           duration: 3000,
           isClosable: true,
         });
-
-        // 프로필 이미지 업데이트
-        setProfileImage(res.data.profileImage); // 업데이트된 프로필 이미지 URL 설정
+        setProfileImage(res.data.profileImage);
         setHasProfileImage(true);
         setImageFile(null);
       } catch (err) {
@@ -129,12 +124,10 @@ export function MemberPage() {
     }
   }
 
-  // 회원 정보 수정 페이지로 이동
   function handleEdit() {
     navigate(`/member/edit/${id}`);
   }
 
-  // 회원 탈퇴
   async function handleDeleteMember() {
     const confirmDeletion = await Swal.fire({
       title: "회원 탈퇴",
@@ -171,8 +164,6 @@ export function MemberPage() {
             },
             withCredentials: true,
           });
-
-          // 탈퇴 성공 처리
           toast({
             title: "탈퇴되었습니다.",
             status: "success",
@@ -196,29 +187,36 @@ export function MemberPage() {
 
   return (
     <Center mt={5}>
-      <Box w={500} p={6} boxShadow="lg" borderRadius="md" bg="white">
-        <Box mb={10} fontSize="2xl" fontWeight="bold" textAlign="center">
+      <Box
+        w={[300, 500, 700]}
+        p={8}
+        boxShadow="lg"
+        borderRadius="md"
+        bg="white"
+      >
+        <Box mb={10} fontSize="3xl" fontWeight="bold" textAlign="center">
           마이페이지
         </Box>
-        <FormControl mb={4}>
-          <Box textAlign="center" mb={4} position="relative">
+        <FormControl mb={6}>
+          <Box textAlign="center" mb={6} position="relative">
             {profileImage ? (
               <>
                 <Image
                   src={profileImage}
-                  boxSize="150px"
+                  boxSize="200px"
                   borderRadius="full"
                   mx="auto"
                   mb={4}
                 />
                 <CloseButton
                   position="absolute"
-                  top="-10px"
-                  right="100px"
+                  top="0"
+                  right="0"
                   size="lg"
-                  color="red.200"
-                  _hover={{ color: "red.500" }}
-                  boxSize="24px"
+                  color="red.500"
+                  bg="white"
+                  _hover={{ color: "red.600" }}
+                  boxSize="32px"
                   onClick={handleProfileImageDelete}
                 />
               </>
@@ -228,7 +226,7 @@ export function MemberPage() {
                 htmlFor="profileImageInput"
                 bg="gray.200"
                 borderRadius="full"
-                boxSize="150px"
+                boxSize="200px"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -237,7 +235,7 @@ export function MemberPage() {
                 mx="auto"
                 mb={4}
               >
-                <Icon as={AddIcon} w={10} h={10} color="gray.500" />
+                <Icon as={AddIcon} w={12} h={12} color="gray.500" />
                 <Input
                   type="file"
                   accept="image/*"
@@ -254,27 +252,27 @@ export function MemberPage() {
               bg="purple.500"
               color="white"
               _hover={{ bg: "purple.600" }}
-              mb={4}
+              mb={6}
               onClick={handleSaveProfileImage}
             >
               프로필 이미지 저장
             </Button>
           )}
-          <Box fontWeight="bold" mb={2}>
+          <Box fontWeight="bold" mb={3}>
             이메일:
           </Box>
-          <Box mb={4}>{username}</Box>
-          <Box fontWeight="bold" mb={2}>
+          <Box mb={6}>{username}</Box>
+          <Box fontWeight="bold" mb={3}>
             닉네임:
           </Box>
-          <Box mb={4}>{nickname}</Box>
+          <Box mb={6}>{nickname}</Box>
           <Flex flexDirection="column" alignItems="center">
             <Button
               width="100%"
               bg="blue.500"
               color="white"
               _hover={{ bg: "blue.600" }}
-              mb={2}
+              mb={4}
               onClick={handleEdit}
             >
               정보 수정
@@ -285,14 +283,13 @@ export function MemberPage() {
                 bg="red.500"
                 color="white"
                 _hover={{ bg: "red.600" }}
-                mb={2}
+                mb={4}
                 onClick={handleDeleteMember}
               >
                 회원 탈퇴
               </Button>
             )}
             {memberInfo && memberInfo.id === "1" && (
-              // 관리자 전용
               <Button
                 width="100%"
                 bg="green.500"
