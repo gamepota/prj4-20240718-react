@@ -244,7 +244,11 @@ export function BoardView() {
               <Image src={file.src} alt={file.name} borderRadius="md" />
             </Box>
           ))}
-        {board.content}
+        <div
+          dangerouslySetInnerHTML={{
+            __html: board.content.replace(/\n/g, "<br />"),
+          }}
+        />
       </Box>
       <Flex mt={4} mb={4} align="center">
         <Tooltip isDisabled={memberInfo} hasArrow label="로그인 해주세요.">
