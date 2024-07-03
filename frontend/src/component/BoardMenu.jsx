@@ -31,7 +31,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
           bg="purple.100"
           _hover={{ cursor: "pointer", bgColor: "purple.200" }}
           color="black"
-          fontWeight="medium"
+          fontWeight="bold"
           size="md"
           p={4}
         >
@@ -39,6 +39,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
         </MenuButton>
         <MenuList>
           <MenuItem
+            size="md"
             onClick={() => {
               navigate("/board/list?boardType=전체");
               onClose();
@@ -47,6 +48,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
             전체 게시판
           </MenuItem>
           <MenuItem
+            size="md"
             onClick={() => {
               navigate("/board/list?boardType=자유");
               onClose();
@@ -55,6 +57,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
             자유 게시판
           </MenuItem>
           <MenuItem
+            size="md"
             onClick={() => {
               navigate("/board/list?boardType=사진 공유");
               onClose();
@@ -63,6 +66,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
             사진 공유 게시판
           </MenuItem>
           <MenuItem
+            size="md"
             onClick={() => {
               navigate("/board/list?boardType=질문/답변");
               onClose();
@@ -71,6 +75,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
             질문/답변 게시판
           </MenuItem>
           <MenuItem
+            size="md"
             onClick={() => {
               navigate("/board/list?boardType=반려동물 건강");
               onClose();
@@ -79,6 +84,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
             반려동물 건강 게시판
           </MenuItem>
           <MenuItem
+            size="md"
             onClick={() => {
               navigate("/board/list?boardType=훈련/교육");
               onClose();
@@ -87,6 +93,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
             훈련/교육 게시판
           </MenuItem>
           <MenuItem
+            size="md"
             onClick={() => {
               navigate("/board/list?boardType=리뷰");
               onClose();
@@ -95,6 +102,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
             리뷰 게시판
           </MenuItem>
           <MenuItem
+            size="md"
             onClick={() => {
               navigate("/board/list?boardType=이벤트/모임");
               onClose();
@@ -104,6 +112,7 @@ const BoardMenu = ({ isOpen, onOpen, onClose }) => {
           </MenuItem>
           {memberInfo && memberInfo.id === 1 && (
             <MenuItem
+              size="md"
               onClick={() => {
                 navigate("/board/list/report");
                 onClose();

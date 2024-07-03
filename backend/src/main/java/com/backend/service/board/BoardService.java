@@ -165,29 +165,6 @@ public class BoardService {
         return Map.of("pageInfo", pageInfo, "boardList", boardList);
     }
 
-//    public Map<String, Object> get(Integer id) {
-//        String keyPrefix = String.format("prj3/%d/", id);
-//        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder().bucket(bucketName)
-//                .prefix(keyPrefix).build();
-//        ListObjectsV2Response listResponse = s3Client.listObjectsV2(listObjectsV2Request);
-//        for (S3Object object : listResponse.contents()) {
-//            System.out.println("object.key() = " + object.key());
-//        }
-//        System.out.println("이것은 get요청");
-//
-//        Map<String, Object> result = new HashMap<>();
-//        int views = mapper.selectCountById(id);
-//        mapper.incrementViewsById(id, views);
-//
-//        Board board = mapper.selectById(id);
-//        List<String> fileNames = mapper.selectFileNameByBoardId(id);
-//        List<BoardFile> files = fileNames.stream()
-//                .map(name -> new BoardFile(name, srcPrefix + id + "/" + name)).collect(Collectors.toList());
-//        board.setFileList(files);
-//        result.put("board", board);
-//        return result;
-//    }
-
     public Map<String, Object> getByBoardIdAndMemberId(Integer id, Integer memberId) {
         int views = mapper.selectCountById(id);
         mapper.incrementViewsById(id, views);
@@ -425,5 +402,16 @@ public class BoardService {
 
     public List<Board> getPopularBoards() {
         return mapper.selectPopularBoards();
+    }
+
+    public List<Map<String, Object>> getTopLikedImages() {
+        List<Map<String, Object>> topLikedImages = mapper.selectTopLikedImages();
+        return topLikedImages.stream()
+                .peek(image -> {
+                    String imageUrl = (String) image.get("imageUrl");
+                    Integer id = (Integer) image.get("id");
+                    image.put("imageUrl", srcPrefix + "board/" + id + "/" + imageUrl);
+                })
+                .collect(Collectors.toList());
     }
 }

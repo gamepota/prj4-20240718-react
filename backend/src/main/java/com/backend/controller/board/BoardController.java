@@ -173,6 +173,10 @@ public class BoardController {
         return ResponseEntity.ok(popularBoards);
     }
 
-
+    @GetMapping("/topLikedImages")
+    public ResponseEntity<List<Map<String, Object>>> getTopLikedImages() {
+        List<Map<String, Object>> topLikedImages = service.getTopLikedImages();
+        return ResponseEntity.ok(topLikedImages);
+    }
 }
 
