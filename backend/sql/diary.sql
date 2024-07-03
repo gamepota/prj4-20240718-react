@@ -9,6 +9,8 @@ CREATE TABLE diary
     username  VARCHAR(255)  NOT NULL
 );
 
+
+
 ALTER TABLE diary
     ADD username VARCHAR(255) NOT NULL;
 
@@ -148,3 +150,5 @@ ALTER TABLE diary_profile
 ALTER TABLE diary_profile
 DROP COLUMN created_at,
 DROP COLUMN updated_at;
+
+DROP TABLE diary_file;

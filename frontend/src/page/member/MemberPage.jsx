@@ -167,6 +167,7 @@ export function MemberPage() {
             params: { password },
             headers: {
               Authorization: `Bearer ${memberInfo.access}`,
+              memberInfoId: memberInfo.id,
             },
             withCredentials: true,
           });

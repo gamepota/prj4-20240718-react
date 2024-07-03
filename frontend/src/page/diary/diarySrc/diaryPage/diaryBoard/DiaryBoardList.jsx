@@ -24,6 +24,7 @@ import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { DiaryContext } from "../../diaryComponent/DiaryContext.jsx";
 import Pagination from "../../../../../component/Pagination.jsx";
 import { format } from "date-fns";
+import {extractUserIdFromDiaryId, generateDiaryId} from "../../../../../util/util.jsx";
 
 export function DiaryBoardList() {
   const { memberInfo } = useContext(LoginContext);

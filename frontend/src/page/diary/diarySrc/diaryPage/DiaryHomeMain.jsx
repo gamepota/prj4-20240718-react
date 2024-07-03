@@ -75,15 +75,18 @@ export function DiaryHomeMain() {
 
   return (
     <Box>
+      <Center>
       <Box mb={5}>
         <Image
-          src="https://via.placeholder.com/1200x300"
+          src="../../../../../public/img/diary_main_minimi.jpg"
           alt="Diary Banner"
           width="100%"
+          h="auto"
           borderRadius="md"
           boxShadow="md"
         />
       </Box>
+      </Center>
 
       <Box mb={10}>
         <Heading size="lg" mb={5}>
