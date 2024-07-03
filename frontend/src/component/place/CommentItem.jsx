@@ -20,6 +20,7 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { CommentEdit } from "./CommentEdit.jsx";
 import { LoginContext } from "../LoginProvider.jsx";
+import { FaStar } from "react-icons/fa";
 
 export function CommentItem({ comment, isProcessing, setIsProcessing }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -59,8 +60,14 @@ export function CommentItem({ comment, isProcessing, setIsProcessing }) {
     <Box p={4} borderWidth="1px" borderRadius="md" mb={4} bg="white">
       <Flex align="center" mb={3}>
         <Avatar name={comment.nickname} size="sm" mr={2} />
-        <Box>
+        <Box flex="1">
           <Text fontWeight="bold">{comment.nickname}</Text>
+          <Flex align="center">
+            {comment.rate &&
+              Array.from({ length: comment.rate }, (_, i) => (
+                <FaStar key={i} color="gold" />
+              ))}
+          </Flex>
           <Text fontSize="sm" color="gray.500">
             {new Date(comment.inserted).toLocaleString()}
           </Text>

@@ -27,12 +27,7 @@ export function CommentWrite({ hospitalId, isProcessing, setIsProcessing }) {
         comment,
         memberId: memberInfo.id,
         nickname: memberInfo.nickname,
-      });
-
-      await axios.post("/api/hospitalComment/rating", {
-        hospitalId,
         rate: ratingIndex,
-        memberId: memberInfo.id,
       });
 
       setComment("");

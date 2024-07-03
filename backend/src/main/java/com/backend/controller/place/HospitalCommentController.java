@@ -1,7 +1,6 @@
 package com.backend.controller.place;
 
 import com.backend.domain.place.HospitalComment;
-import com.backend.domain.place.StarRating;
 import com.backend.service.place.HospitalCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -62,16 +61,5 @@ public class HospitalCommentController {
 
     }
 
-    @PostMapping("rating")
-    public ResponseEntity rating(@RequestBody StarRating starRating) {
 
-        if (service.validate2(starRating)) {
-            service.rating(starRating);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-
-
-    }
 }
