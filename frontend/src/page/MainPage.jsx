@@ -156,6 +156,7 @@ export const MainPage = () => {
   const [latestBoards, setLatestBoards] = useState([]);
   const [popularBoards, setPopularBoards] = useState([]);
   const [topLikedImages, setTopLikedImages] = useState([]);
+  const [guideBoards, setGuideBoards] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
@@ -197,9 +198,19 @@ export const MainPage = () => {
       }
     };
 
+    const fetchGuideBoards = async () => {
+      try {
+        const res = await axios.get("/api/board/guide");
+        setGuideBoards(res.data);
+      } catch (error) {
+        console.error("Error fetching guide boards:", error);
+      }
+    };
+
     fetchLatestBoards();
     fetchPopularBoards();
     fetchTopLikedImages();
+    fetchGuideBoards();
   }, []);
 
   const bg = useColorModeValue("white", "gray.800");
@@ -209,7 +220,7 @@ export const MainPage = () => {
     <Box p={4} maxW="1200px" mx="auto">
       <Box textAlign="center" mt={8}>
         <Box mt={10} mb={5}>
-          <Text>반려인들을 위한 커뮤니티, 펫밀리</Text>
+          <Text>반려인의, 반려인에 의한, 반려인을 위한 커뮤니티</Text>
         </Box>
         <Image src="/img/petmily-logo.png" w="20%" mx="auto" mb={4} />
         <Flex justifyContent="center" mb={8}>
@@ -266,6 +277,10 @@ export const MainPage = () => {
               boxSize="150px"
               mb={2}
               zIndex={1}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/img/default-image.png"; // 기본 이미지 경로
+              }}
             />
             <Badge
               colorScheme={
@@ -324,6 +339,10 @@ export const MainPage = () => {
                       width="100%"
                       height="100%"
                       objectFit="cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/img/default-image.png"; // 기본 이미지 경로
+                      }}
                     />
                   </Box>
                 )}
@@ -335,18 +354,18 @@ export const MainPage = () => {
                     {board.writer}
                   </Box>
                   <Box>
-                    {board.numberOfImages > 0 && (
+                    {board.number_of_images > 0 && (
                       <Badge ml={2}>
-                        {board.numberOfImages}
+                        {board.number_of_images}
                         <FontAwesomeIcon icon={faImage} />
                       </Badge>
                     )}
-                    {board.numberOfComments > 0 && (
-                      <span> [{board.numberOfComments}]</span>
+                    {board.number_of_comments > 0 && (
+                      <span> [{board.number_of_comments}]</span>
                     )}
                   </Box>
                   <Box mt={2} fontSize="sm" color="gray.500">
-                    <span>추천수: {board.numberOfLikes}</span>
+                    <span>추천수: {board.number_of_likes}</span>
                     <span>조회수: {board.views}</span>
                   </Box>
                 </Box>
@@ -354,7 +373,6 @@ export const MainPage = () => {
             ))}
           </SimpleGrid>
         </Box>
-
         <Box
           flex="1"
           minW="300px"
@@ -400,6 +418,10 @@ export const MainPage = () => {
                       width="100%"
                       height="100%"
                       objectFit="cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/img/default-image.png"; // 기본 이미지 경로
+                      }}
                     />
                   </Box>
                 )}
@@ -411,18 +433,18 @@ export const MainPage = () => {
                     {board.writer}
                   </Box>
                   <Box>
-                    {board.numberOfImages > 0 && (
+                    {board.number_of_images > 0 && (
                       <Badge ml={2}>
-                        {board.numberOfImages}
+                        {board.number_of_images}
                         <FontAwesomeIcon icon={faImage} />
                       </Badge>
                     )}
-                    {board.numberOfComments > 0 && (
-                      <span> [{board.numberOfComments}]</span>
+                    {board.number_of_comments > 0 && (
+                      <span> [{board.number_of_comments}]</span>
                     )}
                   </Box>
                   <Box mt={2} fontSize="sm" color="gray.500">
-                    <span>추천수: {board.numberOfLikes}</span>
+                    <span>추천수: {board.number_of_likes}</span>
                     <span>조회수: {board.views}</span>
                   </Box>
                 </Box>
@@ -472,7 +494,7 @@ export const MainPage = () => {
             반려인 가이드
           </Text>
           <SimpleGrid columns={1} spacing={4}>
-            {latestBoards.slice(0, 3).map((board) => (
+            {guideBoards.slice(0, 3).map((board) => (
               <Box
                 key={board.id}
                 borderWidth="1px"
@@ -495,6 +517,10 @@ export const MainPage = () => {
                       width="100%"
                       height="100%"
                       objectFit="cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/img/default-image.png"; // 기본 이미지 경로
+                      }}
                     />
                   </Box>
                 )}
@@ -506,18 +532,18 @@ export const MainPage = () => {
                     {board.writer}
                   </Box>
                   <Box>
-                    {board.numberOfImages > 0 && (
+                    {board.number_of_images > 0 && (
                       <Badge ml={2}>
-                        {board.numberOfImages}
+                        {board.number_of_images}
                         <FontAwesomeIcon icon={faImage} />
                       </Badge>
                     )}
-                    {board.numberOfComments > 0 && (
-                      <span> [{board.numberOfComments}]</span>
+                    {board.number_of_comments > 0 && (
+                      <span> [{board.number_of_comments}]</span>
                     )}
                   </Box>
                   <Box mt={2} fontSize="sm" color="gray.500">
-                    <span>추천수: {board.numberOfLikes}</span>
+                    <span>추천수: {board.number_of_likes}</span>
                     <span>조회수: {board.views}</span>
                   </Box>
                 </Box>
