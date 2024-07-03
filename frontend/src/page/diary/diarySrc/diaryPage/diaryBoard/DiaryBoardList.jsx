@@ -128,7 +128,7 @@ export function DiaryBoardList() {
                   )}
                 >
                   <Td w="10%" textAlign="center">
-                    {diaryBoardList.length - index}
+                    {diaryBoard.id / 10}
                   </Td>
                   <Td w="30%" textAlign="center">
                     {diaryBoard.title}
