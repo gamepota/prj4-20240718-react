@@ -173,7 +173,11 @@ export function BoardView() {
   return (
     <Container maxW="container.xl" py={10}>
       <Button
-        onClick={() => navigate(`/board/list?boardType=${board.boardType}`)}
+        onClick={() =>
+          navigate(
+            `/board/list?boardType=${localStorage.getItem("currentBoardType")}`,
+          )
+        }
       >
         게시판으로 돌아가기
       </Button>
@@ -315,5 +319,3 @@ export function BoardView() {
     </Container>
   );
 }
-
-export default BoardView;
