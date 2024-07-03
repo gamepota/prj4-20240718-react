@@ -57,13 +57,17 @@ public interface DiaryCommentMapper {
     int selectgetById(Integer id);
 
     @Select("""
-						SELECT
-			     	id,
-			     	comment,
-			     	nickname,
-			     	inserted
-			     	FROM diaryComment
-			     	ORDER BY id DESC
-				    """)
-    List<DiaryComment> selectAll();
+            SELECT *
+            FROM diaryComment
+            ORDER BY id ASC
+            LIMIT #{limit} OFFSET #{offset}
+            """)
+    List<DiaryComment> selectAll(@Param("limit") int limit, @Param("offset") int offset);
+
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM diaryComment
+            """)
+    int countAllComments();
 }

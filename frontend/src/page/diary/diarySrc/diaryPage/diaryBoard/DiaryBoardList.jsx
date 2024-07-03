@@ -17,14 +17,13 @@ import {
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImages, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { extractUserIdFromDiaryId, generateDiaryId } from "../../../../../util/util.jsx";
-import { format } from "date-fns";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { DiaryContext } from "../../diaryComponent/DiaryContext.jsx";
 import Pagination from "../../../../../component/Pagination.jsx";
+import { format } from "date-fns";
 
 export function DiaryBoardList() {
   const { memberInfo } = useContext(LoginContext);
@@ -65,18 +64,24 @@ export function DiaryBoardList() {
   }
 
   function handleSearchClick() {
+    // 현재 URL의 쿼리 파라미터를 가져옵니다.
     const params = new URLSearchParams(searchParams);
+
+    // 새로운 파라미터를 설정합니다.
     params.set("type", searchType);
     params.set("keyword", searchKeyword);
     params.set("memberId", extractUserIdFromDiaryId(diaryId));
-    navigate(`/api/diaryBoard/list?${params.toString()}`);
+
+    // 수정된 쿼리 파라미터로 페이지를 이동합니다.
+    console.log(params.toString());
+    navigate(`?${params.toString()}`);
   }
 
   function handlePageButtonClick(pageNumber) {
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNumber);
     params.set("memberId", extractUserIdFromDiaryId(diaryId));
-    navigate(`/api/diaryBoard/list?${params.toString()}`);
+    navigate(`?${params.toString()}`);
   }
 
   function handleSelectedDiaryBoard(id, number) {
@@ -124,12 +129,12 @@ export function DiaryBoardList() {
                   </Td>
                   <Td w="30%" textAlign="center">
                     {diaryBoard.title}
-                    {diaryBoard.numberOfImages > 0 && (
-                      <Badge ml={2} colorScheme="teal">
-                        <FontAwesomeIcon icon={faImages} />
-                        {diaryBoard.numberOfImages}
-                      </Badge>
-                    )}
+                    {/*{diaryBoard.numberOfImages > 0 && (*/}
+                    {/*  <Badge ml={2} colorScheme="teal">*/}
+                    {/*    <FontAwesomeIcon icon={faImages} />*/}
+                    {/*    {diaryBoard.numberOfImages}*/}
+                    {/*  </Badge>*/}
+                    {/*)}*/}
                   </Td>
                   <Td w="50%" textAlign="center">{diaryBoard.content}</Td>
                   <Td w="10%" textAlign="center">
@@ -157,7 +162,7 @@ export function DiaryBoardList() {
               _hover={{ boxShadow: "lg" }}
             >
               <option value="all">전체</option>
-              <option value="text">글</option>
+              <option value="text">제목</option>
               <option value="nickname">작성자</option>
             </Select>
           </Box>

@@ -11,13 +11,13 @@ import {
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../../../../../component/LoginProvider.jsx";
+import { generateDiaryId } from "../../../../../util/util.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { format, isValid, parseISO } from "date-fns";
-import { generateDiaryId } from "../../../../../util/util.jsx";
-import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 
-export function DiaryCommentList({ diaryCommentList = [] }) { // 기본값을 빈 배열로 설정
+export function DiaryCommentList({ diaryCommentList }) {
   const navigate = useNavigate();
   const { memberInfo } = useContext(LoginContext);
 

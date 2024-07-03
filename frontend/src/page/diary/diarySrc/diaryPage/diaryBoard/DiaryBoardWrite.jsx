@@ -2,23 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   FormControl,
-  FormHelperText,
   FormLabel,
   Heading,
   Input,
   Spinner,
-  Stack,
-  StackDivider,
-  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../../../../component/LoginProvider.jsx";
 import { generateDiaryId } from "../../../../../util/util.jsx";
 
@@ -43,7 +36,7 @@ export function DiaryBoardWrite() {
     formData.append("title", title);
     formData.append("content", content);
     formData.append("username", username);
-    Array.from(files).forEach((file) => formData.append("files", file));
+    // Array.from(files).forEach((file) => formData.append("files", file));
 
     axios
       .post("/api/diaryBoard/add", formData, {
@@ -105,34 +98,34 @@ export function DiaryBoardWrite() {
           onChange={(e) => setContent(e.target.value)}
         />
       </FormControl>
-      <FormControl mb={7}>
-        <FormLabel>파일</FormLabel>
-        <Input
-          multiple
-          type="file"
-          accept="image/*"
-          onChange={(e) => setFiles(e.target.files)}
-        />
-        <FormHelperText>쬐끔만 넣어주시길 바랍니다</FormHelperText>
-      </FormControl>
-      {files.length > 0 && (
-        <Box mb={7}>
-          <Card>
-            <CardHeader>
-              <Heading size="md">선택된 파일 목록</Heading>
-            </CardHeader>
-            <CardBody>
-              <Stack divider={<StackDivider />} spacing={4}>
-                {Array.from(files).map((file, index) => (
-                  <Text key={index} fontSize="md">
-                    {file.name}
-                  </Text>
-                ))}
-              </Stack>
-            </CardBody>
-          </Card>
-        </Box>
-      )}
+      {/*<FormControl mb={7}>*/}
+      {/*  <FormLabel>파일</FormLabel>*/}
+      {/*  <Input*/}
+      {/*    multiple*/}
+      {/*    type="file"*/}
+      {/*    accept="image/*"*/}
+      {/*    onChange={(e) => setFiles(e.target.files)}*/}
+      {/*  />*/}
+      {/*  <FormHelperText>쬐끔만 넣어주시길 바랍니다</FormHelperText>*/}
+      {/*</FormControl>*/}
+      {/*{files.length > 0 && (*/}
+      {/*  <Box mb={7}>*/}
+      {/*    <Card>*/}
+      {/*      <CardHeader>*/}
+      {/*        <Heading size="md">선택된 파일 목록</Heading>*/}
+      {/*      </CardHeader>*/}
+      {/*      <CardBody>*/}
+      {/*        <Stack divider={<StackDivider />} spacing={4}>*/}
+      {/*          {Array.from(files).map((file, index) => (*/}
+      {/*            <Text key={index} fontSize="md">*/}
+      {/*              {file.name}*/}
+      {/*            </Text>*/}
+      {/*          ))}*/}
+      {/*        </Stack>*/}
+      {/*      </CardBody>*/}
+      {/*    </Card>*/}
+      {/*  </Box>*/}
+      {/*)}*/}
       <Button
         isLoading={loading}
         isDisabled={disableSaveButton}

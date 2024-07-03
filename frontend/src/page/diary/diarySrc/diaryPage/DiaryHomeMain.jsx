@@ -34,12 +34,22 @@ export function DiaryHomeMain() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const diaryBoardRes = await axios.get(`/api/diaryBoard/list?memberId=${memberInfo.id}&limit=5`);
-        const diaryCommentRes = await axios.get(`/api/diaryComment/list?memberId=${memberInfo.id}&limit=5`);
+        const diaryBoardRes = await axios.get(`/api/diaryBoard/list?limit=5`);
+        const diaryCommentRes = await axios.get(
+          `/api/diaryComment/list?limit=5`,
+        );
+
+        console.log("diaryBoardRes:", diaryBoardRes.data);
+        console.log("diaryCommentRes:", diaryCommentRes.data);
+
         setDiaryBoardList(diaryBoardRes.data.diaryBoardList || []);
-        setDiaryCommentList(diaryCommentRes.data || []);
+        setDiaryCommentList(
+          Array.isArray(diaryCommentRes.data.comments)
+            ? diaryCommentRes.data.comments
+            : [],
+        );
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("데이터를 가져오는 중 오류 발생:", err);
       } finally {
         setIsLoading(false);
       }

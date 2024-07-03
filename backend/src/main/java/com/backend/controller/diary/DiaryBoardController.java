@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,16 +22,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DiaryBoardController {
 
-	private final DiaryBoardService service;
-	private final DiaryProfileService diaryProfileService;
+    private final DiaryBoardService service;
+    private final DiaryProfileService diaryProfileService;
 
-    @PostMapping("add")
+    @PostMapping("/add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity add(DiaryBoard diaryBoard,
                               @RequestParam(value = "files[]", required = false) MultipartFile[] files,
                               Authentication authentication) throws IOException {
         if (service.validate(diaryBoard)) {
-            service.add(diaryBoard, files, authentication);
+            service.add(diaryBoard
+//                    , files
+                    , authentication);
             System.out.println("diaryBoard = " + diaryBoard);
             return ResponseEntity.ok().build();
         } else {
@@ -45,13 +46,12 @@ public class DiaryBoardController {
     @GetMapping("/list")
     public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(value = "type", required = false) String searchType,
-                                    @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                    a                                    @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                     @RequestParam(value = "memberId", required = false) Integer memberId) {
         return service.list(page, searchType, keyword, memberId);
     }
 
-
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity get(@PathVariable Integer id) {
 
         DiaryBoard diaryBoard = service.get(id);
@@ -63,7 +63,7 @@ public class DiaryBoardController {
 
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity delete(@PathVariable Integer id, Authentication authentication, @RequestParam(required = false) Integer memberId) {
         if (service.hasAccess(id, authentication, memberId)) {
@@ -76,18 +76,20 @@ public class DiaryBoardController {
 
     }
 
-    @PutMapping("edit")
+    @PutMapping("/edit")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity edit(DiaryBoard diaryBoard,
-                               @RequestParam(value = "removeFileList[]", required = false) List<String> removeFileList,
-                               @RequestParam(value = "addFileList[]", required = false) MultipartFile[] addFileList,
+//                               @RequestParam(value = "removeFileList[]", required = false) List<String> removeFileList,
+//                               @RequestParam(value = "addFileList[]", required = false) MultipartFile[] addFileList,
                                Authentication authentication,
                                @RequestParam(required = false) Integer memberId) throws IOException {
         if (!service.hasAccess(diaryBoard.getId(), authentication, memberId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if (service.validate(diaryBoard)) {
-            service.edit(diaryBoard, removeFileList, addFileList);
+            service.edit(diaryBoard
+//                    , removeFileList, addFileList
+            );
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();

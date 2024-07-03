@@ -31,6 +31,7 @@ export function DiaryCommentWrite({ onCommentAdded }) {
         });
         onCommentAdded(res.data); // 새로운 댓글을 추가
         setComment(""); // 입력창 초기화
+        window.location.reload(); // 페이지 새로고침
       })
       .catch((e) => {
         toast({

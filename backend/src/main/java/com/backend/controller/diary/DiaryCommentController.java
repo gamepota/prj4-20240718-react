@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +17,7 @@ import java.util.List;
 public class DiaryCommentController {
     private final DiaryCommentService service;
 
-    @PostMapping("add")
+    @PostMapping("/add")
     public ResponseEntity add(@RequestBody DiaryComment diaryComment,
                               Authentication authentication) {
         if (service.validate(diaryComment)) {
@@ -29,12 +29,15 @@ public class DiaryCommentController {
         }
     }
 
-    @GetMapping("list")
-    public List<DiaryComment> list() {
-        return service.list();
+    @GetMapping("/list")
+    public ResponseEntity<Map<String, Object>> list(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        Map<String, Object> response = service.list(page, pageSize);
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity diaryDelete(@PathVariable Integer id, @RequestParam(required = false) Integer memberId,
                                       Authentication authentication) {
@@ -46,7 +49,7 @@ public class DiaryCommentController {
         }
     }
 
-    @PutMapping("edit")
+    @PutMapping("/edit")
     public ResponseEntity edit(@RequestBody DiaryComment diaryComment
             , Authentication authentication) {
         if (service.validate(diaryComment)) {
@@ -57,7 +60,7 @@ public class DiaryCommentController {
         }
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity get(@PathVariable Integer id) {
         DiaryComment diaryComment = service.get(id);
 

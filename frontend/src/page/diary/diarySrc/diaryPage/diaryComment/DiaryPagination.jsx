@@ -2,11 +2,11 @@ import React from "react";
 import { Button, HStack } from "@chakra-ui/react";
 
 const DiaryPagination = ({
-                           pageInfo,
-                           pageNumbers,
-                           handlePageButtonClick,
-                           maxPageButtons = 10, // 최대 페이지 버튼 수를 설정합니다.
-                         }) => {
+  pageInfo,
+  pageNumbers,
+  handlePageButtonClick,
+  maxPageButtons = 10, // 최대 페이지 버튼 수를 설정합니다.
+}) => {
   const { currentPageNumber, nextPageNumber, prevPageNumber, lastPageNumber } =
     pageInfo;
 

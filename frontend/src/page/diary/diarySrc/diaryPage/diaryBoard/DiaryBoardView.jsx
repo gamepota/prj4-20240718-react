@@ -4,12 +4,9 @@ import axios from "axios";
 import {
   Box,
   Button,
-  Card,
-  CardBody,
   Flex,
   FormControl,
   FormLabel,
-  Image,
   Input,
   Modal,
   ModalBody,
@@ -139,16 +136,16 @@ export function DiaryBoardView() {
         </FormControl>
       </Box>
 
-      <Box mb={6}>
-        {diaryBoard.fileList &&
-          diaryBoard.fileList.map((file) => (
-            <Card m={3} key={file.name} boxShadow="md">
-              <CardBody>
-                <Image w="100%" src={file.src} borderRadius="md" />
-              </CardBody>
-            </Card>
-          ))}
-      </Box>
+      {/*<Box mb={6}>*/}
+      {/*  {diaryBoard.fileList &&*/}
+      {/*    diaryBoard.fileList.map((file) => (*/}
+      {/*      <Card m={3} key={file.name} boxShadow="md">*/}
+      {/*        <CardBody>*/}
+      {/*          <Image w="100%" src={file.src} borderRadius="md" />*/}
+      {/*        </CardBody>*/}
+      {/*      </Card>*/}
+      {/*    ))}*/}
+      {/*</Box>*/}
 
       <Box mb={6}>
         <FormControl>
