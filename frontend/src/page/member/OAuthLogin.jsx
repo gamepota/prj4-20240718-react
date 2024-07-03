@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Alert, AlertIcon, Box, Center } from "@chakra-ui/react";
+import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function OAuthLogin(props) {
   const location = useLocation();
@@ -9,6 +10,7 @@ export function OAuthLogin(props) {
   const [username, setUsername] = useState("");
   const [accessToken, setAccessToken] = useState("");
 
+  const { setMemberInfo } = useContext(LoginContext);
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const username = queryParams.get("username");
@@ -18,15 +20,23 @@ export function OAuthLogin(props) {
       setUsername(username);
       setAccessToken(accessToken);
 
-      axios.get("/api/member/info?username=" + username).then((response) => {
-        console.log(response.data);
-        console.log(response.data.member.id);
-        console.log(response.data.member.name);
-        console.log(response.data.member.username);
-      });
-      // 예: 토큰을 로컬 스토리지에 저장
-      localStorage.setItem("username", username);
-      localStorage.setItem("accessToken", accessToken);
+      axios
+        .get("/api/member/info?username=" + username)
+        .then((response) => {
+          const memberInfo = {
+            access: accessToken,
+            id: "" + response.data.member.id,
+            nickname: response.data.member.nickname,
+          };
+          console.log(memberInfo);
+          setMemberInfo(memberInfo);
+
+          // 토큰을 로컬 스토리지에 저장
+          localStorage.setItem("memberInfo", JSON.stringify(memberInfo));
+
+          navigate("/");
+        })
+        .catch();
     }
   }, [location, navigate]);
 
