@@ -36,7 +36,7 @@ const badgeColors = {
   3: "#cd7f32", // bronze
 };
 
-const PetProfile = ({ imgSrc, rank }) => {
+const PetProfile = ({ imgSrc, rank, boardId, onClick }) => {
   const handleError = (e) => {
     console.error(`Failed to load image: ${imgSrc}`, e);
   };
@@ -71,6 +71,8 @@ const PetProfile = ({ imgSrc, rank }) => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
+      onClick={onClick} // 클릭 이벤트 핸들러 추가
+      cursor="pointer" // 클릭 가능한 커서 스타일 추가
     >
       {rank === 1 && (
         <Box
@@ -197,6 +199,10 @@ export const MainPage = () => {
   const bg = useColorModeValue("white", "gray.800");
   const hoverBg = useColorModeValue("gray.100", "gray.700");
 
+  const handleImageClick = (boardId) => {
+    navigate(`/board/${boardId}`);
+  };
+
   return (
     <Box p={4} maxW="1200px" mx="auto">
       <Fade in={showLogo} unmountOnExit>
@@ -268,17 +274,32 @@ export const MainPage = () => {
       <Flex justify="space-evenly" align="center" mb={12}>
         <Flex direction="column" justify="center" alignItems="center" m={4}>
           {topLikedImages[1] && (
-            <PetProfile key={1} imgSrc={topLikedImages[1].imageUrl} rank={2} />
+            <PetProfile
+              key={1}
+              imgSrc={topLikedImages[1].imageUrl}
+              rank={2}
+              onClick={() => handleImageClick(topLikedImages[1].id)} // 클릭 이벤트 핸들러 추가
+            />
           )}
         </Flex>
         <Flex direction="column" justify="center" alignItems="center" m={4}>
           {topLikedImages[0] && (
-            <PetProfile key={0} imgSrc={topLikedImages[0].imageUrl} rank={1} />
+            <PetProfile
+              key={0}
+              imgSrc={topLikedImages[0].imageUrl}
+              rank={1}
+              onClick={() => handleImageClick(topLikedImages[0].id)} // 클릭 이벤트 핸들러 추가
+            />
           )}
         </Flex>
         <Flex direction="column" justify="center" alignItems="center" m={4}>
           {topLikedImages[2] && (
-            <PetProfile key={2} imgSrc={topLikedImages[2].imageUrl} rank={3} />
+            <PetProfile
+              key={2}
+              imgSrc={topLikedImages[2].imageUrl}
+              rank={3}
+              onClick={() => handleImageClick(topLikedImages[2].id)} // 클릭 이벤트 핸들러 추가
+            />
           )}
         </Flex>
       </Flex>
