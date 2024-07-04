@@ -221,10 +221,10 @@ export function BoardView() {
                   </Badge>
                 </Box>
               </PopoverTrigger>
-              <PopoverContent>
+              <PopoverContent width="fit-content" maxWidth="200px">
                 <PopoverArrow />
                 <PopoverCloseButton />
-                <PopoverBody>
+                <PopoverBody display="flex" justifyContent="center">
                   <Button colorScheme="blue" onClick={handleDiaryView}>
                     작성자 다이어리 보기
                   </Button>

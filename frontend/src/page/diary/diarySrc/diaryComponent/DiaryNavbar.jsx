@@ -147,7 +147,7 @@ export function DiaryNavbar() {
           }}
           boxShadow="md"
         >
-          내 미니홈피 가기
+          MyHome
         </Button>
       )}
     </VStack>

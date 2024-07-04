@@ -192,7 +192,7 @@ export function DiaryHome() {
                 alignItems="center"
               >
                 <Text fontSize="xl" fontWeight="bold">
-                  {ownerNickname}님의 미니홈피
+                  {ownerNickname}님의 다이어리
                 </Text>
                 <Box>
                   {profileImage ? (
@@ -236,13 +236,15 @@ export function DiaryHome() {
                       maxLength={255}
                     />
                     <HStack spacing={2} alignSelf="flex-end">
-                      <Button
-                        colorScheme="teal"
-                        size="sm"
-                        onClick={handleSaveProfileData}
-                      >
-                        저장
-                      </Button>
+                      {Number(memberInfo.id) === ownerId && (
+                        <Button
+                          colorScheme="teal"
+                          size="sm"
+                          onClick={handleSaveProfileData}
+                        >
+                          저장
+                        </Button>
+                      )}
                     </HStack>
                   </>
                 ) : (
@@ -255,13 +257,15 @@ export function DiaryHome() {
                       readOnly
                     />
                     <HStack spacing={2} alignSelf="flex-end">
-                      <Button
-                        colorScheme="teal"
-                        size="sm"
-                        onClick={() => setIsEditing(true)}
-                      >
-                        수정
-                      </Button>
+                      {Number(memberInfo.id) === ownerId && (
+                        <Button
+                          colorScheme="teal"
+                          size="sm"
+                          onClick={() => setIsEditing(true)}
+                        >
+                          수정
+                        </Button>
+                      )}
                     </HStack>
                   </>
                 )}
