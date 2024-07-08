@@ -13,6 +13,6 @@ public class CorsConfiguration implements WebMvcConfigurer {
                 .exposedHeaders("Set-Cookie")
                 .allowedMethods("*")
                 .allowedHeaders("*")
-                .allowedOrigins("http://localhost:5173");
+                .allowedOrigins("http://52.79.251.74:8080");
     }
 }

@@ -59,7 +59,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // 토큰 저장
         addRefreshEntity(username, token, 36000000L);
         response.addCookie(createCookie("refresh", token));
-        String redirectUrl = "http://localhost:5173/member/oauth/login?username=" + username + "&token=" + access;
+        String redirectUrl = "http://52.79.251.74:8080/member/oauth/login?username=" + username + "&token=" + access;
 
         response.sendRedirect(redirectUrl);
     }

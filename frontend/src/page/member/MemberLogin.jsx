@@ -87,7 +87,8 @@ export function MemberLogin(props) {
   }
 
   async function handleNaverLogin() {
-    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+    window.location.href =
+      "http://52.79.251.74:8080/oauth2/authorization/naver";
   }
 
   return (
