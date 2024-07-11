@@ -11,18 +11,18 @@ mv ../frontend/dist src/main/resources/static
 ./gradlew bootJar
 
 # build image
-docker build -t chaiheung/petmily .
+docker build -t gamepota/petmily .
 
 # push image
-docker push chaiheung/petmily
+docker push gamepota/petmily
 
 # remote 에서
 
 # 컨테이너 멈추고
-ssh -i src/main/resources/secret/key1123.pem ubuntu@52.79.251.74 'docker stop petmily'
+ssh -i src/main/resources/secret/key0527.pem ubuntu@3.36.62.40 'docker stop petmily'
 # 컨테이너 삭제
-ssh -i src/main/resources/secret/key1123.pem ubuntu@52.79.251.74 'docker rm petmily'
+ssh -i src/main/resources/secret/key0527.pem ubuntu@3.36.62.40 'docker rm petmily'
 # pull image
-ssh -i src/main/resources/secret/key1123.pem ubuntu@52.79.251.74 'docker pull chaiheung/petmily'
+ssh -i src/main/resources/secret/key0527.pem ubuntu@3.36.62.40 'docker pull gamepota/petmily'
 # 컨테이너 실행
-ssh -i src/main/resources/secret/key1123.pem ubuntu@52.79.251.74 'docker run -d -p 8080:8080 --restart always --name petmily chaiheung/petmily'
+ssh -i src/main/resources/secret/key0527.pem ubuntu@3.36.62.40 'docker run -d -p 8080:8080 --restart always --name petmily gamepota/petmily'
