@@ -5,51 +5,85 @@ const KakaoMap2 = ({ width = "600px", height = "400px" }) => {
   const kakaoMaps = useRef(null);
   const [map, setMap] = useState(null);
 
-  const getKakao = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        const mapContainer = kakaoMaps.current;
-        if (!map) {
-          const mapOptions = {
-            center: new window.kakao.maps.LatLng(
-              position.coords.latitude,
-              position.coords.longitude,
-            ),
-            level: 4,
-            draggable: false, // 드래그 비활성화
-            scrollwheel: false, // 확대/축소 비활성화
-          };
-          const map = new window.kakao.maps.Map(mapContainer, mapOptions);
-          const myPosition = new window.kakao.maps.LatLng(
-            position.coords.latitude,
-            position.coords.longitude,
-          );
+  const loadKakaoMapScript = () => {
+    return new Promise((resolve) => {
+      if (document.getElementById('kakao-map-script')) {
+        resolve();
+        return;
+      }
+      const script = document.createElement("script");
+      script.id = 'kakao-map-script';
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=d5b3cb3d230c4f406001bbfad60ef4d4&autoload=false`;
+      script.async = true;
+      script.onload = () => resolve();
+      document.head.appendChild(script);
+    });
+  };
 
-          new window.kakao.maps.Marker({
-            map: map,
-            position: myPosition,
-            draggable: false, // 마커 드래그 비활성화
-          });
-          setMap(map);
-        }
+  const getCurrentLocation = async () => {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+              resolve({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              });
+            },
+            (error) => {
+              console.error("Error getting geolocation: ", error);
+              reject(error);
+            }
+        );
+      } else {
+        reject(new Error("Geolocation is not supported by this browser."));
+      }
+    });
+  };
+
+  const initializeMap = async () => {
+    try {
+      const location = await getCurrentLocation();
+      const mapContainer = kakaoMaps.current;
+      const mapOptions = {
+        center: new window.kakao.maps.LatLng(location.latitude, location.longitude),
+        level: 4,
+        draggable: false,
+        scrollwheel: false,
+      };
+      const mapInstance = new window.kakao.maps.Map(mapContainer, mapOptions);
+      const myPosition = new window.kakao.maps.LatLng(location.latitude, location.longitude);
+
+      new window.kakao.maps.Marker({
+        map: mapInstance,
+        position: myPosition,
+        draggable: false,
       });
-    } else {
-      console.log("내 위치를 사용할 수 없어요.");
+      setMap(mapInstance);
+    } catch (error) {
+      console.log("Unable to determine location.");
     }
   };
 
   useEffect(() => {
-    getKakao();
+    const loadAndInitializeMap = async () => {
+      await loadKakaoMapScript();
+      window.kakao.maps.load(() => {
+        initializeMap();
+      });
+    };
+
+    loadAndInitializeMap();
   }, []);
 
   return (
-    <Flex justify="center" align="center" w="100%" h="100%">
-      <Box
-        id="map"
-        ref={kakaoMaps}
-        style={{ width, height, border: "1px solid #ccc" }}
-      ></Box>
-    </Flex>
+      <Flex justify="center" align="center" w="100%" h="100%">
+        <Box
+            id="map"
+            ref={kakaoMaps}
+            style={{ width, height, border: "1px solid #ccc" }}
+        ></Box>
+      </Flex>
   );
 };
 

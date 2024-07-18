@@ -26,3 +26,5 @@ ssh -i src/main/resources/secret/key0527.pem ubuntu@3.36.62.40 'docker rm petmil
 ssh -i src/main/resources/secret/key0527.pem ubuntu@3.36.62.40 'docker pull gamepota/petmily'
 # 컨테이너 실행
 ssh -i src/main/resources/secret/key0527.pem ubuntu@3.36.62.40 'docker run -d -p 8080:8080 --restart always --name petmily gamepota/petmily'
+#필요없는 이미지 삭제
+ssh -i src/main/resources/secret/key0527.pem ubuntu@3.36.62.40 'docker image prune -f'
