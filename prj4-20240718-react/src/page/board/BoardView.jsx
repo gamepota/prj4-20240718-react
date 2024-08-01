@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
@@ -69,10 +69,6 @@ export function BoardView() {
       });
   }
 
-  function handleClickModify() {
-    navigate(`/modify/${id}`);
-  }
-
   return (
     <Box>
       <Box>{board.id}번 게시물</Box>
@@ -104,7 +100,10 @@ export function BoardView() {
         <Button colorScheme={"red"} onClick={onOpen}>
           삭제
         </Button>
-        <Button colorScheme={"blue"} onClick={handleClickModify}>
+        <Button
+          colorScheme={"blue"}
+          onClick={() => navigate(`/edit/${board.id}`)}
+        >
           수정
         </Button>
       </Box>
