@@ -31,7 +31,7 @@ export function BoardView() {
       .get(`/api/board/${id}`)
       .then((res) => setBoard(res.data))
       .catch((err) => {
-        if (err.response.status === 404) {
+        if (err.response && err.response.status === 404) {
           toast({
             status: "info",
             description: "해당 게시물이 존재하지 않습니다.",
@@ -40,7 +40,7 @@ export function BoardView() {
           navigate("/");
         }
       });
-  }, []);
+  }, [id]); // 'id'를 의존성 배열에 추가
 
   if (board === null) {
     return <Spinner />;
@@ -69,6 +69,10 @@ export function BoardView() {
       });
   }
 
+  function handleClickModify() {
+    navigate(`/modify/${id}`);
+  }
+
   return (
     <Box>
       <Box>{board.id}번 게시물</Box>
@@ -91,14 +95,16 @@ export function BoardView() {
         </FormControl>
       </Box>
       <Box>
-        <FormControl>작성일시</FormControl>
-        <Input type={"datetime-local"} value={board.inserted} readOnly />
+        <FormControl>
+          <FormLabel>작성일시</FormLabel>
+          <Input type={"datetime-local"} value={board.inserted} readOnly />
+        </FormControl>
       </Box>
       <Box>
         <Button colorScheme={"red"} onClick={onOpen}>
           삭제
         </Button>
-        <Button colorScheme={"blue"} onClick={navigate()}>
+        <Button colorScheme={"blue"} onClick={handleClickModify}>
           수정
         </Button>
       </Box>
@@ -106,7 +112,7 @@ export function BoardView() {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader></ModalHeader>
+          <ModalHeader>게시물 삭제</ModalHeader>
           <ModalBody>삭제하시겠습니까?</ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>취소</Button>
