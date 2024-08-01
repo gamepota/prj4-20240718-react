@@ -15,10 +15,12 @@ export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
 
   function handleSaveClick() {
+    setLoading(true);
     axios
       .post("/api/board/add", {
         title,
@@ -44,11 +46,10 @@ export function BoardWrite() {
           });
         }
       })
-      .finally();
+      .finally(() => setLoading(false));
   }
 
   let disableSaveButton = false;
-
   if (title.trim().length === 0) {
     disableSaveButton = true;
   }
@@ -61,7 +62,7 @@ export function BoardWrite() {
 
   return (
     <Box>
-      <Box> 글 작성 화면</Box>
+      <Box>글 작성 화면</Box>
       <Box>
         <Box>
           <FormControl>
@@ -83,6 +84,7 @@ export function BoardWrite() {
         </Box>
         <Box>
           <Button
+            isLoading={loading}
             isDisabled={disableSaveButton}
             colorScheme={"blue"}
             onClick={handleSaveClick}
