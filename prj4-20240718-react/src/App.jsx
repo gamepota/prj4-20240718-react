@@ -6,7 +6,7 @@ import { BoardWrite } from "./page/board/BoardWrite.jsx";
 
 const router = createBrowserRouter([
   {
-    path: "/page",
+    path: "/",
     element: <Home />,
     children: [{ path: "write", element: <BoardWrite /> }],
   },
