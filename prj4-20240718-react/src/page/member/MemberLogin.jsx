@@ -9,7 +9,7 @@ import {
 import { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "../../component/LoginProvider.jsx";
+import { LoginContext } from "../compoent/LoginProvider.jsx";
 
 export function MemberLogin() {
   const [email, setEmail] = useState("");
