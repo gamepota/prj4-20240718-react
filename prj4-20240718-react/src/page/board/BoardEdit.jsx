@@ -32,7 +32,11 @@ export function BoardEdit() {
 
   function handleClickSave() {
     axios
-      .put("/api/board/edit", board)
+      .put("/api/board/edit", board, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then(() => {
         toast({
           status: "success",
@@ -84,10 +88,7 @@ export function BoardEdit() {
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input
-              defaultValue={board.writer}
-              onChange={(e) => setBoard({ ...board, writer: e.target.value })}
-            />
+            <Input defaultValue={board.writer} readOnly />
           </FormControl>
         </Box>
         <Box>
@@ -100,7 +101,7 @@ export function BoardEdit() {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader></ModalHeader>
-          <ModalBody> 변경하시겠습니까?</ModalBody>
+          <ModalBody>저장하시겠습니까?</ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>취소</Button>
             <Button onClick={handleClickSave} colorScheme={"blue"}>

@@ -17,12 +17,12 @@ import {
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { LoginContext } from "../component/LoginProvider.jsx";
+import { LoginContext } from "../compoent/LoginProvider.jsx";
 
 export function MemberInfo() {
   const [member, setMember] = useState(null);
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [password, setPassword] = useState("");
   const account = useContext(LoginContext);
   const { id } = useParams();
   const toast = useToast();
@@ -31,7 +31,11 @@ export function MemberInfo() {
 
   useEffect(() => {
     axios
-      .get(`/api/member/${id}`)
+      .get(`/api/member/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => setMember(res.data))
       .catch((err) => {
         if (err.response.status === 404) {
@@ -41,12 +45,20 @@ export function MemberInfo() {
             position: "top",
           });
           navigate("/");
+        } else if (err.response.status === 403) {
+          toast({
+            status: "error",
+            description: "권한이 없습니다.",
+            position: "top",
+          });
+          navigate(-1);
         }
       });
   }, []);
 
   function handleClickRemove() {
     setIsLoading(true);
+
     axios
       .delete(`/api/member/${id}`, {
         headers: {
@@ -105,8 +117,8 @@ export function MemberInfo() {
         </Box>
         <Box>
           <Button
-            colorScheme={"purple"}
             onClick={() => navigate(`/member/edit/${member.id}`)}
+            colorScheme={"purple"}
           >
             수정
           </Button>
@@ -114,29 +126,33 @@ export function MemberInfo() {
             탈퇴
           </Button>
         </Box>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>탈퇴 확인</ModalHeader>
-            <ModalBody>
-              <FormControl>
-                <FormLabel>암호</FormLabel>
-                <Input onChange={(e) => setPassword(e.target.value)}></Input>
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <Button onClick={onClose}> 취소 </Button>
-              <Button
-                isLoading={isLoading}
-                colorScheme={"red"}
-                onClick={handleClickRemove}
-              >
-                확인
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
       </Box>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>탈퇴 확인</ModalHeader>
+          <ModalBody>
+            <FormControl>
+              <FormLabel>암호</FormLabel>
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>취소</Button>
+            <Button
+              isLoading={isLoading}
+              colorScheme={"red"}
+              onClick={handleClickRemove}
+            >
+              확인
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

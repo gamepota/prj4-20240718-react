@@ -10,7 +10,7 @@ import {
 import React, { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "../compoent/LoginProvider.jsx";
+import { LoginContext } from "../component/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
