@@ -146,9 +146,8 @@ export function MemberSignup() {
             <InputGroup>
               <Input
                 type={"email"}
-                value={email}
                 onChange={(e) => {
-                  setEmail(e.target.value.trim());
+                  setEmail(e.target.value);
                   setIsCheckedEmail(false);
                   setIsValidEmail(!e.target.validity.typeMismatch);
                 }}

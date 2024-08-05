@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Textarea,
@@ -15,6 +16,7 @@ import { LoginContext } from "../compoent/LoginProvider.jsx";
 export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const account = useContext(LoginContext);
   const toast = useToast();
@@ -23,18 +25,11 @@ export function BoardWrite() {
   function handleSaveClick() {
     setLoading(true);
     axios
-      .post(
-        "/api/board/add",
-        {
-          title,
-          content,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
-      )
+      .postForm("/api/board/add", {
+        title,
+        content,
+        files,
+      })
       .then(() => {
         toast({
           description: "새 글이 등록되었습니다.",
@@ -65,6 +60,11 @@ export function BoardWrite() {
     disableSaveButton = true;
   }
 
+  //file 목록 작성
+  const fileNameList = [];
+  for (let i = 0; i < files.length; i++) {
+    fileNameList.push(<li>{files[i].name}</li>);
+  }
   return (
     <Box>
       <Box>글 작성 화면</Box>
@@ -80,6 +80,21 @@ export function BoardWrite() {
             <FormLabel>본문</FormLabel>
             <Textarea onChange={(e) => setContent(e.target.value)} />
           </FormControl>
+        </Box>
+        <Box>
+          <FormControl>
+            <FormLabel>파일</FormLabel>
+            <Input
+              multiple="true"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFiles(e.target.files)}
+            />
+            <FormHelperText>총용량 10MB, 개당 1MB</FormHelperText>
+          </FormControl>
+        </Box>
+        <Box>
+          <ul>{fileNameList}</ul>
         </Box>
         <Box>
           <FormControl>
