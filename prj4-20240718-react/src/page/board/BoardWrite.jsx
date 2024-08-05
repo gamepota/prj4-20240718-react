@@ -7,26 +7,34 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../compoent/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [writer, setWriter] = useState("");
   const [loading, setLoading] = useState(false);
+  const account = useContext(LoginContext);
   const toast = useToast();
   const navigate = useNavigate();
 
   function handleSaveClick() {
     setLoading(true);
     axios
-      .post("/api/board/add", {
-        title,
-        content,
-        writer,
-      })
+      .post(
+        "/api/board/add",
+        {
+          title,
+          content,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      )
       .then(() => {
         toast({
           description: "새 글이 등록되었습니다.",
@@ -56,9 +64,6 @@ export function BoardWrite() {
   if (content.trim().length === 0) {
     disableSaveButton = true;
   }
-  if (writer.trim().length === 0) {
-    disableSaveButton = true;
-  }
 
   return (
     <Box>
@@ -79,7 +84,7 @@ export function BoardWrite() {
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input onChange={(e) => setWriter(e.target.value)} />
+            <Input readOnly value={account.nickName} />
           </FormControl>
         </Box>
         <Box>
