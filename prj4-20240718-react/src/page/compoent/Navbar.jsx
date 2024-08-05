@@ -33,12 +33,18 @@ export function Navbar() {
       )}
       <Spacer />
       {account.isLoggedIn() && (
-        <Box>
+        <Box
+          onClick={() => navigate(`/member/${account.id}`)}
+          cursor={"pointer"}
+          _hover={{
+            bgColor: "gray.200",
+          }}
+        >
           <FontAwesomeIcon icon={faUser} />
           {account.nickName}
         </Box>
       )}
-      {account.isLoggedIn() && (
+      {account.isAdmin() && (
         <Box
           onClick={() => navigate("/member/list")}
           cursor={"pointer"}
