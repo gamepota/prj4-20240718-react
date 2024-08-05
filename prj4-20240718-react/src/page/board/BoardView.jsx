@@ -4,8 +4,10 @@ import axios from "axios";
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
+  Heading,
   Image,
   Input,
   Modal,
@@ -14,16 +16,29 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spacer,
   Spinner,
   Textarea,
+  Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+
+import { faHeart as fullHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoginContext } from "../compoent/LoginProvider.jsx";
 
 export function BoardView() {
   const { id } = useParams();
   const [board, setBoard] = useState(null);
+
+  const [like, setLike] = useState({
+    like: false,
+    count: 0,
+  });
+
+  const [isLikeProcessing, setIsLikeProcessing] = useState(false);
   const account = useContext(LoginContext);
   const toast = useToast();
   const navigate = useNavigate();
@@ -32,7 +47,10 @@ export function BoardView() {
   useEffect(() => {
     axios
       .get(`/api/board/${id}`)
-      .then((res) => setBoard(res.data))
+      .then((res) => {
+        setBoard(res.data.board);
+        setLike(res.data.like);
+      })
       .catch((err) => {
         if (err.response.status === 404) {
           toast({
@@ -76,9 +94,48 @@ export function BoardView() {
     return <Spinner />;
   }
 
+  function handleClickLike() {
+    if (!account.isLoggedIn()) {
+      return;
+    }
+    setIsLikeProcessing(true);
+    axios
+      .put(`/api/board/like`, { boardId: board.id })
+      .then((res) => {
+        setLike(res.data);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsLikeProcessing(false);
+      });
+  }
+
   return (
     <Box>
-      <Box>{board.id}번 게시물</Box>
+      <Flex>
+        <Heading>{board.id}번 게시물</Heading>
+        <Spacer />
+        {isLikeProcessing || (
+          <Flex>
+            <Tooltip
+              isDisabled={account.isLoggedIn()}
+              hasArrow
+              label="로그인 한 회원 만 가능합니다."
+            >
+              <Box onClick={handleClickLike} cursor="pointer" fontSize="3xl">
+                {like.like && <FontAwesomeIcon icon={fullHeart} />}
+                {like.like || <FontAwesomeIcon icon={emptyHeart} />}
+              </Box>
+            </Tooltip>
+            <Box fontSize="3xl">{like.count}</Box>
+          </Flex>
+        )}
+        {isLikeProcessing && (
+          <Box pr={3}>
+            <Spinner />
+          </Box>
+        )}
+      </Flex>
       <Box>
         <FormControl>
           <FormLabel>제목</FormLabel>
