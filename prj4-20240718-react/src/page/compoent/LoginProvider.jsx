@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
 export const LoginContext = createContext(null);
@@ -7,6 +7,14 @@ export function LoginProvider({ children }) {
   const [email, setEmail] = useState("");
   const [nickName, setNickName] = useState("");
   const [expired, setExpired] = useState(0);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token === null) {
+      return;
+    }
+    login(token);
+  }, []);
 
   // isLoggedIn
   function isLoggedIn() {
