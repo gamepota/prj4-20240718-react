@@ -1,84 +1,130 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Spacer } from "@chakra-ui/react";
+import { Box, Center, Flex, Hide, Show, Spacer } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHouse,
+  faPencil,
+  faRightFromBracket,
+  faRightToBracket,
+  faUserPlus,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 
 export function Navbar() {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
 
   return (
-    <Flex gap={3}>
-      <Box
+    <Flex
+      px={{
+        lg: 200,
+        base: 0,
+      }}
+      gap={3}
+      height={20}
+      bgColor="gray.100"
+    >
+      <Center
         onClick={() => navigate("/")}
         cursor={"pointer"}
         _hover={{
           bgColor: "gray.200",
         }}
+        p={6}
+        fontSize={20}
+        fontWeight={600}
       >
-        HOME
-      </Box>
+        <Show below={"lg"}>
+          <FontAwesomeIcon icon={faHouse} />
+        </Show>
+        <Hide below={"lg"}>HOME</Hide>
+      </Center>
       {account.isLoggedIn() && (
-        <Box
+        <Center
           onClick={() => navigate("/write")}
           cursor={"pointer"}
           _hover={{
             bgColor: "gray.200",
           }}
+          p={6}
+          fontSize={20}
+          fontWeight={600}
         >
-          글쓰기
-        </Box>
+          <Show below={"lg"}>
+            <FontAwesomeIcon icon={faPencil} />
+          </Show>
+          <Hide below={"lg"}>글쓰기</Hide>
+        </Center>
       )}
       <Spacer />
       {account.isLoggedIn() && (
-        <Box
+        <Center
           onClick={() => navigate(`/member/${account.id}`)}
           cursor={"pointer"}
           _hover={{
             bgColor: "gray.200",
           }}
+          p={6}
+          fontSize={20}
+          fontWeight={600}
         >
-          <FontAwesomeIcon icon={faUser} />
-          {account.nickName}
-        </Box>
+          <Flex gap={2}>
+            <Box>
+              <FontAwesomeIcon icon={faUser} />
+            </Box>
+            <Box>
+              <Hide below={"lg"}>{account.nickName}</Hide>
+            </Box>
+          </Flex>
+        </Center>
       )}
       {account.isAdmin() && (
-        <Box
+        <Center
           onClick={() => navigate("/member/list")}
           cursor={"pointer"}
           _hover={{
             bgColor: "gray.200",
           }}
+          p={6}
+          fontSize={20}
+          fontWeight={600}
         >
-          회원목록
-        </Box>
+          <FontAwesomeIcon icon={faUsers} />
+        </Center>
       )}
       {account.isLoggedIn() || (
-        <Box
+        <Center
           onClick={() => navigate("/signup")}
           cursor={"pointer"}
           _hover={{
             bgColor: "gray.200",
           }}
+          p={6}
+          fontSize={20}
+          fontWeight={600}
         >
-          회원가입
-        </Box>
+          <FontAwesomeIcon icon={faUserPlus} />
+        </Center>
       )}
       {account.isLoggedIn() || (
-        <Box
+        <Center
           onClick={() => navigate("/login")}
           cursor={"pointer"}
           _hover={{
             bgColor: "gray.200",
           }}
+          p={6}
+          fontSize={20}
+          fontWeight={600}
         >
-          로그인
-        </Box>
+          <FontAwesomeIcon icon={faRightToBracket} />
+        </Center>
       )}
       {account.isLoggedIn() && (
-        <Box
+        <Center
           onClick={() => {
             account.logout();
             navigate("/login");
@@ -87,9 +133,12 @@ export function Navbar() {
           _hover={{
             bgColor: "gray.200",
           }}
+          p={6}
+          fontSize={20}
+          fontWeight={600}
         >
-          로그아웃
-        </Box>
+          <FontAwesomeIcon icon={faRightFromBracket} />
+        </Center>
       )}
     </Flex>
   );
